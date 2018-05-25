@@ -1,0 +1,49 @@
+{
+    "name": "ser-web-management",
+    "devDependencies": {
+        "@types/bluebird": "3.5.20",
+        "@types/angular": "1.6.45",
+        "@types/jquery": "3.3.1",
+        "@types/enigma.js": "2.2.1",
+        "@types/qlik-engineapi": "12.67.1",
+        "@types/qlik-visualizationextensions": "4.0.2",
+        "@types/winston": "2.3.9",
+        "awesome-typescript-loader": "5.0.0",
+        "css-loader": "0.28.11",
+        "file-loader": "1.1.11",
+        "less": "3.0.2",
+        "less-loader": "4.1.0",
+        "style-loader": "0.21.0",
+        "tslint": "5.9.1",
+        "tslint-loader": "3.6.0",
+        "typescript": "2.8.3",
+        "url-loader": "1.0.1",
+        "webpack": "4.6.0",
+        "webpack-cli": "2.0.15",
+        "webpack-dev-server": "3.1.4"
+    },
+    "dependencies": {
+        "@types/ws": "^5.1.0",
+        "@types/hjson": "2.4.0",
+        "bluebird": "3.5.1",
+        "bufferutil": "3.0.4",
+        "clean-webpack-plugin": "^0.1.19",
+        "copy-webpack-plugin": "^4.5.1",
+        "enigma.js": "2.2.1",
+        "angular": "1.7.0",
+        "jquery": "3.3.1",
+        "leonardo-ui": "1.6.0",
+        "net": "1.0.2",
+        "requirejs": "2.3.5",
+        "tls": "0.0.1",
+        "ser.api": "3.1.6",
+        "utf-8-validate": "4.0.1",
+        "winston": "^3.0.0-rc5",
+        "ws": "5.1.1",
+        "hjson": "3.1.1"
+    },
+    "scripts": {
+        "build": "tsc && webpack",
+        "dev": "webpack-dev-server"
+    }
+}

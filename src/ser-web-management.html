@@ -1,0 +1,89 @@
+<html>
+
+    <head>
+        <link rel="stylesheet" href="./ser-web-management.css">
+    </head>
+
+    <body ng-app="app" ng-controller="RootCtrl as vm">
+        <div class="header">
+            <h1>{{vm.title}}</h1>
+        </div>
+
+        <div class="sidbar">
+            <ul class="lui-list">
+                <li class="lui-list__item">
+                    <span class="lui-list__text">Process Task Explorer</span>
+                </li>
+                <li class="lui-list__item">
+                    <span class="lui-list__text">SER Tasks</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="content">
+                <button>Fetch</button>
+                <button ng-click="vm.createNewTaskApp()">Add</button>
+                
+                appName
+                <input type="text" ng-model="vm.createAppManagerController.appName">
+
+                <ul ng-if="vm.createAppManagerController.appList.length > 0">
+                    <li ng-repeat="app in vm.createAppManagerController.appList track by $index"
+                        ng-click="vm.createAppManagerController.appReferenceName = app.name">
+                        {{app.name}}
+                    </li>
+                </ul>
+
+                <ul ng-if="vm.createAppManagerController.contentLibList.qItems.length > 0">
+                    <li ng-repeat="lib in vm.createAppManagerController.contentLibList.qItems track by $index"
+                        ng-click="vm.createAppManagerController.loadContentForLib(lib.qName); vm.createAppManagerController.contentLib = lib.qName">
+                        {{lib.qName}}
+                    </li>
+                </ul>
+
+                <ul ng-if="vm.createAppManagerController.contentList.qItems.length > 0">
+                    <li ng-repeat="content in vm.createAppManagerController.contentList.qItems track by $index"
+                        ng-click="vm.createAppManagerController.content=content.qUrl">
+                        {{content.qUrl}}
+                    </li>
+                </ul>
+                <div>
+                    app
+                    <input type="text" ng-model="vm.createAppManagerController.appReferenceName">
+                    contentLib
+                    <input type="text" ng-model="vm.createAppManagerController.contentLib">
+                    content
+                    <input type="text" ng-model="vm.createAppManagerController.content">
+                    <!-- output
+                    <input type="text" ng-model="vm.createAppManagerController.output">
+                    mode
+                    <input type="text" ng-model="vm.createAppManagerController.mode">
+                    connections
+                    <input type="text" ng-model="vm.createAppManagerController.connections"> -->
+
+                    <button ng-click="vm.createAppManagerController.createSerApp()">Create App</button>
+                    <button ng-click="vm.createAppManagerController.addDistribution()">Add Distribution</button>
+                        {{eSerDistribute}}
+                    <div class="DistributeContent">
+                        <ul>
+                            <li>Hub</li>
+                            <li>Mail</li>
+                            <li>File</li>
+                        </ul>
+
+                        <button>Apply</button>
+                        <button>Cancel</button>
+                    </div>
+
+                </div>
+        </div>
+
+        <div class="footer">
+            footer
+        </div>
+        <script src="./ser-web-management.js"></script>
+
+    </body>
+
+</html>
+
