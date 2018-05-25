@@ -1,5 +1,6 @@
 //#region imports
 
+import { ESERDistribute } from "./utils";
 import { IDisplayApp } from "./utils";
 import { SERApp } from "./serApp";
 
@@ -10,8 +11,12 @@ export class SERAppManagerController {
     public appList: IDisplayApp[] = [];
     public contentLibList: EngineAPI.IContentLibraryList;
     public contentList: EngineAPI.IStaticContentList;
+    public connectionList: EngineAPI.IConnection[];
+
+    public distributeMode: ESERDistribute;
 
     private timeout: ng.ITimeoutService;
+
 
 
 
@@ -29,11 +34,13 @@ export class SERAppManagerController {
 
     // serReport: SERReport;
 
-    constructor(global: EngineAPI.IGlobal, timeout: ng.ITimeoutService) {
+    constructor(global: EngineAPI.IGlobal, timeout: ng.ITimeoutService, scope: ng.IScope) {
         console.log("Constructor called: SERAppManagerController");
 
         this.global = global;
         this.timeout = timeout;
+
+        (scope as any).eSerDistribute = ESERDistribute;
 
         this.serApp = new SERApp(global);
         this.init()
@@ -78,7 +85,7 @@ export class SERAppManagerController {
 
         return new Promise((resolve, reject) => {
             this.global.getDocList()
-            .then((docList) => {
+            .then((docList: any) => {
                 let apps: IDisplayApp[] = [];
                 for (const doc of docList) {
                     console.log("fcn called: get AppList - app:", doc.qDocName);
@@ -134,6 +141,19 @@ export class SERAppManagerController {
     }
 
     /**
+     * loadConnections
+     */
+    public loadConnections(): void {
+        this.serApp.getConnections()
+        .then((connections) => {
+            this.connectionList = connections;
+        })
+        .catch((error) => {
+            console.error("ERROR in loadConnections", error);
+        });
+    }
+
+    /**
      * selectContentFromLibrarie
      */
     public selectContentFromLibrarie(libraryName: string): Promise<EngineAPI.IStaticContentList> {
@@ -162,9 +182,19 @@ export class SERAppManagerController {
         arrProm.push(this.serApp.createSerScript(this.appReferenceName, this.contentStringNormalizer(this.content)));
 
         Promise.all(arrProm)
+        .then(() => {
+            this.global.session.close();
+        })
         .catch((error) => {
             console.error("ERROR", error);
         });
+    }
+
+    /**
+     * addDistribution
+     */
+    public addDistribution(): void {
+        //
     }
 
     private contentStringNormalizer(content: string): string {

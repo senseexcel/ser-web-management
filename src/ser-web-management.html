@@ -62,6 +62,19 @@
                     <input type="text" ng-model="vm.createAppManagerController.connections"> -->
 
                     <button ng-click="vm.createAppManagerController.createSerApp()">Create App</button>
+                    <button ng-click="vm.createAppManagerController.addDistribution()">Add Distribution</button>
+                        {{eSerDistribute}}
+                    <div class="DistributeContent">
+                        <ul>
+                            <li>Hub</li>
+                            <li>Mail</li>
+                            <li>File</li>
+                        </ul>
+
+                        <button>Apply</button>
+                        <button>Cancel</button>
+                    </div>
+
                 </div>
         </div>
 

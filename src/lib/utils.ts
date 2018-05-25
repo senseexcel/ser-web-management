@@ -9,6 +9,12 @@ enum ESerFileMode {
     CreateOnly
 }
 
+export enum ESERDistribute {
+    hub,
+    file,
+    mail
+}
+
 //#endregion
 
 //#region interfaces
@@ -25,6 +31,7 @@ export interface IConfig {
 export interface ISERDistribute {
     hub?: ISERHub;
     file?: ISERFile;
+    mail?: any;
 }
 
 interface ISERHub {

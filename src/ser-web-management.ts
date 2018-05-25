@@ -21,15 +21,17 @@ class SERManagerController {
     private createAppManagerController: SERAppManagerController;
     private session: enigmaJS.ISession;
     private timeout: ng.ITimeoutService;
+    private scope: ng.IScope;
 
     //#endregion
 
-    static $inject = ["$timeout"];
+    static $inject = ["$timeout", "$scope"];
 
-    constructor(timeout: ng.ITimeoutService) {
+    constructor(timeout: ng.ITimeoutService, scope: ng.IScope) {
         console.log("Constructor called: SERManager");
 
         this.timeout = timeout;
+        this.scope = scope;
         this.connection = new Connection();
         this.connection.createSession()
         .then((session) => {
@@ -49,7 +51,7 @@ class SERManagerController {
         return new Promise((resolve, reject) => {
             this.session.open()
             .then((global: EngineAPI.IGlobal) => {
-                this.createAppManagerController = new SERAppManagerController(global, this.timeout);
+                this.createAppManagerController = new SERAppManagerController(global, this.timeout, this.scope);
                 resolve();
             })
             .catch((error) => {
