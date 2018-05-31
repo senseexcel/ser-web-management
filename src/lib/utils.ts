@@ -15,6 +15,11 @@ export enum ESERDistribute {
     mail
 }
 
+export enum ESERSelectionType {
+    field,
+    bookmark
+}
+
 //#endregion
 
 //#region interfaces
@@ -34,16 +39,19 @@ export interface ISERDistribute {
     mail?: any;
 }
 
-interface ISERHub {
+export interface ISERHub {
     owner: string;
     mode: string;
-    connections: string;
+    connections?: string;
 }
 
 export interface ISERFile {
     target: string;
-    mode: ESerFileMode;
-    connections: ISerConnection | string;
+    mode: string;
+    connections?: ISerConnection | string;
+}
+
+export interface ISERMail {
 }
 
 export interface ISERReportExtend extends ISerReport {

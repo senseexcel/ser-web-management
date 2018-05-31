@@ -19,9 +19,11 @@ class SERManagerController {
 
     private connection: Connection;
     private createAppManagerController: SERAppManagerController;
+    private fetchAppsManagerController: any;
     private session: enigmaJS.ISession;
     private timeout: ng.ITimeoutService;
     private scope: ng.IScope;
+
 
     //#endregion
 
@@ -52,6 +54,7 @@ class SERManagerController {
             this.session.open()
             .then((global: EngineAPI.IGlobal) => {
                 this.createAppManagerController = new SERAppManagerController(global, this.timeout, this.scope);
+                this.createAppManagerController.showCreateAppRegion = true;
                 resolve();
             })
             .catch((error) => {

@@ -22,59 +22,162 @@
 
         <div class="content">
                 <button>Fetch</button>
-                <button ng-click="vm.createNewTaskApp()">Add</button>
+                <button ng-click="vm.createNewTaskApp()">Add new App</button>
                 
-                appName
-                <input type="text" ng-model="vm.createAppManagerController.appName">
+                <div ng-if="vm.createAppManagerController.showCreateAppRegion">
+                    appName
+                    <input type="text" ng-model="vm.createAppManagerController.appName">
 
-                <ul ng-if="vm.createAppManagerController.appList.length > 0">
-                    <li ng-repeat="app in vm.createAppManagerController.appList track by $index"
-                        ng-click="vm.createAppManagerController.appReferenceName = app.name">
-                        {{app.name}}
-                    </li>
-                </ul>
+                    <ul ng-if="vm.createAppManagerController.appList.length > 0">
+                        <li ng-repeat="app in vm.createAppManagerController.appList track by $index"
+                            ng-click="vm.createAppManagerController.appReferenceName = app.name">
+                            {{app.name}}
+                        </li>
+                    </ul>
 
-                <ul ng-if="vm.createAppManagerController.contentLibList.qItems.length > 0">
-                    <li ng-repeat="lib in vm.createAppManagerController.contentLibList.qItems track by $index"
-                        ng-click="vm.createAppManagerController.loadContentForLib(lib.qName); vm.createAppManagerController.contentLib = lib.qName">
-                        {{lib.qName}}
-                    </li>
-                </ul>
+                    <ul ng-if="vm.createAppManagerController.contentLibList.qItems.length > 0">
+                        <li ng-repeat="lib in vm.createAppManagerController.contentLibList.qItems track by $index"
+                            ng-click="vm.createAppManagerController.loadContentForLib(lib.qName); vm.createAppManagerController.contentLib = lib.qName">
+                            {{lib.qName}}
+                        </li>
+                    </ul>
 
-                <ul ng-if="vm.createAppManagerController.contentList.qItems.length > 0">
-                    <li ng-repeat="content in vm.createAppManagerController.contentList.qItems track by $index"
-                        ng-click="vm.createAppManagerController.content=content.qUrl">
-                        {{content.qUrl}}
-                    </li>
-                </ul>
-                <div>
-                    app
-                    <input type="text" ng-model="vm.createAppManagerController.appReferenceName">
-                    contentLib
-                    <input type="text" ng-model="vm.createAppManagerController.contentLib">
-                    content
-                    <input type="text" ng-model="vm.createAppManagerController.content">
-                    <!-- output
-                    <input type="text" ng-model="vm.createAppManagerController.output">
-                    mode
-                    <input type="text" ng-model="vm.createAppManagerController.mode">
-                    connections
-                    <input type="text" ng-model="vm.createAppManagerController.connections"> -->
+                    <ul ng-if="vm.createAppManagerController.contentList.qItems.length > 0">
+                        <li ng-repeat="content in vm.createAppManagerController.contentList.qItems track by $index"
+                            ng-click="vm.createAppManagerController.content=content.qUrl">
+                            {{content.qUrl}}
+                        </li>
+                    </ul>
+                    <div>
+                        app
+                        <input type="text" ng-model="vm.createAppManagerController.appReferenceName">
+                        contentLib
+                        <input type="text" ng-model="vm.createAppManagerController.contentLib">
+                        content
+                        <input type="text" ng-model="vm.createAppManagerController.content">
 
-                    <button ng-click="vm.createAppManagerController.createSerApp()">Create App</button>
-                    <button ng-click="vm.createAppManagerController.addDistribution()">Add Distribution</button>
-                        {{eSerDistribute}}
-                    <div class="DistributeContent">
-                        <ul>
-                            <li>Hub</li>
-                            <li>Mail</li>
-                            <li>File</li>
-                        </ul>
+                        
+                        <button ng-click="vm.createAppManagerController.showDistributeSection()">Add Distribution</button>
+                        <button ng-click="vm.createAppManagerController.showSelectionSection()">Add Selection</button>
 
-                        <button>Apply</button>
-                        <button>Cancel</button>
+                        <!-- Selection Section -->
+                        <div ng-if="vm.createAppManagerController.showSelectionRegion" class="SelectionContent">
+                            <ul>
+                                <li ng-click="vm.createAppManagerController.selection.type = 'dynamic'">dynamic</li>
+                                <li ng-click="vm.createAppManagerController.selection.type = 'static'">static</li>
+                            </ul>
+
+                            <ul ng-if="vm.createAppManagerController.selection.type === 'static'">
+                                <li ng-click="vm.createAppManagerController.selection.objectType = 'field'">field</li>
+                                <li ng-click="vm.createAppManagerController.selection.objectType = 'bookmark'">bookmark</li>
+                            </ul>
+
+                            objectType
+                            <input type="text"
+                                   ng-if="vm.createAppManagerController.selection.type === 'static'"
+                                   ng-model="vm.createAppManagerController.selection.objectType">
+
+                            field or bookmark name
+                            <input type="text" 
+                                   ng-model="vm.createAppManagerController.selection.name"
+                                   ng-if="vm.createAppManagerController.selection.type.length!==0">
+
+                            values
+                            <input type="text" 
+                                   ng-model="vm.createAppManagerController.selection.values"
+                                   ng-if="vm.createAppManagerController.selection.type === 'static'">
+
+                            <button ng-click="vm.createAppManagerController.addSelection()">Apply</button>
+                            <button ng-click="vm.createAppManagerController.clearSelectionObtions()">Cancel</button>
+
+                        </div>
+
+
+                        <!-- Distribute Section -->
+                        <div ng-if="vm.createAppManagerController.showDistributeRegion" class="DistributeContent">
+                            <ul>
+                                <li ng-click="vm.createAppManagerController.distributeMode='hub'">Hub</li>
+                                <li ng-click="vm.createAppManagerController.distributeMode='mail'">Mail</li>
+                                <li ng-click="vm.createAppManagerController.distributeMode='file'">File</li>
+                            </ul>
+
+                            <div ng-if="vm.createAppManagerController.distributeMode==='hub'">
+                                owner
+                                <input type="text" ng-model="vm.createAppManagerController.distribute.owner">
+                                <ul>
+                                    <li ng-click="vm.createAppManagerController.distribute.mode='DeleteAllFirst'">DeleteAllFirst</li>
+                                    <li ng-click="vm.createAppManagerController.distribute.mode='Override'">Override</li>
+                                    <li ng-click="vm.createAppManagerController.distribute.mode='CreateOnly'">CreateOnly</li>
+                                </ul>
+                                Distribute Mode
+                                <input type="text" ng-model="vm.createAppManagerController.distribute.mode">
+                            </div>
+
+                            <div ng-if="vm.createAppManagerController.distributeMode==='file'">
+
+                                <ul>
+                                    <li ng-click="vm.createAppManagerController.distribute.mode='DeleteAllFirst'">DeleteAllFirst</li>
+                                    <li ng-click="vm.createAppManagerController.distribute.mode='Override'">Override</li>
+                                    <li ng-click="vm.createAppManagerController.distribute.mode='CreateOnly'">CreateOnly</li>
+                                </ul>
+                                Distribute Mode
+                                <input type="text" ng-model="vm.createAppManagerController.distribute.mode">
+
+                                <ul>
+                                    <li ng-repeat="connection in vm.createAppManagerController.connectionList"
+                                        ng-click="vm.createAppManagerController.distribute.target = connection.qName">
+                                        {{connection.qName}}
+                                    </li>
+                                </ul>
+                                Connection
+                                <input type="text" ng-model="vm.createAppManagerController.distribute.target">
+                            </div>
+
+                            <div ng-if="vm.createAppManagerController.distributeMode==='mail'">
+
+                                mail subject
+                                <input type="text" ng-model="vm.createAppManagerController.distribute.subject">
+
+                                mail message
+                                <textarea ng-model="vm.createAppManagerController.distribute.message"></textarea>
+
+                                <div ng-if="typeof(vm.createAppManagerController.distribute.mailServer)!=='undefined'">
+
+                                    mail host
+                                    <input type="text" 
+                                        ng-model="vm.createAppManagerController.distribute.mailServer.host">
+
+                                    mail from
+                                    <input type="text" 
+                                        ng-model="vm.createAppManagerController.distribute.mailServer.from">
+
+                                    mail port
+                                    <input type="text" 
+                                        ng-model="vm.createAppManagerController.distribute.mailServer.port">
+
+                                    mail username
+                                    <input type="text" 
+                                        ng-model="vm.createAppManagerController.distribute.mailServer.username">
+
+                                    mail password
+                                    <input type="text" 
+                                        ng-model="vm.createAppManagerController.distribute.mailServer.password">
+
+                                </div>
+                            </div>
+
+                            <button ng-click="vm.createAppManagerController.addDistribution()">Apply</button>
+                            <button ng-click="vm.createAppManagerController.clearDistributeObtions()">Cancel</button>
+                        </div>
+
+                        
+                        <button ng-click="vm.createAppManagerController.createSerApp()">Create App</button>
+                        <button ng-click="vm.createAppManagerController.showSerJson()">ShowJson</button>
+
+                        </br>
+                        {{vm.createAppManagerController.serJson}}
+
                     </div>
-
                 </div>
         </div>
 
