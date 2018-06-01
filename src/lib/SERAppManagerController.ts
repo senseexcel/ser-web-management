@@ -1,10 +1,13 @@
 //#region imports
-
-import { ESERDistribute, ISERDistribute } from "./utils";
-import { IDisplayApp, ISERHub, ISERFile, ISERMail } from "./utils";
-import { ISerSenseSelection }               from "../node_modules/ser.api/index";
-import { SERApp } from "./serApp";
-
+import { Connection }                   from "./connection";
+import { SERApp }                       from "./serApp";
+import { ISerSenseSelection }           from "../node_modules/ser.api/index";
+import { ESERDistribute,
+         ISERDistribute }               from "./utils";
+import { IDisplayApp,
+         ISERHub,
+         ISERFile,
+         ISERMail }                     from "./utils";
 //#endregion
 
 export class SERAppManagerController {
@@ -30,26 +33,34 @@ export class SERAppManagerController {
     public output: string;
     public mode: string;
     public connections: string;
+    public session: enigmaJS.ISession;
 
     private distributeMode : string;
     private timeout: ng.ITimeoutService;
     //#endregion
 
-    constructor(global: EngineAPI.IGlobal, timeout: ng.ITimeoutService, scope: ng.IScope) {
+    constructor(timeout: ng.ITimeoutService, scope: ng.IScope) {
         console.log("Constructor called: SERAppManagerController");
 
-        this.global = global;
         this.timeout = timeout;
-
         (scope as any).eSerDistribute = ESERDistribute;
-
-        this.serApp = new SERApp(global);
-        this.init()
+        let connection = new Connection();
+        connection.createSession()
+        .then((session) => {
+            this.session = session;
+            return session.open();
+        })
+        .then((global: EngineAPI.IGlobal) => {
+            this.global = global;
+            this.serApp = new SERApp(global);
+            return this.init();
+        })
         .then(() => {
+            this.showCreateAppRegion = true;
             this.timeout();
         })
         .catch((error) => {
-            console.error("ERROR in constructor of SERAppManagerController");
+            console.error("ERROR in Constructor of SERManagerController", error);
         });
     }
 

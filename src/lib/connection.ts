@@ -51,4 +51,36 @@ export class Connection {
             }
         });
     }
+
+    /**
+     * createSession
+     */
+    public createUniqSession(appId: string): Promise<enigmaJS.ISession> {
+        console.log("fcn called: createSession - Connection");
+
+        return new Promise((resolve, reject) => {
+            try {
+
+                const prefix = window.location.pathname.substr( 0,
+                    window.location.pathname.toLowerCase().lastIndexOf( "/extensions" ) + 1 );
+                const prefixString = prefix!=="/"?`/${prefix}/`:"/";
+                const host = window.location.hostname;
+                const port = window.location.port?`:${window.location.port}`:"";
+                const isSecure = window.location.protocol === "https:";
+                const baseUrl =`${isSecure?"wss": "ws"}://${host}${port}${prefixString}app/${appId}`;
+
+                let localConfig: enigmaJS.IConfig = {
+                    Promise: bluebird,
+                    schema: qixSchema,
+                    mixins: [exposeAppApi],
+                    url: baseUrl,
+                };
+
+                let session: enigmaJS.ISession = enigma.create(localConfig);
+                resolve(session);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
 }

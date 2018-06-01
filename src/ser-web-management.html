@@ -21,9 +21,103 @@
         </div>
 
         <div class="content">
-                <button>Fetch</button>
+                <button ng-click="vm.createAppList()">Fetch</button>
                 <button ng-click="vm.createNewTaskApp()">Add new App</button>
-                
+                {{vm.appsManagerController.showFetchAppRegion}}
+                <div ng-if="vm.appsManagerController.showFetchAppRegion">
+                    <ul>
+                        <li ng-repeat="appEntry in vm.appsManagerController.appList">
+                            {{appEntry.appName}}
+                            <button>remove</button>
+                            <button ng-click="vm.appsManagerController.changeApplication(appEntry.appId)">change</button>
+                            <button>create Task</button>
+                        </li>
+                    </ul>
+
+                    <div ng-if="vm.appsManagerController.showSerReportContent">
+                        <button ng-click="vm.appsManagerController.openReportSection('Connection')">Connection</button>
+                        <button ng-click="vm.appsManagerController.openReportSection('Template')">Template</button>
+                        <button ng-click="vm.appsManagerController.openReportSection('Distribution')">Distribution</button>
+                        <button ng-click="vm.appsManagerController.openReportSection('General')">General</button>
+
+                        <div ng-if="vm.appsManagerController.showSerReportConnection">
+                                Server Uri: <input ng-model="vm.appsManagerController.serReport.connections.serverUri" type="text">
+                                App Name: <input ng-model="vm.appsManagerController.serReport.connections.app" type="text">
+                                SSl Valid URL: <input ng-model="vm.appsManagerController.serReport.connections.sslValidThumbprints.url" type="text">
+                                SSl Valid Thumbprint: <input ng-model="vm.appsManagerController.serReport.connections.sslValidThumbprints.thumbprint" type="text">
+                                Shared Session: <input ng-model="vm.appsManagerController.serReport.connections.sharedSession" type="checkbox">
+                        </div>
+                        <div ng-if="vm.appsManagerController.showSerReportGeneral">
+                            cleanupTimeOut: <input ng-model="vm.appsManagerController.general.cleanupTimeOut" type="number">
+                            timeout: <input ng-model="vm.appsManagerController.general.timeout" type="number">
+                            errorRepeatCount: <input ng-model="vm.appsManagerController.general.errorRepeatCount" type="number">
+                        </div>
+                        <div ng-if="vm.appsManagerController.showSerReportDistribution">
+                            <div ng-if="typeof(vm.appsManagerController.serReport.distribute.hub)!=='undefined'">
+                                hub
+                                owner: <input ng-model="vm.appsManagerController.serReport.distribute.hub.owner" type="text">
+                                mode: <input ng-model="vm.appsManagerController.serReport.distribute.hub.mode" type="text">
+                                connections: <input ng-model="vm.appsManagerController.serReport.distribute.hub.connections" type="text">
+                            </div>
+                            <div ng-if="typeof(vm.appsManagerController.serReport.distribute.mail)!=='undefined'">
+                                mail
+                                mail subject
+                                <input type="text" ng-model="vm.appsManagerController.serReport.distribute.mail.subject">
+
+                                mail message
+                                <textarea ng-model="vm.appsManagerController.serReport.distribute.mail.message"></textarea>
+
+                                <div ng-if="typeof(vm.appsManagerController.serReport.distribute.mail.mailServer)!=='undefined'">
+
+                                    mail host
+                                    <input type="text" 
+                                        ng-model="vm.appsManagerController.serReport.distribute.mail.mailServer.host">
+
+                                    mail from
+                                    <input type="text" 
+                                        ng-model="vm.appsManagerController.serReport.distribute.mail.mailServer.from">
+
+                                    mail port
+                                    <input type="text" 
+                                        ng-model="vm.appsManagerController.serReport.distribute.mail.mailServer.port">
+
+                                    mail username
+                                    <input type="text" 
+                                        ng-model="vm.appsManagerController.serReport.distribute.mail.mailServer.username">
+
+                                    mail password
+                                    <input type="text" 
+                                        ng-model="vm.appsManagerController.serReport.distribute.mail.mailServer.password">
+
+                                </div>
+                            </div>
+                            <div ng-if="typeof(vm.appsManagerController.serReport.distribute.file)!=='undefined'">
+                                file
+                                target: <input ng-model="vm.appsManagerController.serReport.distribute.file.target" type="text">
+                                mode: <input ng-model="vm.appsManagerController.serReport.distribute.file.mode" type="text">
+                                connections: <input ng-model="vm.appsManagerController.serReport.distribute.file.connections" type="text">
+                            </div>
+                        </div>
+                        <div ng-if="vm.appsManagerController.showSerReportTemplate">
+                                Input: <input ng-model="vm.appsManagerController.serReport.template.input" type="text">
+                                output: <input ng-model="vm.appsManagerController.serReport.template.output" type="text">
+                                outputFormat: <input ng-model="vm.appsManagerController.serReport.template.outputFormat" type="text">
+                                outputPassword: <input ng-model="vm.appsManagerController.serReport.template.outputPassword" type="text">
+                                Selections:
+                                <div ng-repeat="selection in vm.appsManagerController.serReport.template.selections">
+                                    name: <input ng-model="selection.name" type="text">
+                                    objectType: <input ng-model="selection.objectType" type="text">
+                                    values: <input ng-model="selection.values" type="text">
+                                    type: <input ng-model="selection.type" type="text">
+                                </div>
+                        </div>
+
+                        <button ng-click="vm.appsManagerController.applyChanges()">Apply Changes</button>
+
+                    </div>
+
+                </div>
+
                 <div ng-if="vm.createAppManagerController.showCreateAppRegion">
                     appName
                     <input type="text" ng-model="vm.createAppManagerController.appName">

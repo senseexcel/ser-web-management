@@ -20,6 +20,12 @@ export enum ESERSelectionType {
     bookmark
 }
 
+export enum ESERReportSections {
+    Connection,
+    Template,
+    Distribution,
+    General
+}
 //#endregion
 
 //#region interfaces
@@ -56,6 +62,11 @@ export interface ISERMail {
 
 export interface ISERReportExtend extends ISerReport {
     distribute?: ISERDistribute;
+}
+
+export interface IAppListEntry {
+    appName: string;
+    appId: string;
 }
 
 //#endregion
