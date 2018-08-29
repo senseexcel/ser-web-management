@@ -1,29 +1,31 @@
 //#region imports
-
-import { ESERDistribute } from "./utils";
-import { IDisplayApp } from "./utils";
-import { SERApp } from "./serApp";
-
+import { Connection }                   from "./connection";
+import { SERApp }                       from "./serApp";
+import { ISerSenseSelection }           from "../node_modules/ser.api/index";
+import { ESERDistribute,
+         ISERDistribute }               from "./utils";
+import { IDisplayApp,
+         ISERHub,
+         ISERFile,
+         ISERMail }                     from "./utils";
 //#endregion
 
 export class SERAppManagerController {
 
-    public appList: IDisplayApp[] = [];
-    public contentLibList: EngineAPI.IContentLibraryList;
-    public contentList: EngineAPI.IStaticContentList;
-    public connectionList: EngineAPI.IConnection[];
-
-    public distributeMode: ESERDistribute;
-
-    private timeout: ng.ITimeoutService;
-
-
-
-
+    //#region variables
+    appList: IDisplayApp[] = [];
+    contentLibList: EngineAPI.IContentLibraryList;
+    contentList: EngineAPI.IStaticContentList;
+    connectionList: EngineAPI.IConnection[];
+    distribute: ISERHub | ISERFile | ISERMail;
+    serJson: string = "";
+    selection: ISerSenseSelection;
+    showDistributeRegion: boolean = false;
+    showCreateAppRegion: boolean = false;
+    showSelectionRegion: boolean = false;
     global: EngineAPI.IGlobal;
     selectedApp: EngineAPI.IApp;
     serApp: SERApp;
-
     appName: string;
     appReferenceName: string;
     contentLib: string;
@@ -31,24 +33,32 @@ export class SERAppManagerController {
     output: string;
     mode: string;
     connections: string;
+    session: enigmaJS.ISession;
 
-    // serReport: SERReport;
+    private distributeMode : string;
+    private timeout: ng.ITimeoutService;
+    //#endregion
 
-    constructor(global: EngineAPI.IGlobal, timeout: ng.ITimeoutService, scope: ng.IScope) {
+    constructor(timeout: ng.ITimeoutService) {
         console.log("Constructor called: SERAppManagerController");
 
-        this.global = global;
         this.timeout = timeout;
-
-        (scope as any).eSerDistribute = ESERDistribute;
-
-        this.serApp = new SERApp(global);
-        this.init()
+        let connection = new Connection();
+        connection.createSession()
+        .then((session) => {
+            this.session = session;
+            return session.open();
+        })
+        .then((global: EngineAPI.IGlobal) => {
+            this.global = global;
+            return this.init();
+        })
         .then(() => {
+            this.showCreateAppRegion = true;
             this.timeout();
         })
         .catch((error) => {
-            console.error("ERROR in constructor of SERAppManagerController");
+            console.error("ERROR in Constructor of SERManagerController", error);
         });
     }
 
@@ -59,16 +69,19 @@ export class SERAppManagerController {
         console.log("fcn called: init - SERAppManagerController");
 
         return new Promise((resolve, reject) => {
+            this.serApp = new SERApp(this.global);
             this.serApp.initApp()
             .then(() => {
                 let arrProm = [];
                 arrProm.push(this.getAppList());
                 arrProm.push(this.loadContentLibForOpenApp());
+                arrProm.push(this.loadConnections());
                 return Promise.all(arrProm);
             })
             .then((res) => {
                 this.appList = res[0];
                 this.contentLibList = res[1];
+                this.connectionList = res[2];
                 resolve();
             })
             .catch((error) => {
@@ -128,7 +141,7 @@ export class SERAppManagerController {
         console.log("fcn called: loadContentForLib - SERAppManagerController");
 
         return new Promise((resolve, reject) => {
-            this.serApp.loadContentForLib(libName)
+            this.serApp.getContentForLib(libName)
             .then((content) => {
                 this.contentList = content;
                 this.timeout();
@@ -143,13 +156,18 @@ export class SERAppManagerController {
     /**
      * loadConnections
      */
-    public loadConnections(): void {
-        this.serApp.getConnections()
-        .then((connections) => {
-            this.connectionList = connections;
-        })
-        .catch((error) => {
-            console.error("ERROR in loadConnections", error);
+    public loadConnections(): Promise<EngineAPI.IConnection[]> {
+        console.log("fcn called: loadConnections - SERAppManagerController");
+
+        return new Promise((resolve, reject) => {
+            this.serApp.getConnections()
+            .then((connections) => {
+                console.log("connections", connections);
+                resolve(connections);
+            })
+            .catch((error) => {
+                reject(error);
+            });
         });
     }
 
@@ -160,7 +178,7 @@ export class SERAppManagerController {
         console.log("fcn called: selectContentFromLibrarie - SERAppManagerController");
 
         return new Promise((resolve, reject) => {
-            this.serApp.app.getLibraryContent(libraryName)
+            this.serApp.getContentForLib(libraryName)
             .then((content) => {
                 resolve(content);
             })
@@ -183,18 +201,13 @@ export class SERAppManagerController {
 
         Promise.all(arrProm)
         .then(() => {
+            this.showCreateAppRegion = false;
+            this.timeout();
             this.global.session.close();
         })
         .catch((error) => {
             console.error("ERROR", error);
         });
-    }
-
-    /**
-     * addDistribution
-     */
-    public addDistribution(): void {
-        //
     }
 
     private contentStringNormalizer(content: string): string {
@@ -207,4 +220,96 @@ export class SERAppManagerController {
         }
     }
 
+    /**
+     * showSerJson
+     */
+    public showSerJson() {
+        console.log("fcn called: showSerJson - SERAppManagerController");
+        this.serApp.getSerJson()
+        .then((result) => {
+            this.serJson = result;
+        })
+        .catch((error) => {
+            console.error("ERROR in showJson", error);
+        });
+    }
+
+    //#region distribute Section
+
+    /**
+     * addDistribution
+     */
+    public addDistribution(): void {
+        console.log("fcn called: addDistribution - SERAppManagerController");
+
+        this.serApp.addDistributeSection(this.distributeMode, this.distribute);
+        this.clearDistributeObtions();
+    }
+
+    /**
+     * showDistributeSection
+     */
+    public showDistributeSection() {
+        console.log("fcn called: showDistributeSection - SERAppManagerController");
+        this.showDistributeRegion = true;
+    }
+
+    /**
+     * clearDistributeObtions
+     */
+    public clearDistributeObtions() {
+        console.log("fcn called: clearDistributeObtions - SERAppManagerController");
+        this.distributeMode = "";
+        this.distribute = {};
+        this.showDistributeRegion = false;
+
+    }
+
+    //#endregion
+
+    //#region selection Region
+
+    /**
+     * showDistributeSection
+     */
+    public showSelectionSection() {
+        console.log("fcn called: showSelectionSection - SERAppManagerController");
+
+        this.showSelectionRegion = true;
+    }
+
+    /**
+     * addDistribution
+     */
+    public addSelection(): void {
+        console.log("fcn called: addSelection - SERAppManagerController");
+
+        let selection: ISerSenseSelection = {
+            name: this.selection.name,
+            type: this.selection.type
+        };
+
+        if (typeof(this.selection.objectType)!=="undefined") {
+            selection.objectType = this.selection.objectType;
+        }
+
+        if (typeof(this.selection.objectType)!=="undefined") {
+            selection.values = (this.selection.values as any).split(";");
+        }
+
+        this.serApp.addSelectionSection(selection);
+        this.clearSelectionObtions();
+    }
+
+    /**
+     * clearDistributeObtions
+     */
+    public clearSelectionObtions() {
+        console.log("fcn called: clearSelectionObtions - SERAppManagerController");
+
+        this.selection = {};
+        this.showSelectionRegion = false;
+    }
+
+    //#endregion
 }
