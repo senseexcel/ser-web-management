@@ -13,37 +13,36 @@ import { IDisplayApp,
 export class SERAppManagerController {
 
     //#region variables
-    public appList: IDisplayApp[] = [];
-    public contentLibList: EngineAPI.IContentLibraryList;
-    public contentList: EngineAPI.IStaticContentList;
-    public connectionList: EngineAPI.IConnection[];
-    public distribute: ISERHub | ISERFile | ISERMail;
-    public serJson: string = "";
-    public selection: ISerSenseSelection;
-    public showDistributeRegion: boolean = false;
-    public showCreateAppRegion: boolean = false;
-    public showSelectionRegion: boolean = false;
-    public global: EngineAPI.IGlobal;
-    public selectedApp: EngineAPI.IApp;
-    public serApp: SERApp;
-    public appName: string;
-    public appReferenceName: string;
-    public contentLib: string;
-    public content: string;
-    public output: string;
-    public mode: string;
-    public connections: string;
-    public session: enigmaJS.ISession;
+    appList: IDisplayApp[] = [];
+    contentLibList: EngineAPI.IContentLibraryList;
+    contentList: EngineAPI.IStaticContentList;
+    connectionList: EngineAPI.IConnection[];
+    distribute: ISERHub | ISERFile | ISERMail;
+    serJson: string = "";
+    selection: ISerSenseSelection;
+    showDistributeRegion: boolean = false;
+    showCreateAppRegion: boolean = false;
+    showSelectionRegion: boolean = false;
+    global: EngineAPI.IGlobal;
+    selectedApp: EngineAPI.IApp;
+    serApp: SERApp;
+    appName: string;
+    appReferenceName: string;
+    contentLib: string;
+    content: string;
+    output: string;
+    mode: string;
+    connections: string;
+    session: enigmaJS.ISession;
 
     private distributeMode : string;
     private timeout: ng.ITimeoutService;
     //#endregion
 
-    constructor(timeout: ng.ITimeoutService, scope: ng.IScope) {
+    constructor(timeout: ng.ITimeoutService) {
         console.log("Constructor called: SERAppManagerController");
 
         this.timeout = timeout;
-        (scope as any).eSerDistribute = ESERDistribute;
         let connection = new Connection();
         connection.createSession()
         .then((session) => {
@@ -52,7 +51,6 @@ export class SERAppManagerController {
         })
         .then((global: EngineAPI.IGlobal) => {
             this.global = global;
-            this.serApp = new SERApp(global);
             return this.init();
         })
         .then(() => {
@@ -71,6 +69,7 @@ export class SERAppManagerController {
         console.log("fcn called: init - SERAppManagerController");
 
         return new Promise((resolve, reject) => {
+            this.serApp = new SERApp(this.global);
             this.serApp.initApp()
             .then(() => {
                 let arrProm = [];

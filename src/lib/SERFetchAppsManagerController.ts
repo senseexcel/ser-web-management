@@ -1,8 +1,11 @@
-import { throws } from "assert";
-import { IAppListEntry, ESERReportSections, ISERReportExtend } from "./utils";
-import { Connection } from "./connection";
-import { SERApp } from "./serApp";
-
+//#region imports
+import { throws }               from "assert";
+import { Connection }           from "./connection";
+import { SERApp }               from "./serApp";
+import { IAppListEntry,
+         ESERReportSections,
+         ISERReportExtend }     from "./utils";
+//#endregion
 
 export class SERFetchAppsManagerController {
 

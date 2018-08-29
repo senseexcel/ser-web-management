@@ -1,15 +1,15 @@
 //#region imports
-import * as angular                     from "angular";
-import { Connection }                   from "./lib/connection";
-import { SERAppManagerController }      from "./lib/SERAppManagerController";
-import { IConfig }                      from "./lib/utils";
+import * as angular                         from "angular";
+import { Connection }                       from "./lib/connection";
+import { SERAppManagerController }          from "./lib/SERAppManagerController";
+import { IConfig }                          from "./lib/utils";
+import { SERFetchAppsManagerController }    from "./lib/SERFetchAppsManagerController";
 import { ISerConfig,
          ISerTask,
          ISerReport,
          ISerConnection,
          ISerTemplate,
-         ISerGeneral }                  from "./node_modules/ser.api/index";
-import { SERFetchAppsManagerController } from "./lib/SERFetchAppsManagerController";
+         ISerGeneral }                      from "./node_modules/ser.api/index";
 //#endregion
 
 //#region global variables
@@ -19,20 +19,18 @@ const config: IConfig = require("./config.json");
 class SERManagerController {
 
     //#region Variables
-    private connection: Connection;
     private createAppManagerController: SERAppManagerController;
     private appsManagerController: SERFetchAppsManagerController;
     private timeout: ng.ITimeoutService;
-    private scope: ng.IScope;
+
+    title = "SER Manager";
     //#endregion
 
-    static $inject = ["$timeout", "$scope"];
+    static $inject = ["$timeout"];
 
-    constructor(timeout: ng.ITimeoutService, scope: ng.IScope) {
+    constructor(timeout: ng.ITimeoutService) {
         console.log("Constructor called: SERManagerController");
-
         this.timeout = timeout;
-        this.scope = scope;
     }
 
     /**
@@ -42,7 +40,7 @@ class SERManagerController {
         console.log("fcn called: createNewTaskApp - SERManager");
 
         try {
-            this.createAppManagerController = new SERAppManagerController(this.timeout, this.scope);
+            this.createAppManagerController = new SERAppManagerController(this.timeout);
         } catch (error) {
             console.error("ERROR in createNewTaskApp - SERManager", error);
         }

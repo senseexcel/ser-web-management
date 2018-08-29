@@ -10,7 +10,7 @@ import { ISERDistribute,
          ESERDistribute,
          ISERHub,
          ISERFile,
-         ISERMail, 
+         ISERMail,
          ISERReportExtend}                     from "./utils";
 import { reject } from "../node_modules/@types/bluebird/index";
 import { debug } from "util";
@@ -76,18 +76,18 @@ export class SERApp {
      * initApp
      * @param app
      */
-    initApp(app?: EngineAPI.IApp):Promise<void> {
+    initApp(app?: EngineAPI.IApp):Promise<string> {
         console.log("fcn called: initApp - SERApp");
 
         return new Promise((resolve, reject) => {
             if (typeof(app)!=="undefined") {
                 this.app = app;
-                resolve();
+                resolve(app.id);
             } else {
                 this.createApplication("InitialAppWillBeRenamed")
                 .then((app) => {
                     this.app = app;
-                    resolve();
+                    resolve(app.id);
                 })
                 .catch((error) => {
                     console.log("ERROR in constructor of SERApp", error);
