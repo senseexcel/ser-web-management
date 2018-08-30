@@ -5,10 +5,12 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "es2015",
+    "module": "commonjs",
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "target": "es5",
     "typeRoots": [
       "node_modules/@types"
@@ -16,6 +18,13 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "paths": {
+      "@breadcrumb/*": ["src/app/modules/breadcrumb/*"],
+      "@dashboard/*": ["src/app/modules/dashboard/*"],
+      "@node_modules/*": ["node_modules/*"],
+      "@qlik/*": ["src/app/modules/qlik/*"],
+      "@serEngine/*": ["src/app/modules/serapi/*"]
+    }
   }
 }
