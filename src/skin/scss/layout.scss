@@ -1,0 +1,14 @@
+html, body { height: 100%; }
+body { margin: 0; font-family: 'Roboto', sans-serif; }
+
+.app-container {
+    display: flex;
+    flex: 1 1 100%;
+    height: 100%;
+    flex-direction: column;
+}
+
+.app-body {
+    display: flex;
+    flex: 1 0 auto;
+}

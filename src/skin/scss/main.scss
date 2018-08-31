@@ -2,10 +2,16 @@
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/utilities/background";
+@import "~bootstrap/scss/utilities/spacing";
 @import "~bootstrap/scss/grid";
 @import "~bootstrap/scss/navbar";
 @import "~bootstrap/scss/tables";
 
 @import "~leonardo-ui/dist/leonardo-ui.css";
-html, body { height: 100%; }
-body { margin: 0; font-family: 'Roboto', sans-serif; }
+
+@import "./layout";
+
+// modules
+@import "./dashboard/index";
+@import "./qlik/index";

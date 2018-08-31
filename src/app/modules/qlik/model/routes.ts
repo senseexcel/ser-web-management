@@ -8,7 +8,7 @@ export const QlikRoutes: Routes = [{
         path: '',
         component: AppListComponent,
     }, {
-        path: 'edit',
+        path: 'edit/:id',
         component: AppEditComponent,
     }, {
         path: 'add',
