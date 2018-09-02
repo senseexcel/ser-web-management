@@ -22,7 +22,7 @@
         <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
         <tr mat-row 
             *matRowDef="let row; columns: tableHeaders;"
-            [ngClass]="{'selected': selectedApps.isSelected(row)}"
+            [ngClass]="{'selected': selection.isSelected(row)}"
             (click)="selectApp(row)">
         </tr>
     </table>
@@ -30,7 +30,7 @@
 
 <nav class="qapp-list--actions navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="btn-group" role="group">
-        <button type="button" [disabled]="selectedApps.isEmpty()" class="nav-item lui-button mr-1" (click)="editApp()" >edit</button>
-        <button type="button" [disabled]="selectedApps.isEmpty()" class="nav-item lui-button" (click)="deleteApps()" >delete</button>
+        <button type="button" [disabled]="selection.hasSelection()" class="nav-item lui-button mr-1" (click)="editApp()" >edit</button>
+        <button type="button" [disabled]="selection.hasSelection()" class="nav-item lui-button" (click)="deleteApps()" >delete</button>
     </div>
 </nav>

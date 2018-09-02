@@ -1,0 +1,26 @@
+.qapp-detail {
+
+    display: flex;
+
+    .qapp-detail--sidebar {
+        flex: 0 0 20%;
+    }
+
+    .qapp-detail--content {
+        flex: 0 0 80%;
+        background: #595959;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .qapp-detail--content-header {
+        padding: 1rem 1.5rem;
+        color: #FFF;
+    }
+
+    .qapp-detail--content-body {
+        padding: 1rem 1.5rem;
+        background: #FFF;
+        flex: 1;
+    }
+}

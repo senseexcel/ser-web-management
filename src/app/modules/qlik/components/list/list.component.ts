@@ -1,8 +1,7 @@
-import { SelectionModel } from '@angular/cdk/collections';
-import { Component, OnInit, ViewChild, ContentChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IQlikApp } from '@serEngine/api/app.interface';
-import { SerAppProvider } from '@serEngine/provider/ser-app.provider';
+import { IQlikApp } from '@qlik/api/app.interface';
+import { SerAppProvider, SelectionProvider } from '@qlik/provider';
 
 @Component({
     selector: 'app-list',
@@ -16,28 +15,22 @@ export class AppListComponent implements OnInit {
 
     private serAppProvider: SerAppProvider;
 
-    /**
-     * selection model to handle selections on table
-     *
-     * @private
-     * @type {SelectionModel<IQlikApp>}
-     * @memberof AppListComponent
-     */
-    private selectedApps: SelectionModel<IQlikApp>;
-
     private router: Router;
 
     private route: ActivatedRoute;
 
+    private selection: SelectionProvider;
+
     constructor(
         route: ActivatedRoute,
         routerProvider: Router,
-        serAppProvider: SerAppProvider
+        serAppProvider: SerAppProvider,
+        selectionProvider: SelectionProvider
     ) {
         this.route  = route;
         this.router = routerProvider;
-        this.selectedApps = new SelectionModel<IQlikApp>(false);
         this.serAppProvider = serAppProvider;
+        this.selection = selectionProvider;
      }
 
     public async ngOnInit() {
@@ -62,18 +55,9 @@ export class AppListComponent implements OnInit {
      */
     public editApp(app: IQlikApp) {
 
-        if ( this.selectedApps.isEmpty() ) {
-            return;
-        }
-
-        /**
-         * since we only have single select mode
-         * there can be only one element in selection
-         */
-        const appId = this.selectedApps.selected[0];
-
+        const selections = this.selection.getSelection();
         // route to edit
-        this.router.navigate([`edit/${appId.qDocId}`], { relativeTo: this.route});
+        this.router.navigate([`edit/${selections[0].qDocId}`], { relativeTo: this.route});
     }
 
     /**
@@ -83,6 +67,6 @@ export class AppListComponent implements OnInit {
      * @memberof AppListComponent
      */
     public selectApp(app: IQlikApp) {
-        this.selectedApps.toggle(app);
+        this.selection.addSelection(app);
     }
 }

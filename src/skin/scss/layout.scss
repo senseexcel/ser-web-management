@@ -12,3 +12,22 @@ body { margin: 0; font-family: 'Roboto', sans-serif; }
     display: flex;
     flex: 1 0 auto;
 }
+
+.flex-container {
+    display: flex;
+    height: 100%;
+}
+
+body {
+    background: #333;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+a:hover, a:active, a:visited {
+    color: inherit;
+    text-decoration: none;
+}

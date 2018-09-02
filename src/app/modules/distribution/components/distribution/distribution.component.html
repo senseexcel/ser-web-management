@@ -1,0 +1,12 @@
+<div class="distribution-form" [ngSwitch]="selectedMethod">
+
+    <mat-select placeholder="Distribution method" (selectionChange)="selectDistributionMethod($event)" class="md-6">
+        <mat-option *ngFor="let method of distributionMethods" value="{{method}}">
+            {{method}}
+        </mat-option>
+    </mat-select>
+
+    <app-distribution-file *ngSwitchCase="'file'"></app-distribution-file>
+    <app-distribution-hub  *ngSwitchCase="'hub'"></app-distribution-hub>
+    <app-distribution-mail *ngSwitchDefault></app-distribution-mail>
+</div>

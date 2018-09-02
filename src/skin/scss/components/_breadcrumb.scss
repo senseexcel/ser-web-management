@@ -1,0 +1,39 @@
+$breadcrumb-list-height: 2.5rem;
+
+.breadcrumb-list {
+
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+    background: black;
+
+    .breadcrumb-list--item {
+        padding: 0 1.5rem;
+        line-height: $breadcrumb-list-height;
+        background: #000;
+        position: relative;
+        color: #FFF;
+        
+        &:after {
+            content: "";
+            position: absolute;
+            left: 100%;
+            top: 0;
+            z-index: 1;
+            border-top: $breadcrumb-list-height / 2 solid transparent;
+            border-left: 1rem solid #000;
+            border-bottom: $breadcrumb-list-height / 2 solid transparent;
+        }
+
+        &:last-child {
+            background: #666;
+            padding-left: 2.5rem;
+        }
+
+        &:last-child:after {
+            border-left-color: #666;
+        }
+    }
+}

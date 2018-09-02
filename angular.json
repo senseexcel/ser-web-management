@@ -133,5 +133,10 @@
       }
     }
   },
-  "defaultProject": "serWebManagement"
+  "defaultProject": "serWebManagement",
+  "cli": {
+    "warnings": {
+      "typescriptMismatch": false
+    }
+  }
 }

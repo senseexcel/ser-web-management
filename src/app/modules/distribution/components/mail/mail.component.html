@@ -1,0 +1,57 @@
+<form [formGroup]="mailForm" [formGroup]="mailForm">
+
+    <!-- general form group -->
+    <ng-template #generalFormGroup>
+        <ng-container formGroupName="general">
+
+            <div class="col-md-6">
+                <mat-form-field class="form-control" >
+                    <input matInput formControlName="host" placeholder="Host">
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="port" placeholder="Port">
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="uname" placeholder="Username" >
+                </mat-form-field>
+            </div>
+            <div class="col-md-6" >
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="passwd" placeholder="Password" >
+                </mat-form-field>
+            </div>
+        </ng-container>
+    </ng-template>
+
+    <!-- mail form group -->
+    <ng-template #mailFormGroup>
+        <ng-container formGroupName="mail">
+            <div class="col-md-6">
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="recipient" placeholder="Recipient">
+                </mat-form-field>
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="subject" placeholder="Subject">
+                </mat-form-field>
+                <mat-form-field class="form-control">
+                    <textarea matInput formControlName="message" placeholder="Message"
+                        mat-autosize="true" [matAutosizeMinRows]=5 [matAutosizeMaxRows]=10></textarea>
+                </mat-form-field>
+            </div>
+        </ng-container>
+    </ng-template>
+
+    <!-- complete form -->
+    <mat-tab-group class="container-fluid md-no-animation" [@.disabled]="true">
+        <mat-tab label="General">
+            <ng-template *ngTemplateOutlet="generalFormGroup"></ng-template>
+        </mat-tab>
+        <mat-tab label="Email">
+            <ng-template *ngTemplateOutlet="mailFormGroup"></ng-template>
+        </mat-tab>
+    </mat-tab-group>
+</form>
