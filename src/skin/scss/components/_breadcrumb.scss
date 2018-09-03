@@ -4,15 +4,15 @@ $breadcrumb-list-height: 2.5rem;
 
     display: flex;
     list-style-type: none;
-    margin: 0;
+    margin: 0 0 .5rem;
     padding: 0;
 
-    background: black;
+    background: #1A1A1A;
 
     .breadcrumb-list--item {
         padding: 0 1.5rem;
         line-height: $breadcrumb-list-height;
-        background: #000;
+        background: #1A1A1A;
         position: relative;
         color: #FFF;
         
@@ -23,7 +23,7 @@ $breadcrumb-list-height: 2.5rem;
             top: 0;
             z-index: 1;
             border-top: $breadcrumb-list-height / 2 solid transparent;
-            border-left: 1rem solid #000;
+            border-left: 1rem solid #1A1A1A;
             border-bottom: $breadcrumb-list-height / 2 solid transparent;
         }
 

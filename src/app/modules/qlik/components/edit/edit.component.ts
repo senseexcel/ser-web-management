@@ -1,45 +1,65 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
-import { SelectionProvider } from '@qlik/provider/selection.provider';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ISERApp } from '@qlik/api/ser.response.interface';
+import { SerAppProvider, SerConfigProvider, SelectionProvider } from '@qlik/provider';
+import { ConnectionComponent, GeneralComponent, TemplateComponent} from './form';
 
 @Component({
     selector: 'app-qlik-edit',
     templateUrl: 'edit.component.html',
+    providers: [ SerConfigProvider ],
 })
 export class AppEditComponent implements OnInit {
 
+    public apps: ISERApp[];
+
+    public currentForm: string;
+
+    public properties: any;
+
+    public selectedProperty: any;
+
     @HostBinding('class.flex-container')
-    private hostClass = true;
+    protected hostClass = true;
 
     private selectionProvider: SelectionProvider;
 
-    private form: FormGroup;
+    private serAppProvider: SerAppProvider;
 
-    private formBuilder: FormBuilder;
-
-    private route: ActivatedRoute;
-
-    private router: Router;
+    private serConfigProvider: SerConfigProvider;
 
     constructor(
-        route: ActivatedRoute,
-        router: Router,
-        formBuilder: FormBuilder,
         selectionProvider: SelectionProvider,
+        serAppProvider: SerAppProvider,
+        serConfigProvider: SerConfigProvider
     ) {
-        this.formBuilder = formBuilder;
         this.selectionProvider = selectionProvider;
-        this.route = route;
-        this.router = router;
+        this.serAppProvider    = serAppProvider;
+        this.serConfigProvider = serConfigProvider;
     }
 
     ngOnInit() {
+
+        this.properties = [
+            { label: 'Connection'  , component: ConnectionComponent },
+            { label: 'Distribution', component: ConnectionComponent },
+            { label: 'General'     , component: GeneralComponent },
+            { label: 'Template'    , component: TemplateComponent },
+        ];
+
+        this.currentForm = 'distribution';
+        this.apps = this.selectionProvider.getSelection();
+
+        console.log ( this.selectionProvider.hasSelection() );
+        if ( this.selectionProvider.hasSelection() ) {
+
+            this.serConfigProvider.loadConfiguration(
+                this.serAppProvider.getSerData(this.apps[0].script));
+
+            console.log ( this.serConfigProvider.getConfiguration() );
+        }
     }
 
-    public navigateBack() {
-
-        this.router.navigate(
-            this.route.parent.snapshot.pathFromRoot.slice(-1));
+    public showForm(property) {
+        this.selectedProperty = property;
     }
 }

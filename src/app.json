@@ -1,0 +1,97 @@
+SET task = ´
+# Connection settings to Qlik Desktop or Server
+connections:
+{
+	app: a8515873-3c32-4bf1-a95d-fedcf197a842
+}
+
+# Template Settings
+template: 
+{
+	input: content:///ExecutiveDashboard.xlsx
+	output: ='Report_'&only(Region)&'_'&max([Fiscal Year])&'.pdf'
+		
+	selections:[
+        {
+            type: static
+            name: Fiscal Year
+            values: =[Fiscal Year]=(Year(ToDay())-4)
+        }
+        {
+            type: dynamic
+            name: Region
+        }
+	]
+  }
+
+distribute:
+{
+	# Mail Settings
+	mail: 
+	{
+		active: false
+        # Sample for Dymamic Subject
+		subject: ='Report for Region: '&only(Region)
+		message:
+        '''
+        Your Report{n}
+        Dear User,{n}
+        enclosed you can find your reports to review the development of our producs in your region.{n} 
+        Please study the key performance indicators carefully. If you want to cross check the numbers, please use the appropriate app in Sense Excel.{n}
+        We are looking forward to your contribution on our weekly board meeting and are keen to leard about your findings.{n}
+        {n}
+        {n}
+        Kind Regards{n}
+        {n}
+        Your Reporting Service Team{n}
+        {n}
+        AKQUINET finance & controlling GmbH{n}
+        Paul-Stritter-Weg 5 / D-22297 Hamburg{n}
+        Amtsgericht Hamburg HRB 134368{n}
+        USt.-Id. Nr.: DE 266 941 582{n}
+        Geschäftsführung Michael Walther, Konrad Mattheis{n}
+        {n}
+        Michael Walther {n}
+        Tel:	+49 40 8817326-17{n}
+        Fax:	+49 3641 32787-29{n}
+        E-Mail:	Michael.Walther@akquinet.de{n}
+        Web:	www.akquinet.de{n}
+        '''
+		# to, cc and bcc
+		to: yourmail@your-server.de
+		mailServer: 
+		{
+			host: mail.your-server.de
+			from: info@your-server.de
+			port: 587
+			username: info@your-server.de
+			password: yourpassword
+		}
+	}
+
+	# File Copy Settings
+	file:
+	{
+    	active: false
+		target: lib://OutputPath/Output
+		mode: DeleteAllFirst
+		connections: @CONFIGCONNECTION@
+	}
+
+	# Settings for upload in the Qlik hub
+	hub: 
+	{
+    	active: true
+        
+        # if owner is not defined, the system dirstribute to the owner of this APP
+        #owner: USERDIRECTORY\USERNAME
+        
+		mode: DeleteAllFirst
+		connections: @CONFIGCONNECTION@
+	}
+}
+´;
+
+//Start reporting
+Let resultWithTaskId = SER.START(task);
+TRACE TaskId: $(resultWithTaskId);

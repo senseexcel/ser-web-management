@@ -1,17 +1,18 @@
 <div class="qapp-detail">
 
-    <div class="qapp-detail--sidebar sidebar">
+    <div class="qapp-detail--sidebar sidebar-left">
+
+        <div class="header">
+            <a (click)="navigateBack()">
+                <i class="lui-icon lui-icon--arrow-up"></i>
+                <span>Applications</span>
+            </a>
+        </div>
 
         <ul class="lui-list">
-
-            <li class="lui-item">
-                <a (click)="navigateBack()">back</a>
+            <li *ngFor="let app of apps" class="lui-item">
+                {{app.qapp.qDocId}}
             </li>
-
-            <li class="lui-item">2</li>
-            <li class="lui-item">3</li>
-            <li class="lui-item">4</li>
-            <li class="lui-item">5</li>
         </ul>
     </div>
 
@@ -22,7 +23,27 @@
         </div>
 
         <div class="qapp-detail--content-body">
-            <app-distribution></app-distribution>
+            <ng-container *ngIf="selectedProperty">
+                <ng-container *ngComponentOutlet="selectedProperty.component">
+                </ng-container>
+            </ng-container>
         </div>
+
+    </div>
+
+    <div class="qapp-content--sidebar sidebar-right">
+
+        <div class="header">
+            Properties
+        </div>
+
+        <ul class="lui-list">
+            <li class="lui-item" 
+                (click)="showForm(property)"
+                *ngFor="let property of properties"
+                [ngClass]="{'active': property == selectedProperty}" >
+                {{property.label}}
+            </li>
+        </ul>
     </div>
 </div>

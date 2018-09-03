@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IQlikApp } from '@qlik/api/app.interface';
 import { SerAppProvider, SelectionProvider } from '@qlik/provider';
+import { ISERApp } from '@qlik/api/ser.response.interface';
+import { IServiceProvider } from 'angular';
 
 @Component({
     selector: 'app-list',
@@ -9,9 +10,11 @@ import { SerAppProvider, SelectionProvider } from '@qlik/provider';
 })
 export class AppListComponent implements OnInit {
 
-    public qlikApps: IQlikApp[] = [];
+    public qlikApps: ISERApp[] = [];
 
     public tableHeaders: string[] = ['name', 'id'];
+
+    public isLoading = true;
 
     private serAppProvider: SerAppProvider;
 
@@ -34,7 +37,12 @@ export class AppListComponent implements OnInit {
      }
 
     public async ngOnInit() {
-        this.qlikApps = await this.serAppProvider.fetchApps();
+
+        this.serAppProvider.fetchSenseExcelReportingApps()
+            .subscribe( (apps) => {
+                this.isLoading = false;
+                this.qlikApps = apps;
+            });
     }
 
     /**
@@ -43,7 +51,7 @@ export class AppListComponent implements OnInit {
      * @param {IQlikApp} app
      * @memberof AppListComponent
      */
-    public deleteApp(app: IQlikApp) {
+    public deleteApp(app: ISERApp) {
         // @TODO implement
     }
 
@@ -53,11 +61,11 @@ export class AppListComponent implements OnInit {
      * @param {IQlikApp} app
      * @memberof AppListComponent
      */
-    public editApp(app: IQlikApp) {
+    public editApp(app: ISERApp) {
 
         const selections = this.selection.getSelection();
         // route to edit
-        this.router.navigate([`edit/${selections[0].qDocId}`], { relativeTo: this.route});
+        this.router.navigate([`edit/${selections[0].qapp.qDocId}`], { relativeTo: this.route});
     }
 
     /**
@@ -66,7 +74,7 @@ export class AppListComponent implements OnInit {
      * @param {IQlikApp} app
      * @memberof AppListComponent
      */
-    public selectApp(app: IQlikApp) {
+    public selectApp(app: ISERApp) {
         this.selection.addSelection(app);
     }
 }
