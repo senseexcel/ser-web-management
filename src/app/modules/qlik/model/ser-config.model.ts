@@ -1,4 +1,4 @@
-import { ISERTemplate, ISERDistribution, ISERConnection } from '@qlik/api/ser-config.interface';
+import { ISerTemplate, IDeliverySettings, ISerConnection, ISerGeneral } from 'ser.api';
 
 export class SERConfig {
 
@@ -9,16 +9,16 @@ export class SERConfig {
      * @type {*}
      * @memberof SERConfig
      */
-    private serGeneralConfig: any;
+    private serGeneralConfig: ISerGeneral;
 
     /**
      * sense excel reporting template configuration
      *
      * @private
-     * @type {ISERTemplate}
+     * @type {ISerTemplate}
      * @memberof SERConfig
      */
-    private serTemplateConfig: ISERTemplate;
+    private serTemplateConfig: ISerTemplate;
 
     /**
      * sense excel reporting distribution configuration
@@ -27,7 +27,7 @@ export class SERConfig {
      * @type {ISERDistribution}
      * @memberof SERConfig
      */
-    private serDistributionConfig: ISERDistribution;
+    private serDistributionConfig: any;
 
     /**
      * sense excel reporting connection configuration
@@ -36,7 +36,7 @@ export class SERConfig {
      * @type {ISERConnection}
      * @memberof SERConfig
      */
-    private serConnectionConfig: ISERConnection;
+    private serConnectionConfig: any;
 
     /**
      * get connection config for sense excel reporting
@@ -44,7 +44,7 @@ export class SERConfig {
      * @type {ISERConnection}
      * @memberof SERConfig
      */
-    public get connectionConfig(): ISERConnection {
+    public get connectionConfig(): ISerConnection {
         return this.serConnectionConfig;
     }
 
@@ -54,7 +54,7 @@ export class SERConfig {
      * @type {ISERDistribution}
      * @memberof SERConfig
      */
-    public get distributionConfig(): ISERDistribution {
+    public get distributionConfig(): any {
         return this.serDistributionConfig;
     }
 
@@ -63,7 +63,7 @@ export class SERConfig {
      *
      * @memberof SERConfig
      */
-    public get generalConfig() {
+    public get generalConfig(): ISerGeneral {
         return this.serGeneralConfig;
     }
 
@@ -73,7 +73,7 @@ export class SERConfig {
      * @type {ISERTemplate}
      * @memberof SERConfig
      */
-    public get templateConfig(): ISERTemplate {
+    public get templateConfig(): ISerTemplate {
         return this.serTemplateConfig;
     }
 
@@ -82,7 +82,7 @@ export class SERConfig {
      *
      * @memberof SERConfig
      */
-    public set connectionConfig(config: ISERConnection) {
+    public set connectionConfig(config: ISerConnection) {
         this.serConnectionConfig = config;
     }
 
@@ -91,7 +91,7 @@ export class SERConfig {
      *
      * @memberof SERConfig
      */
-    public set distributionConfig(config: ISERDistribution) {
+    public set distributionConfig(config: any) {
         this.serDistributionConfig = config;
     }
 
@@ -109,7 +109,7 @@ export class SERConfig {
      *
      * @memberof SERConfig
      */
-    public set templateConfig(config: ISERTemplate) {
+    public set templateConfig(config: ISerTemplate) {
         this.serTemplateConfig = config;
     }
 }

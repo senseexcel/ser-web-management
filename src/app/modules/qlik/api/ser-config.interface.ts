@@ -1,72 +1,27 @@
-export interface ISERConnection {
-    app: string;
-}
+import {  IMailSettings, IFileSettings, IHubSettings, ISerConnection, ISerGeneral, ISerTemplate } from 'ser.api';
 
-export interface ISERDistribution {
+export interface ISerReport {
 
-    mail: {
-        active: boolean;
+    /** The general setting of a report. */
+    general: ISerGeneral;
 
-        subject: string;
+    /** The template of a report. */
+    template: ISerTemplate;
 
-        message: string;
+    /** The available connections to Qlik. */
+    connections: ISerConnection;
 
-        mailServer: {
-            host: string;
-
-            from: string;
-
-            port: number;
-
-            username: string;
-
-            password: string;
-        }
-    };
-
-    file: {
-        active: boolean;
-
-        target: string;
-
-        mode: 'DeleteAllFirst';
-
-        connections: any;
-    };
-
-    hub: {
-        active: boolean;
-
-        mode: 'DeleteAllFirst';
-
-        connections: any;
+    distribute: {
+        file: IFileSettings,
+        hub: IHubSettings,
+        mail: IMailSettings
     };
 }
 
-export interface ISERTemplate {
-
-    input: string;
-
-    output: string;
-
-    selections: [
-        {
-            type: string;
-
-            name: string;
-
-            values: string;
-        }
-    ];
+export interface ISerTasks {
+    reports: ISerReport[];
 }
 
-export interface ISERConfig {
-
-    connections: ISERConnection;
-
-    distribute: ISERDistribution;
-
-    general: {};
-
-    template: ISERTemplate;
+export interface ISerConfiguration {
+    tasks: ISerTasks[];
 }

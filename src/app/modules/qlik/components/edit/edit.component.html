@@ -24,7 +24,7 @@
 
         <div class="qapp-detail--content-body">
             <ng-container *ngIf="selectedProperty">
-                <ng-container *ngComponentOutlet="selectedProperty.component">
+                <ng-container *ngComponentOutlet="selectedProperty.component; injector: formInjector" >
                 </ng-container>
             </ng-container>
         </div>

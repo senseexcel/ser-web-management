@@ -1,1 +1,10 @@
-connection html template
+<ng-container *ngIf="connectionForm">
+    <form [formGroup]="connectionForm">
+        <mat-select formControlName="app">
+            <mat-option *ngFor="let app of apps" [value]="app.qDocId">
+                {{app.qDocName}}
+            </mat-option>
+        </mat-select>
+    </form>
+    <app-qapp-form-controls (apply)="applyConfig()" (cancel)="reset()" ></app-qapp-form-controls>
+</ng-container>

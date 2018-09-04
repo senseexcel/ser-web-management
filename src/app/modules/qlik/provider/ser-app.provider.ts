@@ -3,9 +3,9 @@ import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
 import * as hjson from 'hjson';
 import { IQlikApp } from '@qlik/api/app.interface';
 import { from, Subject, Observable } from 'rxjs';
-import { mergeMap, switchMap, catchError, filter, buffer } from 'rxjs/operators';
+import { mergeMap, switchMap, catchError, filter, buffer, map, bufferCount } from 'rxjs/operators';
 import { ISERApp } from '@qlik/api/ser.response.interface';
-import { ISERConfig } from '@qlik/api/ser-config.interface';
+import { IScriptData } from '@qlik/api/script-data.interface';
 
 export class SerAppProvider {
 
@@ -69,12 +69,15 @@ export class SerAppProvider {
 
         return from(apps).pipe(
             mergeMap( (app: IQlikApp) => {
+
                 return this.createSession(app.qDocId)
                     .then( async (session) => {
+
                         const global   = await session.open() as any;
-                        const document = await global.openDoc(app.qDocId, '', '', '', true);
-                        const layout   = await document.getAppLayout();
-                        const script   = await document.getScript();
+                        const qApp: EngineAPI.IApp = await global.openDoc(app.qDocId, '', '', '', true);
+                        const layout   = await qApp.getAppLayout();
+                        const script   = await qApp.getScript();
+                        await qApp.session.close();
 
                         if ( (++get) === need ) {
                             appsLoaded.next(true);
@@ -85,16 +88,39 @@ export class SerAppProvider {
                             name  : layout.qTitle,
                             script: script,
                         };
+                    })
+                    .catch( async (error) => {
+
+                        if ( (++get) === need ) {
+                            appsLoaded.next(true);
+                        }
+
+                        return { qapp: null, name: 'error', script: '' };
                     });
             }),
             filter( (appData) => {
                 return appData.script.indexOf('SER.START') !== -1;
             }),
-            buffer( appsLoaded )
+            buffer( appsLoaded ),
         );
     }
 
-    public getSerData(script): ISERConfig {
+    public loadApp(appId: string): Observable<EngineAPI.IApp> {
+
+        return from(this.createSession(appId))
+            .pipe(
+                switchMap( async (session) => {
+                    const global = await session.open() as any;
+                    return await global.openDoc(appId, '', '', '', true);
+                })
+            );
+    }
+
+    public closeApp(app: EngineAPI.IApp) {
+        // @todo implement
+    }
+
+    public parseScript(script): IScriptData {
 
         const indexStart = script.indexOf('SER.START');
         if ( indexStart === -1 ) {
@@ -105,6 +131,15 @@ export class SerAppProvider {
         const taskName = script.match(taskNamePattern)[1];
         const jsonPattern = new RegExp(`SET\\s*${taskName}.*?´([^´]+)`, 'm');
 
-        return hjson.parse( script.match(jsonPattern)[1] );
+        const result = jsonPattern.exec(script);
+
+        const start = script.indexOf(result[1]);
+        const end   = start + result[1].length;
+
+        return {
+            after    : script.substr(end),
+            before   : script.substr(0, start),
+            serConfig: hjson.parse(result[1])
+        };
     }
 }
