@@ -1,7 +1,7 @@
 import { Component, OnInit, HostBinding } from '@angular/core';
 import { FormBuilder, FormGroup, SelectControlValueAccessor } from '@angular/forms';
 import { SelectionMode, ISerGeneral } from 'ser.api';
-import { SerConfigProvider, SerConfigProperies } from '@qlik/provider';
+import { AppProvider } from '@qlik/provider/app.provider';
 
 @Component({
     selector: 'app-qapp-edit-general',
@@ -19,14 +19,14 @@ export class GeneralComponent implements OnInit {
 
     public generalForm: FormGroup;
 
-    private serConfigProvider: SerConfigProvider;
+    private appProvider: AppProvider;
 
     constructor(
         builder: FormBuilder,
-        configProvider: SerConfigProvider
+        appProvider: AppProvider
     ) {
         this.formBuilder = builder;
-        this.serConfigProvider = configProvider;
+        this.appProvider = appProvider;
     }
 
     ngOnInit() {
@@ -37,7 +37,7 @@ export class GeneralComponent implements OnInit {
     }
 
     private createGeneralForm(): FormGroup {
-        const config       = this.serConfigProvider.getConfig(SerConfigProperies.GENERAL) as ISerGeneral;
+        const config       = this.appProvider.resolveGeneralConfig();
         const generalGroup = this.formBuilder.group({
             cleanUpTimer    : this.formBuilder.control(config.cleanupTimeOut),
             timeout         : this.formBuilder.control(config.timeout),
@@ -74,9 +74,7 @@ export class GeneralComponent implements OnInit {
             useUserSelections: this.generalForm.get('useUserSelection').value
         };
 
-        console.log(config);
-
-        this.serConfigProvider.writeConfigValue( SerConfigProperies.GENERAL, config);
+        this.appProvider.writeGeneralConfiguration(config);
     }
 
     public reset() {

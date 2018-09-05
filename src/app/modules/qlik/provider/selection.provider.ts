@@ -1,34 +1,35 @@
 import { Injectable } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ISerApp } from '@ser-app/api';
+import { IQlikApp } from '@qlik/api/app.interface';
 
 @Injectable()
 export class SelectionProvider {
 
-    private selectionModel: SelectionModel<ISerApp>;
+    private selectionModel: SelectionModel<IQlikApp>;
 
     constructor() {
-        this.selectionModel = new SelectionModel<ISerApp>();
+        this.selectionModel = new SelectionModel<IQlikApp>();
     }
 
-    public addSelection(selection: ISerApp) {
+    public addSelection(selection: IQlikApp) {
         if ( ! this.selectionModel.isSelected(selection) ) {
             this.selectionModel.select(selection);
         }
     }
 
-    public removeSelection(selection: ISerApp) {
+    public removeSelection(selection: IQlikApp) {
 
         if ( this.selectionModel.isSelected(selection) ) {
             this.selectionModel.deselect(selection);
         }
     }
 
-    public getSelection(): ISerApp[] {
+    public getSelection(): IQlikApp[] {
         return this.selectionModel.selected;
     }
 
-    public isSelected(qapp: ISerApp): boolean {
+    public isSelected(qapp: IQlikApp): boolean {
         return this.selectionModel.isSelected(qapp);
     }
 

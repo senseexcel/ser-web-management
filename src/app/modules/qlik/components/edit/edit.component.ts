@@ -1,87 +1,64 @@
-import { Component, OnInit, OnDestroy, HostBinding, Injector, ReflectiveInjector } from '@angular/core';
-import * as hjson from 'hjson';
+import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { ConnectionComponent, GeneralComponent, TemplateComponent} from './form';
-import { map, takeUntil, switchMap } from 'rxjs/operators';
+import { empty, from } from 'rxjs';
+import { map, takeUntil, switchMap, catchError } from 'rxjs/operators';
 import { SelectionProvider } from '@qlik/provider';
-import { ISerConfiguration } from '@qlik/api/ser-config.interface';
-import { SerAppProvider, ReportProvider, ISerApp, ISerConfig, IScriptData } from '@ser-app/index';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin, Observable } from 'rxjs';
+import { AppProvider } from '../../provider/app.provider';
+import { IQlikApp } from '@qlik/api/app.interface';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'app-qlik-edit',
-    templateUrl: 'edit.component.html'
+    templateUrl: 'edit.component.html',
+    providers: [ AppProvider ]
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
-    public apps: ISerApp[];
-    public properties: any;
+    public apps: IQlikApp[];
+    public properties: any[];
     public selectedProperty: any;
     public isLoading = true;
-    public formInjector: Injector;
 
     @HostBinding('class.flex-container')
     protected hostClass = true;
 
     private selectionProvider: SelectionProvider;
-    private serAppProvider: SerAppProvider;
-    private reportProvider: ReportProvider;
-    private qApp: EngineAPI.IApp;
-    private reportConfig: ISerConfig;
-    private script: IScriptData;
     private isDestroyed$: Subject<boolean>;
+    private appProvider: AppProvider;
+    private activeRoute: ActivatedRoute;
+    private isNew: boolean;
 
     constructor(
         selectionProvider: SelectionProvider,
-        serAppProvider: SerAppProvider,
-        reportProvider: ReportProvider ,
-        injector: Injector
+        appProvider: AppProvider,
+        activeRoute: ActivatedRoute
     ) {
         this.selectionProvider = selectionProvider;
-        this.serAppProvider    = serAppProvider;
-        this.reportProvider    = reportProvider;
         this.isDestroyed$      = new Subject<boolean>();
-
-        this.formInjector = ReflectiveInjector.resolveAndCreate(
-            [{ provide: 'QlikApp', useValue: this.selectionProvider.getSelection()[0].qapp }],
-            injector
-        );
+        this.appProvider       = appProvider;
+        this.activeRoute       = activeRoute;
     }
 
-    ngOnDestroy(): void {
-
+    public ngOnDestroy(): void {
         this.isDestroyed$.next(true);
-
-        if ( this.qApp ) {
-            this.qApp.session.close();
-        }
+        this.appProvider.closeApp();
     }
 
-    ngOnInit() {
+    public ngOnInit () {
 
-        if ( this.selectionProvider.hasSelection() ) {
-            this.isLoading = true;
-            this.properties = [
-                { label: 'Connection'  , component: ConnectionComponent },
-                { label: 'Distribution', component: ConnectionComponent },
-                { label: 'General'     , component: GeneralComponent    },
-                { label: 'Template'    , component: TemplateComponent   },
-            ];
+        this.isLoading = true;
+        this.properties = [
+            { label: 'Connection'  , component: ConnectionComponent },
+            { label: 'Distribution', component: ConnectionComponent },
+            { label: 'General'     , component: GeneralComponent    },
+            { label: 'Template'    , component: TemplateComponent   },
+        ];
 
-            this.apps = this.selectionProvider.getSelection();
-
-            this.serAppProvider.loadApp(this.apps[0].qapp.qDocId)
-                .subscribe( async (app: EngineAPI.IApp) => {
-                    const script = await app.getScript();
-
-                    this.reportProvider.loadConfigurationFromJson(script);
-
-                    this.qApp         = app;
-                    this.script       = this.reportProvider.parseSerAppScript(script);
-                    this.reportConfig = this.script.config;
-                    this.isLoading    = false;
-                });
-
-            this.onConfigurationUpdate();
+        if ( this.activeRoute.routeConfig.path === 'new' ) {
+            this.initNewApp();
+        } else {
+            this.initExistingApp();
         }
     }
 
@@ -89,25 +66,82 @@ export class AppEditComponent implements OnInit, OnDestroy {
         this.selectedProperty = property;
     }
 
-    private onConfigurationUpdate() {
+    /**
+     * initialize new app
+     *
+     * @private
+     * @memberof AppEditComponent
+     */
+    private initNewApp() {
 
-        this.serConfigProvider.update$
-            .pipe(
-                map( (config: ISerConfiguration): string => {
-                    const newScript = ''.concat(
-                        this.script.before,
-                        hjson.stringify(config),
-                        this.script.after
-                    );
-                    return newScript;
-                }),
-                switchMap( (script) => {
-                    return this.qApp.setScript(script);
-                }),
-                takeUntil( this.isDestroyed$ )
-            )
-            .subscribe( () => {
-                console.log('app script saved');
-            });
+        this.appProvider.createApp()
+        .pipe(
+            switchMap( () => {
+                this.isLoading = false;
+                return this.onUpdate();
+            })
+        )
+        .subscribe( () => {
+            // app saved
+        });
+    }
+
+    /**
+     * initialize existing app
+     *
+     * @private
+     * @memberof AppEditComponent
+     */
+    private initExistingApp() {
+
+        if ( this.selectionProvider.hasSelection() ) {
+            this.apps = this.selectionProvider.getSelection();
+            this.appProvider.loadApp(this.apps[0].qDocId)
+                .pipe(
+                    /** once app has been loaded we switch the observable to update */
+                    switchMap( () => {
+                        this.isLoading = false;
+                        return this.onUpdate();
+                    })
+                )
+                .subscribe(() => {
+                    // app saved
+                });
+        } else {
+            // @todo redirect to list
+        }
+    }
+
+    /**
+     * get notified if app ser configuration has been changed
+     *
+     * @private
+     * @returns {Observable<void>}
+     * @memberof AppEditComponent
+     */
+    private onUpdate(): Observable<void> {
+
+        return this.appProvider.onUpdate$
+        .pipe(
+            /** new configuration script is here, update app */
+            map( async (script: string) => {
+                this.isLoading = true;
+                await this.appProvider.updateScript(script);
+            }),
+            /** convert to Observable<void> */
+            map( () => {
+                this.isLoading = false;
+            }),
+            /** if an error occured just return an empty observable */
+            catchError( (error) => {
+                /**
+                 * @todo handle error here
+                 * show message or something else ( no console )
+                 */
+                console.error(error);
+                return empty();
+            }),
+            takeUntil( this.isDestroyed$ )
+        );
     }
 }

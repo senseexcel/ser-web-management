@@ -39,7 +39,7 @@ export class ConnectionModel implements ISerConnection {
     }
 
     public get app(): string {
-        return this.app;
+        return this.connectionApp;
     }
 
     public get credentials(): ISerCredentials {

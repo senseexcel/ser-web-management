@@ -11,7 +11,7 @@
 
         <ul class="lui-list">
             <li *ngFor="let app of apps" class="lui-item">
-                {{app.qapp.qDocId}}
+                {{app.qDocId}}
             </li>
         </ul>
     </div>
@@ -24,7 +24,7 @@
 
         <div class="qapp-detail--content-body">
             <ng-container *ngIf="selectedProperty">
-                <ng-container *ngComponentOutlet="selectedProperty.component; injector: formInjector" >
+                <ng-container *ngComponentOutlet="selectedProperty.component;" >
                 </ng-container>
             </ng-container>
         </div>

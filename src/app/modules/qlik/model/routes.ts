@@ -17,10 +17,10 @@ export const QlikRoutes: Routes = [{
             breadcrumb: 'Edit'
         }
     }, {
-        path: 'add',
+        path: 'new',
         component: AppEditComponent,
         data: {
-            breadcrumb: 'New'
+            breadcrumb: 'New App'
         }
     }]
 }];

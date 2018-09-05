@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionProvider } from '@qlik/provider';
 import { ISerApp, SerAppProvider } from '@ser-app/index';
+import { IQlikApp } from '@qlik/api/app.interface';
 
 @Component({
     selector: 'app-list',
@@ -9,7 +10,7 @@ import { ISerApp, SerAppProvider } from '@ser-app/index';
 })
 export class AppListComponent implements OnInit {
 
-    public qlikApps: ISerApp[] = [];
+    public qlikApps: IQlikApp[] = [];
 
     public tableHeaders: string[] = ['name', 'id'];
 
@@ -64,7 +65,7 @@ export class AppListComponent implements OnInit {
 
         const selections = this.selection.getSelection();
         // route to edit
-        this.router.navigate([`edit/${selections[0].qapp.qDocId}`], { relativeTo: this.route});
+        this.router.navigate([`edit/${selections[0].qDocId}`], { relativeTo: this.route});
     }
 
     /**
@@ -73,7 +74,16 @@ export class AppListComponent implements OnInit {
      * @param {IQlikApp} app
      * @memberof AppListComponent
      */
-    public selectApp(app: ISerApp) {
+    public selectApp(app: IQlikApp) {
         this.selection.addSelection(app);
+    }
+
+    /**
+     *
+     *
+     * @memberof AppListComponent
+     */
+    public createApp() {
+        this.router.navigate([`new`], { relativeTo: this.route});
     }
 }

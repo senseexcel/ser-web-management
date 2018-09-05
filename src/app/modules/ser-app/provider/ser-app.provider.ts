@@ -1,9 +1,10 @@
 import { create } from 'enigma.js';
 import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
 import { IQlikApp } from '@qlik/api/app.interface';
-import { from, Subject, Observable } from 'rxjs';
+import { from, Subject, Observable, forkJoin, empty } from 'rxjs';
 import { mergeMap, switchMap, catchError, filter, buffer, map } from 'rxjs/operators';
-import { IScriptData, ISerApp } from '../api';
+import { ISerReport, ISerConfig } from '@ser-app/api';
+import { IQlikAppCreated } from '@ser-app/api/response.api';
 
 export class SerAppProvider {
 
@@ -85,6 +86,7 @@ export class SerAppProvider {
                         };
                     })
                     .catch((error) => {
+                        // @todo handle error
                         if ( (++get) === need ) {
                             appsLoaded.next(true);
                         }
@@ -95,7 +97,7 @@ export class SerAppProvider {
                 if ( ! appData ) {
                     return false;
                 }
-                const config = appData.config as string;
+                const config = appData.script as string;
                 return config && config.indexOf('SER.START') !== -1;
             }),
             map((data): IQlikApp => {
@@ -118,5 +120,33 @@ export class SerAppProvider {
 
     public closeApp(app: EngineAPI.IApp) {
         // @todo implement
+    }
+
+    public createApplication(appName: string): Observable<any> {
+
+        return from(this.createSession())
+        .pipe(
+            mergeMap( async (session: enigmaJS.ISession) => {
+                const global  = await session.open() as any;
+                const newApp = await global.createApp(appName, 'main');
+
+                return {
+                    global,
+                    newApp
+                };
+            }),
+            switchMap((response) => {
+                return response.global.openDoc(response.newApp.qAppId, '', '', '', true);
+            })
+        );
+    }
+
+    public createSerConfig(report: ISerReport): ISerConfig {
+        const config: ISerConfig = {
+            tasks: [
+                { reports: [report] }
+            ]
+        };
+        return config;
     }
 }

@@ -7,19 +7,19 @@
         <!-- Position Column -->
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let app"> {{app.qapp.qDocName}} </td>
+            <td mat-cell *matCellDef="let app"> {{app.qDocName}} </td>
         </ng-container>
 
         <!-- Name Column -->
         <ng-container matColumnDef="filesize">
             <th mat-header-cell *matHeaderCellDef> Filesize </th>
-            <td mat-cell *matCellDef="let app"> {{app.qapp.qDocFilesize}} </td>
+            <td mat-cell *matCellDef="let app"> {{app.qDocFilesize}} </td>
         </ng-container>
 
         <!-- Weight Column -->
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef> Document ID </th>
-            <td mat-cell *matCellDef="let app"> {{app.qapp.qDocId}} </td>
+            <td mat-cell *matCellDef="let app"> {{app.qDocId}} </td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
@@ -32,8 +32,9 @@
 </div>
 
 <nav class="qapp-list--actions navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="btn-group" role="group">
-        <button type="button" [disabled]="! selection.hasSelection()" class="nav-item lui-button mr-1" (click)="editApp()" >edit</button>
-        <button type="button" [disabled]="! selection.hasSelection()" class="nav-item lui-button" (click)="deleteApps()" >delete</button>
+    <div class="lui-bg-inverse" role="group">
+        <button type="button" [disabled]="! selection.hasSelection()" class="nav-item lui-button lui-button--gradient-inverse mr-1" (click)="editApp()" >edit</button>
+        <button type="button" [disabled]="! selection.hasSelection()" class="nav-item lui-button lui-button--gradient-inverse mr-1" (click)="deleteApps()" >delete</button>
+        <button type="button" class="nav-item lui-button lui-button--gradient-inverse" (click)="createApp()" >new</button>
     </div>
 </nav>

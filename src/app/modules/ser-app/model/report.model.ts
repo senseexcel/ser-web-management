@@ -10,7 +10,7 @@ export class ReportModel implements ISerReport {
     private reportConnections: ISerConnection;
 
     public set connections(connections: ISerConnection) {
-        this.connections = connections;
+        this.reportConnections = connections;
     }
 
     public set general(value: ISerGeneral) {

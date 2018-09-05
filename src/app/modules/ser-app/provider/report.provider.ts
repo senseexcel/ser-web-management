@@ -20,16 +20,23 @@ export class ReportProvider {
 
         const config: ISerConfig = new ConfigModel();
         const task: ISerTask     = new TaskModel();
+        const report: ISerReport = this.createReport();
+
+        task.reports = [report];
+        config.tasks = [task];
+
+        return config;
+    }
+
+    public createReport(): ISerReport {
+
         const report: ISerReport = new ReportModel();
 
         report.connections = new ConnectionModel();
         report.general     = new GeneralModel();
         report.template    = new TemplateModel();
 
-        task.reports = [report];
-        config.tasks = [task];
-
-        return config;
+        return report;
     }
 
     /**
@@ -49,17 +56,16 @@ export class ReportProvider {
 
         const taskNamePattern = new RegExp(`SER\.START.*?\\((.*?)\\)`);
         const taskName = source.match(taskNamePattern)[1];
-        const jsonPattern = new RegExp(`SET\\s*${taskName}.*?´([^´]+)`, 'm');
+        const jsonPattern = new RegExp(`SET\\s*${taskName}.*?\u00B4([^\u00B4]*)`, 'm');
 
-        const result = jsonPattern.exec(source);
-
-        const start = source.indexOf(result[1]);
+        const result = source.match(jsonPattern);
+        const start = result.index + result[0].length - result[1].length;
         const end   = start + result[1].length;
 
         return {
             after : source.substr(end),
             before: source.substr(0, start),
-            config: hjson.parse(result[1])
+            config: result[1]
         };
     }
 
@@ -81,7 +87,7 @@ export class ReportProvider {
      * @returns {ISerConfig}
      * @memberof ReportProvider
      */
-    public loadConfigurationFromJson(data: string ): ISerConfig {
+    public loadConfigurationFromJson(data: string): ISerConfig {
         const config: ISerConfig = hjson.parse(data);
         return config;
     }
