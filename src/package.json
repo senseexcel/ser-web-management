@@ -27,7 +27,7 @@
     "dependencies": {
         "angular": "1.7.3",
         "bluebird": "3.5.1",
-        "bufferutil": "3.0.4",
+        "bufferutil": "3.0.5",
         "clean-webpack-plugin": "0.1.19",
         "copy-webpack-plugin": "4.5.2",
         "enigma.js": "2.2.1",
