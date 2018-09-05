@@ -10,7 +10,7 @@
         "@types/winston": "2.3.9",
         "@types/ws": "5.1.2",
         "@types/hjson": "2.4.0",
-        "awesome-typescript-loader": "5.0.0",
+        "awesome-typescript-loader": "5.2.0",
         "css-loader": "0.28.11",
         "file-loader": "1.1.11",
         "less": "3.0.2",
