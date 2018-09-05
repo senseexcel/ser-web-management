@@ -35,7 +35,7 @@
         "jquery": "3.3.1",
         "leonardo-ui": "1.6.0",
         "net": "1.0.2",
-        "requirejs": "2.3.5",
+        "requirejs": "2.3.6",
         "ser.api": "3.1.6",
         "tls": "0.0.1",
         "utf-8-validate": "4.0.1",
