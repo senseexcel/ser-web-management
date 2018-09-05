@@ -6,5 +6,5 @@ export interface IScriptData {
 
     before: string;
 
-    serConfig: ISerConfiguration;
+    config: ISerConfiguration;
 }

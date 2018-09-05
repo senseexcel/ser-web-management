@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Inject, HostBinding } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SerConfigProvider, SerConfigProperies, SerAppProvider, SelectionProvider } from '@qlik/provider';
+import { SerAppProvider } from '@ser-app/provider/ser-app.provider';
+import { ReportConfigProvider } from '@ser-app/provider/report-config.provider';
 import { ISerConnection } from 'ser.api';
 import { IQlikApp } from '@qlik/api/app.interface';
 import { map } from 'rxjs/operators';
@@ -21,7 +22,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
 
     private formBuilder: FormBuilder;
 
-    private serConfig: SerConfigProvider;
+    private reportConfig: ReportConfigProvider;
 
     private serAppProvider: SerAppProvider;
 
@@ -29,12 +30,12 @@ export class ConnectionComponent implements OnInit, OnDestroy {
 
     constructor(
         formBuilder: FormBuilder,
-        serConfig: SerConfigProvider,
+        reportConfig: ReportConfigProvider,
         serAppProvider: SerAppProvider,
         @Inject('QlikApp') qApp: IQlikApp
     ) {
         this.formBuilder    = formBuilder;
-        this.serConfig      = serConfig;
+        this.reportConfig   = reportConfig;
         this.serAppProvider = serAppProvider;
         this.currentApp = qApp;
     }
@@ -65,15 +66,14 @@ export class ConnectionComponent implements OnInit, OnDestroy {
             app: this.connectionForm.get('app').value
         };
 
-        this.serConfig.writeConfigValue(SerConfigProperies.CONNECTION, config);
+        this.reportConfig.writeConnectionConfiguration(null, config);
     }
 
     public cancel() {}
 
     private buildFormGroup(): FormGroup {
 
-        const config = this.serConfig.getConfig(SerConfigProperies.CONNECTION) as ISerConnection;
-        console.log(config);
+        const config = this.reportConfig.resolveConnectionConfig(SerConfigProperies.CONNECTION);
         const formGroup = this.formBuilder.group({
             app: this.formBuilder.control(config.app, Validators.required)
         });

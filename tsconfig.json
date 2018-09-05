@@ -24,7 +24,8 @@
       "@dashboard/*": ["src/app/modules/dashboard/*"],
       "@node_modules/*": ["node_modules/*"],
       "@qlik/*": ["src/app/modules/qlik/*"],
-      "@distribution/*": ["src/app/modules/distribution/*"]
+      "@distribution/*": ["src/app/modules/distribution/*"],
+      "@ser-app/*": ["src/app/modules/ser-app/*"]
     }
   }
 }

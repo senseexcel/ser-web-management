@@ -2,53 +2,43 @@ import { Component, OnInit, OnDestroy, HostBinding, Injector, ReflectiveInjector
 import * as hjson from 'hjson';
 import { ConnectionComponent, GeneralComponent, TemplateComponent} from './form';
 import { map, takeUntil, switchMap } from 'rxjs/operators';
-import { ISERApp } from '@qlik/api/ser.response.interface';
-import { SerAppProvider, SerConfigProvider, SelectionProvider } from '@qlik/provider';
+import { SelectionProvider } from '@qlik/provider';
 import { ISerConfiguration } from '@qlik/api/ser-config.interface';
-import { IScriptData } from '@qlik/api/script-data.interface';
+import { SerAppProvider, ReportProvider, ISerApp, ISerConfig, IScriptData } from '@ser-app/index';
 import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-qlik-edit',
-    templateUrl: 'edit.component.html',
-    providers: [ SerConfigProvider ],
+    templateUrl: 'edit.component.html'
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
-    public apps: ISERApp[];
-
+    public apps: ISerApp[];
     public properties: any;
-
     public selectedProperty: any;
-
     public isLoading = true;
+    public formInjector: Injector;
 
     @HostBinding('class.flex-container')
     protected hostClass = true;
 
     private selectionProvider: SelectionProvider;
-
     private serAppProvider: SerAppProvider;
-
-    private serConfigProvider: SerConfigProvider;
-
+    private reportProvider: ReportProvider;
     private qApp: EngineAPI.IApp;
-
+    private reportConfig: ISerConfig;
     private script: IScriptData;
-
     private isDestroyed$: Subject<boolean>;
-
-    private formInjector: Injector;
 
     constructor(
         selectionProvider: SelectionProvider,
         serAppProvider: SerAppProvider,
-        serConfigProvider: SerConfigProvider,
+        reportProvider: ReportProvider ,
         injector: Injector
     ) {
         this.selectionProvider = selectionProvider;
         this.serAppProvider    = serAppProvider;
-        this.serConfigProvider = serConfigProvider;
+        this.reportProvider    = reportProvider;
         this.isDestroyed$      = new Subject<boolean>();
 
         this.formInjector = ReflectiveInjector.resolveAndCreate(
@@ -83,10 +73,12 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 .subscribe( async (app: EngineAPI.IApp) => {
                     const script = await app.getScript();
 
-                    this.qApp = app;
-                    this.script = this.serAppProvider.parseScript(script);
-                    this.serConfigProvider.loadConfiguration(this.script.serConfig);
-                    this.isLoading = false;
+                    this.reportProvider.loadConfigurationFromJson(script);
+
+                    this.qApp         = app;
+                    this.script       = this.reportProvider.parseSerAppScript(script);
+                    this.reportConfig = this.script.config;
+                    this.isLoading    = false;
                 });
 
             this.onConfigurationUpdate();

@@ -1,6 +1,9 @@
 import { IQlikApp } from '@qlik/api/app.interface';
+import { ISerConfiguration } from '@qlik/api/ser-config.interface';
 
-export interface ISERApp {
+export interface ISerApp {
+
     qapp: IQlikApp;
-    script: any;
+
+    script: ISerConfiguration | string;
 }

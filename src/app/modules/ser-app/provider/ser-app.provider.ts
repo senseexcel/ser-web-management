@@ -1,11 +1,9 @@
 import { create } from 'enigma.js';
 import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
-import * as hjson from 'hjson';
 import { IQlikApp } from '@qlik/api/app.interface';
 import { from, Subject, Observable } from 'rxjs';
-import { mergeMap, switchMap, catchError, filter, buffer, map, bufferCount } from 'rxjs/operators';
-import { ISERApp } from '@qlik/api/ser.response.interface';
-import { IScriptData } from '@qlik/api/script-data.interface';
+import { mergeMap, switchMap, catchError, filter, buffer, map } from 'rxjs/operators';
+import { IScriptData, ISerApp } from '../api';
 
 export class SerAppProvider {
 
@@ -36,24 +34,23 @@ export class SerAppProvider {
         });
     }
 
-    public fetchApps() {
+    public fetchApps(): Observable<IQlikApp[]> {
 
         return from(this.createSession()).pipe(
             mergeMap( (session) => {
                 return session.open()
                     .then( (global: any) => {
-                        return global.getDocList();
+                        return global.getDocList() as IQlikApp[];
                     });
             })
         );
     }
 
-    public fetchSenseExcelReportingApps() {
+    public fetchSenseExcelReportingApps(): Observable<IQlikApp[]> {
 
         return from(this.fetchApps()).pipe(
-            // get scripts
             switchMap( (apps: IQlikApp[]) => {
-                return this.getSERApps(apps);
+                return this.getSerApps(apps);
             }),
             catchError( (error) => {
                 return [];
@@ -61,21 +58,20 @@ export class SerAppProvider {
         );
     }
 
-    private getSERApps(apps): Observable<ISERApp[]> {
+    private getSerApps(apps: IQlikApp[]): Observable<IQlikApp[]> {
 
         const need = apps.length;
         const appsLoaded: Subject<boolean> = new Subject();
         let get = 0;
 
         return from(apps).pipe(
-            mergeMap( (app: IQlikApp) => {
+            mergeMap((app: IQlikApp) => {
 
                 return this.createSession(app.qDocId)
                     .then( async (session) => {
 
                         const global   = await session.open() as any;
                         const qApp: EngineAPI.IApp = await global.openDoc(app.qDocId, '', '', '', true);
-                        const layout   = await qApp.getAppLayout();
                         const script   = await qApp.getScript();
                         await qApp.session.close();
 
@@ -85,23 +81,27 @@ export class SerAppProvider {
 
                         return {
                             qapp: app,
-                            name  : layout.qTitle,
-                            script: script,
+                            script
                         };
                     })
-                    .catch( async (error) => {
-
+                    .catch((error) => {
                         if ( (++get) === need ) {
                             appsLoaded.next(true);
                         }
-
-                        return { qapp: null, name: 'error', script: '' };
+                        return null;
                     });
             }),
-            filter( (appData) => {
-                return appData.script.indexOf('SER.START') !== -1;
+            filter((appData: any) => {
+                if ( ! appData ) {
+                    return false;
+                }
+                const config = appData.config as string;
+                return config && config.indexOf('SER.START') !== -1;
             }),
-            buffer( appsLoaded ),
+            map((data): IQlikApp => {
+                return data.qapp;
+            }),
+            buffer( appsLoaded )
         );
     }
 
@@ -118,28 +118,5 @@ export class SerAppProvider {
 
     public closeApp(app: EngineAPI.IApp) {
         // @todo implement
-    }
-
-    public parseScript(script): IScriptData {
-
-        const indexStart = script.indexOf('SER.START');
-        if ( indexStart === -1 ) {
-            throw new Error('no ser data available');
-        }
-
-        const taskNamePattern = new RegExp(`SER\.START.*?\\((.*?)\\)`);
-        const taskName = script.match(taskNamePattern)[1];
-        const jsonPattern = new RegExp(`SET\\s*${taskName}.*?´([^´]+)`, 'm');
-
-        const result = jsonPattern.exec(script);
-
-        const start = script.indexOf(result[1]);
-        const end   = start + result[1].length;
-
-        return {
-            after    : script.substr(end),
-            before   : script.substr(0, start),
-            serConfig: hjson.parse(result[1])
-        };
     }
 }
