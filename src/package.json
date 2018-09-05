@@ -36,7 +36,7 @@
         "leonardo-ui": "1.6.0",
         "net": "1.0.2",
         "requirejs": "2.3.5",
-        "ser.api": "3.1.6",
+        "ser.api": "3.1.9",
         "tls": "0.0.1",
         "utf-8-validate": "4.0.1",
         "winston": "3.1.0",
