@@ -2,7 +2,7 @@
     "name": "ser-web-management",
     "devDependencies": {
         "@types/bluebird": "3.5.20",
-        "@types/angular": "1.6.45",
+        "@types/angular": "1.6.50",
         "@types/jquery": "3.3.1",
         "@types/enigma.js": "2.2.1",
         "@types/qlik-engineapi": "12.67.1",
@@ -25,7 +25,7 @@
         "webpack-dev-server": "3.1.4"
     },
     "dependencies": {
-        "angular": "1.7.0",
+        "angular": "1.7.3",
         "bluebird": "3.5.1",
         "bufferutil": "3.0.4",
         "clean-webpack-plugin": "^0.1.19",
