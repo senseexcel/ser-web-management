@@ -7,7 +7,7 @@
         "@types/enigma.js": "2.2.1",
         "@types/qlik-engineapi": "12.67.4",
         "@types/qlik-visualizationextensions": "4.0.2",
-        "@types/winston": "2.3.9",
+        "@types/winston": "2.4.4",
         "@types/ws": "5.1.2",
         "@types/hjson": "2.4.0",
         "awesome-typescript-loader": "5.2.0",
