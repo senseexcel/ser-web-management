@@ -5,7 +5,7 @@
         "@types/angular": "1.6.50",
         "@types/jquery": "3.3.6",
         "@types/enigma.js": "2.2.1",
-        "@types/qlik-engineapi": "12.67.1",
+        "@types/qlik-engineapi": "12.67.4",
         "@types/qlik-visualizationextensions": "4.0.2",
         "@types/winston": "2.3.9",
         "@types/ws": "5.1.2",
