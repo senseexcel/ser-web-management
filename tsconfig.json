@@ -21,10 +21,10 @@
     ],
     "paths": {
       "@breadcrumb/*": ["src/app/modules/breadcrumb/*"],
+      "@core/*": ["src/app/core/*"],
       "@dashboard/*": ["src/app/modules/dashboard/*"],
       "@node_modules/*": ["node_modules/*"],
-      "@qlik/*": ["src/app/modules/qlik/*"],
-      "@ser-app/*": ["src/app/modules/ser-app/*"]
+      "@apps/*": ["src/apps/modules/apps/*"],
     }
   }
 }
