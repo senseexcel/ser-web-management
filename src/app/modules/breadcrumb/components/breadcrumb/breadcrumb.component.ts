@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 @Component({
   selector: 'app-breadcrumb',
   templateUrl: './breadcrumb.component.html',
+  styleUrls: ['./breadcrumb.component.scss'],
 })
 export class BreadcrumbComponent implements OnInit {
 
@@ -24,7 +25,7 @@ export class BreadcrumbComponent implements OnInit {
     this.breadcrumbService.breadcrumbs
       .pipe(
         map( (breadcrumbs: Array<IBreadCrumb>) => {
-          return breadcrumbs.slice(1);
+          return breadcrumbs;
         })
       )
       .subscribe( (breadcrumbs: Array<IBreadCrumb>) => {

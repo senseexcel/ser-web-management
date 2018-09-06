@@ -10,7 +10,7 @@ export class SerAppProvider {
 
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
         return new Promise<enigmaJS.ISession>((resolve) => {
-            const baseUrl = `wss://desktop-tphgv43/app/${appId}`;
+            const baseUrl = `wss://nb-fc-207990/app/${appId}`;
 
             const configEnigma = {
                 Promise,
