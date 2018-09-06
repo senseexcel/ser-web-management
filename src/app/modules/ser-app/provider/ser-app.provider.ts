@@ -120,6 +120,8 @@ export class SerAppProvider {
 
     public createApplication(appName: string): Observable<any> {
 
+        return from([1]);
+        /*
         return from(this.createSession())
         .pipe(
             mergeMap( async (session: enigmaJS.ISession) => {
@@ -135,6 +137,7 @@ export class SerAppProvider {
                 return response.global.openDoc(response.newApp.qAppId, '', '', '', true);
             })
         );
+        */
     }
 
     public createSerConfig(report: ISerReport): ISerConfig {

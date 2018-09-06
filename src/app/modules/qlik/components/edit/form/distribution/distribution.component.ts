@@ -2,7 +2,7 @@ import { Component, OnInit, HostBinding } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 
 @Component({
-    selector: 'app-distribution',
+    selector: 'app-edit-form-distribution',
     templateUrl: 'distribution.component.html'
 })
 export class DistributionComponent implements OnInit {
@@ -10,9 +10,6 @@ export class DistributionComponent implements OnInit {
     public distributionMethods = ['email', 'file', 'hub'];
 
     public selectedMethod: string;
-
-    @HostBinding('class')
-    protected hostClass = 'flex-container flex-column';
 
     constructor() { }
 

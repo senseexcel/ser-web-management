@@ -68,9 +68,8 @@ export class AppProvider {
         return this.serAppProvider.createApplication(appName)
         .pipe(
             mergeMap(async (app: EngineAPI.IApp) => {
-                this.model.scriptData = this.reportProvider.parseSerAppScript(defaultScript);
-                const script = await app.getScript();
-                return { app, script };
+                // const script = await app.getScript();
+                return { app, script: ''};
             }),
             map((result) => {
                 const fullScript      = `${result.script}\n${defaultScript}`;

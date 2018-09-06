@@ -4,16 +4,13 @@ import { SelectionMode, ISerGeneral } from 'ser.api';
 import { AppProvider } from '@qlik/provider/app.provider';
 
 @Component({
-    selector: 'app-qapp-edit-general',
+    selector: 'app-edit-form-settings',
     templateUrl: 'general.component.html'
 })
 
 export class GeneralComponent implements OnInit {
 
     private formBuilder: FormBuilder;
-
-    @HostBinding('class')
-    protected hostClass = 'flex-container flex-column';
 
     public userSelectionMode: Array<{label: string, value: number}>;
 

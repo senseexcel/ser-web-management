@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SerAppProvider } from '@ser-app/provider';
 import { IQlikApp } from '@qlik/api/app.interface';
@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { AppProvider } from '@qlik/provider/app.provider';
 
 @Component({
-    selector: 'app-qapp-edit-connection',
+    selector: 'app-edit-form-app',
     templateUrl: 'connection.component.html'
 })
 
@@ -15,9 +15,6 @@ export class ConnectionComponent implements OnInit, OnDestroy {
     public connectionForm: FormGroup;
 
     public apps: IQlikApp[];
-
-    @HostBinding('class')
-    protected hostClass = 'flex-container flex-column';
 
     private serApiProvider: SerAppProvider;
     private appProvider: AppProvider;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-    selector: 'app-qapp-edit-template',
+    selector: 'app-edit-form-template',
     templateUrl: 'template.component.html'
 })
 

@@ -49,10 +49,10 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
         this.isLoading = true;
         this.properties = [
-            { label: 'Connection'  , component: ConnectionComponent   },
-            { label: 'Distribution', component: DistributionComponent },
-            { label: 'General'     , component: GeneralComponent      },
+            { label: 'App'         , component: ConnectionComponent   },
             { label: 'Template'    , component: TemplateComponent     },
+            { label: 'Distribution', component: DistributionComponent },
+            { label: 'Settings'    , component: GeneralComponent      },
         ];
 
         if ( this.activeRoute.routeConfig.path === 'new' ) {

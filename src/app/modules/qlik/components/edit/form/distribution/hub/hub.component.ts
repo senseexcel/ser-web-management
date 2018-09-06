@@ -28,7 +28,6 @@ export class DistributionHubComponent implements OnInit {
     ngOnInit() {
 
         const hubConfig = this.appProvider.resolveDistributionConfig().hub;
-
         this.distributeModes = this.createDistributionModes();
 
         this.hubForm = this.formBuilder.group({

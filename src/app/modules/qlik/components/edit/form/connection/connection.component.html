@@ -1,6 +1,6 @@
 <ng-container *ngIf="connectionForm">
     <form [formGroup]="connectionForm">
-        <mat-form-field>
+        <mat-form-field class="form-control">
             <mat-select formControlName="app" placeholder="Connection App">
                 <mat-option *ngFor="let app of apps" [value]="app.qDocId">
                     {{app.qDocName}}
@@ -8,5 +8,4 @@
             </mat-select>
         </mat-form-field>
     </form>
-    <app-qapp-form-controls (apply)="applyConfig()" (cancel)="reset()" ></app-qapp-form-controls>
 </ng-container>

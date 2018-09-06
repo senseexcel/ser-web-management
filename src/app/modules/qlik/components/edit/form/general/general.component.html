@@ -1,4 +1,4 @@
-<form [formGroup]="generalForm">
+<div [formGroup]="generalForm">
 
     <mat-form-field class="form-control">
         <input matInput formControlName="cleanUpTimer" placeholder="Clean up timer">
@@ -26,5 +26,4 @@
         </mat-select>
     </mat-form-field>
 
-</form>
-<app-qapp-form-controls (apply)="applyConfig()" (cancel)="reset()" ></app-qapp-form-controls>
+</div>

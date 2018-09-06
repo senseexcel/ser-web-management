@@ -1,6 +1,7 @@
 <div class="distribution-form">
+    <h3>Distribution</h3>
     <!-- complete form -->
-    <mat-tab-group class="container-fluid md-no-animation" [@.disabled]="true">
+    <mat-tab-group [@.disabled]="true">
         <mat-tab label="Email">
             <app-distribution-mail></app-distribution-mail>
         </mat-tab>
@@ -12,4 +13,3 @@
         </mat-tab>
     </mat-tab-group>
 </div>
-<app-qapp-form-controls (apply)="applyConfig()" (cancel)="reset()" ></app-qapp-form-controls>

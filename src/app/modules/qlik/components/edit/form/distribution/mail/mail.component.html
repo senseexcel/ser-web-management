@@ -17,7 +17,7 @@
                 <input matInput formControlName="username" placeholder="Username" >
             </mat-form-field>
             <mat-form-field class="form-control">
-                <input matInput formControlName="password" placeholder="Password" >
+                <input matInput formControlName="password" placeholder="Password" type="password" >
             </mat-form-field>
         </ng-container>
     </ng-template>
@@ -44,13 +44,13 @@
         </ng-container>
     </ng-template>
 
-    <!-- complete form -->
+    <!-- complete form
     <mat-tab-group class="container-fluid md-no-animation" [@.disabled]="true">
         <mat-tab label="General">
             <ng-template *ngTemplateOutlet="generalFormGroup"></ng-template>
         </mat-tab>
         <mat-tab label="Email">
-            <ng-template *ngTemplateOutlet="mailFormGroup"></ng-template>
         </mat-tab>
-    </mat-tab-group>
+    </mat-tab-group> -->
+    <ng-template *ngTemplateOutlet="mailFormGroup"></ng-template>
 </form>

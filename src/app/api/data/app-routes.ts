@@ -3,5 +3,6 @@ import { DashboardComponent } from '@dashboard/components';
 
 export const AppRoutes: Routes = [{
     path: '',
-    component: DashboardComponent
+    redirectTo: '/apps',
+    pathMatch: 'full'
 }];

@@ -1,4 +1,4 @@
-<div class="qapp-detail">
+<div class="qapp-detail" *ngIf="!isLoading">
 
     <div class="qapp-detail--sidebar sidebar-left">
 
@@ -23,12 +23,11 @@
         </div>
 
         <div class="qapp-detail--content-body">
-            <ng-container *ngIf="selectedProperty">
-                <ng-container *ngComponentOutlet="selectedProperty.component;" >
-                </ng-container>
-            </ng-container>
+            <app-edit-form-app></app-edit-form-app>
+            <app-edit-form-template></app-edit-form-template>
+            <app-edit-form-distribution></app-edit-form-distribution>
+            <app-edit-form-settings></app-edit-form-settings>
         </div>
-
     </div>
 
     <div class="qapp-content--sidebar sidebar-right">
