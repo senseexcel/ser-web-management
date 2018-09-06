@@ -25,7 +25,7 @@ export class BreadcrumbComponent implements OnInit {
     this.breadcrumbService.breadcrumbs
       .pipe(
         map( (breadcrumbs: Array<IBreadCrumb>) => {
-          return breadcrumbs;
+          return breadcrumbs.splice(1);
         })
       )
       .subscribe( (breadcrumbs: Array<IBreadCrumb>) => {
