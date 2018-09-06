@@ -1,29 +1,30 @@
 <form [formGroup]="generalForm">
 
-    <div class="col-md-6 col">
-        <mat-form-field class="form-control">
-            <input matInput formControlName="cleanUpTimer" placeholder="Clean up timer">
-        </mat-form-field>
+    <mat-form-field class="form-control">
+        <input matInput formControlName="cleanUpTimer" placeholder="Clean up timer">
+    </mat-form-field>
 
-        <mat-form-field class="form-control">
-            <input matInput formControlName="timeout" placeholder="Timeout">
-        </mat-form-field>
+    <mat-form-field class="form-control">
+        <input matInput formControlName="timeout" placeholder="Timeout">
+    </mat-form-field>
 
-        <mat-form-field class="form-control">
-            <input matInput formControlName="errorRepeatCount" placeholder="Error Repeat Count">
-        </mat-form-field>
+    <mat-form-field class="form-control">
+        <input matInput formControlName="errorRepeatCount" placeholder="Error Repeat Count">
+    </mat-form-field>
 
-        <mat-checkbox formControlName="useSandbox">use Sandbox</mat-checkbox>
+    <mat-checkbox formControlName="useSandbox">use Sandbox</mat-checkbox>
 
-        <mat-form-field class="form-control">
-            <input matInput formControlName="taskCount" placeholder="Task Count">
-        </mat-form-field>
+    <mat-form-field class="form-control">
+        <input matInput formControlName="taskCount" placeholder="Task Count">
+    </mat-form-field>
 
-        <mat-select formControlName="useUserSelection">
+    <mat-form-field class="form-control">
+        <mat-select formControlName="useUserSelection" placeholder="Selectionmode">
             <mat-option *ngFor="let mode of userSelectionMode" [value]="mode.value">
                 {{mode.label}}
             </mat-option>
         </mat-select>
-    </div>
+    </mat-form-field>
+
 </form>
 <app-qapp-form-controls (apply)="applyConfig()" (cancel)="reset()" ></app-qapp-form-controls>

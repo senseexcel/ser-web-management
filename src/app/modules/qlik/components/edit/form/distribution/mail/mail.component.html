@@ -4,55 +4,43 @@
     <ng-template #generalFormGroup>
         <ng-container formGroupName="mailServer">
 
-            <div class="col-md-6">
-                <mat-form-field class="form-control" >
-                    <input matInput formControlName="host" placeholder="Host">
-                </mat-form-field>
-            </div>
-            <div class="col-md-6">
-                <mat-form-field class="form-control">
-                    <input matInput formControlName="port" placeholder="Port">
-                </mat-form-field>
-            </div>
-            <div class="col-md-6">
-                <mat-form-field class="form-control">
-                    <input matInput formControlName="from" placeholder="From">
-                </mat-form-field>
-            </div>
-            <div class="col-md-6">
-                <mat-form-field class="form-control">
-                    <input matInput formControlName="username" placeholder="Username" >
-                </mat-form-field>
-            </div>
-            <div class="col-md-6" >
-                <mat-form-field class="form-control">
-                    <input matInput formControlName="password" placeholder="Password" >
-                </mat-form-field>
-            </div>
+            <mat-form-field class="form-control" >
+                <input matInput formControlName="host" placeholder="Host">
+            </mat-form-field>
+            <mat-form-field class="form-control">
+                <input matInput formControlName="port" placeholder="Port">
+            </mat-form-field>
+            <mat-form-field class="form-control">
+                <input matInput formControlName="from" placeholder="From">
+            </mat-form-field>
+            <mat-form-field class="form-control">
+                <input matInput formControlName="username" placeholder="Username" >
+            </mat-form-field>
+            <mat-form-field class="form-control">
+                <input matInput formControlName="password" placeholder="Password" >
+            </mat-form-field>
         </ng-container>
     </ng-template>
 
     <!-- mail form group -->
     <ng-template #mailFormGroup>
         <ng-container formGroupName="mail">
-            <div class="col-md-6">
-                <mat-form-field class="form-control">
-                    <input matInput formControlName="to" placeholder="To">
-                </mat-form-field>
-                <mat-form-field class="form-control">
-                    <input matInput formControlName="cc" placeholder="Cc:">
-                </mat-form-field>
-                <mat-form-field class="form-control">
-                    <input matInput formControlName="bcc" placeholder="Bcc:">
-                </mat-form-field>
-                <mat-form-field class="form-control">
-                    <input matInput formControlName="subject" placeholder="Subject">
-                </mat-form-field>
-                <mat-form-field class="form-control">
-                    <textarea matInput formControlName="message" placeholder="Message"
-                        mat-autosize="true" [matAutosizeMinRows]=5 [matAutosizeMaxRows]=10></textarea>
-                </mat-form-field>
-            </div>
+            <mat-form-field class="form-control">
+                <input matInput formControlName="to" placeholder="To">
+            </mat-form-field>
+            <mat-form-field class="form-control">
+                <input matInput formControlName="cc" placeholder="Cc:">
+            </mat-form-field>
+            <mat-form-field class="form-control">
+                <input matInput formControlName="bcc" placeholder="Bcc:">
+            </mat-form-field>
+            <mat-form-field class="form-control">
+                <input matInput formControlName="subject" placeholder="Subject">
+            </mat-form-field>
+            <mat-form-field class="form-control">
+                <textarea matInput formControlName="message" placeholder="Message"
+                    mat-autosize="true" [matAutosizeMinRows]=5 [matAutosizeMaxRows]=10></textarea>
+            </mat-form-field>
         </ng-container>
     </ng-template>
 

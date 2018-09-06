@@ -1,10 +1,12 @@
 <ng-container *ngIf="connectionForm">
     <form [formGroup]="connectionForm">
-        <mat-select formControlName="app">
-            <mat-option *ngFor="let app of apps" [value]="app.qDocId">
-                {{app.qDocName}}
-            </mat-option>
-        </mat-select>
+        <mat-form-field>
+            <mat-select formControlName="app" placeholder="Connection App">
+                <mat-option *ngFor="let app of apps" [value]="app.qDocId">
+                    {{app.qDocName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
     </form>
     <app-qapp-form-controls (apply)="applyConfig()" (cancel)="reset()" ></app-qapp-form-controls>
 </ng-container>

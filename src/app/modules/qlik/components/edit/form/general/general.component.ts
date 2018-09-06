@@ -32,8 +32,6 @@ export class GeneralComponent implements OnInit {
     ngOnInit() {
         this.userSelectionMode = this.buildUserSelectionFields();
         this.generalForm       = this.createGeneralForm();
-
-        console.log(this.userSelectionMode);
     }
 
     private createGeneralForm(): FormGroup {
