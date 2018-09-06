@@ -2,7 +2,7 @@
 
     <!-- general form group -->
     <ng-template #generalFormGroup>
-        <ng-container formGroupName="general">
+        <ng-container formGroupName="mailServer">
 
             <div class="col-md-6">
                 <mat-form-field class="form-control" >
@@ -16,12 +16,17 @@
             </div>
             <div class="col-md-6">
                 <mat-form-field class="form-control">
-                    <input matInput formControlName="uname" placeholder="Username" >
+                    <input matInput formControlName="from" placeholder="From">
+                </mat-form-field>
+            </div>
+            <div class="col-md-6">
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="username" placeholder="Username" >
                 </mat-form-field>
             </div>
             <div class="col-md-6" >
                 <mat-form-field class="form-control">
-                    <input matInput formControlName="passwd" placeholder="Password" >
+                    <input matInput formControlName="password" placeholder="Password" >
                 </mat-form-field>
             </div>
         </ng-container>
@@ -32,7 +37,13 @@
         <ng-container formGroupName="mail">
             <div class="col-md-6">
                 <mat-form-field class="form-control">
-                    <input matInput formControlName="recipient" placeholder="Recipient">
+                    <input matInput formControlName="to" placeholder="To">
+                </mat-form-field>
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="cc" placeholder="Cc:">
+                </mat-form-field>
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="bcc" placeholder="Bcc:">
                 </mat-form-field>
                 <mat-form-field class="form-control">
                     <input matInput formControlName="subject" placeholder="Subject">

@@ -1,0 +1,15 @@
+<div class="distribution-form">
+    <!-- complete form -->
+    <mat-tab-group class="container-fluid md-no-animation" [@.disabled]="true">
+        <mat-tab label="Email">
+            <app-distribution-mail></app-distribution-mail>
+        </mat-tab>
+        <mat-tab label="File">
+            <app-distribution-file></app-distribution-file>
+        </mat-tab>
+        <mat-tab label="Hub">
+            <app-distribution-hub></app-distribution-hub>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+<app-qapp-form-controls (apply)="applyConfig()" (cancel)="reset()" ></app-qapp-form-controls>

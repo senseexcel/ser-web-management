@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostBinding } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 
 @Component({
@@ -11,12 +11,14 @@ export class DistributionComponent implements OnInit {
 
     public selectedMethod: string;
 
+    @HostBinding('class')
+    protected hostClass = 'flex-container flex-column';
+
     constructor() { }
 
     ngOnInit() { }
 
     public selectDistributionMethod(method: MatSelectChange) {
-        console.log(method);
         this.selectedMethod = method.value;
     }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SerAppProvider } from '@ser-app/provider';
-import { ISerConnection } from 'ser.api';
 import { IQlikApp } from '@qlik/api/app.interface';
 import { map } from 'rxjs/operators';
 import { AppProvider } from '@qlik/provider/app.provider';

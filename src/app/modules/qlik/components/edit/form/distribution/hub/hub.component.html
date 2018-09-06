@@ -1,0 +1,12 @@
+<form [formGroup]="hubForm">
+
+    <mat-checkbox formControlName="active">Active</mat-checkbox>
+
+    <mat-form-field class="form-control">
+        <input matInput formControlName="owner" placeholder="owner" >
+    </mat-form-field>
+
+    <mat-form-field class="form-control">
+        <input matInput formControlName="connections" placeholder="Connections" >
+    </mat-form-field>
+</form>

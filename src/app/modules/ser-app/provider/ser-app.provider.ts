@@ -118,17 +118,13 @@ export class SerAppProvider {
             );
     }
 
-    public closeApp(app: EngineAPI.IApp) {
-        // @todo implement
-    }
-
     public createApplication(appName: string): Observable<any> {
 
         return from(this.createSession())
         .pipe(
             mergeMap( async (session: enigmaJS.ISession) => {
                 const global  = await session.open() as any;
-                const newApp = await global.createApp(appName, 'main');
+                const newApp = await global.createApp(appName, 'main') as IQlikAppCreated;
 
                 return {
                     global,

@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
-import { ConnectionComponent, GeneralComponent, TemplateComponent} from './form';
-import { empty, from } from 'rxjs';
+import { ConnectionComponent, DistributionComponent, GeneralComponent, TemplateComponent} from './form';
+import { empty } from 'rxjs';
 import { map, takeUntil, switchMap, catchError } from 'rxjs/operators';
 import { SelectionProvider } from '@qlik/provider';
-import { Subject, forkJoin, Observable } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { AppProvider } from '../../provider/app.provider';
 import { IQlikApp } from '@qlik/api/app.interface';
 import { ActivatedRoute } from '@angular/router';
@@ -49,10 +49,10 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
         this.isLoading = true;
         this.properties = [
-            { label: 'Connection'  , component: ConnectionComponent },
-            { label: 'Distribution', component: ConnectionComponent },
-            { label: 'General'     , component: GeneralComponent    },
-            { label: 'Template'    , component: TemplateComponent   },
+            { label: 'Connection'  , component: ConnectionComponent   },
+            { label: 'Distribution', component: DistributionComponent },
+            { label: 'General'     , component: GeneralComponent      },
+            { label: 'Template'    , component: TemplateComponent     },
         ];
 
         if ( this.activeRoute.routeConfig.path === 'new' ) {
