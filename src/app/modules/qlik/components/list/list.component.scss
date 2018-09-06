@@ -1,0 +1,61 @@
+:host {
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .navbar {
+       
+        &.action-bar-bottom {
+            background-color: #8C8C8C;
+            color: #FFFFFF;
+            padding: 0px 2px 11px 10px;
+            min-height: 48px;
+            overflow: hidden;
+        }
+        button {
+            font-family: "QlikView Sans", sans-serif;
+            font-size: 13px;
+            padding: 1px 10px;
+            min-width: 90px;
+            border-radius: 6px;
+            background-clip: padding-box;
+            padding: 0.4em;
+            font-weight: bold;
+            font-size: 13px;
+            line-height: 15px;
+            line-height: 24px;
+            padding: 1px 0.4em;
+            height: 28px;
+            background: transparent;
+            background-image:linear-gradient(to bottom, #4D4D4D, #333333);
+            border: 1px solid #333333;
+            color: #FFFFFF;
+            margin-right: 20px;
+            margin-top:10px;
+            &:hover {
+                border: #FFF 2px solid;
+                cursor: pointer;
+            }
+        }
+
+    }
+    .qapp-list--table {
+        flex: 1 1 0;
+        background: #FFF;
+
+        .mat-row {
+            height: auto;
+            line-height: 2.5rem;
+        }
+
+        .mat-row.selected {
+            background: #737373;
+            color: #FFF;
+        }
+
+        .mat-cell {
+            color: inherit;
+        }
+    }
+}

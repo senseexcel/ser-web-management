@@ -6,7 +6,8 @@ import { IQlikApp } from '@qlik/api/app.interface';
 
 @Component({
     selector: 'app-list',
-    templateUrl: 'list.component.html'
+    templateUrl: 'list.component.html',
+    styleUrls: ['./list.component.scss'],
 })
 export class AppListComponent implements OnInit {
 
