@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { SerAppService } from '@core/ser-engine/provider/ser-app.provider';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
+// @todo move interface to core
 import { IQlikApp } from '@apps/api/app.interface';
 import { SelectionModel } from '@angular/cdk/collections';
 import { SerApp } from '@core/ser-app/model/app.model';

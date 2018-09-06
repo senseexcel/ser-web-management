@@ -1,6 +1,6 @@
 import { create } from 'enigma.js';
 import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
-import { IQlikApp } from '@qlik/api/app.interface';
+import { IQlikApp } from '@apps/api/app.interface';
 import { from, Subject, Observable } from 'rxjs';
 import { mergeMap, switchMap, catchError, filter, buffer, map } from 'rxjs/operators';
 import { IQlikAppCreated } from '../api/response/app-created.interface';

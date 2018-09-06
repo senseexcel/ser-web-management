@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { DashboardModule } from '@dashboard/dashboard.module';
 import { BreadcrumbModule } from '@breadcrumb/breadcrumb.module';
-import { QlikModule } from '@qlik/qlik.module';
+import { AppsModule } from '@apps/apps.module';
 
 import { menuData } from './api/data';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,7 +19,7 @@ import { AppComponent } from './app.component';
     BrowserAnimationsModule,
     BrowserModule,
     DashboardModule.forRoot(menuData),
-    QlikModule,
+    AppsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

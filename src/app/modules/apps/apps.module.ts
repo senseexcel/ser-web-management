@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AppEditComponent, AppListComponent, QlikAppComponent } from './components';
-import { QlikRoutingModule } from './apps-routing.module';
+import { AppEditComponent, AppListComponent, AppsComponent } from './components';
+import { AppsRoutingModule } from './apps-routing.module';
 import {
   MatTableModule,
   MatProgressSpinnerModule,
@@ -22,6 +22,7 @@ import { SerAppModule } from '@core/ser-app/ser-app.module';
 
 @NgModule({
   imports: [
+    AppsRoutingModule,
     CommonModule,
     MatCheckboxModule,
     MatInputModule,
@@ -29,14 +30,13 @@ import { SerAppModule } from '@core/ser-app/ser-app.module';
     MatSelectModule,
     MatTableModule,
     MatTabsModule,
-    QlikRoutingModule,
     ReactiveFormsModule,
     SerAppModule
   ],
   declarations: [
     AppEditComponent,
     AppListComponent,
-    QlikAppComponent,
+    AppsComponent,
     ConnectionComponent,
     FormControlsComponent,
     GeneralComponent,

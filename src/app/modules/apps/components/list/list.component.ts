@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IQlikApp } from '@qlik/api/app.interface';
+import { IQlikApp } from '@apps/api/app.interface';
 import { SerAppManagerService } from '@core/ser-app/provider/ser-app-manager.service';
 
 @Component({

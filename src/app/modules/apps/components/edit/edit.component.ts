@@ -3,7 +3,7 @@ import { ConnectionComponent, DistributionComponent, GeneralComponent, TemplateC
 import { empty, pipe } from 'rxjs';
 import { map, takeUntil, switchMap, catchError } from 'rxjs/operators';
 import { Subject, Observable } from 'rxjs';
-import { IQlikApp } from '@qlik/api/app.interface';
+import { IQlikApp } from '@apps/api/app.interface';
 import { ActivatedRoute } from '@angular/router';
 import { SerAppManagerService } from '@core/ser-app/provider/ser-app-manager.service';
 

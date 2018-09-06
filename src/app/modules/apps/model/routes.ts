@@ -1,9 +1,9 @@
 import { Routes, RouterModule } from '@angular/router';
-import { AppListComponent, AppEditComponent, QlikAppComponent } from '@qlik/components';
+import { AppListComponent, AppEditComponent, AppsComponent } from '../components';
 
-export const QlikRoutes: Routes = [{
+export const AppRoutes: Routes = [{
     path: 'apps',
-    component: QlikAppComponent,
+    component: AppsComponent,
     data: {
         breadcrumb: 'Applications'
     },
