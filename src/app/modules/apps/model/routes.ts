@@ -11,7 +11,7 @@ export const AppRoutes: Routes = [{
     },
     children: [{
         path: '',
-        component: AppListComponent,        
+        component: AppListComponent,
     }, {
         path: 'edit/:id',
         component: AppEditComponent,
@@ -24,16 +24,15 @@ export const AppRoutes: Routes = [{
         component: AppEditComponent,
         canActivate: [CreateGuard],
         data: {
-            breadcrumb: 'Edit App ' 
+            breadcrumb: 'Edit App '
         }
     },
-        {
-            path: 'new',
-            component: AppNewComponent,
-            canActivate: [CreateGuard],
-            data: {
-                breadcrumb: 'New App'
-            }
-        }]
-}]
+    {
+        path: 'new',
+        component: AppNewComponent,
+        canActivate: [CreateGuard],
+        data: {
+            breadcrumb: 'New App'
+        }
+    }]
 }];
