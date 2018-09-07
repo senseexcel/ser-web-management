@@ -53,10 +53,12 @@ export class AppEditComponent implements OnInit, OnDestroy {
             { label: 'Settings'    , component: SettingsComponent     },
         ];
 
-        if ( this.activeRoute.routeConfig.path === 'new' ) {
-            this.initNewApp();
-        } else {
+        const params = this.activeRoute.snapshot.params;
+
+        if ( params.hasOwnProperty('id') ) {
             this.initExistingApp();
+        } else {
+            this.initNewApp(params.name);
         }
     }
 
@@ -70,9 +72,9 @@ export class AppEditComponent implements OnInit, OnDestroy {
      * @private
      * @memberof AppEditComponent
      */
-    private initNewApp() {
+    private initNewApp(name: string) {
 
-        this.appManager.createApp('initial name')
+        this.appManager.createApp(name)
         .subscribe( (app: ISerApp) => {
             this.editService.editApp(app);
             console.dir(app);
