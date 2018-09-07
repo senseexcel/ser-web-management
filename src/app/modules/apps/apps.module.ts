@@ -1,17 +1,11 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AppEditComponent, AppListComponent, AppsComponent } from './components';
+import { AppEditComponent, AppListComponent, AppsComponent, AppNewComponent } from './components';
 import { AppsRoutingModule } from './apps-routing.module';
-import {
-  MatTableModule,
-  MatProgressSpinnerModule,
-  MatInputModule,
-  MatSelectModule,
-  MatCheckboxModule,
-  MatTabsModule
-} from '@angular/material';
-import { ConnectionComponent, SettingsComponent, TemplateComponent, FormControlsComponent } from './components/edit';
+import { MaterialModule } from '@core/modules/material.module';
+
+import { ConnectionComponent, GeneralComponent, TemplateComponent, FormControlsComponent } from './components/edit';
 import {
   DistributionComponent,
   DistributionFileComponent,
@@ -20,16 +14,12 @@ import {
 } from './components/edit/form/distribution';
 import { SerAppModule } from '@core/ser-app/ser-app.module';
 
+
 @NgModule({
   imports: [
     AppsRoutingModule,
     CommonModule,
-    MatCheckboxModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatSelectModule,
-    MatTableModule,
-    MatTabsModule,
+    MaterialModule,
     ReactiveFormsModule,
     SerAppModule
   ],
@@ -44,7 +34,8 @@ import { SerAppModule } from '@core/ser-app/ser-app.module';
     DistributionComponent,
     DistributionFileComponent,
     DistributionHubComponent,
-    DistributionMailComponent
+    DistributionMailComponent,
+    AppNewComponent
   ]
 })
 export class AppsModule { }

@@ -1,6 +1,7 @@
 import { Routes, RouterModule } from '@angular/router';
-import { AppListComponent, AppEditComponent, AppsComponent } from '../components';
+import { AppListComponent, AppEditComponent, AppsComponent, AppNewComponent  } from '../components';
 import { EditGuard } from '../guards/edit.guard';
+import { CreateGuard  } from '../guards/create.guard';
 
 export const AppRoutes: Routes = [{
     path: 'apps',
@@ -19,10 +20,20 @@ export const AppRoutes: Routes = [{
             breadcrumb: 'Edit'
         }
     }, {
-        path: 'new',
+        path: 'new/:name',
         component: AppEditComponent,
+        canActivate: [CreateGuard],
         data: {
-            breadcrumb: 'New App'
+            breadcrumb: 'Edit App ' 
         }
-    }]
+    },
+        {
+            path: 'new',
+            component: AppNewComponent,
+            canActivate: [CreateGuard],
+            data: {
+                breadcrumb: 'New App'
+            }
+        }]
+}]
 }];
