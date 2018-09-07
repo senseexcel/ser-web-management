@@ -1,5 +1,6 @@
 import { Routes, RouterModule } from '@angular/router';
 import { AppListComponent, AppEditComponent, AppsComponent } from '../components';
+import { EditGuard } from '../guards/edit.guard';
 
 export const AppRoutes: Routes = [{
     path: 'apps',
@@ -9,10 +10,11 @@ export const AppRoutes: Routes = [{
     },
     children: [{
         path: '',
-        component: AppListComponent,
+        component: AppListComponent,        
     }, {
         path: 'edit/:id',
         component: AppEditComponent,
+        canActivate: [EditGuard],
         data: {
             breadcrumb: 'Edit'
         }
