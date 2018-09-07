@@ -9,27 +9,27 @@ export class DeliveryModel implements ISerDelivery {
 
     private deliveryHubSettings: IHubSettings;
 
-    public get mailSettings(): IMailSettings {
+    public get mail(): IMailSettings {
         return this.deliveryEmailSettings;
     }
 
-    public get fileSettings(): IFileSettings {
+    public get file(): IFileSettings {
         return this.deliveryFileSettings;
     }
 
-    public get hubSettings(): IHubSettings {
+    public get hub(): IHubSettings {
         return this.deliveryHubSettings;
     }
 
-    public set mailSettings(settings: IMailSettings) {
+    public set mail(settings: IMailSettings) {
         this.deliveryEmailSettings = settings;
     }
 
-    public set fileSettings(settings: IFileSettings) {
+    public set file(settings: IFileSettings) {
         this.deliveryFileSettings = settings;
     }
 
-    public set hubSettings(settings: IHubSettings) {
-        this.hubSettings = settings;
+    public set hub(settings: IHubSettings) {
+        this.deliveryHubSettings = settings;
     }
 }

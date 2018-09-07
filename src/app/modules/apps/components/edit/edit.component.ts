@@ -1,15 +1,16 @@
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
-import { ConnectionComponent, DistributionComponent, GeneralComponent, TemplateComponent} from './form';
-import { empty, pipe } from 'rxjs';
-import { map, takeUntil, switchMap, catchError } from 'rxjs/operators';
-import { Subject, Observable } from 'rxjs';
-import { IQlikApp } from '@apps/api/app.interface';
+import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { SerAppManagerService } from '@core/ser-app/provider/ser-app-manager.service';
+import { ISerApp } from '@core/ser-app/api/ser-app.interface';
+import { IQlikApp } from '@apps/api/app.interface';
+import { EditAppService } from '@apps/provider/edit-app.service';
+import { ConnectionComponent, DistributionComponent, GeneralComponent, TemplateComponent} from './form';
 
 @Component({
     selector: 'app-qlik-edit',
-    templateUrl: 'edit.component.html'
+    templateUrl: 'edit.component.html',
+    providers: [ EditAppService ]
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
@@ -17,21 +18,25 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public properties: any[];
     public selectedProperty: any;
     public isLoading = true;
+    public editService: EditAppService;
 
     @HostBinding('class.flex-container')
     protected hostClass = true;
 
     private isDestroyed$: Subject<boolean>;
     private activeRoute: ActivatedRoute;
-    private appManger: SerAppManagerService;
+    private appManager: SerAppManagerService;
     private isNew: boolean;
 
     constructor(
         activeRoute: ActivatedRoute,
-        appManager: SerAppManagerService
+        appManager: SerAppManagerService,
+        editService: EditAppService
     ) {
-        this.isDestroyed$      = new Subject<boolean>();
-        this.activeRoute       = activeRoute;
+        this.isDestroyed$ = new Subject<boolean>();
+        this.activeRoute  = activeRoute;
+        this.appManager    = appManager;
+        this.editService = editService;
     }
 
     public ngOnDestroy(): void {
@@ -67,18 +72,10 @@ export class AppEditComponent implements OnInit, OnDestroy {
      */
     private initNewApp() {
 
-        /*
-        this.appManger.createApp('initial name')
-        .pipe(
-            switchMap( () => {
-                this.isLoading = false;
-                return this.onUpdate();
-            })
-        )
+        this.appManager.createApp('initial name')
         .subscribe( () => {
-            // app saved
+            // app open
         });
-        */
     }
 
     /**
@@ -89,23 +86,11 @@ export class AppEditComponent implements OnInit, OnDestroy {
      */
     private initExistingApp() {
 
-        /*
-            this.apps = this.selectionProvider.getSelection();
-            this.appProvider.loadApp(this.apps[0].qDocId)
-                .pipe(
-                    /** once app has been loaded we switch the observable to update *
-                    switchMap( () => {
-                        this.isLoading = false;
-                        return this.onUpdate();
-                    })
-                )
-                .subscribe(() => {
-                    // app saved
-                });
-        } else {
-            // @todo redirect to list
-        }
-        */
+        this.apps = this.appManager.getSelectedApps();
+        this.appManager.openApp(this.apps[0].qDocId)
+            .subscribe((app: ISerApp) => {
+                this.editService.editApp(app);
+            });
     }
 
     /**
@@ -116,30 +101,5 @@ export class AppEditComponent implements OnInit, OnDestroy {
      * @memberof AppEditComponent
      */
     private onUpdate(): void  {
-
-        /*
-        return this.appProvider.onUpdate$
-        .pipe(
-            /** new configuration script is here, update app *
-            map( async (script: string) => {
-                this.isLoading = true;
-                await this.appProvider.updateScript(script);
-            }),
-            /** convert to Observable<void> *
-            map( () => {
-                this.isLoading = false;
-            }),
-            /** if an error occured just return an empty observable *
-            catchError( (error) => {
-                /**
-                 * @todo handle error here
-                 * show message or something else ( no console )
-                 *
-                console.error(error);
-                return empty();
-            }),
-            takeUntil( this.isDestroyed$ )
-        );
-        */
     }
 }

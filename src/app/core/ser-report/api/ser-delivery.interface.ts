@@ -2,9 +2,9 @@ import { IMailSettings, IFileSettings, IHubSettings } from 'ser.api';
 
 export interface ISerDelivery {
 
-    mailSettings: IMailSettings;
+    mail: IMailSettings;
 
-    fileSettings: IFileSettings;
+    file: IFileSettings;
 
-    hubSettings: IHubSettings;
+    hub: IHubSettings;
 }

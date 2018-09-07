@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ISerApp } from '@core/ser-app/api/ser-app.interface';
+import { EditAppService } from '@apps/provider/edit-app.service';
 
 @Component({
     selector: 'app-distribution-mail',
@@ -11,35 +13,43 @@ export class DistributionMailComponent implements OnInit {
 
     private formBuilder: FormBuilder;
 
+    public editService: EditAppService;
+
+    private app: ISerApp;
 
     constructor(
         formBuilder: FormBuilder,
+        editService: EditAppService
     ) {
         this.formBuilder = formBuilder;
+        this.editService = editService;
     }
 
     ngOnInit() {
-        this.mailForm = this.formBuilder.group({
-            mailServer: this.createMailServerGroup(),
-            mail: this.createMailGroup()
+
+        this.editService.loadApp()
+        .subscribe((app: ISerApp) => {
+
+            if ( app === null ) {
+                return;
+            }
+
+            this.app = app;
+            this.mailForm = this.createMailForm();
         });
     }
 
-    private createMailGroup(): FormGroup {
+    private createMailForm(): FormGroup {
 
-        /*
-        const mailConfig = this.appProvider.resolveDistributionConfig();
-        const mailData   = mailConfig.mail;
+        const mailSettings = this.app.report.distribute.mail;
 
         return this.formBuilder.group({
-            to: this.formBuilder.control(mailData.to,   [Validators.required, Validators.email]),
-            cc: this.formBuilder.control(mailData.cc,   [Validators.email]),
-            bcc: this.formBuilder.control(mailData.bcc, [Validators.email]),
-            subject: this.formBuilder.control(mailData.subject, [Validators.required]),
-            message: this.formBuilder.control(mailData.message, [Validators.required])
+            to: this.formBuilder.control(mailSettings.to,   [Validators.required, Validators.email]),
+            cc: this.formBuilder.control(mailSettings.cc,   [Validators.email]),
+            bcc: this.formBuilder.control(mailSettings.bcc, [Validators.email]),
+            subject: this.formBuilder.control(mailSettings.subject, [Validators.required]),
+            message: this.formBuilder.control(mailSettings.message, [Validators.required])
         });
-        */
-       return null;
     }
 
     private createMailServerGroup(): FormGroup {

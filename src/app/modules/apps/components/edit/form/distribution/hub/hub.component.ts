@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DistributeMode } from 'ser.api';
+import { EditAppService } from '@apps/provider/edit-app.service';
+import { ISerApp } from '@core/ser-app/api/ser-app.interface';
 
 @Component({
     selector: 'app-distribution-hub',
@@ -12,28 +14,41 @@ export class DistributionHubComponent implements OnInit {
 
     public distributeModes: any;
 
-    private formBuilder: FormBuilder;
+    public editService: EditAppService;
 
+    private app: ISerApp;
+
+    private formBuilder: FormBuilder;
 
     constructor(
         formBuilder: FormBuilder,
+        editService: EditAppService
     ) {
         this.formBuilder = formBuilder;
+        this.editService = editService;
     }
 
     ngOnInit() {
 
-        /*
-        const hubConfig = this.appProvider.resolveDistributionConfig().hub;
-        this.distributeModes = this.createDistributionModes();
+        this.editService.loadApp()
+        .subscribe((app: ISerApp) => {
 
-        this.hubForm = this.formBuilder.group({
-            active: this.formBuilder.control(hubConfig.active),
-            owner: this.formBuilder.control(hubConfig.owner),
-            mode: this.formBuilder.control(hubConfig.mode),
-            connections: this.formBuilder.control(hubConfig.connections)
+            if ( app === null ) {
+                return;
+            }
+
+            this.app = app;
+            this.distributeModes = this.createDistributionModes();
+
+            const hubSettings = this.app.report.distribute.hub;
+
+            this.hubForm = this.formBuilder.group({
+                active: this.formBuilder.control(hubSettings.active),
+                owner: this.formBuilder.control(hubSettings.owner),
+                mode: this.formBuilder.control(hubSettings.mode),
+                connections: this.formBuilder.control(hubSettings.connections)
+            });
         });
-        */
     }
 
     private createDistributionModes(): Array<{label: string, value: string}> {

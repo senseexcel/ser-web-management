@@ -5,7 +5,7 @@ export interface ISerReport {
 
     connections: ISerConnection;
 
-    delivery?: ISerDelivery;
+    distribute: ISerDelivery;
 
     general: ISerGeneral;
 

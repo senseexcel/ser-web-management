@@ -1,6 +1,8 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, Input } from '@angular/core';
 import { FormBuilder, FormGroup, SelectControlValueAccessor } from '@angular/forms';
 import { SelectionMode, ISerGeneral } from 'ser.api';
+import { ISerApp } from '@core/ser-app/api/ser-app.interface';
+import { EditAppService } from '@apps/provider/edit-app.service';
 
 @Component({
     selector: 'app-edit-form-settings',
@@ -15,21 +17,32 @@ export class GeneralComponent implements OnInit {
 
     public generalForm: FormGroup;
 
+    public editService: EditAppService;
+
+    private app: ISerApp;
 
     constructor(
         builder: FormBuilder,
+        editService: EditAppService,
     ) {
         this.formBuilder = builder;
+        this.editService = editService;
     }
 
     ngOnInit() {
-        this.userSelectionMode = this.buildUserSelectionFields();
-        this.generalForm       = this.createGeneralForm();
+
+        this.editService.loadApp()
+        .subscribe( (app: ISerApp) => {
+            if ( app !== null ) {
+                this.app = app;
+                this.userSelectionMode = this.buildUserSelectionFields();
+                this.generalForm       = this.createGeneralForm();
+            }
+        });
     }
 
     private createGeneralForm(): FormGroup {
-        /*
-        const config       = this.appProvider.resolveGeneralConfig();
+        const config       = this.app.report.general;
         const generalGroup = this.formBuilder.group({
             cleanUpTimer    : this.formBuilder.control(config.cleanupTimeOut),
             timeout         : this.formBuilder.control(config.timeout),
@@ -40,8 +53,11 @@ export class GeneralComponent implements OnInit {
         });
 
         return generalGroup;
-        */
-       return null;
+    }
+
+    private generateMailServerSettingsForm(): FormGroup {
+        // @TODO implement
+        return null;
     }
 
     private buildUserSelectionFields(): Array<{label: string, value: number}> {
@@ -55,20 +71,5 @@ export class GeneralComponent implements OnInit {
                     value: SelectionMode[name]
                 };
             });
-    }
-
-    public applyConfig() {
-
-        const config: ISerGeneral = {
-            cleanupTimeOut   : this.generalForm.get('cleanUpTimer').value,
-            errorRepeatCount : this.generalForm.get('errorRepeatCount').value,
-            taskCount        : this.generalForm.get('taskCount').value,
-            timeout          : this.generalForm.get('timeout').value,
-            useSandbox       : this.generalForm.get('useSandbox').value,
-            useUserSelections: this.generalForm.get('useUserSelection').value
-        };
-    }
-
-    public reset() {
     }
 }

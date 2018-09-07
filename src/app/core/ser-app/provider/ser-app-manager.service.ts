@@ -23,7 +23,7 @@ export class SerAppManagerService {
 
     private loadedSerApps: BehaviorSubject<IQlikApp[]> ;
 
-    private selectedApps: SelectionModel<IQlikApp>;
+    private selectedApps: IQlikApp[];
 
     private isAppsLoaded = false;
 
@@ -35,6 +35,10 @@ export class SerAppManagerService {
 
     private openApps: WeakMap<ISerApp, EngineAPI.IApp>;
 
+    private isLoadingApps = false;
+
+    private isLoadingSerApps = false;
+
     constructor(
         serAppService: SerAppService,
         scriptService: SerScriptService
@@ -45,6 +49,8 @@ export class SerAppManagerService {
 
         this.loadedApps    = new BehaviorSubject<IQlikApp[]>([]);
         this.loadedSerApps = new BehaviorSubject<IQlikApp[]>([]);
+
+        this.selectedApps    = [];
     }
 
     /**
@@ -79,7 +85,7 @@ export class SerAppManagerService {
     }
 
     /**
-     *
+     * save an app
      *
      * @param {ISerApp} app
      * @memberof SerAppManagerService
@@ -93,6 +99,20 @@ export class SerAppManagerService {
     }
 
     /**
+     * set selected apps
+     *
+     * @param {IQlikApp[]} apps
+     * @memberof SerAppManagerService
+     */
+    public selectApps(apps: IQlikApp[]) {
+        this.selectedApps = apps;
+    }
+
+    public getSelectedApps(): IQlikApp[] {
+        return this.selectedApps;
+    }
+
+    /**
      * load only ser apps
      *
      * @param {boolean} [force=false]
@@ -101,15 +121,18 @@ export class SerAppManagerService {
      */
     public loadSerApps(force = false): Observable<IQlikApp[]> {
 
-        if ( this.isSerAppsLoaded && ! force ) {
+        if ( (this.isSerAppsLoaded && ! force) || this.isLoadingSerApps ) {
             return this.loadedSerApps;
         }
+
+        this.isLoadingSerApps = true;
 
         // load apps
         return this.serAppService.fetchSenseExcelReportingApps()
             .pipe(
                 switchMap( (apps: IQlikApp[]) => {
                     this.isSerAppsLoaded = true;
+                    this.isLoadingSerApps = false;
                     this.loadedSerApps.next(apps);
                     return this.loadedSerApps;
                 })
@@ -125,15 +148,17 @@ export class SerAppManagerService {
      */
     public loadApps(force = false): Observable<IQlikApp[]> {
 
-        if ( this.isAppsLoaded && ! force ) {
+        if ( this.isAppsLoaded && ! force || this.isLoadingApps ) {
             return this.loadedApps;
         }
 
+        this.isLoadingApps = true;
         // load apps
         return this.serAppService.fetchApps()
             .pipe(
                 switchMap( (apps: IQlikApp[]) => {
-                    this.isAppsLoaded = true;
+                    this.isAppsLoaded  = true;
+                    this.isLoadingApps = false;
                     this.loadedApps.next(apps);
                     return this.loadedApps;
                 })
@@ -176,11 +201,13 @@ export class SerAppManagerService {
         const scriptData: ISerScriptData  = this.serScriptService.parse(script);
         const reports = this.serScriptService.extractReports(scriptData);
 
+        console.log(scriptData.script);
+
         const report = new ReportModel();
         report.connections = reports[0].connections || new ConnectionModel();
         report.general     = reports[0].general     || new GeneralSettingsModel();
         report.template    = reports[0].template    || new TemplateModel();
-        report.delivery    = reports[0].delivery    || new DeliveryModel();
+        report.distribute  = reports[0].distribute  || new DeliveryModel();
 
         serApp.script = scriptData;
         serApp.appId  = app.id;

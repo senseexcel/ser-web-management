@@ -10,11 +10,14 @@ export class ReportModel implements ISerReport {
 
     private reportConnections: ISerConnection;
 
+    private reportDistribute: ISerDelivery;
+
     public set connections(connections: ISerConnection) {
         this.reportConnections = connections;
     }
 
-    public set delivery(delivery: ISerDelivery) {
+    public set distribute(delivery: ISerDelivery) {
+        this.reportDistribute = delivery;
     }
 
     public set general(value: ISerGeneral) {
@@ -27,6 +30,10 @@ export class ReportModel implements ISerReport {
 
     public get connections(): ISerConnection {
         return this.reportConnections;
+    }
+
+    public get distribute(): ISerDelivery {
+        return this.reportDistribute;
     }
 
     public get general(): ISerGeneral {

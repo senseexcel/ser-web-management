@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ISerApp } from '@core/ser-app/api/ser-app.interface';
 
 @Component({
     selector: 'app-edit-form-template',
@@ -6,6 +7,10 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class TemplateComponent implements OnInit {
+
+    @Input()
+    public app: ISerApp;
+
     constructor() { }
 
     ngOnInit() { }

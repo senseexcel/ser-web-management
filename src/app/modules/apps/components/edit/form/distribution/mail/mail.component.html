@@ -1,56 +1,20 @@
-<form [formGroup]="mailForm">
-
-    <!-- general form group -->
-    <ng-template #generalFormGroup>
-        <ng-container formGroupName="mailServer">
-
-            <mat-form-field class="form-control" >
-                <input matInput formControlName="host" placeholder="Host">
-            </mat-form-field>
-            <mat-form-field class="form-control">
-                <input matInput formControlName="port" placeholder="Port">
-            </mat-form-field>
-            <mat-form-field class="form-control">
-                <input matInput formControlName="from" placeholder="From">
-            </mat-form-field>
-            <mat-form-field class="form-control">
-                <input matInput formControlName="username" placeholder="Username" >
-            </mat-form-field>
-            <mat-form-field class="form-control">
-                <input matInput formControlName="password" placeholder="Password" type="password" >
-            </mat-form-field>
-        </ng-container>
-    </ng-template>
+<form [formGroup]="mailForm" *ngIf="mailForm">
 
     <!-- mail form group -->
-    <ng-template #mailFormGroup>
-        <ng-container formGroupName="mail">
-            <mat-form-field class="form-control">
-                <input matInput formControlName="to" placeholder="To">
-            </mat-form-field>
-            <mat-form-field class="form-control">
-                <input matInput formControlName="cc" placeholder="Cc:">
-            </mat-form-field>
-            <mat-form-field class="form-control">
-                <input matInput formControlName="bcc" placeholder="Bcc:">
-            </mat-form-field>
-            <mat-form-field class="form-control">
-                <input matInput formControlName="subject" placeholder="Subject">
-            </mat-form-field>
-            <mat-form-field class="form-control">
-                <textarea matInput formControlName="message" placeholder="Message"
-                    mat-autosize="true" [matAutosizeMinRows]=5 [matAutosizeMaxRows]=10></textarea>
-            </mat-form-field>
-        </ng-container>
-    </ng-template>
-
-    <!-- complete form
-    <mat-tab-group class="container-fluid md-no-animation" [@.disabled]="true">
-        <mat-tab label="General">
-            <ng-template *ngTemplateOutlet="generalFormGroup"></ng-template>
-        </mat-tab>
-        <mat-tab label="Email">
-        </mat-tab>
-    </mat-tab-group> -->
-    <ng-template *ngTemplateOutlet="mailFormGroup"></ng-template>
+    <mat-form-field class="form-control">
+        <input matInput formControlName="to" placeholder="To">
+    </mat-form-field>
+    <mat-form-field class="form-control">
+        <input matInput formControlName="cc" placeholder="Cc:">
+    </mat-form-field>
+    <mat-form-field class="form-control">
+        <input matInput formControlName="bcc" placeholder="Bcc:">
+    </mat-form-field>
+    <mat-form-field class="form-control">
+        <input matInput formControlName="subject" placeholder="Subject">
+    </mat-form-field>
+    <mat-form-field class="form-control">
+        <textarea matInput formControlName="message" placeholder="Message"
+            mat-autosize="true" [matAutosizeMinRows]=5 [matAutosizeMaxRows]=10></textarea>
+    </mat-form-field>
 </form>

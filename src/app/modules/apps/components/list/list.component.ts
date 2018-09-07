@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IQlikApp } from '@apps/api/app.interface';
 import { SerAppManagerService } from '@core/ser-app/provider/ser-app-manager.service';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
     selector: 'app-list',
@@ -16,6 +17,8 @@ export class AppListComponent implements OnInit {
 
     public isLoading = true;
 
+    public selection: SelectionModel<IQlikApp>;
+
     private appManager: SerAppManagerService;
 
     private router: Router;
@@ -27,9 +30,10 @@ export class AppListComponent implements OnInit {
         routerProvider: Router,
         appManager: SerAppManagerService
     ) {
-        this.route  = route;
-        this.router = routerProvider;
+        this.route      = route;
+        this.router     = routerProvider;
         this.appManager = appManager;
+        this.selection  = new SelectionModel<IQlikApp>();
      }
 
     public async ngOnInit() {
@@ -57,11 +61,8 @@ export class AppListComponent implements OnInit {
      * @memberof AppListComponent
      */
     public editApp() {
-
-        // const selections = this.selection.getSelection();
-        // route to edit
-        // this.router.navigate([`edit/${selections[0].qDocId}`], { relativeTo: this.route});
-        this.router.navigate([`edit/1234`, {relativeTo: this.route}]);
+        this.appManager.selectApps(this.selection.selected);
+        this.router.navigate([`edit/${this.selection.selected[0].qDocId}`], { relativeTo: this.route});
     }
 
     /**
@@ -71,7 +72,7 @@ export class AppListComponent implements OnInit {
      * @memberof AppListComponent
      */
     public selectApp(app: IQlikApp) {
-        // this.selection.addSelection(app);
+        this.selection.select(app);
     }
 
     /**

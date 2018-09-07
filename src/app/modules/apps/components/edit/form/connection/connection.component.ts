@@ -1,7 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IQlikApp } from '@apps/api/app.interface';
-import { map } from 'rxjs/operators';
+import { map, mergeMap, filter, mergeAll, flatMap } from 'rxjs/operators';
+import { ISerApp } from '@core/ser-app/api/ser-app.interface';
+import { SerAppManagerService } from '@core/ser-app/provider/ser-app-manager.service';
+import { EditAppService } from '@apps/provider/edit-app.service';
+import { empty, forkJoin, from, Observable } from 'rxjs';
 
 @Component({
     selector: 'app-edit-form-app',
@@ -14,12 +18,22 @@ export class ConnectionComponent implements OnInit, OnDestroy {
 
     public apps: IQlikApp[];
 
+    public currentApp: ISerApp;
+
     private formBuilder: FormBuilder;
+
+    private appManager: SerAppManagerService;
+
+    private editService: EditAppService;
 
     constructor(
         formBuilder: FormBuilder,
+        appManager: SerAppManagerService,
+        editService: EditAppService
     ) {
         this.formBuilder = formBuilder;
+        this.appManager  = appManager;
+        this.editService = editService;
     }
 
     ngOnDestroy() {
@@ -28,43 +42,47 @@ export class ConnectionComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
 
-        /*
-        this.serApiProvider.fetchApps()
-            .pipe(
-                map( (apps: IQlikApp[]) => {
-                    return apps.filter( (app: IQlikApp) => {
-                        return true;
-                        // return app.qDocId !== this.currentApp.qDocId;
-                    });
-                })
-            )
-            .subscribe( (apps: IQlikApp[]) => {
-                this.apps = apps;
+        this.editService.loadApp()
+        .pipe(
+            mergeMap( (app: ISerApp) => {
+                return this.loadAvailableApps(app);
+            })
+        )
+        .subscribe ((result) => {
+            this.currentApp = result.app;
+            this.apps       = result.apps;
+
+            if ( this.currentApp ) {
                 this.connectionForm = this.buildFormGroup();
-            });
-            */
-    }
-
-    public applyConfig() {
-
-        /*
-        this.appProvider.writeConnectionConfiguration({
-            app: this.connectionForm.get('app').value
+            }
         });
-        */
     }
 
-    public cancel() {}
+    private loadAvailableApps(app: ISerApp): Observable<{app: ISerApp, apps: IQlikApp[]}> {
+
+        return this.appManager.loadApps()
+        .pipe(
+            map( (apps: IQlikApp[]) => {
+                return apps.filter( (qapp: IQlikApp) => {
+                    return app !== null && qapp.qDocId !== app.appId;
+                });
+            }),
+            map( (apps: IQlikApp[]) => {
+                return {app, apps};
+            })
+        );
+    }
 
     private buildFormGroup(): FormGroup {
-        /*
-        const config = this.appProvider.resolveConnectionConfig();
+
         const formGroup = this.formBuilder.group({
-            app: this.formBuilder.control(config.app, Validators.required)
+            app: this.formBuilder.control(this.currentApp.report.connections.app, Validators.required)
         });
 
         return formGroup;
-        */
-       return null;
+    }
+
+    private updateForm() {
+        // @todo implement
     }
 }
