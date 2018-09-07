@@ -1,21 +1,23 @@
-import { Component, OnInit, HostBinding, Input } from '@angular/core';
-import { FormBuilder, FormGroup, SelectControlValueAccessor } from '@angular/forms';
-import { SelectionMode, ISerGeneral } from 'ser.api';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { SelectionMode } from 'ser.api';
 import { ISerApp } from '@core/ser-app/api/ser-app.interface';
 import { EditAppService } from '@apps/provider/edit-app.service';
 
 @Component({
     selector: 'app-edit-form-settings',
-    templateUrl: 'general.component.html'
+    templateUrl: 'settings.component.html'
 })
 
-export class GeneralComponent implements OnInit {
+export class SettingsComponent implements OnInit {
 
     private formBuilder: FormBuilder;
 
     public userSelectionMode: Array<{label: string, value: number}>;
 
     public generalForm: FormGroup;
+
+    public mailServerSettingsForm: FormGroup;
 
     public editService: EditAppService;
 
@@ -35,13 +37,14 @@ export class GeneralComponent implements OnInit {
         .subscribe( (app: ISerApp) => {
             if ( app !== null ) {
                 this.app = app;
-                this.userSelectionMode = this.buildUserSelectionFields();
-                this.generalForm       = this.createGeneralForm();
+                this.userSelectionMode      = this.buildUserSelectionFields();
+                this.generalForm            = this.buildGeneralSettingsForm();
+                this.mailServerSettingsForm = this.buildMailServerSettingsForm();
             }
         });
     }
 
-    private createGeneralForm(): FormGroup {
+    private buildGeneralSettingsForm(): FormGroup {
         const config       = this.app.report.general;
         const generalGroup = this.formBuilder.group({
             cleanUpTimer    : this.formBuilder.control(config.cleanupTimeOut),
@@ -55,9 +58,17 @@ export class GeneralComponent implements OnInit {
         return generalGroup;
     }
 
-    private generateMailServerSettingsForm(): FormGroup {
+    private buildMailServerSettingsForm(): FormGroup {
         // @TODO implement
-        return null;
+        const mailServerSettings = this.app.report.distribute.mail.mailServer;
+        return this.formBuilder.group({
+            host: this.formBuilder.control(mailServerSettings.host),
+            from: this.formBuilder.control(mailServerSettings.from),
+            port: this.formBuilder.control(mailServerSettings.port),
+            username: this.formBuilder.control(mailServerSettings.username),
+            password: this.formBuilder.control(mailServerSettings.password),
+            useSsl: this.formBuilder.control(mailServerSettings.useSsl)
+        });
     }
 
     private buildUserSelectionFields(): Array<{label: string, value: number}> {

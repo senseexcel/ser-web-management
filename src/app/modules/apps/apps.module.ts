@@ -11,7 +11,7 @@ import {
   MatCheckboxModule,
   MatTabsModule
 } from '@angular/material';
-import { ConnectionComponent, GeneralComponent, TemplateComponent, FormControlsComponent } from './components/edit';
+import { ConnectionComponent, SettingsComponent, TemplateComponent, FormControlsComponent } from './components/edit';
 import {
   DistributionComponent,
   DistributionFileComponent,
@@ -39,7 +39,7 @@ import { SerAppModule } from '@core/ser-app/ser-app.module';
     AppsComponent,
     ConnectionComponent,
     FormControlsComponent,
-    GeneralComponent,
+    SettingsComponent,
     TemplateComponent,
     DistributionComponent,
     DistributionFileComponent,

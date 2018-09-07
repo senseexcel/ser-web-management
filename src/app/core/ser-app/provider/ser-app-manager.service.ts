@@ -4,7 +4,6 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 // @todo move interface to core
 import { IQlikApp } from '@apps/api/app.interface';
-import { SelectionModel } from '@angular/cdk/collections';
 import { SerApp } from '@core/ser-app/model/app.model';
 import { ReportModel } from '@core/ser-report/model/report.model';
 import { ConnectionModel } from '@core/ser-report/model/connection.model';
@@ -15,6 +14,7 @@ import { SerScriptService } from '@core/ser-script/provider/ser-script.provider'
 import { ISerScriptData } from '@core/ser-script/api/ser-script-data.interface';
 import { defaultScript } from '@core/ser-script/data/default-script';
 import { ISerApp } from '../api/ser-app.interface';
+import { ReportService } from '@core/ser-report/services/report.service';
 
 @Injectable()
 export class SerAppManagerService {
@@ -29,6 +29,8 @@ export class SerAppManagerService {
 
     private isSerAppsLoaded = false;
 
+    private reportService: ReportService;
+
     private serAppService: SerAppService;
 
     private serScriptService: SerScriptService;
@@ -41,10 +43,12 @@ export class SerAppManagerService {
 
     constructor(
         serAppService: SerAppService,
-        scriptService: SerScriptService
+        scriptService: SerScriptService,
+        reportService: ReportService
     ) {
         this.serAppService    = serAppService;
         this.serScriptService = scriptService;
+        this.reportService    = reportService;
         this.openApps         = new WeakMap<ISerApp, EngineAPI.IApp>();
 
         this.loadedApps    = new BehaviorSubject<IQlikApp[]>([]);
@@ -200,14 +204,20 @@ export class SerAppManagerService {
         const serApp = new SerApp();
         const scriptData: ISerScriptData  = this.serScriptService.parse(script);
         const reports = this.serScriptService.extractReports(scriptData);
+        const report  = new ReportModel();
 
-        console.log(scriptData.script);
-
-        const report = new ReportModel();
-        report.connections = reports[0].connections || new ConnectionModel();
-        report.general     = reports[0].general     || new GeneralSettingsModel();
-        report.template    = reports[0].template    || new TemplateModel();
-        report.distribute  = reports[0].distribute  || new DeliveryModel();
+        // @todo refactor this let the report service do the action
+        if (reports[0]) {
+            report.connections = reports[0].connections || new ConnectionModel();
+            report.general     = reports[0].general     || new GeneralSettingsModel();
+            report.template    = reports[0].template    || new TemplateModel();
+            report.distribute  = reports[0].distribute  || this.reportService.createDeliverySettings();
+        } else {
+            report.connections = new ConnectionModel();
+            report.general     = new GeneralSettingsModel();
+            report.template    = new TemplateModel();
+            report.distribute  = this.reportService.createDeliverySettings();
+        }
 
         serApp.script = scriptData;
         serApp.appId  = app.id;

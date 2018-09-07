@@ -44,6 +44,15 @@ export class SerScriptService {
      * @param data
      */
     public extractReports(data: ISerScriptData): ISerReport[] {
-        return data.script.tasks[0].reports;
+
+        let reports: ISerReport[];
+
+        try {
+            reports = data.script.tasks[0].reports;
+        } catch (e) {
+            reports = [];
+        }
+
+        return reports;
     }
 }

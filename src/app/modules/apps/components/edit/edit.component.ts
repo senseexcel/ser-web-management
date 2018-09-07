@@ -5,7 +5,7 @@ import { SerAppManagerService } from '@core/ser-app/provider/ser-app-manager.ser
 import { ISerApp } from '@core/ser-app/api/ser-app.interface';
 import { IQlikApp } from '@apps/api/app.interface';
 import { EditAppService } from '@apps/provider/edit-app.service';
-import { ConnectionComponent, DistributionComponent, GeneralComponent, TemplateComponent} from './form';
+import { ConnectionComponent, DistributionComponent, SettingsComponent, TemplateComponent} from './form';
 
 @Component({
     selector: 'app-qlik-edit',
@@ -50,7 +50,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
             { label: 'App'         , component: ConnectionComponent   },
             { label: 'Template'    , component: TemplateComponent     },
             { label: 'Distribution', component: DistributionComponent },
-            { label: 'Settings'    , component: GeneralComponent      },
+            { label: 'Settings'    , component: SettingsComponent     },
         ];
 
         if ( this.activeRoute.routeConfig.path === 'new' ) {
@@ -73,8 +73,9 @@ export class AppEditComponent implements OnInit, OnDestroy {
     private initNewApp() {
 
         this.appManager.createApp('initial name')
-        .subscribe( () => {
-            // app open
+        .subscribe( (app: ISerApp) => {
+            this.editService.editApp(app);
+            console.dir(app);
         });
     }
 
