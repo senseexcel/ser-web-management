@@ -1,6 +1,17 @@
 export const defaultScript = `
-///$tag SenseExcelReporting
-SET task = ´´
+///$tab Sense Excel Reporting
+SET task = ´
+tasks:
+[
+  {
+    reports:
+    [
+      {
+      }
+    ]
+  }
+]
+´
 
 //Start reporting
 Let resultWithTaskId = SER.START(task);

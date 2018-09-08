@@ -1,16 +1,17 @@
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
-import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
 import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { IQlikApp } from '@apps/api/app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
+import { Subject, from } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
 import { ConnectionComponent, DistributionComponent, SettingsComponent, TemplateComponent} from './form';
 
 @Component({
     selector: 'app-qlik-edit',
     templateUrl: 'edit.component.html',
-    providers: [ FormService ]
+    providers: [FormService]
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
@@ -26,6 +27,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     private isDestroyed$: Subject<boolean>;
     private activeRoute: ActivatedRoute;
     private appManager: SerAppManagerService;
+    private app: ISerApp;
 
     constructor(
         activeRoute: ActivatedRoute,
@@ -39,6 +41,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     }
 
     public ngOnDestroy(): void {
+        this.appManager.closeApp(this.app);
         this.isDestroyed$.next(true);
     }
 
@@ -75,6 +78,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
         this.appManager.createApp(name)
         .subscribe( (app: ISerApp) => {
+            this.app = app;
             this.formService.editApp(app);
         });
     }
@@ -90,28 +94,29 @@ export class AppEditComponent implements OnInit, OnDestroy {
         this.apps = this.appManager.getSelectedApps();
         this.appManager.openApp(this.apps[0].qDocId)
             .subscribe((app: ISerApp) => {
+                this.app = app;
                 this.formService.editApp(app);
             });
     }
 
+    /**
+     * on save app, let the form service update the app
+     *
+     * @private
+     * @memberof AppEditComponent
+     */
     private save() {
-        /** @todo implement */
         this.formService.updateApp()
-        .subscribe( (app: ISerApp) => {
-            console.log(app);
+        .pipe(
+            mergeMap( () => {
+                return this.appManager.saveApp(this.app);
+            })
+        )
+        .subscribe(() => {
+            console.log('app saved');
         });
     }
 
     private cancel() {
-    }
-
-    /**
-     * get notified if app ser configuration has been changed
-     *
-     * @private
-     * @returns {Observable<void>}
-     * @memberof AppEditComponent
-     */
-    private onUpdate(): void  {
     }
 }

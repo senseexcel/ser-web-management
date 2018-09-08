@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as hjson from 'hjson';
 
-import { ISerScript } from '../api/ser-script.interface';
 import { ISerScriptData } from '../api/ser-script-data.interface';
 import { ISerReport } from '@core/modules/ser-report/api/ser-report.interface';
 
@@ -34,8 +33,20 @@ export class SerScriptService {
         };
     }
 
-    public stringify(script: ISerScript): string {
-        return hjson.stringify(script);
+    /**
+     * return complete app script as string
+     *
+     * @param {ISerScriptData} script
+     * @returns {string}
+     * @memberof SerScriptService
+     */
+    public stringify(script: ISerScriptData): string {
+
+        return ''.concat(
+            script.before,
+            hjson.stringify(script.script),
+            script.after
+        );
     }
 
     /**

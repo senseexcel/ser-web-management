@@ -80,9 +80,13 @@ export class SerAppManagerService {
     public createApp(name: string): Observable<ISerApp> {
         return this.serAppService.createApp(name)
         .pipe(
-            map( (app: EngineAPI.IApp) => {
+            switchMap( async (app) => {
+                const script = await app.getScript();
+                return {app, script};
+            }),
+            map( ( result ) => {
                 // trigger new on serApps and apps
-                return this.buildApp(app, defaultScript);
+                return this.buildApp(result.app, `${result.script}${defaultScript}`);
             })
         );
     }
@@ -93,11 +97,16 @@ export class SerAppManagerService {
      * @param {ISerApp} app
      * @memberof SerAppManagerService
      */
-    public saveApp(app: ISerApp) {
+    public async saveApp(app: ISerApp): Promise<void> {
+
+        // set new script to app
+        app.script.script.tasks[0].reports[0] = this.reportService.getRawValue(app.report);
+        const newScript = this.serScriptService.stringify(app.script);
 
         if ( this.openApps.has(app) ) {
             const qApp = this.openApps.get(app);
-            qApp.doSave();
+            await qApp.setScript(newScript);
+            await qApp.doSave();
         }
     }
 

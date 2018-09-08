@@ -46,6 +46,12 @@ export class SerAppService {
         );
     }
 
+    /**
+     * get all sense excel reporting apps
+     *
+     * @returns {Observable<IQlikApp[]>}
+     * @memberof SerAppService
+     */
     public fetchSenseExcelReportingApps(): Observable<IQlikApp[]> {
 
         return from(this.fetchApps()).pipe(
@@ -58,6 +64,14 @@ export class SerAppService {
         );
     }
 
+    /**
+     * filters all given apps for sense excel reporting apps
+     *
+     * @private
+     * @param {IQlikApp[]} apps
+     * @returns {Observable<IQlikApp[]>}
+     * @memberof SerAppService
+     */
     private getSerApps(apps: IQlikApp[]): Observable<IQlikApp[]> {
 
         const need = apps.length;
@@ -106,6 +120,13 @@ export class SerAppService {
         );
     }
 
+    /**
+     * load existing app by id
+     *
+     * @param {string} appId
+     * @returns {Observable<EngineAPI.IApp>}
+     * @memberof SerAppService
+     */
     public loadApp(appId: string): Observable<EngineAPI.IApp> {
 
         return from(this.createSession(appId))
@@ -117,10 +138,15 @@ export class SerAppService {
             );
     }
 
+    /**
+     * create new app
+     *
+     * @param {string} appName
+     * @returns {Observable<any>}
+     * @memberof SerAppService
+     */
     public createApp(appName: string): Observable<any> {
 
-        return from([1]);
-        /*
         return from(this.createSession())
         .pipe(
             mergeMap( async (session: enigmaJS.ISession) => {
@@ -136,6 +162,5 @@ export class SerAppService {
                 return response.global.openDoc(response.newApp.qAppId, '', '', '', true);
             })
         );
-        */
     }
 }

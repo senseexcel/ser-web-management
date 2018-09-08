@@ -47,23 +47,38 @@ export class SettingsComponent implements OnInit {
         });
     }
 
+    /**
+     * build general settings form
+     *
+     * @private
+     * @returns {FormGroup}
+     * @memberof SettingsComponent
+     */
     private buildGeneralSettingsForm(): FormGroup {
         const config       = this.app.report.general;
+
         const generalGroup = this.formBuilder.group({
-            cleanUpTimer    : this.formBuilder.control(config.cleanupTimeOut),
-            timeout         : this.formBuilder.control(config.timeout),
-            errorRepeatCount: this.formBuilder.control(config.errorRepeatCount),
-            useSandbox      : this.formBuilder.control(config.useSandbox),
-            taskCount       : this.formBuilder.control(config.taskCount),
-            useUserSelection: this.formBuilder.control(config.useUserSelections)
+            cleanupTimeOut   : this.formBuilder.control(config.cleanupTimeOut),
+            timeout          : this.formBuilder.control(config.timeout),
+            errorRepeatCount : this.formBuilder.control(config.errorRepeatCount),
+            useSandbox       : this.formBuilder.control(config.useSandbox),
+            taskCount        : this.formBuilder.control(config.taskCount),
+            useUserSelections: this.formBuilder.control(config.useUserSelections)
         });
 
         return generalGroup;
     }
 
+    /**
+     * build mail server settings form group
+     *
+     * @private
+     * @returns {FormGroup}
+     * @memberof SettingsComponent
+     */
     private buildMailServerSettingsForm(): FormGroup {
-        // @TODO implement
         const mailServerSettings = this.app.report.distribute.mail.mailServer;
+
         return this.formBuilder.group({
             host: this.formBuilder.control(mailServerSettings.host),
             from: this.formBuilder.control(mailServerSettings.from),
@@ -74,6 +89,13 @@ export class SettingsComponent implements OnInit {
         });
     }
 
+    /**
+     * get user selection fields and convert enum into datanode
+     *
+     * @private
+     * @returns {Array<{label: string, value: number}>}
+     * @memberof SettingsComponent
+     */
     private buildUserSelectionFields(): Array<{label: string, value: number}> {
         return Object.keys(SelectionMode)
             .filter( (value) => {
@@ -96,7 +118,15 @@ export class SettingsComponent implements OnInit {
      */
     private buildUpdateHook(): Observable<IFormResponse> {
 
-        const observer = new Observable<IFormResponse>((obs) => {
+        const observer = Observable.create((obs) => {
+
+            const generalData    = this.generalForm.getRawValue();
+            const mailServerData = this.mailServerSettingsForm.getRawValue();
+
+            // update model
+            this.app.report.general = generalData;
+            this.app.report.distribute.mail.mailServer = mailServerData;
+
             obs.next({
                 errors: [],
                 valid: true,

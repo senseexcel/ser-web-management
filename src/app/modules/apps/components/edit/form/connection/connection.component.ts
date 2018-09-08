@@ -120,11 +120,14 @@ export class ConnectionComponent implements OnInit, OnDestroy {
     private buildUpdateHook(): Observable<IFormResponse> {
 
         const observer = new Observable<IFormResponse>((obs) => {
+            this.currentApp.report.connections = this.connectionForm.getRawValue();
+
             obs.next({
                 errors: [],
-                valid: true,
+                valid: this.connectionForm.valid,
             });
         });
+
         return observer;
     }
 }

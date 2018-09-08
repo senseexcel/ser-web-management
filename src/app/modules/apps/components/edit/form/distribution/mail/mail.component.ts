@@ -2,6 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
+import { Observable } from 'rxjs';
+import { IFormResponse } from '@core/modules/form-helper';
 
 @Component({
     selector: 'app-distribution-mail',
@@ -10,12 +12,11 @@ import { FormService } from '@core/modules/form-helper/provider/form.service';
 export class DistributionMailComponent implements OnInit {
 
     public mailForm: FormGroup;
-
-    private formBuilder: FormBuilder;
-
     public formService: FormService<ISerApp>;
 
     private app: ISerApp;
+    private formBuilder: FormBuilder;
+    private updateHook: Observable<IFormResponse>;
 
     constructor(
         formBuilder: FormBuilder,
@@ -26,6 +27,10 @@ export class DistributionMailComponent implements OnInit {
     }
 
     ngOnInit() {
+
+        /** create / register update hook if form should be updated */
+        this.updateHook = this.buildUpdateHook();
+        this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
         this.formService.loadApp()
         .subscribe((app: ISerApp) => {
@@ -52,19 +57,29 @@ export class DistributionMailComponent implements OnInit {
         });
     }
 
-    private createMailServerGroup(): FormGroup {
-        /*
-        const mailServer = this.appProvider.resolveDistributionConfig().mail.mailServer;
+    /**
+     * create hook for form should updated
+     *
+     * @private
+     * @returns {Observable<string>}
+     * @memberof ConnectionComponent
+     */
+    private buildUpdateHook(): Observable<IFormResponse> {
 
-        return this.formBuilder.group({
-            host: this.formBuilder.control(mailServer.host, [Validators.required]),
-            from: this.formBuilder.control(mailServer.from, Validators.required),
-            port: this.formBuilder.control(mailServer.port, Validators.required),
-            username: this.formBuilder.control(mailServer.username, Validators.required),
-            password: this.formBuilder.control(mailServer.password, [Validators.required]),
-            useSsl: this.formBuilder.control(mailServer.useSsl || false)
+        const observer = new Observable<IFormResponse>((obs) => {
+
+            // save mailServer fist before we update so nothing is lost
+            const mailServer = this.app.report.distribute.mail.mailServer;
+            const mail = this.mailForm.getRawValue();
+            mail.mailServer = mailServer;
+
+            this.app.report.distribute.mail = mail;
+
+            obs.next({
+                errors: [],
+                valid: this.mailForm.valid,
+            });
         });
-        */
-       return null;
+        return observer;
     }
 }

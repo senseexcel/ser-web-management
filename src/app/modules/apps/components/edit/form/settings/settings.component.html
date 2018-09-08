@@ -6,7 +6,7 @@
         <mat-tab label="General Settings">
             <div [formGroup]="generalForm">
                 <mat-form-field class="form-control">
-                    <input matInput formControlName="cleanUpTimer" placeholder="Clean up timer">
+                    <input matInput formControlName="cleanupTimeOut" placeholder="Clean Up Timeout">
                 </mat-form-field>
 
                 <mat-form-field class="form-control">
@@ -24,7 +24,7 @@
                 </mat-form-field>
 
                 <mat-form-field class="form-control">
-                    <mat-select formControlName="useUserSelection" placeholder="Selectionmode">
+                    <mat-select formControlName="useUserSelections" placeholder="Selectionmode">
                         <mat-option *ngFor="let mode of userSelectionMode" [value]="mode.value">
                             {{mode.label}}
                         </mat-option>

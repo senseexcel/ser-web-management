@@ -1,25 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DistributeMode } from 'ser.api';
 import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
+import { Observable } from 'rxjs';
+import { IFormResponse } from '@core/modules/form-helper';
 
 @Component({
     selector: 'app-distribution-file',
     templateUrl: 'file.component.html'
 })
 
-export class DistributionFileComponent implements OnInit {
+export class DistributionFileComponent implements OnInit, OnDestroy {
 
     public fileForm: FormGroup;
-
     public distributionModes;
 
-    private formBuilder: FormBuilder;
-
-    public formService: FormService<ISerApp>;
-
     private app: ISerApp;
+    private formBuilder: FormBuilder;
+    private formService: FormService<ISerApp>;
+    private updateHook: Observable<IFormResponse>;
 
     constructor(
         formBuilder: FormBuilder,
@@ -29,7 +29,15 @@ export class DistributionFileComponent implements OnInit {
         this.formService = formService;
     }
 
+    ngOnDestroy() {
+        this.formService.unRegisterHook(FormService.HOOK_UPDATE, this.updateHook);
+    }
+
     ngOnInit() {
+
+        /** create / register update hook if form should be updated */
+        this.updateHook = this.buildUpdateHook();
+        this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
         this.formService.loadApp()
         .subscribe((app: ISerApp) => {
@@ -43,6 +51,13 @@ export class DistributionFileComponent implements OnInit {
         });
     }
 
+    /**
+     * create form components for distribute file
+     *
+     * @private
+     * @returns {FormGroup}
+     * @memberof DistributionFileComponent
+     */
     private createTemplateForm(): FormGroup {
 
         this.distributionModes = this.createDistributionModes();
@@ -54,7 +69,6 @@ export class DistributionFileComponent implements OnInit {
             mode       : this.formBuilder.control(fileData.mode),
             connections: this.formBuilder.control(fileData.connections)
         });
-       return null;
     }
 
     private createDistributionModes(): Array<{label: string, value: string}> {
@@ -69,5 +83,24 @@ export class DistributionFileComponent implements OnInit {
                     value: name
                 };
             });
+    }
+
+    /**
+     * create hook for form should updated
+     *
+     * @private
+     * @returns {Observable<string>}
+     * @memberof ConnectionComponent
+     */
+    private buildUpdateHook(): Observable<IFormResponse> {
+
+        const observer = new Observable<IFormResponse>((obs) => {
+            this.app.report.distribute.file = this.fileForm.getRawValue();
+            obs.next({
+                errors: [],
+                valid: this.fileForm.valid,
+            });
+        });
+        return observer;
     }
 }

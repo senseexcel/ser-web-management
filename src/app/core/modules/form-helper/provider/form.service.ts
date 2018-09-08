@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, forkJoin, of, from } from 'rxjs';
-import { map, mergeMap, switchMap, buffer, bufferCount } from 'rxjs/operators';
+import { switchMap, bufferCount } from 'rxjs/operators';
 import { IFormResponse } from '../api/response.interface';
 
 @Injectable()
