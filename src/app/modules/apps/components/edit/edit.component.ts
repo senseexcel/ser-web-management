@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { SerAppManagerService } from '@core/ser-app/provider/ser-app-manager.service';
-import { ISerApp } from '@core/ser-app/api/ser-app.interface';
+import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
+import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { IQlikApp } from '@apps/api/app.interface';
-import { EditAppService } from '@apps/provider/edit-app.service';
+import { FormService } from '@core/modules/form-helper/provider/form.service';
 import { ConnectionComponent, DistributionComponent, SettingsComponent, TemplateComponent} from './form';
 
 @Component({
     selector: 'app-qlik-edit',
     templateUrl: 'edit.component.html',
-    providers: [ EditAppService ]
+    providers: [ FormService ]
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
@@ -18,7 +18,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public properties: any[];
     public selectedProperty: any;
     public isLoading = true;
-    public editService: EditAppService;
+    public formService: FormService<ISerApp>;
 
     @HostBinding('class.flex-container')
     protected hostClass = true;
@@ -26,17 +26,16 @@ export class AppEditComponent implements OnInit, OnDestroy {
     private isDestroyed$: Subject<boolean>;
     private activeRoute: ActivatedRoute;
     private appManager: SerAppManagerService;
-    private isNew: boolean;
 
     constructor(
         activeRoute: ActivatedRoute,
         appManager: SerAppManagerService,
-        editService: EditAppService
+        formService: FormService<ISerApp>
     ) {
         this.isDestroyed$ = new Subject<boolean>();
         this.activeRoute  = activeRoute;
-        this.appManager    = appManager;
-        this.editService = editService;
+        this.appManager   = appManager;
+        this.formService  = formService;
     }
 
     public ngOnDestroy(): void {
@@ -76,8 +75,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
         this.appManager.createApp(name)
         .subscribe( (app: ISerApp) => {
-            this.editService.editApp(app);
-            console.dir(app);
+            this.formService.editApp(app);
         });
     }
 
@@ -92,8 +90,19 @@ export class AppEditComponent implements OnInit, OnDestroy {
         this.apps = this.appManager.getSelectedApps();
         this.appManager.openApp(this.apps[0].qDocId)
             .subscribe((app: ISerApp) => {
-                this.editService.editApp(app);
+                this.formService.editApp(app);
             });
+    }
+
+    private save() {
+        /** @todo implement */
+        this.formService.updateApp()
+        .subscribe( (app: ISerApp) => {
+            console.log(app);
+        });
+    }
+
+    private cancel() {
     }
 
     /**

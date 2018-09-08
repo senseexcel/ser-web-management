@@ -12,13 +12,14 @@ import {
   DistributionHubComponent,
   DistributionMailComponent
 } from './components/edit/form/distribution';
-import { SerAppModule } from '@core/ser-app/ser-app.module';
-
+import { FormHelperModule } from '@core/modules/form-helper/form-helper.module';
+import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
 
 @NgModule({
   imports: [
     AppsRoutingModule,
     CommonModule,
+    FormHelperModule,
     MaterialModule,
     ReactiveFormsModule,
     SerAppModule

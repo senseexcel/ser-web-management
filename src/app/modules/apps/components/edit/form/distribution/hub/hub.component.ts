@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DistributeMode } from 'ser.api';
-import { EditAppService } from '@apps/provider/edit-app.service';
-import { ISerApp } from '@core/ser-app/api/ser-app.interface';
+import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
+import { FormService } from '@core/modules/form-helper/provider/form.service';
 
 @Component({
     selector: 'app-distribution-hub',
@@ -14,7 +14,7 @@ export class DistributionHubComponent implements OnInit {
 
     public distributeModes: any;
 
-    public editService: EditAppService;
+    private formService: FormService<ISerApp>;
 
     private app: ISerApp;
 
@@ -22,15 +22,15 @@ export class DistributionHubComponent implements OnInit {
 
     constructor(
         formBuilder: FormBuilder,
-        editService: EditAppService
+        formService: FormService<ISerApp>
     ) {
         this.formBuilder = formBuilder;
-        this.editService = editService;
+        this.formService = formService;
     }
 
     ngOnInit() {
 
-        this.editService.loadApp()
+        this.formService.loadApp()
         .subscribe((app: ISerApp) => {
 
             if ( app === null ) {

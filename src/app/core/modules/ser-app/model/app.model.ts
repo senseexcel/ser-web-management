@@ -1,6 +1,6 @@
 import { ISerApp } from '../api/ser-app.interface';
-import { ISerReport } from '@core/ser-report/api/ser-report.interface';
-import { ISerScriptData } from '@core/ser-script/api/ser-script-data.interface';
+import { ISerReport } from '@core/modules/ser-report/api/ser-report.interface';
+import { ISerScriptData } from '@core/modules/ser-script/api/ser-script-data.interface';
 
 export class SerApp implements ISerApp {
 

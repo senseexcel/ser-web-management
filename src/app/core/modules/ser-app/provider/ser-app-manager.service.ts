@@ -1,20 +1,19 @@
 import { Injectable } from '@angular/core';
-import { SerAppService } from '@core/ser-engine/provider/ser-app.provider';
+import { SerAppService } from '@core/modules/ser-engine/provider/ser-app.provider';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { switchMap, map } from 'rxjs/operators';
 // @todo move interface to core
 import { IQlikApp } from '@apps/api/app.interface';
-import { SerApp } from '@core/ser-app/model/app.model';
-import { ReportModel } from '@core/ser-report/model/report.model';
-import { ConnectionModel } from '@core/ser-report/model/connection.model';
-import { GeneralSettingsModel } from '@core/ser-report/model/settings/general-settings.model';
-import { TemplateModel } from '@core/ser-report/model/template.model';
-import { DeliveryModel } from '@core/ser-report/model/delivery.model';
-import { SerScriptService } from '@core/ser-script/provider/ser-script.provider';
-import { ISerScriptData } from '@core/ser-script/api/ser-script-data.interface';
-import { defaultScript } from '@core/ser-script/data/default-script';
+import { SerApp } from '@core/modules/ser-app/model/app.model';
+import { ReportModel } from '@core/modules/ser-report/model/report.model';
+import { ConnectionModel } from '@core/modules/ser-report/model/connection.model';
+import { GeneralSettingsModel } from '@core/modules/ser-report/model/settings/general-settings.model';
+import { TemplateModel } from '@core/modules/ser-report/model/template.model';
+import { SerScriptService } from '@core/modules/ser-script/provider/ser-script.provider';
+import { ISerScriptData } from '@core/modules/ser-script/api/ser-script-data.interface';
+import { defaultScript } from '@core/modules/ser-script/data/default-script';
+import { ReportService } from '@core/modules/ser-report/services/report.service';
 import { ISerApp } from '../api/ser-app.interface';
-import { ReportService } from '@core/ser-report/services/report.service';
 
 @Injectable()
 export class SerAppManagerService {

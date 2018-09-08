@@ -1,6 +1,6 @@
 import { Component, OnInit, HostBinding, Input } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
-import { ISerApp } from '@core/ser-app/api/ser-app.interface';
+import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 
 @Component({
     selector: 'app-edit-form-distribution',

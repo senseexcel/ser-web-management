@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DistributeMode } from 'ser.api';
-import { EditAppService } from '@apps/provider/edit-app.service';
-import { ISerApp } from '@core/ser-app/api/ser-app.interface';
+import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
+import { FormService } from '@core/modules/form-helper/provider/form.service';
 
 @Component({
     selector: 'app-distribution-file',
@@ -17,21 +17,21 @@ export class DistributionFileComponent implements OnInit {
 
     private formBuilder: FormBuilder;
 
-    public editService: EditAppService;
+    public formService: FormService<ISerApp>;
 
     private app: ISerApp;
 
     constructor(
         formBuilder: FormBuilder,
-        editService: EditAppService
+        formService: FormService<ISerApp>
     ) {
         this.formBuilder = formBuilder;
-        this.editService = editService;
+        this.formService = formService;
     }
 
     ngOnInit() {
 
-        this.editService.loadApp()
+        this.formService.loadApp()
         .subscribe((app: ISerApp) => {
 
             if ( app === null ) {

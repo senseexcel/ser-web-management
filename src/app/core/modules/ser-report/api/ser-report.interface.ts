@@ -1,4 +1,4 @@
-import { ISerConnection, ISerGeneral, ISerTemplate, IFileSettings, IHubSettings, IMailSettings } from 'ser.api';
+import { ISerConnection, ISerGeneral, ISerTemplate } from 'ser.api';
 import { ISerDelivery } from './ser-delivery.interface';
 
 export interface ISerReport {

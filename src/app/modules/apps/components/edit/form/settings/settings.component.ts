@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SelectionMode } from 'ser.api';
-import { ISerApp } from '@core/ser-app/api/ser-app.interface';
-import { EditAppService } from '@apps/provider/edit-app.service';
+import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
+import { FormService } from '@core/modules/form-helper/provider/form.service';
+import { Observable } from 'rxjs';
+import { IFormResponse } from '@core/modules/form-helper';
 
 @Component({
     selector: 'app-edit-form-settings',
@@ -19,21 +21,22 @@ export class SettingsComponent implements OnInit {
 
     public mailServerSettingsForm: FormGroup;
 
-    public editService: EditAppService;
+    public formService: FormService<ISerApp>;
 
     private app: ISerApp;
 
     constructor(
         builder: FormBuilder,
-        editService: EditAppService,
+        formService: FormService<ISerApp>,
     ) {
         this.formBuilder = builder;
-        this.editService = editService;
+        this.formService = formService;
     }
 
     ngOnInit() {
 
-        this.editService.loadApp()
+        this.formService.registerHook(FormService.HOOK_UPDATE, this.buildUpdateHook());
+        this.formService.loadApp()
         .subscribe( (app: ISerApp) => {
             if ( app !== null ) {
                 this.app = app;
@@ -82,5 +85,24 @@ export class SettingsComponent implements OnInit {
                     value: SelectionMode[name]
                 };
             });
+    }
+
+    /**
+     * create hook for form should updated
+     *
+     * @private
+     * @returns {Observable<string>}
+     * @memberof ConnectionComponent
+     */
+    private buildUpdateHook(): Observable<IFormResponse> {
+
+        const observer = new Observable<IFormResponse>((obs) => {
+            obs.next({
+                errors: [],
+                valid: true,
+            });
+        });
+
+        return observer;
     }
 }

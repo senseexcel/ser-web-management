@@ -29,7 +29,7 @@
             <app-edit-form-settings></app-edit-form-settings>
         </div>
 
-        <app-edit-controls></app-edit-controls>
+        <app-edit-controls (apply)="save()" (cancel)="cancel()"></app-edit-controls>
     </div>
 
     <div class="qapp-content--sidebar sidebar-right">

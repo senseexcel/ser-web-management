@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { SerAppManagerService } from '@core/ser-app/provider/ser-app-manager.service';
+import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
 
 @Injectable()
 export class CreateGuard implements CanActivate {

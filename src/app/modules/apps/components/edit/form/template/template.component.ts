@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { ISerApp } from '@core/ser-app/api/ser-app.interface';
+import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 
 @Component({
     selector: 'app-edit-form-template',
