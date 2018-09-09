@@ -1,4 +1,5 @@
 import { create } from 'enigma.js';
+import { buildUrl } from 'enigma.js/sense-utilities';
 import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
 import { IQlikApp } from '@apps/api/app.interface';
 import { from, Subject, Observable } from 'rxjs';
@@ -11,6 +12,15 @@ export class SerAppService {
         return new Promise<enigmaJS.ISession>((resolve) => {
             const baseUrl = `wss://desktop-tphgv43/app/${appId}`;
 
+            const myUrl = buildUrl({
+                host: 'desktop-tphgv43',
+                appId,
+                identity: Math.random().toString(32).substr(2)
+            });
+
+            const session: enigmaJS.ISession = create({ schema: qixSchema, url: myUrl });
+
+            /* it seems we dont need this
             const configEnigma = {
                 Promise,
                 schema: qixSchema,
@@ -28,8 +38,8 @@ export class SerAppService {
                 }],
                 url: baseUrl
             };
+            */
 
-            const session: enigmaJS.ISession = create(configEnigma);
             resolve(session);
         });
     }
@@ -59,6 +69,7 @@ export class SerAppService {
                 return this.getSerApps(apps);
             }),
             catchError( (error) => {
+                console.log(error);
                 return [];
             })
         );

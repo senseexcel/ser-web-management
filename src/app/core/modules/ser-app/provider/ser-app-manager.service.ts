@@ -87,41 +87,51 @@ export class SerAppManagerService {
             map( ( result ) => {
                 // trigger new on serApps and apps
                 return this.buildApp(result.app, `${result.script}${defaultScript}`);
+            }),
+            switchMap( async (serApp: ISerApp) => {
+
+                // @todo refactor this
+                serApp.script.script.tasks[0].reports[0] = (serApp.report as ReportModel).raw;
+                const newScript = this.serScriptService.stringify(serApp.script);
+
+                if ( this.openApps.has(serApp) ) {
+                    const engineApp = this.openApps.get(serApp);
+                    await engineApp.setScript(newScript);
+                    await engineApp.doSave();
+                }
+                return serApp;
             })
         );
     }
 
-    /**
-     * save an app
-     *
-     * @param {ISerApp} app
-     * @memberof SerAppManagerService
-     */
-    public async saveApp(app: ISerApp): Promise<void> {
-
-        // set new script to app
-        app.script.script.tasks[0].reports[0] = this.reportService.getRawValue(app.report);
-        const newScript = this.serScriptService.stringify(app.script);
-
-        if ( this.openApps.has(app) ) {
-            const qApp = this.openApps.get(app);
-            await qApp.setScript(newScript);
-            await qApp.doSave();
-        }
-    }
-
-    /**
-     * set selected apps
-     *
-     * @param {IQlikApp[]} apps
-     * @memberof SerAppManagerService
-     */
-    public selectApps(apps: IQlikApp[]) {
-        this.selectedApps = apps;
-    }
-
     public getSelectedApps(): IQlikApp[] {
         return this.selectedApps;
+    }
+
+    /**
+     * load all qlik apps
+     *
+     * @param {boolean} [force=false]
+     * @returns {Observable<IQlikApp[]>}
+     * @memberof SerAppManagerService
+     */
+    public loadApps(force = false): Observable<IQlikApp[]> {
+
+        if ( this.isAppsLoaded && ! force || this.isLoadingApps ) {
+            return this.loadedApps;
+        }
+
+        this.isLoadingApps = true;
+        // load apps
+        return this.serAppService.fetchApps()
+            .pipe(
+                switchMap( (apps: IQlikApp[]) => {
+                    this.isAppsLoaded  = true;
+                    this.isLoadingApps = false;
+                    this.loadedApps.next(apps);
+                    return this.loadedApps;
+                })
+            );
     }
 
     /**
@@ -152,32 +162,6 @@ export class SerAppManagerService {
     }
 
     /**
-     * load all qlik apps
-     *
-     * @param {boolean} [force=false]
-     * @returns {Observable<IQlikApp[]>}
-     * @memberof SerAppManagerService
-     */
-    public loadApps(force = false): Observable<IQlikApp[]> {
-
-        if ( this.isAppsLoaded && ! force || this.isLoadingApps ) {
-            return this.loadedApps;
-        }
-
-        this.isLoadingApps = true;
-        // load apps
-        return this.serAppService.fetchApps()
-            .pipe(
-                switchMap( (apps: IQlikApp[]) => {
-                    this.isAppsLoaded  = true;
-                    this.isLoadingApps = false;
-                    this.loadedApps.next(apps);
-                    return this.loadedApps;
-                })
-            );
-    }
-
-    /**
      * open session to app to edit this
      *
      * @param {string} appId
@@ -199,7 +183,36 @@ export class SerAppManagerService {
     }
 
     /**
-     * create new SerApp
+     * save an app
+     *
+     * @param {ISerApp} app
+     * @memberof SerAppManagerService
+     */
+    public async saveApp(app: ISerApp): Promise<void> {
+
+        // set new script to app
+        app.script.script.tasks[0].reports[0] = (app.report as ReportModel).raw;
+        const newScript = this.serScriptService.stringify(app.script);
+
+        if ( this.openApps.has(app) ) {
+            const qApp = this.openApps.get(app);
+            await qApp.setScript(newScript);
+            await qApp.doSave();
+        }
+    }
+
+    /**
+     * set selected apps
+     *
+     * @param {IQlikApp[]} apps
+     * @memberof SerAppManagerService
+     */
+    public selectApps(apps: IQlikApp[]) {
+        this.selectedApps = apps;
+    }
+
+    /**
+     * build sense excel reporting app
      *
      * @private
      * @param {EngineAPI.IApp} app

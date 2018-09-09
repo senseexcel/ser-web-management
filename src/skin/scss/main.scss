@@ -9,9 +9,11 @@
 @import "~bootstrap/scss/grid";
 @import "~bootstrap/scss/navbar";
 @import "~bootstrap/scss/tables";
+@import "~bootstrap/scss/button-group";
 
 @import "~leonardo-ui/dist/leonardo-ui.css";
 
+@import "./typography";
 @import "./layout";
 @import "./components/index";
 

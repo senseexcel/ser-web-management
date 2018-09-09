@@ -56,4 +56,16 @@ export class MailServerSettingsModel implements IMailServerSettings {
     public set useSsl(useSsl: boolean) {
         this.mailServerSettingsUseSsl = useSsl;
     }
+
+    public get raw(): IMailServerSettings {
+
+        return {
+            host: this.mailServerSettingsHost,
+            from: this.mailServerSettingsFrom,
+            port: this.mailServerSettingsPort,
+            username: this.mailServerSettingsUsername,
+            password: this.mailServerSettingsPassword,
+            useSsl: this.mailServerSettingsUseSsl
+        };
+    }
 }

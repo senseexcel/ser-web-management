@@ -61,4 +61,16 @@ export class HubModel implements IHubSettings {
     public set connections(connections: ISerConnection[]) {
         this.hubConnections = connections;
     }
+
+    public get raw(): IHubSettings {
+
+        return {
+            type:   this.hubType,
+            active: this.hubActive,
+            target: this.hubTarget,
+            mode:   this.hubMode,
+            owner:  this.hubOwner,
+            connections: this.hubConnections
+        };
+    }
 }

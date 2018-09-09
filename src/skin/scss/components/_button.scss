@@ -1,0 +1,68 @@
+button {
+
+    display: flex;
+    flex-direction: row;
+    padding: 0 .4rem;
+    justify-content: center;
+    font-family: "QlikView Sans", sans-serif;
+    font-size: 13px;
+    min-width: 90px;
+    border-radius: 6px;
+    border: 0;
+    padding: 0.4em;
+    font-weight: 500;
+    line-height: 24px;
+    padding: 1px 0.4rem;
+    height: 28px;
+    background: transparent;
+    background-image: -webkit-linear-gradient(top, #4D4D4D, #333333);
+    background-image: -moz-linear-gradient(top, #4D4D4D, #333333);
+    background-image: -o-linear-gradient(top, #4D4D4D, #333333);
+    background-image: linear-gradient(to bottom, #4D4D4D, #333333);
+    border: 1px solid #333;
+    color: #FFFFFF;
+    margin-right: 20px;
+    margin-top:10px;
+
+    &:hover {
+        -webkit-box-shadow: 0px 0px 0px 1px rgba(#FFF,1);
+        -moz-box-shadow: 0px 0px 0px 1px rgba(#FFF, 1);
+        box-shadow: 0px 0px 0px 1px rgba(#FFF,1);
+        border-color: #FFF;
+        cursor: pointer;
+    }
+
+    i.lui-icon {
+        display: inline-block;
+        align-self: center;
+        font-size: 12px;
+        background: #FFF;
+        color: #000;
+        height: 14px;
+        width: 15px;
+        overflow: hidden;
+        line-height: 1rem;
+        border-radius: 50%;
+        position: relative;
+        font-weight: 700;
+        margin: 0 .2rem 0 0;
+
+        &:before {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -53%);
+        }
+    }
+}
+
+button:disabled {
+
+    border-color: rgba(#000, .2);
+    background-image:linear-gradient(to bottom, rgba(#000, 0), rgba(#000,0));
+    color: rgba(#000, .4);
+
+    &:hover {
+        box-shadow: none;
+    }
+}

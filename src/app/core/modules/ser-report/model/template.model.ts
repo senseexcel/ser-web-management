@@ -83,4 +83,19 @@ export class TemplateModel implements ISerTemplate {
     public set selections(selection: ISerSenseSelection[]) {
         this.templateSelections = selection;
     }
+
+    public get raw(): ISerTemplate {
+
+        return {
+            generated: this.templateGenerated,
+            input: this.templateInput,
+            output: this.templateOutput,
+            outputFormat: this.templateOutputFormat,
+            outputPassword: this.templateOutputPassword,
+            keepFormula: this.templateKeepFormula,
+            scriptKeys: this.templateScriptKeys,
+            scriptArgs: this.templateScriptArgs,
+            selections: this.templateSelections,
+        };
+    }
 }

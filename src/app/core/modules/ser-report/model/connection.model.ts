@@ -65,4 +65,16 @@ export class ConnectionModel implements ISerConnection {
     public get sslVerify(): boolean {
         return this.connectionSslVerify;
     }
+
+    public get raw(): ISerConnection {
+        return {
+            app: this.connectionApp,
+            credentials: this.connectionCredentials,
+            lefs: this.connectionLefs,
+            serverUri: this.connectionServerUri,
+            sharedSession: this.connectionSharedSession,
+            sslValidThumbprints: this.connectionSslValidThumbprints,
+            sslVerify: this.connectionSslVerify,
+        };
+    }
 }

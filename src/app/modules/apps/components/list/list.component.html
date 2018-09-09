@@ -22,9 +22,25 @@
 </div>
 
 <nav class="qapp-list--actions navbar navbar-expand-lg action-bar-bottom">
-    <div class="" role="group">
-        <button type="button" [disabled]="selection.isEmpty()" class="nav-item  mr-4" (click)="editApp()" >edit</button>
-        <button type="button" [disabled]="selection.isEmpty()" class="nav-item  mr-4" (click)="deleteApps()" >delete</button>
-        <button type="button" class="nav-item" (click)="createApp()" >new</button>
+    <div class="btn-toolbar" role="group">
+
+        <button type="button" [disabled]="selection.isEmpty()" class="nav-item mr-4" (click)="editApp()">
+            <span class="button-label">
+                Edit
+            </span>
+        </button>
+
+        <button type="button" [disabled]="selection.isEmpty()" class="nav-item mr-4" (click)="deleteApps()" >
+            <span class="button-label">
+                Delete
+            </span>
+        </button>
+
+        <button type="button button-icon--add" class="nav-item" (click)="createApp()">
+            <i class="lui-icon lui-icon--add icon-small"></i>
+            <span class="button-label">
+                Create new
+            </span>
+        </button>
     </div>
 </nav>

@@ -1,4 +1,5 @@
 import { IMailSettings, EMailType, IMailServerSettings, SettingsType } from 'ser.api';
+import { MailServerSettingsModel } from '@core/modules/ser-report/model/settings/mail-server-settings.model';
 
 export class EmailModel implements IMailSettings {
 
@@ -99,5 +100,22 @@ export class EmailModel implements IMailSettings {
 
     public get active(): boolean {
         return this.emailModelActive;
+    }
+
+    public get raw(): IMailSettings {
+        const mailServer = this.emailModelMailServer as MailServerSettingsModel;
+        return {
+            subject:    this.emailModelSubject,
+            message:    this.emailModelMessage,
+            mailType:   this.emailModelMailType,
+            to:         this.emailModelTo,
+            cc:         this.emailModelCc,
+            bcc:        this.emailModelBcc,
+            mailServer: mailServer.raw,
+            paths:      this.emailModelPaths,
+            reportName: this.emailModelReportName,
+            type:       this.emailModelType,
+            active:     this.emailModelActive,
+        };
     }
 }

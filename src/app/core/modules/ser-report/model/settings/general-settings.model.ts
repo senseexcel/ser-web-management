@@ -73,4 +73,16 @@ export class GeneralSettingsModel implements ISerGeneral {
     public get useUserSelections(): SelectionMode {
         return this.generalUseUserSelections;
     }
+
+    public get raw(): ISerGeneral {
+
+        return {
+            cleanupTimeOut: this.generalCleanupTimeOut,
+            errorRepeatCount: this.generalErrorRepeatCount,
+            taskCount: this.generalTaskCount,
+            timeout: this.generalTimeout,
+            useSandbox: this.generalUseSandbox,
+            useUserSelections: this.generalUseUserSelections
+        };
+    }
 }

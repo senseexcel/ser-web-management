@@ -61,4 +61,15 @@ export class FileModel implements IFileSettings {
     public set connections(connections: ISerConnection[]) {
         this.fileConnections = connections;
     }
+
+    public get raw(): IFileSettings {
+        return {
+            type:   this.fileType,
+            active: this.fileActive,
+            target: this.fileTarget,
+            mode:   this.fileMode,
+            owner:  this.fileOwner,
+            connections: this.fileConnections,
+        };
+    }
 }

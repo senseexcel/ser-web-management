@@ -1,5 +1,6 @@
 import { IMailSettings, IFileSettings, IHubSettings } from 'ser.api';
 import { ISerDelivery } from '../api/ser-delivery.interface';
+import { FileModel, HubModel, EmailModel } from '@core/modules/ser-report/model';
 
 export class DeliveryModel implements ISerDelivery {
 
@@ -31,5 +32,18 @@ export class DeliveryModel implements ISerDelivery {
 
     public set hub(settings: IHubSettings) {
         this.deliveryHubSettings = settings;
+    }
+
+    public get raw(): ISerDelivery {
+
+        const mail = this.deliveryEmailSettings as EmailModel;
+        const hub  = this.deliveryHubSettings as HubModel;
+        const file = this.deliveryFileSettings as FileModel;
+
+        return {
+            mail: mail.raw,
+            file: file.raw,
+            hub:  hub.raw,
+        };
     }
 }
