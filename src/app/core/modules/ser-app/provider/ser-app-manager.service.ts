@@ -6,9 +6,6 @@ import { switchMap, map } from 'rxjs/operators';
 import { IQlikApp } from '@apps/api/app.interface';
 import { SerApp } from '@core/modules/ser-app/model/app.model';
 import { ReportModel } from '@core/modules/ser-report/model/report.model';
-import { ConnectionModel } from '@core/modules/ser-report/model/connection.model';
-import { GeneralSettingsModel } from '@core/modules/ser-report/model/settings/general-settings.model';
-import { TemplateModel } from '@core/modules/ser-report/model/template.model';
 import { SerScriptService } from '@core/modules/ser-script/provider/ser-script.provider';
 import { ISerScriptData } from '@core/modules/ser-script/api/ser-script-data.interface';
 import { defaultScript } from '@core/modules/ser-script/data/default-script';
@@ -19,25 +16,15 @@ import { ISerApp } from '../api/ser-app.interface';
 export class SerAppManagerService {
 
     private loadedApps: BehaviorSubject<IQlikApp[]> ;
-
     private loadedSerApps: BehaviorSubject<IQlikApp[]> ;
-
     private selectedApps: IQlikApp[];
-
     private isAppsLoaded = false;
-
     private isSerAppsLoaded = false;
-
     private reportService: ReportService;
-
     private serAppService: SerAppService;
-
     private serScriptService: SerScriptService;
-
     private openApps: WeakMap<ISerApp, EngineAPI.IApp>;
-
     private isLoadingApps = false;
-
     private isLoadingSerApps = false;
 
     constructor(
@@ -90,7 +77,6 @@ export class SerAppManagerService {
             }),
             switchMap( async (serApp: ISerApp) => {
 
-                // @todo refactor this
                 serApp.script.script.tasks[0].reports[0] = (serApp.report as ReportModel).raw;
                 const newScript = this.serScriptService.stringify(serApp.script);
 
@@ -177,7 +163,8 @@ export class SerAppManagerService {
                 return {app, script};
             }),
             map( (result) => {
-                return this.buildApp(result.app, result.script);
+                const ret =  this.buildApp(result.app, result.script);
+                return ret;
             })
         );
     }
@@ -190,8 +177,8 @@ export class SerAppManagerService {
      */
     public async saveApp(app: ISerApp): Promise<void> {
 
-        // set new script to app
-        app.script.script.tasks[0].reports[0] = (app.report as ReportModel).raw;
+        const report = this.cleanUpReportData((app.report as ReportModel).raw);
+        app.script.script.tasks[0].reports[0] = report;
         const newScript = this.serScriptService.stringify(app.script);
 
         if ( this.openApps.has(app) ) {
@@ -222,29 +209,37 @@ export class SerAppManagerService {
      */
     private buildApp(app: EngineAPI.IApp, script: string): ISerApp {
 
-        const serApp = new SerApp();
         const scriptData: ISerScriptData  = this.serScriptService.parse(script);
         const reports = this.serScriptService.extractReports(scriptData);
-        const report  = new ReportModel();
+        const report  = this.reportService.createReport(reports[0]);
 
-        // @todo refactor this let the report service do the action
-        if (reports[0]) {
-            report.connections = reports[0].connections || new ConnectionModel();
-            report.general     = reports[0].general     || new GeneralSettingsModel();
-            report.template    = reports[0].template    || new TemplateModel();
-            report.distribute  = reports[0].distribute  || this.reportService.createDeliverySettings();
-        } else {
-            report.connections = new ConnectionModel();
-            report.general     = new GeneralSettingsModel();
-            report.template    = new TemplateModel();
-            report.distribute  = this.reportService.createDeliverySettings();
-        }
-
+        const serApp  = new SerApp();
         serApp.script = scriptData;
         serApp.appId  = app.id;
         serApp.report = report;
 
         this.openApps.set(serApp, app);
         return serApp;
+    }
+
+    private cleanUpReportData(report: any) {
+        const data = report;
+        for (const key in data) {
+            if ( ! data.hasOwnProperty(key) ) {
+                continue;
+            }
+            const value = data[key];
+            if ( value && Object.prototype.toString.apply(value).slice(8, -1) === 'Object') {
+                const cleaned = this.cleanUpReportData(data[key]);
+                if ( Object.keys(cleaned).length === 0 ) {
+                    delete data[key];
+                }
+            } else {
+                if ( data[key] === undefined ) {
+                    delete data[key];
+                }
+            }
+        }
+        return data;
     }
 }

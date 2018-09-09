@@ -4,7 +4,7 @@ import { DistributeMode } from 'ser.api';
 import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
 import { Observable } from 'rxjs';
-import { IFormResponse } from '@core/modules/form-helper';
+import { ISerFormResponse } from '@apps/api/ser-form.response.interface';
 
 @Component({
     selector: 'app-distribution-file',
@@ -18,12 +18,12 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
 
     private app: ISerApp;
     private formBuilder: FormBuilder;
-    private formService: FormService<ISerApp>;
-    private updateHook: Observable<IFormResponse>;
+    private formService: FormService<ISerApp, ISerFormResponse>;
+    private updateHook: Observable<ISerFormResponse>;
 
     constructor(
         formBuilder: FormBuilder,
-        formService: FormService<ISerApp>
+        formService: FormService<ISerApp, ISerFormResponse>
     ) {
         this.formBuilder = formBuilder;
         this.formService = formService;
@@ -92,11 +92,15 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<IFormResponse> {
+    private buildUpdateHook(): Observable<ISerFormResponse> {
 
-        const observer = new Observable<IFormResponse>((obs) => {
-            this.app.report.distribute.file = this.fileForm.getRawValue();
+        const observer = new Observable<ISerFormResponse>((obs) => {
             obs.next({
+                data: [{
+                    fields: this.fileForm.getRawValue(),
+                    group: 'file',
+                    path: 'distribute'
+                }],
                 errors: [],
                 valid: this.fileForm.valid,
             });

@@ -1,10 +1,7 @@
 import { ISerGeneral, ISerTemplate, ISerConnection } from 'ser.api';
 import { ISerReport } from '../api/ser-report.interface';
 import { ISerDelivery } from '../api/ser-delivery.interface';
-import { GeneralSettingsModel } from '@core/modules/ser-report/model/settings/general-settings.model';
-import { TemplateModel } from '@core/modules/ser-report/model/template.model';
-import { ConnectionModel } from '@core/modules/ser-report/model/connection.model';
-import { DeliveryModel } from '@core/modules/ser-report/model/delivery.model';
+import { GeneralSettingsModel, TemplateModel, ConnectionModel, DeliveryModel } from '@core/modules/ser-report/model';
 
 export class ReportModel implements ISerReport {
 
@@ -50,16 +47,16 @@ export class ReportModel implements ISerReport {
 
     public get raw(): ISerReport {
 
-        const general  = this.reportGeneral as GeneralSettingsModel;
-        const template = this.reportTemplate as TemplateModel;
+        const general     = this.reportGeneral     as GeneralSettingsModel;
+        const template    = this.reportTemplate    as TemplateModel;
         const connections = this.reportConnections as ConnectionModel;
-        const distribute  = this.reportDistribute as DeliveryModel;
+        const distribute  = this.reportDistribute  as DeliveryModel;
 
         return {
-            general: general.raw,
-            template: template.raw,
+            general    : general.raw,
+            template   : template.raw,
             connections: connections.raw,
-            distribute: distribute.raw
+            distribute : distribute.raw
         };
     }
 }

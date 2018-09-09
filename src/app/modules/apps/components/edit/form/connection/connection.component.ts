@@ -4,8 +4,9 @@ import { IQlikApp } from '@apps/api/app.interface';
 import { map, mergeMap, filter, mergeAll, flatMap } from 'rxjs/operators';
 import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
-import { FormService, IFormResponse } from '@core/modules/form-helper';
+import { FormService } from '@core/modules/form-helper';
 import { Observable } from 'rxjs';
+import { ISerFormResponse } from '@apps/api/ser-form.response.interface';
 
 @Component({
     selector: 'app-edit-form-app',
@@ -19,13 +20,13 @@ export class ConnectionComponent implements OnInit, OnDestroy {
 
     private formBuilder: FormBuilder;
     private appManager: SerAppManagerService;
-    private formService: FormService<ISerApp>;
+    private formService: FormService<ISerApp, ISerFormResponse>;
     private updateHook: Observable<any>;
 
     constructor(
         formBuilder: FormBuilder,
         appManager: SerAppManagerService,
-        formService: FormService<ISerApp>
+        formService: FormService<ISerApp, ISerFormResponse>
     ) {
         this.formBuilder = formBuilder;
         this.appManager  = appManager;
@@ -117,12 +118,15 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<IFormResponse> {
+    private buildUpdateHook(): Observable<ISerFormResponse> {
 
-        const observer = new Observable<IFormResponse>((obs) => {
-            this.currentApp.report.connections = this.connectionForm.getRawValue();
-
+        const observer = new Observable<ISerFormResponse>((obs) => {
             obs.next({
+                data: [{
+                    fields: this.connectionForm.getRawValue(),
+                    group: 'connections',
+                    path: ''
+                }],
                 errors: [],
                 valid: this.connectionForm.valid,
             });

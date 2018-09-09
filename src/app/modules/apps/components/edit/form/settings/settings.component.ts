@@ -4,7 +4,7 @@ import { SelectionMode } from 'ser.api';
 import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
 import { Observable } from 'rxjs';
-import { IFormResponse } from '@core/modules/form-helper';
+import { ISerFormResponse } from '@apps/api/ser-form.response.interface';
 
 @Component({
     selector: 'app-edit-form-settings',
@@ -21,13 +21,13 @@ export class SettingsComponent implements OnInit {
 
     public mailServerSettingsForm: FormGroup;
 
-    public formService: FormService<ISerApp>;
+    public formService: FormService<ISerApp, ISerFormResponse>;
 
     private app: ISerApp;
 
     constructor(
         builder: FormBuilder,
-        formService: FormService<ISerApp>,
+        formService: FormService<ISerApp, ISerFormResponse>,
     ) {
         this.formBuilder = builder;
         this.formService = formService;
@@ -116,18 +116,19 @@ export class SettingsComponent implements OnInit {
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<IFormResponse> {
+    private buildUpdateHook(): Observable<ISerFormResponse> {
 
         const observer = Observable.create((obs) => {
-
-            const generalData    = this.generalForm.getRawValue();
-            const mailServerData = this.mailServerSettingsForm.getRawValue();
-
-            // update model
-            this.app.report.general = generalData;
-            this.app.report.distribute.mail.mailServer = mailServerData;
-
             obs.next({
+                data: [{
+                    fields: this.generalForm.getRawValue(),
+                    group: 'general',
+                    path: ''
+                }, {
+                    fields: this.mailServerSettingsForm.getRawValue(),
+                    group: 'mailServer',
+                    path: 'distribute/mail'
+                }],
                 errors: [],
                 valid: true,
             });

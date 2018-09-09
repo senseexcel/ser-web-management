@@ -4,7 +4,7 @@ import { switchMap, bufferCount } from 'rxjs/operators';
 import { IFormResponse } from '../api/response.interface';
 
 @Injectable()
-export class FormService<T> {
+export class FormService<T, R> {
 
     public static readonly HOOK_UPDATE: 'update';
 
@@ -21,14 +21,14 @@ export class FormService<T> {
      * available hooks
      *
      * @private
-     * @type {Map<string, Observable<IFormResponse>[]>}
+     * @type {Map<string, Observable<R>[]>}
      * @memberof FormService
      */
-    private hooks: Map<string, Observable<IFormResponse>[]>;
+    private hooks: Map<string, Observable<R>[]>;
 
     constructor() {
         this.app   = new BehaviorSubject<T>(null);
-        this.hooks = new Map<string, Observable<IFormResponse>[]>();
+        this.hooks = new Map<string, Observable<R>[]>();
     }
 
     /**
@@ -65,7 +65,7 @@ export class FormService<T> {
             const source = from(batch);
 
             return source.pipe(
-                switchMap((hook: Observable<IFormResponse>) => {
+                switchMap((hook: Observable<R>) => {
                     return hook;
                 }),
                 bufferCount(batch.length)
@@ -79,7 +79,7 @@ export class FormService<T> {
      * @param name
      * @param fn
      */
-    public registerHook(name: string, obs: Observable<IFormResponse>) {
+    public registerHook(name: string, obs: Observable<R>) {
 
         if ( ! this.hooks.has(name) ) {
             this.hooks.set(name, [obs]);
@@ -97,7 +97,7 @@ export class FormService<T> {
      * @returns
      * @memberof FormService
      */
-    public unRegisterHook(name: string, hook: Observable<IFormResponse>) {
+    public unRegisterHook(name: string, hook: Observable<R>) {
 
         if ( ! this.hooks.has(name) || this.hooks.get(name).indexOf(hook) === -1) {
             return;

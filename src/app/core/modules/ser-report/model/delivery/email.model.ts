@@ -103,19 +103,27 @@ export class EmailModel implements IMailSettings {
     }
 
     public get raw(): IMailSettings {
-        const mailServer = this.emailModelMailServer as MailServerSettingsModel;
-        return {
-            subject:    this.emailModelSubject,
-            message:    this.emailModelMessage,
-            mailType:   this.emailModelMailType,
-            to:         this.emailModelTo,
-            cc:         this.emailModelCc,
-            bcc:        this.emailModelBcc,
-            mailServer: mailServer.raw,
-            paths:      this.emailModelPaths,
-            reportName: this.emailModelReportName,
-            type:       this.emailModelType,
-            active:     this.emailModelActive,
+
+        let server = null;
+
+        if ( this.emailModelMailServer ) {
+            const mailServer = this.emailModelMailServer as MailServerSettingsModel;
+            server     = mailServer.raw as IMailServerSettings || null;
+        }
+
+        const d =  {
+            subject:    this.subject,
+            message:    this.message,
+            mailType:   this.mailType,
+            to:         this.to,
+            cc:         this.cc,
+            bcc:        this.bcc,
+            mailServer: server,
+            paths:      this.paths,
+            reportName: this.reportName,
+            type:       this.type,
+            active:     this.active
         };
+        return d;
     }
 }

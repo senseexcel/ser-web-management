@@ -36,9 +36,9 @@ export class DeliveryModel implements ISerDelivery {
 
     public get raw(): ISerDelivery {
 
-        const mail = this.deliveryEmailSettings as EmailModel;
-        const hub  = this.deliveryHubSettings as HubModel;
-        const file = this.deliveryFileSettings as FileModel;
+        const mail = this.mail as EmailModel;
+        const hub  = this.hub  as HubModel;
+        const file = this.file as FileModel;
 
         return {
             mail: mail.raw,

@@ -4,6 +4,7 @@ import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
 import { Observable } from 'rxjs';
 import { IFormResponse } from '@core/modules/form-helper';
+import { ISerFormResponse } from '../../../../../api/ser-form.response.interface';
 
 @Component({
     selector: 'app-distribution-mail',
@@ -12,7 +13,7 @@ import { IFormResponse } from '@core/modules/form-helper';
 export class DistributionMailComponent implements OnInit {
 
     public mailForm: FormGroup;
-    public formService: FormService<ISerApp>;
+    public formService: FormService<ISerApp, ISerFormResponse>;
 
     private app: ISerApp;
     private formBuilder: FormBuilder;
@@ -20,7 +21,7 @@ export class DistributionMailComponent implements OnInit {
 
     constructor(
         formBuilder: FormBuilder,
-        formService: FormService<ISerApp>
+        formService: FormService<ISerApp, ISerFormResponse>
     ) {
         this.formBuilder = formBuilder;
         this.formService = formService;
@@ -44,10 +45,15 @@ export class DistributionMailComponent implements OnInit {
         });
     }
 
+    /**
+     * create mail form
+     *
+     * @private
+     * @returns {FormGroup}
+     * @memberof DistributionMailComponent
+     */
     private createMailForm(): FormGroup {
-
         const mailSettings = this.app.report.distribute.mail;
-
         return this.formBuilder.group({
             to: this.formBuilder.control(mailSettings.to,   [Validators.required, Validators.email]),
             cc: this.formBuilder.control(mailSettings.cc,   [Validators.email]),
@@ -58,24 +64,22 @@ export class DistributionMailComponent implements OnInit {
     }
 
     /**
-     * create hook for form should updated
+     * build hook before the form should be updated
      *
      * @private
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<IFormResponse> {
+    private buildUpdateHook(): Observable<ISerFormResponse> {
 
-        const observer = new Observable<IFormResponse>((obs) => {
-
-            // save mailServer fist before we update so nothing is lost
-            const mailServer = this.app.report.distribute.mail.mailServer;
+        const observer = new Observable<ISerFormResponse>((obs) => {
             const mail = this.mailForm.getRawValue();
-            mail.mailServer = mailServer;
-
-            this.app.report.distribute.mail = mail;
-
             obs.next({
+                data: [{
+                    fields: mail,
+                    group: 'mail',
+                    path: 'distribute'
+                }],
                 errors: [],
                 valid: this.mailForm.valid,
             });
