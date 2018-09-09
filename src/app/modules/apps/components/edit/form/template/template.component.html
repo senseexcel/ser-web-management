@@ -1,2 +1,32 @@
 <h3>Template</h3>
-template component works
+<ng-container *ngIf="templateForm">
+    <div [formGroup]="templateForm">
+        <mat-form-field class="form-control">
+            <input matInput formControlName="input" placeholder="Template Input">
+        </mat-form-field>
+
+        <mat-form-field class="form-control">
+            <input matInput formControlName="output" placeholder="Template Output">
+        </mat-form-field>
+
+        <mat-form-field class="form-control">
+            <input matInput formControlName="outputFormat" placeholder="Template Output Format">
+        </mat-form-field>
+
+        <mat-form-field class="form-control">
+            <input matInput formControlName="outputPassword" placeholder="Template Output Password">
+        </mat-form-field>
+
+        <mat-form-field class="form-control">
+            <input matInput formControlName="scriptKeys" placeholder="Script Keys">
+        </mat-form-field>
+
+        <mat-form-field class="form-control">
+            <input matInput formControlName="scriptArgs" placeholder="Script Args">
+        </mat-form-field>
+
+        <mat-checkbox formControlName="generated">
+            Generated
+        </mat-checkbox>
+    </div>
+</ng-container>

@@ -33,6 +33,7 @@ export class FormService<T, R> {
 
     /**
      * set model which should edited
+     * @todo rename to loadModel oder simple load
      *
      * @param {T} app
      * @memberof FormService
@@ -43,6 +44,7 @@ export class FormService<T, R> {
 
     /**
      * load model which should be edited
+     * @todo rename to editModel or simple edit
      *
      * @returns {Observable<T>}
      * @memberof FormService

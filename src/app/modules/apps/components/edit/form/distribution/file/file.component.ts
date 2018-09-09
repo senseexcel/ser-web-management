@@ -47,7 +47,7 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
             }
 
             this.app = app;
-            this.fileForm = this.createTemplateForm();
+            this.fileForm = this.createFileForm();
         });
     }
 
@@ -58,7 +58,7 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
      * @returns {FormGroup}
      * @memberof DistributionFileComponent
      */
-    private createTemplateForm(): FormGroup {
+    private createFileForm(): FormGroup {
 
         this.distributionModes = this.createDistributionModes();
         const fileData = this.app.report.distribute.file;
@@ -95,9 +95,12 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
     private buildUpdateHook(): Observable<ISerFormResponse> {
 
         const observer = new Observable<ISerFormResponse>((obs) => {
+            const fileData = this.fileForm.getRawValue();
+            fileData.mode  = this.fileForm.controls.mode.value;
+
             obs.next({
                 data: [{
-                    fields: this.fileForm.getRawValue(),
+                    fields: fileData,
                     group: 'file',
                     path: 'distribute'
                 }],

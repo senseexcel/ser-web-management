@@ -12,8 +12,8 @@
 
     <mat-form-field class="form-control">
         <mat-select formControlName="mode" placeholder="Distribution Mode">
-            <mat-option *ngFor="let mode of distributionModes" [value]="mode">
-                {{mode.value}}
+            <mat-option *ngFor="let mode of distributionModes" [value]="mode.value">
+                {{mode.label}}
             </mat-option>
         </mat-select>
     </mat-form-field>
