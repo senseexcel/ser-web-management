@@ -13,7 +13,7 @@ export class SerAppService {
 <<<<<<< HEAD
             const baseUrl = `wss://desktop-tphgv43/app/${appId}`;
 
-            const myUrl = buildUrl({
+            const url = buildUrl({
                 host: 'nb-fc-207990',
 =======
             const url = buildUrl({
@@ -71,7 +71,7 @@ export class SerAppService {
 
         const need = apps.length;
         const appsLoaded: Subject<boolean> = new Subject();
-        const sessionQueue = this.buildSessionQueue();
+
         let get = 0;
 
         return from(apps).pipe(

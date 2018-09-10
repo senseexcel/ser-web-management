@@ -19,16 +19,16 @@
   <div class="qapp-detail--content">
 
     <div class="qapp-detail--content-header">
-      <h3>1. Please set a new app name</h3>
+      <h3>Please enter a name</h3>
     </div>
 
     <div class="qapp-detail--content-body">
       <mat-form-field class="form-control">
-          <input matInput [formControl]="formNameControl" placeholder="app name">
+          <input matInput [formControl]="formNameControl" placeholder="Enter reportiing app name here">
       </mat-form-field>
     </div>
 
-    <div>
+    <div class="btn-toolbar" style="padding:10px">
       <button [class]="lui-button" (click)="apply()">apply</button>
       <button  [class]="lui-button" (click)="cancel()">cancel</button>
     </div>
