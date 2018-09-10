@@ -12,6 +12,7 @@ import { ISerFormResponse, ISerReportFormGroup } from '@apps/api/ser-form.respon
 @Component({
     selector: 'app-qlik-edit',
     templateUrl: 'edit.component.html',
+    styleUrls: ['./edit.component.scss'],
     providers: [FormService]
 })
 export class AppEditComponent implements OnInit, OnDestroy {
@@ -170,6 +171,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
         this.appManager.createApp(name)
         .pipe(
             switchMap( (app: ISerApp) => {
+                this.app = app;
                 this.formService.editApp(app);
                 return this.appManager.loadApps();
             })
@@ -188,7 +190,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     private initExistingApp() {
 
         this.apps = this.appManager.getSelectedApps();
-        this.appManager.openApp(this.apps[0].qDocId)
+        this.appManager.openApp(this.apps[0])
             .pipe(
                 switchMap( (app: ISerApp) => {
                     this.app = app;
@@ -196,7 +198,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
                     return this.appManager.loadApps();
                 })
             )
-            .subscribe( (data) => {
+            .subscribe( () => {
                 this.formDataLoaded = true;
             });
     }

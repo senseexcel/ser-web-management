@@ -1,0 +1,25 @@
+:host {
+
+    .btn-group {
+        float: right;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .btn {
+        margin: 0;
+        border: 0;
+        min-width: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        &:hover {
+            border-color: 333;
+            box-shadow: none;
+        }
+
+        &:not(first-child) {
+            border-left: 1px solid #333;
+        }
+    }
+}

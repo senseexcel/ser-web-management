@@ -71,9 +71,9 @@ export class SerAppService {
                 return this.createSession(app.qDocId)
                     .then( async (session) => {
 
-                        const global   = await session.open() as any;
+                        const global = await session.open() as any;
                         const qApp: EngineAPI.IApp = await global.openDoc(app.qDocId, '', '', '', true);
-                        const script   = await qApp.getScript();
+                        const script = await qApp.getScript();
                         await qApp.session.close();
 
                         if ( (++get) === need ) {
@@ -100,11 +100,9 @@ export class SerAppService {
                 const config = appData.script as string;
                 return config && config.indexOf('SER.START') !== -1;
             }),
-            // davor
             map((data): IQlikApp => {
                 return data.qapp;
             }),
-            // danach
             buffer( appsLoaded )
         );
     }

@@ -15,8 +15,8 @@ import { ISerApp } from '../api/ser-app.interface';
 @Injectable()
 export class SerAppManagerService {
 
-    private loadedApps: BehaviorSubject<IQlikApp[]> ;
-    private loadedSerApps: BehaviorSubject<IQlikApp[]> ;
+    private loadedApps$: BehaviorSubject<IQlikApp[]> ;
+    private loadedSerApps$: BehaviorSubject<IQlikApp[]> ;
     private selectedApps: IQlikApp[];
     private isAppsLoaded = false;
     private isSerAppsLoaded = false;
@@ -37,8 +37,8 @@ export class SerAppManagerService {
         this.reportService    = reportService;
         this.openApps         = new WeakMap<ISerApp, EngineAPI.IApp>();
 
-        this.loadedApps    = new BehaviorSubject<IQlikApp[]>([]);
-        this.loadedSerApps = new BehaviorSubject<IQlikApp[]>([]);
+        this.loadedApps$    = new BehaviorSubject<IQlikApp[]>([]);
+        this.loadedSerApps$ = new BehaviorSubject<IQlikApp[]>([]);
 
         this.selectedApps    = [];
     }
@@ -76,15 +76,13 @@ export class SerAppManagerService {
                 return this.buildApp(result.app, `${result.script}${defaultScript}`);
             }),
             switchMap( async (serApp: ISerApp) => {
-
-                serApp.script.script.tasks[0].reports[0] = (serApp.report as ReportModel).raw;
                 const newScript = this.serScriptService.stringify(serApp.script);
-
                 if ( this.openApps.has(serApp) ) {
                     const engineApp = this.openApps.get(serApp);
                     await engineApp.setScript(newScript);
                     await engineApp.doSave();
                 }
+                serApp.title = name;
                 return serApp;
             })
         );
@@ -104,7 +102,7 @@ export class SerAppManagerService {
     public loadApps(force = false): Observable<IQlikApp[]> {
 
         if ( this.isAppsLoaded && ! force || this.isLoadingApps ) {
-            return this.loadedApps;
+            return this.loadedApps$;
         }
 
         this.isLoadingApps = true;
@@ -114,8 +112,8 @@ export class SerAppManagerService {
                 switchMap( (apps: IQlikApp[]) => {
                     this.isAppsLoaded  = true;
                     this.isLoadingApps = false;
-                    this.loadedApps.next(apps);
-                    return this.loadedApps;
+                    this.loadedApps$.next(apps);
+                    return this.loadedApps$;
                 })
             );
     }
@@ -130,7 +128,7 @@ export class SerAppManagerService {
     public loadSerApps(force = false): Observable<IQlikApp[]> {
 
         if ( (this.isSerAppsLoaded && ! force) || this.isLoadingSerApps ) {
-            return this.loadedSerApps;
+            return this.loadedSerApps$;
         }
 
         this.isLoadingSerApps = true;
@@ -141,8 +139,8 @@ export class SerAppManagerService {
                 switchMap( (apps: IQlikApp[]) => {
                     this.isSerAppsLoaded = true;
                     this.isLoadingSerApps = false;
-                    this.loadedSerApps.next(apps);
-                    return this.loadedSerApps;
+                    this.loadedSerApps$.next(apps);
+                    return this.loadedSerApps$;
                 })
             );
     }
@@ -154,17 +152,18 @@ export class SerAppManagerService {
      * @returns {Observable<EngineAPI.IApp>}
      * @memberof SerAppManagerService
      */
-    public openApp(appId: string): Observable<ISerApp> {
+    public openApp(qapp: IQlikApp): Observable<ISerApp> {
 
-        return this.serAppService.loadApp(appId)
+        return this.serAppService.loadApp(qapp.qDocId)
         .pipe(
             switchMap( async (app) => {
                 const script = await app.getScript();
                 return {app, script};
             }),
             map( (result) => {
-                const ret =  this.buildApp(result.app, result.script);
-                return ret;
+                const serApp =  this.buildApp(result.app, result.script);
+                serApp.title = qapp.qDocName;
+                return serApp;
             })
         );
     }
@@ -222,6 +221,14 @@ export class SerAppManagerService {
         return serApp;
     }
 
+    /**
+     * remove undefined values from script
+     *
+     * @private
+     * @param {*} report
+     * @returns
+     * @memberof SerAppManagerService
+     */
     private cleanUpReportData(report: any) {
         const data = report;
         for (const key in data) {

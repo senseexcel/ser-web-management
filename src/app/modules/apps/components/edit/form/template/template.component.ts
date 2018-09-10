@@ -8,7 +8,8 @@ import { ISerTemplate } from 'ser.api';
 
 @Component({
     selector: 'app-edit-form-template',
-    templateUrl: 'template.component.html'
+    templateUrl: 'template.component.html',
+    styleUrls: ['./template.component.scss']
 })
 
 export class TemplateComponent implements OnInit {
@@ -44,6 +45,11 @@ export class TemplateComponent implements OnInit {
                 this.templateForm = this.buildTemplateForm();
             }
         });
+    }
+
+    public setOutput(fileType: string) {
+        const name = `${this.currentApp.title}.${fileType}`;
+        this.templateForm.controls.output.setValue(name);
     }
 
     /**
