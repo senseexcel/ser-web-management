@@ -19,14 +19,16 @@
   <div class="qapp-detail--content">
 
     <div class="qapp-detail--content-header">
-      <h3>1. We need an name of the new App</h3>
+      <h3>1. Please set a new app name</h3>
     </div>
 
     <div class="qapp-detail--content-body">
-     -----
+      <mat-form-field class="form-control">
+          <input matInput formControlName="appname" placeholder="app name">
+      </mat-form-field>
     </div>
 
-    <!-- <app-edit-controls></app-edit-controls> -->
+    <app-edit-controls></app-edit-controls>
   </div>
 
   <div class="qapp-content--sidebar sidebar-right">

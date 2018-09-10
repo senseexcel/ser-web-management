@@ -23,6 +23,8 @@ export class SettingsComponent implements OnInit {
 
     public formService: FormService<ISerApp, ISerFormResponse>;
 
+    public isReady = false;
+
     private app: ISerApp;
 
     constructor(
@@ -43,6 +45,8 @@ export class SettingsComponent implements OnInit {
                 this.userSelectionMode      = this.buildUserSelectionFields();
                 this.generalForm            = this.buildGeneralSettingsForm();
                 this.mailServerSettingsForm = this.buildMailServerSettingsForm();
+
+                this.isReady = true;
             }
         });
     }

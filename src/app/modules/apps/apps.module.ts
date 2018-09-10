@@ -24,6 +24,7 @@ import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
     ReactiveFormsModule,
     SerAppModule
   ],
+  exports: [MaterialModule],
   declarations: [
     AppEditComponent,
     AppListComponent,
