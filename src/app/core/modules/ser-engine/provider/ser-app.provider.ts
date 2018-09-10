@@ -11,7 +11,7 @@ export class SerAppService {
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
         return new Promise<enigmaJS.ISession>((resolve) => {
             const url = buildUrl({
-                host: 'desktop-tphgv43',
+                host: window.location.host,
                 appId,
                 identity: Math.random().toString(32).substr(2)
             });
