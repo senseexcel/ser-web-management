@@ -17,29 +17,31 @@
   </div>
 
   <div class="qapp-detail--content">
-
-    <div class="qapp-detail--content-header">
-      <h3>Please enter a name</h3>
+  
+    <div class="qapp-stage-header">
+      <h1 class="qapp-h1"> <i class="icon-qmc-Task"></i> Please enter a name</h1>
+  
     </div>
-
-    <div class="qapp-detail--content-body">
+    <div class="qapp-manage-content-section"></div>
+    <div class="qapp-detail--content-body vh100">
       <mat-form-field class="form-control">
-          <input matInput [formControl]="formNameControl" placeholder="Enter reportiing app name here">
+        <input matInput [formControl]="formNameControl" placeholder="Enter reportiing app name here">
       </mat-form-field>
     </div>
-
-    <div class="btn-toolbar" style="padding:10px">
-      <button [class]="lui-button" (click)="apply()">apply</button>
-      <button  [class]="lui-button" (click)="cancel()">cancel</button>
-    </div>
-  </div>
-
-  <div class="qapp-content--sidebar sidebar-right">
-
-    <div class="header">
-      Properties
-    </div>
-
+  
     
+    <div class="btn-toolbar" >
+      <button [class]="lui-button" (click)="apply()">apply</button>
+      <button [class]="lui-button" (click)="cancel()">cancel</button>
+    </div>
   </div>
-</div>
+  
+  <div class="qapp-content--sidebar sidebar-right">
+  
+    <!-- <div class="header">
+        Properties
+      </div> -->
+  
+  
+  </div>
+  </div>

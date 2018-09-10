@@ -1,0 +1,45 @@
+.qapp-stage-header {
+    -webkit-box-flex: none;
+    -moz-box-flex: none;
+    -webkit-flex: none;
+    -ms-flex: none;
+    flex: none;
+    display: block;
+    background-color: #595959;
+    color: #FFFFFF;
+    font-size: 14px;
+    cursor: default;
+    min-height: 40px;
+    padding: 12px 20px;
+}
+.qapp-detail {
+    height: 100%;
+}
+.vh100 {
+    height: 100%;
+}
+
+.qapp-h1 {
+    font-size: 100%;
+}
+
+.btn-toolbar {
+    padding:10px;
+}
+
+
+.qapp-manage-content-section {
+    border-bottom: 4px solid #60BF9F;
+}
+
+[class^="icon-"]:before, [class*=" icon-"]:before {
+    font-family: 'LUI icons';
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: inherit;
+    text-transform: none;
+}
+
+.icon-qmc-Task:before {
+    content: "\078";
+}
