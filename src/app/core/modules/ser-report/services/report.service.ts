@@ -24,8 +24,8 @@ export class ReportService {
      * @returns {ReportModel}
      * @memberof ReportService
      */
-    public createReport(data: ISerReport): ReportModel {
-
+    public createReport(modelData: ISerReport): ReportModel {
+        const data         = modelData || {general: null, distribute: null, connections: null, template: null};
         const report       = new ReportModel();
         report.general     = this.createGeneralData(data.general);
         report.distribute  = this.createDistributeData(data.distribute);
