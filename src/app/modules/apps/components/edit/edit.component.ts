@@ -5,8 +5,8 @@ import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { ReportService } from '@core/modules/ser-report/services/report.service';
 import { IQlikApp } from '@apps/api/app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
-import { Subject, } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
+import { Subject, of, forkJoin, } from 'rxjs';
+import { mergeMap, switchMap } from 'rxjs/operators';
 import { ISerFormResponse, ISerReportFormGroup } from '@apps/api/ser-form.response.interface';
 
 @Component({
@@ -21,6 +21,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public selectedProperty: any;
     public isLoading = true;
     public formService: FormService<ISerApp, ISerFormResponse>;
+    public formDataLoaded = false;
 
     @HostBinding('class.flex-container')
     protected hostClass = true;
@@ -90,7 +91,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
         if ( params.hasOwnProperty('id') ) {
             this.initExistingApp();
         } else {
-            console.log(params.name);
             this.initNewApp(params.name);
         }
     }
@@ -152,8 +152,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 break;
         }
 
-        console.log (scrollToContainer);
-
         scrollToContainer.nativeElement.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
@@ -170,9 +168,14 @@ export class AppEditComponent implements OnInit, OnDestroy {
     private initNewApp(name: string) {
 
         this.appManager.createApp(name)
-        .subscribe( (app: ISerApp) => {
-            this.app = app;
-            this.formService.editApp(app);
+        .pipe(
+            switchMap( (app: ISerApp) => {
+                this.formService.editApp(app);
+                return this.appManager.loadApps();
+            })
+        )
+        .subscribe( () => {
+            this.formDataLoaded = true;
         });
     }
 
@@ -186,9 +189,15 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
         this.apps = this.appManager.getSelectedApps();
         this.appManager.openApp(this.apps[0].qDocId)
-            .subscribe((app: ISerApp) => {
-                this.app = app;
-                this.formService.editApp(app);
+            .pipe(
+                switchMap( (app: ISerApp) => {
+                    this.app = app;
+                    this.formService.editApp(app);
+                    return this.appManager.loadApps();
+                })
+            )
+            .subscribe( (data) => {
+                this.formDataLoaded = true;
             });
     }
 }
