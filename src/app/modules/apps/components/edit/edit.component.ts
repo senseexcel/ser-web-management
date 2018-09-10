@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostBinding } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostBinding, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
 import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
@@ -7,7 +7,6 @@ import { IQlikApp } from '@apps/api/app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
 import { Subject, } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { ConnectionComponent, DistributionComponent, SettingsComponent, TemplateComponent} from './form';
 import { ISerFormResponse, ISerReportFormGroup } from '@apps/api/ser-form.response.interface';
 
 @Component({
@@ -25,6 +24,18 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
     @HostBinding('class.flex-container')
     protected hostClass = true;
+
+    @ViewChild('connections')
+    private connectionsContainer: ElementRef;
+
+    @ViewChild('distribute')
+    private distributeContainer: ElementRef;
+
+    @ViewChild('template')
+    private templateContainer: ElementRef;
+
+    @ViewChild('settings')
+    private settingsContainer: ElementRef;
 
     private isDestroyed$: Subject<boolean>;
     private activeRoute: ActivatedRoute;
@@ -66,11 +77,12 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public ngOnInit () {
 
         this.isLoading = true;
+        // @todo remove object
         this.properties = [
-            { label: 'App'         , component: ConnectionComponent   },
-            { label: 'Template'    , component: TemplateComponent     },
-            { label: 'Distribution', component: DistributionComponent },
-            { label: 'Settings'    , component: SettingsComponent     },
+            { label: 'App'          },
+            { label: 'Template'     },
+            { label: 'Distribution' },
+            { label: 'Settings'     },
         ];
 
         const params = this.activeRoute.snapshot.params;
@@ -78,6 +90,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
         if ( params.hasOwnProperty('id') ) {
             this.initExistingApp();
         } else {
+            console.log(params.name);
             this.initNewApp(params.name);
         }
     }
@@ -121,6 +134,30 @@ export class AppEditComponent implements OnInit, OnDestroy {
     }
 
     public showForm(property) {
+
+        let scrollToContainer: ElementRef;
+
+        switch (property.label.toLowerCase()) {
+            case 'app':
+                scrollToContainer = this.connectionsContainer;
+                break;
+            case 'template':
+                scrollToContainer = this.templateContainer;
+                break;
+            case 'distribution':
+                scrollToContainer = this.distributeContainer;
+                break;
+            case 'settings':
+                scrollToContainer = this.settingsContainer;
+                break;
+        }
+
+        console.log (scrollToContainer);
+
+        scrollToContainer.nativeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
         this.selectedProperty = property;
     }
 

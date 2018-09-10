@@ -21,10 +21,20 @@
             <h3>Detailansicht Applikation</h3>
         </div>
         <div class="qapp-detail--content-body">
-            <app-edit-form-app></app-edit-form-app>
-            <app-edit-form-template></app-edit-form-template>
-            <app-edit-form-distribution></app-edit-form-distribution>
-            <app-edit-form-settings></app-edit-form-settings>
+            <div class="content">
+                <div #connections>
+                    <app-edit-form-app></app-edit-form-app>
+                </div>
+                <div #template>
+                    <app-edit-form-template></app-edit-form-template>
+                </div>
+                <div #distribute>
+                    <app-edit-form-distribution></app-edit-form-distribution>
+                </div> 
+                <div #settings>
+                    <app-edit-form-settings></app-edit-form-settings>
+                </div>
+            </div>
         </div>
         <app-edit-controls (apply)="save()" (cancel)="cancel()"></app-edit-controls>
     </div>

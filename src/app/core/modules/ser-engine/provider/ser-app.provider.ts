@@ -10,15 +10,8 @@ export class SerAppService {
 
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
         return new Promise<enigmaJS.ISession>((resolve) => {
-<<<<<<< HEAD
-            const baseUrl = `wss://desktop-tphgv43/app/${appId}`;
-
-            const url = buildUrl({
-                host: 'nb-fc-207990',
-=======
             const url = buildUrl({
                 host: 'desktop-tphgv43',
->>>>>>> add radio buttons for distribute modes
                 appId,
                 identity: Math.random().toString(32).substr(2)
             });
@@ -71,7 +64,6 @@ export class SerAppService {
 
         const need = apps.length;
         const appsLoaded: Subject<boolean> = new Subject();
-
         let get = 0;
 
         return from(apps).pipe(
