@@ -19,6 +19,17 @@ export class DistributionMailComponent implements OnInit {
     private formBuilder: FormBuilder;
     private updateHook: Observable<IFormResponse>;
 
+    public mailTypes = [{
+        label: 'Markdown',
+        value: 'markdown'
+    }, {
+        label: 'Html',
+        value: 'html'
+    }, {
+        label: 'Text',
+        value: 'text'
+    }];
+
     constructor(
         formBuilder: FormBuilder,
         formService: FormService<ISerApp, ISerFormResponse>
@@ -55,6 +66,8 @@ export class DistributionMailComponent implements OnInit {
     private createMailForm(): FormGroup {
         const mailSettings = this.app.report.distribute.mail;
         return this.formBuilder.group({
+            active: this.formBuilder.control(mailSettings.active),
+            mailType: this.formBuilder.control(mailSettings.mailType),
             to: this.formBuilder.control(mailSettings.to,   [Validators.required, Validators.email]),
             cc: this.formBuilder.control(mailSettings.cc,   [Validators.email]),
             bcc: this.formBuilder.control(mailSettings.bcc, [Validators.email]),
