@@ -3,7 +3,7 @@ import { buildUrl } from 'enigma.js/sense-utilities';
 import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
 import { IQlikApp } from '@apps/api/app.interface';
 import { from, Subject, Observable } from 'rxjs';
-import { mergeMap, switchMap, catchError, filter, buffer, map } from 'rxjs/operators';
+import { mergeMap, switchMap, catchError, filter, buffer, map, bufferCount } from 'rxjs/operators';
 import { IQlikAppCreated } from '../api/response/app-created.interface';
 
 export class SerAppService {
@@ -42,11 +42,11 @@ export class SerAppService {
     public fetchSenseExcelReportingApps(): Observable<IQlikApp[]> {
 
         return from(this.fetchApps()).pipe(
-            switchMap( (apps: IQlikApp[]) => {
+            mergeMap( (apps: IQlikApp[]) => {
                 return this.getSerApps(apps);
             }),
             catchError( (error) => {
-                console.log(error);
+                console.log('ich bekomme hier einen error');
                 return [];
             })
         );
@@ -63,8 +63,6 @@ export class SerAppService {
     private getSerApps(apps: IQlikApp[]): Observable<IQlikApp[]> {
 
         const need = apps.length;
-        const appsLoaded: Subject<boolean> = new Subject();
-        let get = 0;
 
         return from(apps).pipe(
             mergeMap((app: IQlikApp) => {
@@ -76,20 +74,12 @@ export class SerAppService {
                         const script = await qApp.getScript();
                         await qApp.session.close();
 
-                        if ( (++get) === need ) {
-                            appsLoaded.next(true);
-                        }
-
                         return {
                             qapp: app,
                             script
                         };
                     })
                     .catch((error) => {
-                        // @todo handle error
-                        if ( (++get) === need ) {
-                            appsLoaded.next(true);
-                        }
                         return null;
                     });
             }),
@@ -101,9 +91,10 @@ export class SerAppService {
                 return config && config.indexOf('SER.START') !== -1;
             }),
             map((data): IQlikApp => {
+                // return data.qapp;
                 return data.qapp;
             }),
-            buffer( appsLoaded )
+            bufferCount( need )
         );
     }
 

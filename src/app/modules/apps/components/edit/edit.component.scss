@@ -1,6 +1,15 @@
 :host {
+
     .qapp-detail--content-body {
         margin-right: -20px;
         overflow-y: auto;
+    }
+
+    .form-group {
+        margin-bottom: 3rem;
+
+        &:nth-child(-1) {
+            margin-bottom: 0;
+        }
     }
 }

@@ -1,6 +1,6 @@
 <div *ngIf="isReady">
 
-    <h3>Settings</h3>
+    <h3 class="header header-secondary">Settings</h3>
 
     <mat-tab-group [@.disabled]="true">
         <mat-tab label="General Settings">
@@ -23,13 +23,11 @@
                     <input matInput formControlName="taskCount" placeholder="Task Count">
                 </mat-form-field>
 
-                <mat-form-field class="form-control">
-                    <mat-select formControlName="useUserSelections" placeholder="Selectionmode">
-                        <mat-option *ngFor="let mode of userSelectionMode" [value]="mode.value">
-                            {{mode.label}}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
+                <mat-radio-group formControlName="useUserSelections">
+                    <mat-radio-button *ngFor="let mode of userSelectionMode" [value]="mode.value">
+                        {{mode.label}}
+                    </mat-radio-button>
+                </mat-radio-group>
             </div>
         </mat-tab>
 

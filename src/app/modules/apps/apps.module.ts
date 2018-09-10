@@ -14,6 +14,7 @@ import {
 } from './components/edit/form/distribution';
 import { FormHelperModule } from '@core/modules/form-helper/form-helper.module';
 import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
+import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
 
 @NgModule({
   imports: [
@@ -37,7 +38,8 @@ import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
     DistributionFileComponent,
     DistributionHubComponent,
     DistributionMailComponent,
-    AppNewComponent
+    AppNewComponent,
+    ReportPreviewComponent
   ]
 })
 export class AppsModule { }

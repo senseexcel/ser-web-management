@@ -1,0 +1,32 @@
+<div class="qapp-detail">
+
+  <div class="qapp-detail--sidebar sidebar-left">
+
+    <div class="header">
+      <a (click)="navigateBack()">
+        <i class="lui-icon lui-icon--arrow-up"></i>
+        <span>New</span>
+      </a>
+    </div>
+
+    <ul class="lui-list">
+      <li class="lui-item">
+          {{appName}}
+      </li>
+    </ul>
+  </div>
+
+  <div class="qapp-detail--content">
+
+    <div class="qapp-detail--content-header">
+      <h3>Preview {{appName}}</h3>
+    </div>
+
+    <div class="qapp-detail--content-body">
+        <pre>{{data | json}}</pre>
+    </div>
+  </div>
+
+  <div class="qapp-content--sidebar sidebar-right">
+  </div>
+</div>

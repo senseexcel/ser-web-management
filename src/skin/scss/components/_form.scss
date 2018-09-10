@@ -3,3 +3,23 @@
     padding: 0;
     border: none;
 }
+
+.mat-radio-group {
+
+    .mat-radio-button {
+        margin-right: 1rem;
+        font-size: .9rem;
+    }
+}
+
+.mat-tab-group {
+
+    .mat-tab-label {
+        padding: 0;
+        justify-content: flex-start;
+    }
+
+    .mat-tab-body-content {
+        padding: 1rem 0 0;
+    }
+}

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Event, NavigationEnd, Router, ActivatedRouteSnapshot } from '@angular/router';
+import { ActivatedRoute, Event, NavigationEnd, Router, ActivatedRouteSnapshot, UrlSegment } from '@angular/router';
 import { filter, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { IBreadCrumb } from '@breadcrumb/api/breadcrumb.interface';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class BreadcrumbService {
 
     private subs: number;
 
-    private breadcrumb$: Subject<IBreadCrumb[]>;
+    private breadcrumb$: BehaviorSubject<IBreadCrumb[]>;
 
     constructor(
         router: Router,
@@ -27,10 +27,17 @@ export class BreadcrumbService {
         this.route  = route;
         this.subs   = 0;
 
-        this.breadcrumb$ = new Subject<IBreadCrumb[]>();
+        this.breadcrumb$ = new BehaviorSubject<IBreadCrumb[]>([]);
         this.routerEvents$ = new Subject<boolean>();
     }
 
+    /**
+     * get new breadcrumbs after route has been changed
+     *
+     * @readonly
+     * @type {Observable<Array<IBreadCrumb>>}
+     * @memberof BreadcrumbService
+     */
     public get breadcrumbs(): Observable<Array<IBreadCrumb>> {
 
         const observable: Observable<Array<IBreadCrumb>> = Observable.create( (observer) => {
@@ -56,6 +63,12 @@ export class BreadcrumbService {
         return observable;
     }
 
+    /**
+     * register to router events
+     *
+     * @private
+     * @memberof BreadcrumbService
+     */
     private registerRouterEvents() {
 
         this.router.events
@@ -74,18 +87,40 @@ export class BreadcrumbService {
             });
     }
 
+    /**
+     * create breadcrumbs for path
+     *
+     * @private
+     * @param {ActivatedRoute} route
+     * @param {string} [url='']
+     * @param {string} [name='']
+     * @returns {Array<IBreadCrumb>}
+     * @memberof BreadcrumbService
+     */
     private createBreadcrumbs(route: ActivatedRoute, url = '', name = ''): Array<IBreadCrumb> {
 
         const breadCrumbs: Array<IBreadCrumb> = [];
-
         const routeConfig = route.routeConfig || {};
-        const path  = routeConfig.path || '';
         const label = routeConfig.data && routeConfig.data['breadcrumb'] || name;
-        const nextUrl = `${url}/${path}`;
 
-        if ( label.length ) {
-            breadCrumbs.push({path, label});
-        }
+        let nextUrl: string;
+
+        route.url
+            .pipe(
+                map( (data: UrlSegment[]) => {
+                    return data.reduce( (current: string, next: UrlSegment) => {
+                        if ( current.length === 0 ) {
+                            return next.path;
+                        }
+                        return `${current}/${next.path}`;
+                    }, '');
+                })
+            )
+            .subscribe( (urlSegmentPath) => {
+                nextUrl = `${url}/${urlSegmentPath}`;
+            });
+
+        breadCrumbs.push({path: nextUrl, label, data: routeConfig.data || {}});
 
         if (route.firstChild) {
             breadCrumbs.push( ...this.createBreadcrumbs(route.firstChild, nextUrl));
