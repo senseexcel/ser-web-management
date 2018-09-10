@@ -13,7 +13,7 @@ export class SerAppService {
             const baseUrl = `wss://desktop-tphgv43/app/${appId}`;
 
             const myUrl = buildUrl({
-                host: 'desktop-tphgv43',
+                host: 'nb-fc-207990',
                 appId,
                 identity: Math.random().toString(32).substr(2)
             });

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
-
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -10,9 +10,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppNewComponent  implements OnInit {
 
-  constructor() { }
+  private formBuilder: FormBuilder;
+  public formNameControl: FormControl;
+
+  private route: ActivatedRoute;
+  private router: Router;
+
+  constructor(formBuilder: FormBuilder, router: Router) {
+    this.formBuilder = formBuilder;
+    this.router = router;
+  }
 
   ngOnInit() {
+
+    this.formNameControl = this.formBuilder.control('', Validators.required);
+  }
+  
+public apply() {
+  if (this.formNameControl.valid) {
+    this.router.navigate([`apps/new/${this.formNameControl.value}`]);
+  }
+}
+  public cancel() {
+    this.router.navigate(['..'], { relativeTo: this.route });
   }
 
 }

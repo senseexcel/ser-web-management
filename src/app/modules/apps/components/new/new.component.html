@@ -24,11 +24,14 @@
 
     <div class="qapp-detail--content-body">
       <mat-form-field class="form-control">
-          <input matInput formControlName="appname" placeholder="app name">
+          <input matInput [formControl]="formNameControl" placeholder="app name">
       </mat-form-field>
     </div>
 
-    <app-edit-controls></app-edit-controls>
+    <div>
+      <button [class]="lui-button" (click)="apply()">apply</button>
+      <button  [class]="lui-button" (click)="cancel()">cancel</button>
+    </div>
   </div>
 
   <div class="qapp-content--sidebar sidebar-right">
