@@ -10,36 +10,20 @@ export class SerAppService {
 
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
         return new Promise<enigmaJS.ISession>((resolve) => {
+<<<<<<< HEAD
             const baseUrl = `wss://desktop-tphgv43/app/${appId}`;
 
             const myUrl = buildUrl({
                 host: 'nb-fc-207990',
+=======
+            const url = buildUrl({
+                host: 'desktop-tphgv43',
+>>>>>>> add radio buttons for distribute modes
                 appId,
                 identity: Math.random().toString(32).substr(2)
             });
 
-            const session: enigmaJS.ISession = create({ schema: qixSchema, url: myUrl });
-
-            /* it seems we dont need this
-            const configEnigma = {
-                Promise,
-                schema: qixSchema,
-                mixins: [{
-                    types: ['GenericObject'],
-                    init: function init(properties: any) {
-                        properties.api.app = properties.api.session.getObjectApi({
-                            handle: 1,
-                            id: 'Doc',
-                            type: 'Doc',
-                            customType: 'Doc',
-                            delta: true
-                        });
-                    }
-                }],
-                url: baseUrl
-            };
-            */
-
+            const session: enigmaJS.ISession = create({ schema: qixSchema, url });
             resolve(session);
         });
     }
@@ -87,11 +71,11 @@ export class SerAppService {
 
         const need = apps.length;
         const appsLoaded: Subject<boolean> = new Subject();
+        const sessionQueue = this.buildSessionQueue();
         let get = 0;
 
         return from(apps).pipe(
             mergeMap((app: IQlikApp) => {
-
                 return this.createSession(app.qDocId)
                     .then( async (session) => {
 
@@ -124,9 +108,11 @@ export class SerAppService {
                 const config = appData.script as string;
                 return config && config.indexOf('SER.START') !== -1;
             }),
+            // davor
             map((data): IQlikApp => {
                 return data.qapp;
             }),
+            // danach
             buffer( appsLoaded )
         );
     }

@@ -6,15 +6,9 @@
         <input matInput formControlName="target" placeholder="Target" >
     </mat-form-field>
 
-    <mat-form-field class="form-control">
-        <input matInput formControlName="connections" placeholder="Connections" >
-    </mat-form-field>
-
-    <mat-form-field class="form-control">
-        <mat-select formControlName="mode" placeholder="Distribution Mode">
-            <mat-option *ngFor="let mode of distributionModes" [value]="mode.value">
-                {{mode.label}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+    <mat-radio-group formControlName="mode">
+        <mat-radio-button *ngFor="let mode of distributionModes" [value]="mode.value">
+            {{mode.label}}
+        </mat-radio-button>
+    </mat-radio-group>
 </form>

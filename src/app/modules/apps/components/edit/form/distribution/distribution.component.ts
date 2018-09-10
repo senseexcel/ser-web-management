@@ -4,7 +4,8 @@ import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 
 @Component({
     selector: 'app-edit-form-distribution',
-    templateUrl: 'distribution.component.html'
+    templateUrl: 'distribution.component.html',
+    styleUrls: ['./distribution.component.scss']
 })
 export class DistributionComponent implements OnInit {
 
