@@ -1,6 +1,6 @@
 <div class="qapp-list--table">
     <mat-spinner *ngIf="isLoading"></mat-spinner>
-    <table class="table" *ngIf="qlikApps.length" mat-table [dataSource]="qlikApps">
+    <table class="table" *ngIf="qlikApps.length && !isLoading" mat-table [dataSource]="qlikApps">
         <!-- Position Column -->
         <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef> Name </th>
@@ -19,22 +19,27 @@
 <nav class="qapp-list--actions navbar navbar-expand-lg action-bar-bottom">
     <div class="btn-toolbar" role="group">
 
-        <button type="button" [disabled]="selection.isEmpty()" class="nav-item mr-4" (click)="editApp()">
+        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="editApp()">
             <span class="button-label">
                 Edit
             </span>
         </button>
 
-        <button type="button" [disabled]="selection.isEmpty()" class="nav-item mr-4" (click)="deleteApps()" >
+        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="deleteApps()" >
             <span class="button-label">
                 Delete
             </span>
         </button>
 
-        <button type="button button-icon--add" class="nav-item" (click)="createApp()">
-            <i class="lui-icon lui-icon--add icon-small"></i>
+        <button type="button" [disabled]="isLoading" class="nav-item" (click)="createApp()">
             <span class="button-label">
                 Create new
+            </span>
+        </button>
+
+        <button type="button" class="nav-item" [disabled]="isLoading" (click)="reloadList()">
+            <span class="button-label">
+                Reload
             </span>
         </button>
     </div>

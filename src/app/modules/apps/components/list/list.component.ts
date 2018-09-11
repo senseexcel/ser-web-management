@@ -3,6 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { IQlikApp } from '@apps/api/app.interface';
 import { SerAppManagerService } from '@core/modules//ser-app/provider/ser-app-manager.service';
 import { SelectionModel } from '@angular/cdk/collections';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-list',
@@ -18,6 +19,8 @@ export class AppListComponent implements OnInit {
     public isLoading = true;
 
     public selection: SelectionModel<IQlikApp>;
+
+    private serAppsSub: Subscription;
 
     private appManager: SerAppManagerService;
 
@@ -38,7 +41,7 @@ export class AppListComponent implements OnInit {
 
     public async ngOnInit() {
 
-        this.appManager.loadSerApps()
+        this.serAppsSub = this.appManager.loadSerApps()
             .subscribe( (apps) => {
                 this.isLoading = false;
                 this.qlikApps = apps;
@@ -82,5 +85,22 @@ export class AppListComponent implements OnInit {
      */
     public createApp() {
         this.router.navigate([`new`], { relativeTo: this.route});
+    }
+
+    /**
+     *
+     *
+     * @memberof AppListComponent
+     */
+    public reloadList() {
+        this.isLoading = true;
+
+        this.selection.clear();
+        this.serAppsSub.unsubscribe();
+        this.serAppsSub = this.appManager.loadSerApps(true)
+            .subscribe( (apps: IQlikApp[]) => {
+                this.isLoading = false;
+                this.qlikApps = apps;
+            });
     }
 }
