@@ -1,0 +1,63 @@
+<router-outlet></router-outlet>
+
+<div class="qapp-detail" [style.display]="isPreview ? 'none': 'flex'">
+
+        <div class="qapp-detail--sidebar sidebar-left">
+
+            <div class="header">
+                <a (click)="navigateBack()">
+                    <i class="lui-icon lui-icon--arrow-up"></i>
+                    <span>Applications</span>
+                </a>
+            </div>
+
+            <ul class="lui-list">
+                <li *ngFor="let app of apps" class="lui-item">
+                    {{app.qDocId}}
+                </li>
+            </ul>
+        </div>
+
+        <div class="qapp-detail--content">
+            <div class="qapp-detail--content-header">
+                <h3>Detailansicht Applikation</h3>
+            </div>
+            <div class="qapp-detail--content-body">
+                <div class="content">
+                    <ng-container *ngIf="formDataLoaded">
+                        <div #connections class="form-group">
+                            <app-edit-form-app></app-edit-form-app>
+                        </div>
+                        <div #template class="form-group">
+                            <app-edit-form-template></app-edit-form-template>
+                        </div>
+                        <div #distribute class="form-group">
+                            <app-edit-form-distribution></app-edit-form-distribution>
+                        </div> 
+                        <div #settings class="form-group">
+                            <app-edit-form-settings></app-edit-form-settings>
+                        </div>
+                    </ng-container>
+
+                    <mat-spinner *ngIf="!formDataLoaded"></mat-spinner>
+                </div>
+            </div>
+            <app-edit-controls (apply)="save()" (cancel)="cancel()" (preview)="preview()"></app-edit-controls>
+        </div>
+
+        <div class="qapp-content--sidebar sidebar-right">
+
+            <div class="header">
+                Properties
+            </div>
+
+            <ul class="lui-list">
+                <li class="lui-item" 
+                    (click)="showForm(property)"
+                    *ngFor="let property of properties"
+                    [ngClass]="{'active': property == selectedProperty}" >
+                    {{property.label}}
+                </li>
+            </ul>
+        </div>
+</div>

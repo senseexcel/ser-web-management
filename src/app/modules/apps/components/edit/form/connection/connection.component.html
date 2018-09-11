@@ -1,0 +1,12 @@
+<h3 class="header header-secondary">App</h3>
+<ng-container *ngIf="connectionForm">
+    <div [formGroup]="connectionForm">
+        <mat-form-field class="form-control">
+            <mat-select formControlName="app" placeholder="Connection App">
+                <mat-option *ngFor="let app of apps" [value]="app.qDocId">
+                    {{app.qDocName}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</ng-container>

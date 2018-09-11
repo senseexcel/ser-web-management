@@ -1,0 +1,7 @@
+ser-web-management.qext;
+main.js;
+polyfill.js;
+runtime.js;
+styles.js;
+vendor.js;
+index.html;

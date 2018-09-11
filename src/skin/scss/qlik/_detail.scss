@@ -1,0 +1,88 @@
+.qapp-detail {
+
+    display: flex;
+    width: 100%;
+    height:100%;
+
+    .qapp-detail--sidebar,
+    .qapp-content--sidebar {
+        flex: 0 0 20%;
+        padding:0 .4rem;
+        color: #FFF;
+    }
+
+    .qapp-detail--sidebar .header {
+        padding: 11px 0 11px 5px;
+        background: #595959;
+        font-size: 1.2;
+
+        i {
+            margin: 0 .5rem 0 .2rem;
+            font-size: 1.3rem;
+        }
+    }
+
+    .qapp-detail--sidebar .lui-list {
+
+        .lui-item {
+            background: #737373;
+            padding: 5px 0 5px 20px;
+            border-top: 1px solid #333;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+    }
+
+    .qapp-content--sidebar {
+        background: #595959;
+        padding: 4rem 0 0; 
+        margin: 0 .5rem 0 0;
+
+        .header {
+            font-weight: 600;
+        }
+
+        .header, 
+        .lui-item {
+            padding: 0 0 0 1rem;
+        }
+
+        .header {
+            margin-bottom: .5rem;
+        }
+
+        .lui-item {
+            line-height: 2rem;
+        }
+
+        .lui-item.active {
+            background: #FFF;
+            color: #000;
+        }
+    }
+
+    .qapp-detail--content {
+        flex: 1;
+        background: #595959;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .qapp-detail--content-header {
+        padding: 1rem 1.5rem;
+        color: #FFF;
+    }
+
+    .qapp-detail--content-body {
+        padding: 1rem 1.5rem;
+        background: #FFF;
+        flex: 1;
+    }
+
+    .flex-container {
+
+        form {
+            flex: 1;
+        }
+    }
+}

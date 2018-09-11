@@ -1,0 +1,30 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "target": "es5",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
+    "paths": {
+      "@apps/*": ["src/app/modules/apps/*"],
+      "@breadcrumb/*": ["src/app/modules/breadcrumb/*"],
+      "@core/*": ["src/app/core/*"],
+      "@dashboard/*": ["src/app/modules/dashboard/*"],
+      "@node_modules/*": ["node_modules/*"],
+    }
+  }
+}

@@ -1,0 +1,37 @@
+:host {
+
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .navbar {
+       
+        &.action-bar-bottom {
+            background-color: #8C8C8C;
+            color: #FFFFFF;
+            padding: 0px 2px 11px 10px;
+            min-height: 48px;
+            overflow: hidden;
+        }
+    }
+
+    .qapp-list--table {
+        flex: 1 1 0;
+        background: #FFF;
+        overflow-y: auto;
+
+        .mat-row {
+            height: auto;
+            line-height: 2.5rem;
+        }
+
+        .mat-row.selected {
+            background: #737373;
+            color: #FFF;
+        }
+
+        .mat-cell {
+            color: inherit;
+        }
+    }
+}

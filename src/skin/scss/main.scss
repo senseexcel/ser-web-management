@@ -1,0 +1,22 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+@import "~bootstrap/scss/reboot";
+@import "~bootstrap/scss/utilities/background";
+@import "~bootstrap/scss/utilities/spacing";
+@import "~bootstrap/scss/utilities/flex";
+@import "~bootstrap/scss/forms";
+@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/navbar";
+@import "~bootstrap/scss/tables";
+@import "~bootstrap/scss/button-group";
+
+@import "~leonardo-ui/dist/leonardo-ui.css";
+
+@import "./typography";
+@import "./layout";
+@import "./components/index";
+
+// modules
+@import "./dashboard/index";
+@import "./qlik/index";
