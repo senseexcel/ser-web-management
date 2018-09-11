@@ -5,7 +5,7 @@ import { AppEditComponent, AppListComponent, AppsComponent, AppNewComponent } fr
 import { AppsRoutingModule } from './apps-routing.module';
 import { MaterialModule } from '@core/modules/material.module';
 
-import { ConnectionComponent, GeneralComponent, TemplateComponent, FormControlsComponent } from './components/edit';
+import { ConnectionComponent, SettingsComponent, TemplateComponent, FormControlsComponent } from './components/edit';
 import {
   DistributionComponent,
   DistributionFileComponent,
