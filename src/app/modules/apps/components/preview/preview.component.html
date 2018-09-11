@@ -5,7 +5,7 @@
     <div class="header">
       <a (click)="navigateBack()">
         <i class="lui-icon lui-icon--arrow-up"></i>
-        <span>New</span>
+        <span>Back</span>
       </a>
     </div>
 
@@ -19,11 +19,11 @@
   <div class="qapp-detail--content">
 
     <div class="qapp-detail--content-header">
-      <h3>Preview {{appName}}</h3>
+      <h3>Preview Sense Excel Reporting Task</h3>
     </div>
 
     <div class="qapp-detail--content-body">
-        <pre>{{data | cleanReport | hjson}}</pre>
+        <pre>{{ data | cleanReport | hjson}}</pre>
     </div>
   </div>
 
