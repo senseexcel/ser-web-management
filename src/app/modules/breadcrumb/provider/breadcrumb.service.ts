@@ -101,26 +101,28 @@ export class BreadcrumbService {
 
         const breadCrumbs: Array<IBreadCrumb> = [];
         const routeConfig = route.routeConfig || {};
-        const label = routeConfig.data && routeConfig.data['breadcrumb'] || name;
+        let nextUrl: string = url;
 
-        let nextUrl: string;
+        if ( routeConfig.data && routeConfig.data.hasOwnProperty('breadcrumb') ) {
+            const label = routeConfig.data['breadcrumb'];
 
-        route.url
-            .pipe(
-                map( (data: UrlSegment[]) => {
-                    return data.reduce( (current: string, next: UrlSegment) => {
-                        if ( current.length === 0 ) {
-                            return next.path;
-                        }
-                        return `${current}/${next.path}`;
-                    }, '');
-                })
-            )
-            .subscribe( (urlSegmentPath) => {
-                nextUrl = `${url}/${urlSegmentPath}`;
-            });
+            route.url
+                .pipe(
+                    map( (data: UrlSegment[]) => {
+                        return data.reduce( (current: string, next: UrlSegment) => {
+                            if ( current.length === 0 ) {
+                                return next.path;
+                            }
+                            return `${current}/${next.path}`;
+                        }, '');
+                    })
+                )
+                .subscribe( (urlSegmentPath) => {
+                    nextUrl = `${url}/${urlSegmentPath}`;
+                });
 
-        breadCrumbs.push({path: nextUrl, label, data: routeConfig.data || {}});
+            breadCrumbs.push({path: nextUrl, label, data: routeConfig.data || {}});
+        }
 
         if (route.firstChild) {
             breadCrumbs.push( ...this.createBreadcrumbs(route.firstChild, nextUrl));

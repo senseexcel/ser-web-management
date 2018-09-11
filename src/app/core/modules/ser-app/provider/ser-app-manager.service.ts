@@ -17,6 +17,10 @@ export class SerAppManagerService {
 
     private loadedApps$: BehaviorSubject<IQlikApp[]> ;
     private loadedSerApps$: BehaviorSubject<IQlikApp[]> ;
+
+    private loadedApps: IQlikApp[]    = [];
+    private loadedSerApps: IQlikApp[] = [];
+
     private selectedApps: IQlikApp[];
     private isAppsLoaded = false;
     private isSerAppsLoaded = false;
@@ -37,8 +41,11 @@ export class SerAppManagerService {
         this.reportService    = reportService;
         this.openApps         = new WeakMap<ISerApp, EngineAPI.IApp>();
 
-        this.loadedApps$    = new BehaviorSubject<IQlikApp[]>([]);
-        this.loadedSerApps$ = new BehaviorSubject<IQlikApp[]>([]);
+        this.loadedApps    = [];
+        this.loadedSerApps = [];
+
+        this.loadedApps$    = new BehaviorSubject<IQlikApp[]>(this.loadedApps);
+        this.loadedSerApps$ = new BehaviorSubject<IQlikApp[]>(this.loadedSerApps);
 
         this.selectedApps    = [];
     }
@@ -83,6 +90,13 @@ export class SerAppManagerService {
                     await engineApp.doSave();
                 }
                 serApp.title = name;
+
+                this.loadedSerApps.push({ qDocName: serApp.title, qDocId: serApp.appId });
+                this.loadedApps.push({ qDocName: serApp.title, qDocId: serApp.appId });
+
+                this.loadedApps$.next(this.loadedApps);
+                this.loadedSerApps$.next(this.loadedSerApps);
+
                 return serApp;
             })
         );
@@ -112,7 +126,8 @@ export class SerAppManagerService {
                 switchMap( (apps: IQlikApp[]) => {
                     this.isAppsLoaded  = true;
                     this.isLoadingApps = false;
-                    this.loadedApps$.next(apps);
+                    this.loadedApps = apps;
+                    this.loadedApps$.next(this.loadedApps);
                     return this.loadedApps$;
                 })
             );
@@ -139,7 +154,8 @@ export class SerAppManagerService {
                 switchMap( (apps: IQlikApp[]) => {
                     this.isSerAppsLoaded = true;
                     this.isLoadingSerApps = false;
-                    this.loadedSerApps$.next(apps);
+                    this.loadedSerApps = apps;
+                    this.loadedSerApps$.next(this.loadedSerApps);
                     return this.loadedSerApps$;
                 })
             );

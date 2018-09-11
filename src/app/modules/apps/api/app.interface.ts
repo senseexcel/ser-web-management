@@ -1,12 +1,12 @@
 export interface IQlikApp {
 
-    qConnctedUsers: number;
+    qConnctedUsers?: number;
 
     qDocId: string;
 
     qDocName: string;
 
-    qFileSize: number;
+    qFileSize?: number;
 
-    qTitle: string;
+    qTitle?: string;
 }

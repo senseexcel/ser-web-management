@@ -23,11 +23,6 @@ export class BreadcrumbComponent implements OnInit {
 
   ngOnInit() {
     this.breadcrumbService.breadcrumbs
-      .pipe(
-        map( (breadcrumbs: Array<IBreadCrumb>) => {
-          return breadcrumbs.slice(1);
-        })
-      )
       .subscribe( (breadcrumbs: Array<IBreadCrumb>) => {
         this.breadcrumbs = breadcrumbs;
       });
