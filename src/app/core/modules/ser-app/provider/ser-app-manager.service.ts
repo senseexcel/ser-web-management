@@ -192,7 +192,7 @@ export class SerAppManagerService {
      */
     public async saveApp(app: ISerApp): Promise<void> {
 
-        const report = this.cleanUpReportData((app.report as ReportModel).raw);
+        const report = this.reportService.cleanReport((app.report as ReportModel).raw);
         app.script.script.tasks[0].reports[0] = report;
         const newScript = this.serScriptService.stringify(app.script);
 
@@ -235,34 +235,5 @@ export class SerAppManagerService {
 
         this.openApps.set(serApp, app);
         return serApp;
-    }
-
-    /**
-     * remove undefined values from script
-     *
-     * @private
-     * @param {*} report
-     * @returns
-     * @memberof SerAppManagerService
-     */
-    private cleanUpReportData(report: any) {
-        const data = report;
-        for (const key in data) {
-            if ( ! data.hasOwnProperty(key) ) {
-                continue;
-            }
-            const value = data[key];
-            if ( value && Object.prototype.toString.apply(value).slice(8, -1) === 'Object') {
-                const cleaned = this.cleanUpReportData(data[key]);
-                if ( Object.keys(cleaned).length === 0 ) {
-                    delete data[key];
-                }
-            } else {
-                if ( data[key] === undefined ) {
-                    delete data[key];
-                }
-            }
-        }
-        return data;
     }
 }

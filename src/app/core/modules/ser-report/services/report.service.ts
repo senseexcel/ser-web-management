@@ -68,6 +68,34 @@ export class ReportService {
     }
 
     /**
+     * clean report
+     *
+     * @param {*} report
+     * @returns
+     * @memberof ReportService
+     */
+    public cleanReport(report: any) {
+        const data = report;
+        for (const key in data) {
+            if ( ! data.hasOwnProperty(key) ) {
+                continue;
+            }
+            const value = data[key];
+            if ( value && Object.prototype.toString.apply(value).slice(8, -1) === 'Object') {
+                const cleaned = this.cleanReport(data[key]);
+                if ( Object.keys(cleaned).length === 0 ) {
+                    delete data[key];
+                }
+            } else {
+                if ( data[key] === undefined ) {
+                    delete data[key];
+                }
+            }
+        }
+        return data;
+    }
+
+    /**
      *
      *
      * @private

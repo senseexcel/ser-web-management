@@ -10,7 +10,7 @@ import { SerReportModule } from '@core/modules/ser-report/ser-report.module';
         SerScriptModule,
         SerReportModule
     ],
-    exports: [],
+    exports: [ SerReportModule ],
     providers: [SerAppManagerService],
 })
 export class SerAppModule { }

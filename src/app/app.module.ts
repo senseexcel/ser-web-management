@@ -8,10 +8,11 @@ import { AppsModule } from '@apps/apps.module';
 import { menuData } from './api/data';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HJSonPipe } from '@core/pipes/hsjon.pipe';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent
   ],
   imports: [
     AppRoutingModule,

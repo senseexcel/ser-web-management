@@ -15,6 +15,7 @@ import {
 import { FormHelperModule } from '@core/modules/form-helper/form-helper.module';
 import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
+import { HJSonPipe } from '@core/pipes/hsjon.pipe';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { ReportPreviewComponent } from '@apps/components/preview/preview.compone
     DistributionHubComponent,
     DistributionMailComponent,
     AppNewComponent,
-    ReportPreviewComponent
+    ReportPreviewComponent,
+    HJSonPipe
   ]
 })
 export class AppsModule { }
