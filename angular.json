@@ -15,8 +15,11 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "customWebpackConfig": {
+              "path": "./bin/extra-webpack.config.js"
+            },
             "outputPath": "dist/serWebManagement",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -55,7 +58,7 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+        "builder": "@angular-builders/dev-server:generic",
           "options": {
             "browserTarget": "serWebManagement:build"
           },

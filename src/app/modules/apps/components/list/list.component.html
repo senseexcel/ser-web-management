@@ -1,3 +1,7 @@
+<ng-container *ngIf="!selection.isEmpty()">
+    <app-ser-tasks [app]="selection.selected[0]"></app-ser-tasks>
+</ng-container>
+
 <div class="qapp-list--table">
     <mat-spinner *ngIf="isLoading"></mat-spinner>
     <table class="table" *ngIf="qlikApps.length && !isLoading" mat-table [dataSource]="qlikApps">

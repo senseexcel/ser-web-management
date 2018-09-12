@@ -1,17 +1,27 @@
+import { Inject } from '@angular/core';
+import { IQlikApp } from '@apps/api/app.interface';
+import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
 import { create } from 'enigma.js';
 import { buildUrl } from 'enigma.js/sense-utilities';
-import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
-import { IQlikApp } from '@apps/api/app.interface';
 import { from, Subject, Observable } from 'rxjs';
 import { mergeMap, switchMap, catchError, filter, buffer, map, bufferCount } from 'rxjs/operators';
 import { IQlikAppCreated } from '../api/response/app-created.interface';
+import { ISerEngineConfig } from '../api/ser-engine-config.interface';
 
 export class SerAppService {
+
+    private senseConfig: ISerEngineConfig;
+
+    public constructor(
+        @Inject('SerEngineConfig') senseConfig: ISerEngineConfig,
+    ) {
+        this.senseConfig = senseConfig;
+    }
 
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
         return new Promise<enigmaJS.ISession>((resolve) => {
             const url = buildUrl({
-                host: window.location.host,
+                host: this.senseConfig.host,
                 appId,
                 identity: Math.random().toString(32).substr(2)
             });

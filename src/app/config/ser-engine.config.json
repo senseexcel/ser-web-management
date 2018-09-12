@@ -1,0 +1,12 @@
+{
+    "host": "desktop-tphgv43",
+    "userDirectory": "desktop-tphgv43",
+    "userId": "rhannuschka",
+    "virtualProxy": "ser",
+    "jwt": {
+        "endpoint": "sense/app",
+        "signOptions": {
+            "algorithm": "RS256" 
+        }
+    }
+}

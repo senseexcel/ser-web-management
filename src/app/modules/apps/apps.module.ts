@@ -16,6 +16,7 @@ import { FormHelperModule } from '@core/modules/form-helper/form-helper.module';
 import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
 import { HJSonPipe } from '@core/pipes/hsjon.pipe';
+import { SerTaskModule } from '@core/modules/ser-task/ser-task.module';
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import { HJSonPipe } from '@core/pipes/hsjon.pipe';
     FormHelperModule,
     MaterialModule,
     ReactiveFormsModule,
-    SerAppModule
+    SerAppModule,
+    SerTaskModule
   ],
   exports: [MaterialModule],
   declarations: [
