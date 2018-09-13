@@ -39,13 +39,7 @@ export class SerAuthenticationService {
         }
 
         this.httpClient.get('https://desktop-tphgv43/ser/qrs/about', {
-            headers: {
-                'x-Qlik-Xrfkey': '1234567890abcdef'
-            }
             withCredentials: true,
-            params: {
-                xrfkey: '1234567890abcdef'
-            }
         })
         .subscribe( (response) => {
             console.log(response);
