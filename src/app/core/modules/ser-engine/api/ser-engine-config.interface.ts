@@ -10,11 +10,11 @@ export interface IJwt {
 export interface ISerEngineConfig {
     host: string;
 
-    userId: string;
+    userId?: string;
 
-    userDirectory: string;
+    userDirectory?: string;
 
     virtualProxy: string;
 
-    jwt: IJwt;
+    jwt?: IJwt;
 }

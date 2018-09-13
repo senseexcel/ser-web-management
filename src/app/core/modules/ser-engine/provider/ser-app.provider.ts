@@ -19,6 +19,7 @@ export class SerAppService {
     }
 
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
+
         return new Promise<enigmaJS.ISession>((resolve) => {
             const url = buildUrl({
                 host: this.senseConfig.host,

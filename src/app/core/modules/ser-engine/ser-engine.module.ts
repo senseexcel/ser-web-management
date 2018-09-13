@@ -2,9 +2,10 @@ import { NgModule, ModuleWithProviders } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SerAppService } from './provider/ser-app.provider';
 import { ISerEngineConfig } from './api/ser-engine-config.interface';
-import { SerTaskRestService } from '@core/modules/ser-engine/provider/ser-task-rest.service';
+import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.service';
 import { SerAuthenticationService } from '@core/modules/ser-engine/provider/ser-authentication.service';
 import { XrfkeyInterceptor } from '@core/modules/ser-engine/interceptor/xrfkey.interceptor';
+import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 
 @NgModule({
     imports: [HttpClientModule],
@@ -12,8 +13,9 @@ import { XrfkeyInterceptor } from '@core/modules/ser-engine/interceptor/xrfkey.i
     declarations: [],
     providers: [
         SerAppService,
-        SerTaskRestService,
-        SerAuthenticationService
+        SerTaskService,
+        SerAuthenticationService,
+        SerFilterService
     ],
 })
 export class SerEngineModule {

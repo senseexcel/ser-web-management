@@ -17,6 +17,7 @@ import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
 import { HJSonPipe } from '@core/pipes/hsjon.pipe';
 import { SerTaskModule } from '@core/modules/ser-task/ser-task.module';
+import { TaskOverviewComponent } from '@apps/components/task-overview/task-overview.component';
 
 @NgModule({
   imports: [
@@ -43,7 +44,8 @@ import { SerTaskModule } from '@core/modules/ser-task/ser-task.module';
     DistributionMailComponent,
     AppNewComponent,
     ReportPreviewComponent,
-    HJSonPipe
+    HJSonPipe,
+    TaskOverviewComponent
   ]
 })
 export class AppsModule { }

@@ -1,16 +1,12 @@
 import { Injectable, Inject } from '@angular/core';
-import { BehaviorSubject, config, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { sign } from 'jsonwebtoken';
 import { ISerEngineConfig } from '../api/ser-engine-config.interface';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { switchMap, map, shareReplay } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class SerAuthenticationService {
-
-    private tokenBearer$: BehaviorSubject<string>;
-
-    private tokenBearer: string;
 
     private serEngineConfig: ISerEngineConfig;
 
@@ -22,30 +18,9 @@ export class SerAuthenticationService {
     ) {
         this.httpClient      = httpClient;
         this.serEngineConfig = serEngineConfig;
-        this.tokenBearer$    = new BehaviorSubject<string>(null);
-    }
 
-    /**
-     * think about this
-     */
-    public get token(): BehaviorSubject<string> {
-
-        if ( ! this.tokenBearer ) {
-            this.fetchToken().pipe(
-                map(() => {
-                    this.tokenBearer = 'true';
-                })
-            ).subscribe ( () => {});
-        }
-
-        this.httpClient.get('https://desktop-tphgv43/ser/qrs/about', {
-            withCredentials: true,
-        })
-        .subscribe( (response) => {
-            console.log(response);
-        });
-
-        return this.tokenBearer$;
+        this.fetchToken()
+            .subscribe ( () => {});
     }
 
     private fetchToken(): Observable<string> {
