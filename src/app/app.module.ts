@@ -9,6 +9,18 @@ import { menuData } from './api/data';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SerEngineModule } from '@core/modules/ser-engine/ser-engine.module';
+import { ISerEngineConfig } from '@core/modules/ser-engine/api/ser-engine-config.interface';
+
+let serEnigneConfig: ISerEngineConfig;
+/// #if ! DEV
+serEnigneConfig = {
+  host: window.location.host,
+  virtualProxy: ''
+};
+/// #else
+import * as SerEngineDevConfig from './config/ser-engine.config.dev.json';
+serEnigneConfig = SerEngineDevConfig;
+/// #endif
 
 @NgModule({
   declarations: [
@@ -21,10 +33,7 @@ import { SerEngineModule } from '@core/modules/ser-engine/ser-engine.module';
     BrowserAnimationsModule,
     BrowserModule,
     DashboardModule.forRoot(menuData),
-    SerEngineModule.forRoot({
-      host: window.location.host,
-      virtualProxy: ''
-    })
+    SerEngineModule.forRoot(serEnigneConfig)
   ],
   providers: [],
   bootstrap: [AppComponent]

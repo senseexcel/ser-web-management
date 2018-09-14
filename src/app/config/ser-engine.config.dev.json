@@ -1,0 +1,12 @@
+{
+    "host": "nb-fc-207996",
+    "userDirectory?": "nb-fc-207996",
+    "userId?": "rhannuschka",
+    "virtualProxy?": "ser",
+    "jwt?": {
+        "endpoint": "sense/app",
+        "signOptions": {
+            "algorithm": "RS256" 
+        }
+    }
+}

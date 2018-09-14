@@ -20,6 +20,7 @@
             "customWebpackConfig": {
               "path": "./bin/extra-webpack.config.js"
             },
+            "baseHref": "/extensions/ser-web-management/",
             "outputPath": "dist/serWebManagement",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -60,7 +61,8 @@
         "serve": {
         "builder": "@angular-builders/dev-server:generic",
           "options": {
-            "browserTarget": "serWebManagement:build"
+            "browserTarget": "serWebManagement:build",
+            "baseHref": "/"
           },
           "configurations": {
             "production": {
