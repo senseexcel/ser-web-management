@@ -63,6 +63,8 @@ export class SerAppService {
     private getSerApps(apps: IQlikApp[]): Observable<IQlikApp[]> {
 
         const need = apps.length;
+        const appsLoaded: Subject<boolean> = new Subject<boolean>();
+        let appsChecked  = 0;
 
         return from(apps).pipe(
             mergeMap((app: IQlikApp) => {
@@ -84,6 +86,12 @@ export class SerAppService {
                     });
             }),
             filter((appData: any) => {
+                appsChecked++;
+
+                if ( appsChecked === need ) {
+                    appsLoaded.next(true);
+                }
+
                 if ( ! appData ) {
                     return false;
                 }
@@ -91,10 +99,9 @@ export class SerAppService {
                 return config && config.indexOf('SER.START') !== -1;
             }),
             map((data): IQlikApp => {
-                // return data.qapp;
                 return data.qapp;
             }),
-            bufferCount( need )
+            buffer(appsLoaded)
         );
     }
 
