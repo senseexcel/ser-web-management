@@ -1,0 +1,12 @@
+{
+    "host": <<SENSE_SERVER_HOSTNAME>>,
+    "userDirectory?": <<USER_DIRECTORY>>,
+    "userId?": <<USER_ID>>,
+    "virtualProxy?": <<VIRTUAL_PROXY_NAME>>,
+    "jwt?": {
+        "endpoint": "sense/app",
+        "signOptions": {
+            "algorithm": "RS256" 
+        }
+    }
+}
