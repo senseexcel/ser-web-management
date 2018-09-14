@@ -65,6 +65,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
         this.reportService = reportService;
         this.router        = router;
         this.breadCrumbService = breadcrumbService;
+
     }
 
     public cancel() {
@@ -94,6 +95,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
             { label: 'Template'     },
             { label: 'Distribution' },
             { label: 'Settings'     },
+            { label: 'Tasks'        }
         ];
 
         const params = this.activeRoute.snapshot.params;
@@ -158,6 +160,10 @@ export class AppEditComponent implements OnInit, OnDestroy {
             case 'settings':
                 scrollToContainer = this.settingsContainer;
                 break;
+            case 'tasks':
+                this.isPreview = true;
+                this.router.navigate(['tasks'], {relativeTo: this.activeRoute});
+                return;
         }
 
         scrollToContainer.nativeElement.scrollIntoView({

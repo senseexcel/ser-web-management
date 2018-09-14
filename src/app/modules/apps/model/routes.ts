@@ -3,6 +3,7 @@ import { AppListComponent, AppEditComponent, AppsComponent, AppNewComponent  } f
 import { EditGuard } from '../guards/edit.guard';
 import { CreateGuard  } from '../guards/create.guard';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
+import { TaskOverviewComponent } from '@apps/components/task-overview/task-overview.component';
 
 export const AppRoutes: Routes = [{
     path: 'apps',
@@ -26,6 +27,12 @@ export const AppRoutes: Routes = [{
             component: ReportPreviewComponent,
             data: {
                 breadcrumb: 'Report Preview'
+            }
+        }, {
+            path: 'tasks',
+            component: TaskOverviewComponent,
+            data: {
+                breadcrumb: 'Tasks'
             }
         }]
     }, {

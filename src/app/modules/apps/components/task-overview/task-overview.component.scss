@@ -1,0 +1,12 @@
+
+:host {
+
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .qapp-detail--content-body {
+        overflow-y: auto;
+        padding: 1rem 0;
+    }
+}

@@ -38,4 +38,5 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# Config Files
 /src/app/config/ser-engine.config.dev.json
