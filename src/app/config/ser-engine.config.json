@@ -1,8 +1,8 @@
 {
-    "host": "desktop-tphgv43",
-    "userDirectory?": "desktop-tphgv43",
-    "userId?": "rhannuschka",
-    "virtualProxy?": "ser",
+    "host": <<SENSE_SERVER_HOSTNAME>>,
+    "userDirectory?": <<USER_DIRECTORY>>,
+    "userId?": <<USER_ID>>,
+    "virtualProxy?": <<VIRTUAL_PROXY_NAME>>,
     "jwt?": {
         "endpoint": "sense/app",
         "signOptions": {
