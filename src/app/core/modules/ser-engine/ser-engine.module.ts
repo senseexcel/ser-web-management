@@ -3,7 +3,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { SerAppService } from './provider/ser-app.provider';
 import { ISerEngineConfig } from './api/ser-engine-config.interface';
 import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.service';
-import { SerAuthenticationService } from '@core/modules/ser-engine/provider/ser-authentication.service';
 import { XrfkeyInterceptor } from '@core/modules/ser-engine/interceptor/xrfkey.interceptor';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 
@@ -14,7 +13,6 @@ import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.s
     providers: [
         SerAppService,
         SerTaskService,
-        SerAuthenticationService,
         SerFilterService
     ],
 })

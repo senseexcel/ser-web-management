@@ -43,8 +43,14 @@ export class SerTaskService {
     public fetchTasksForApp(appId: string): Observable<ITask[]> {
 
         const endpoint = `/${this.senseConfig.virtualProxy}qrs/reloadtask/full`;
-        const url = endpoint;
-        // const url      = `https://${this.senseConfig.host}/${endpoint}`;
+
+        let url;
+        /// #if ! DEV
+            url = endpoint;
+        /// #else
+            url = `https://${this.senseConfig.host}/${endpoint}`;
+        /// #endif
+
         const filter = this.filterService.createFilter('app.id', appId);
 
         return this.httpClient.get(url,

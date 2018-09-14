@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injector, APP_INITIALIZER } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DashboardModule } from '@dashboard/dashboard.module';
 import { BreadcrumbModule } from '@breadcrumb/breadcrumb.module';
@@ -10,6 +10,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SerEngineModule } from '@core/modules/ser-engine/ser-engine.module';
 import { ISerEngineConfig } from '@core/modules/ser-engine/api/ser-engine-config.interface';
+
+import { StartUpService, startUpServiceFactory } from './services';
 
 let serEnigneConfig: ISerEngineConfig;
 /// #if ! DEV
@@ -35,7 +37,16 @@ serEnigneConfig = SerEngineDevConfig;
     DashboardModule.forRoot(menuData),
     SerEngineModule.forRoot(serEnigneConfig)
   ],
-  providers: [],
+  providers: [
+    StartUpService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: startUpServiceFactory,
+      deps: [StartUpService],
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
