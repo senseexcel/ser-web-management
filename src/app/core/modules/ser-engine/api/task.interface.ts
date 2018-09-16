@@ -8,6 +8,12 @@ export interface ITask {
 
     modifiedByUserName: string;
 
+    customProperties: [];
+
+    published: boolean;
+
+    publishTime: string;
+
     app: {
         id: string;
 
@@ -22,7 +28,11 @@ export interface ITask {
 
     name: string;
 
+    enabled: boolean;
+
+    nextExecution: string;
+
     taskSessionTimeout: number;
 
-    enabled: boolean;
+    maxRetries: number;
 }

@@ -39,7 +39,7 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
         this.updateHook = this.buildUpdateHook();
         this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
-        this.formService.loadApp()
+        this.formService.editModel()
         .subscribe((app: ISerApp) => {
 
             if ( app === null ) {

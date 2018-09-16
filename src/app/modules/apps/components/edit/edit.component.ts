@@ -65,7 +65,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
         this.reportService = reportService;
         this.router        = router;
         this.breadCrumbService = breadcrumbService;
-
     }
 
     public cancel() {
@@ -218,7 +217,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
         .pipe(
             switchMap( (app: ISerApp) => {
                 this.app = app;
-                this.formService.editApp(app);
+                this.formService.loadModel(app);
                 return this.appManager.loadApps();
             })
         )
@@ -240,7 +239,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
             .pipe(
                 switchMap( (app: ISerApp) => {
                     this.app = app;
-                    this.formService.editApp(app);
+                    this.formService.loadModel(app);
                     return this.appManager.loadApps();
                 })
             )

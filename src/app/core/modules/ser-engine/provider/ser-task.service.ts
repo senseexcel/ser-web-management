@@ -30,7 +30,18 @@ export class SerTaskService {
      *
      * @memberof SerTaskApiService
      */
-    public fetchAllTasks() {
+    public fetchAllTasks(): Observable<ITask[]> {
+        const url = this.buildUrl();
+        return this.httpClient.get(url,
+            {
+                withCredentials: true
+            }
+        )
+        .pipe(
+            map( (response: ITask[]) => {
+                return response;
+            })
+        );
     }
 
     /**
@@ -41,16 +52,7 @@ export class SerTaskService {
      * @memberof SerTaskApiService
      */
     public fetchTasksForApp(appId: string): Observable<ITask[]> {
-
-        const endpoint = `/${this.senseConfig.virtualProxy}qrs/reloadtask/full`;
-
-        let url;
-        /// #if ! DEV
-            url = endpoint;
-        /// #else
-            url = `https://${this.senseConfig.host}/${endpoint}`;
-        /// #endif
-
+        const url    = this.buildUrl();
         const filter = this.filterService.createFilter('app.id', appId);
 
         return this.httpClient.get(url,
@@ -66,5 +68,23 @@ export class SerTaskService {
                 return response;
             })
         );
+    }
+
+    /**
+     * build url
+     *
+     * @private
+     * @returns {string}
+     * @memberof SerTaskService
+     */
+    private buildUrl(): string {
+        const endpoint = `${this.senseConfig.virtualProxy}qrs/reloadtask/full`;
+        let url;
+        /// #if ! mode==='qmc'
+            url = `/${endpoint}`;
+        /// #else
+            url = `https://${this.senseConfig.host}/${endpoint}`;
+        /// #endif
+        return url;
     }
 }

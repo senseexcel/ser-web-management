@@ -55,7 +55,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
         this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
         /** register on app has been loaded */
-        this.formService.loadApp()
+        this.formService.editModel()
         .pipe(
             mergeMap( (app: ISerApp) => {
                 return this.loadAvailableApps(app);

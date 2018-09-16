@@ -1,4 +1,6 @@
-<div class="qapp-list--table" *ngIf="tasks.length">
+<h1>list component works</h1>
+
+<div class="task-list">
     <table class="table" mat-table [dataSource]="tasks">
         <!-- Position Column -->
         <ng-container matColumnDef="id">
@@ -42,6 +44,47 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="tableHeaderFields"></tr>
-        <tr mat-row *matRowDef="let row; columns: tableHeaderFields;">
+        <tr mat-row *matRowDef="let row; columns: tableHeaderFields;" [ngClass]="{'selected': selection.isSelected(row)}" (click)="selectTask(row)">
     </table>
 </div>
+
+<nav class="task-actions navbar navbar-expand-lg action-bar-bottom">
+    <div class="btn-toolbar" role="group">
+
+        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="editTask()">
+            <span class="button-label">
+                Edit
+            </span>
+        </button>
+
+        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="deleteTask()" >
+            <span class="button-label">
+                Delete
+            </span>
+        </button>
+
+        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item" (click)="startTask()">
+            <span class="button-label">
+                Run Task
+            </span>
+        </button>
+
+        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item" (click)="stopTask()">
+            <span class="button-label">
+                Stop Task
+            </span>
+        </button>
+
+        <button type="button" class="nav-item" [disabled]="isLoading" (click)="reloadList()">
+            <span class="button-label">
+                Reload
+            </span>
+        </button>
+
+        <button type="button" [disabled]="isLoading" class="nav-item" (click)="createNew()">
+            <span class="button-label">
+                Create new
+            </span>
+        </button>
+    </div>
+</nav>

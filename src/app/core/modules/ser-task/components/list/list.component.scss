@@ -1,0 +1,15 @@
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .task-list {
+        flex: 1 1 0;
+        overflow-y: auto;
+        background: #FFF;
+    }
+
+    .task-actions {
+        background: #8C8C8C;
+    }
+}

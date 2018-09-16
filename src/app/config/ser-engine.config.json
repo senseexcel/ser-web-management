@@ -1,0 +1,19 @@
+{
+    "development": {
+        "host": "nb-fc-207996",
+        "userDirectory": "nb-fc-207996",
+        "userId": "rhannuschka",
+        "virtualProxy": "ser/",
+        "jwt": {
+            "endpoint": "sense/app",
+            "signOptions": {
+                "algorithm": "RS512" 
+            },
+            "token": "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJyaGFubnVzY2hrYSIsIlVzZXJEaXJlY3RvcnkiOiJuYi1mYy0yMDc5OTYifQ.L9rKiB162ZWJnP38f47f62eF8ytebKchBCiSB-eyiQKgTkae_lRC6Njkdc5BCWnnphbH6YgudxnIqII9p85XC8VFgQcBBS1khLFcqjRuSqP86D69jKalk8II22hnDoZ0wNIRIFiotapIrxh1E-L62lrxFkwKduhll-czL55AGjk2q9TknDRw32LA7MO454kXySJuO6kK3jcBxmBS4EddB3S_Eh9Pz-EZB0Xf_rR39kM-QBauiyAX2aRRZ7kSXf6IWNPOkfOF5fVNKQ0y485nxeoGq7A3PHKs4fq6a_veq7dohsZQlH31RCpYG1DeWLrNF1HOFu7RPUmGabzYHoZKKA"
+        }
+    },
+    "qmc": {
+        "host": "",
+        "virtualProxy": ""
+    }
+}

@@ -2,19 +2,22 @@ const ngCommands = {
     NG_BUILD: 'build',
     NG_SERVE: 'serve'
 }
-const ngCommand = process.argv.slice(2, 1);
+const ngCommand = process.argv[2];
 
 const ifDefOptions = {
-    DEV: false
+    mode: "qmc",
+    "ifdef-verbose": true
 };
 
-switch ( ngCommand ) {
+console.log(ngCommand);
+console.log(ngCommands.NG_SERVE);
 
+switch ( ngCommand ) {
     case ngCommands.NG_SERVE:
-        ifDefOptions.DEV = true;
+        ifDefOptions.mode = "development";
         break;
     default:
-        ifDefOptions.DEV = false;
+        ifDefOptions.mode = "qmc";
 }
 
 /** webpack configuration which should used for angular cli*/
@@ -24,8 +27,8 @@ module.exports = {
         rules: [{ 
             test: /\.tsx?$/,
             use: [
+                {loader: "ifdef-loader", options: ifDefOptions},
                 {loader: '@ngtools/webpack'},
-                {loader: "ifdef-loader", options: ifDefOptions}
             ]
         }]
     },

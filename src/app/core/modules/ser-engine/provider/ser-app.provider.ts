@@ -57,7 +57,7 @@ export class SerAppService {
                 return this.getSerApps(apps);
             }),
             catchError( (error) => {
-                console.log('ich bekomme hier einen error');
+                console.log(error);
                 return [];
             })
         );

@@ -1,18 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Observable, empty, forkJoin } from 'rxjs';
-
-/// #if DEV
-import * as SerEngineDevConfig from '../../config/ser-engine.config.dev.json';
 import { HttpClient } from '@angular/common/http';
-/// #endif
+import { ConfigFactory } from '../config/config-factory';
 
 @Injectable()
 export class StartUpService {
 
     private http: HttpClient;
 
-    constructor(http: HttpClient) {
+    private configFactory: ConfigFactory;
+
+    constructor(http: HttpClient, configFactory: ConfigFactory) {
         this.http = http;
+        this.configFactory = configFactory;
     }
 
     /**
@@ -24,7 +24,7 @@ export class StartUpService {
      */
     public load(): Promise<void> {
         const requests: Observable<any>[] = [];
-        /// #if DEV
+        /// #if mode=="development"
         requests.push(this.createSessionCookie());
         /// #endif
 
@@ -41,7 +41,7 @@ export class StartUpService {
      */
     private createSessionCookie(): Observable<any> {
 
-        const config: any = SerEngineDevConfig;
+        const config: any = this.configFactory.buildSerEngineConfig();
 
         const endpoint     = config.jwt.endpoint;
         const token        = config.jwt.token;
