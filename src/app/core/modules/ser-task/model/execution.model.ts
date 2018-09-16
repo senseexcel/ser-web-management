@@ -53,7 +53,7 @@ export class ExecutionModel implements IModel {
      * @type {number}
      * @memberof ExecutionModel
      */
-    public get timeout(): number {
+    public get taskSessionTimeout(): number {
         return this.executionTimeout;
     }
 
@@ -82,7 +82,7 @@ export class ExecutionModel implements IModel {
      *
      * @memberof ExecutionModel
      */
-    public set timeout(timeout: number) {
+    public set taskSessionTimeout(timeout: number) {
         this.executionTimeout = timeout;
     }
 
@@ -92,14 +92,14 @@ export class ExecutionModel implements IModel {
      * @memberof ExecutionModel
      */
     public set maxRetries(maxRetries: number) {
-        this.maxRetries = maxRetries;
+        this.executionMaxRetries = maxRetries;
     }
 
     public get raw() {
         return {
             enabled: this.enabled,
             maxRetries: this.maxRetries,
-            timeout: this.executionTimeout
+            taskSessionTimeout: this.executionTimeout
         };
     }
 }

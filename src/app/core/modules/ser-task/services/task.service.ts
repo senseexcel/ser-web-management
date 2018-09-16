@@ -21,11 +21,11 @@ export class TaskService {
      * @returns {TaskModel}
      * @memberof TaskService
      */
-    public buildTask(data?: IDataNode): TaskModel {
+    public buildTask(data?: ITask): TaskModel {
 
         const task = new TaskModel();
-        const exectuion      = this.createModel(new ExecutionModel(), data.exectuion || {});
-        const identification = this.createModel(new ExecutionModel(), data.identification || {});
+        const exectuion      = this.createModel(new ExecutionModel()     , data || {});
+        const identification = this.createModel(new IdentificationModel(), data || {});
 
         task.execution = exectuion as ExecutionModel;
         task.identification = identification as IdentificationModel;
@@ -55,7 +55,7 @@ export class TaskService {
         const data    = modelData || {};
 
         Object.keys(rawData).forEach(property => {
-            model[property] = data[property] || null;
+            model[property] = data[property] === 'undefined' ? null : data[property];
         });
         return model;
     }

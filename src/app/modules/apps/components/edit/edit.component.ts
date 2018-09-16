@@ -122,7 +122,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
      */
     public save() {
 
-        this.formService.updateApp()
+        this.formService.updateModel()
         .pipe(
             map(() => {
                 /** save app */
@@ -181,7 +181,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
      */
     private updateReportData() {
 
-        return this.formService.updateApp()
+        return this.formService.updateModel()
         .pipe(
             map((formData: ISerFormResponse[]) => {
                 /** read form data and update report model with given values */

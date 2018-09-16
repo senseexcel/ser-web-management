@@ -4,7 +4,7 @@ import { FormService } from '@core/modules/form-helper';
 import { TaskModel } from '@core/modules/ser-task/model/task.model';
 import { ExecutionModel } from '@core/modules/ser-task/model/execution.model';
 import { Subject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter } from 'rxjs/operators';
 
 @Component({
     selector: 'app-task-form-execution',
@@ -20,6 +20,14 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
      * @memberof FormExcecutionComponent
      */
     public executionForm: FormGroup;
+
+    /**
+     * true if data is loading
+     *
+     * @type {boolean}
+     * @memberof FormExcecutionComponent
+     */
+    public isLoading: boolean;
 
     /**
      * subject to notify observers we got destroyed and need to unsubscribe now
@@ -80,16 +88,18 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
      */
     ngOnInit() {
 
+        this.isLoading = true;
         this.formService.registerHook(FormService.HOOK_UPDATE, this.buildUpdateHook());
         this.formService.editModel()
             .pipe(
+                filter((model: TaskModel) => {
+                    return model !== null;
+                }),
                 takeUntil(this.isDestroyed$)
             )
-            .subscribe( (model: TaskModel) => {
-                if ( ! model ) {
-                    return;
-                }
+            .subscribe((model: TaskModel) => {
                 this.executionForm = this.buildExecutionForm(model.execution);
+                this.isLoading     = false;
             });
     }
 
@@ -112,10 +122,11 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
      * @memberof FormExcecutionComponent
      */
     private buildExecutionForm(model: ExecutionModel): FormGroup {
+
         const form = this.formBuilder.group({
             enabled: this.formBuilder.control(model.enabled),
             maxRetries: this.formBuilder.control(model.maxRetries),
-            timeout: this.formBuilder.control(model.timeout)
+            taskSessionTimeout: this.formBuilder.control(model.taskSessionTimeout)
         });
         return form;
     }
@@ -131,10 +142,10 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
         const observer = new Observable<any>((obs) => {
             const execution = this.executionForm.getRawValue();
             obs.next({
-                data: [{
+                data: {
                     fields: execution,
                     group: 'exceution'
-                }],
+                },
                 errors: [],
                 valid: this.executionForm.valid,
             });

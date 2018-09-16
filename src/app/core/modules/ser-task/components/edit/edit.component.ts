@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormService } from '@core/modules/form-helper';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
-import { ActivatedRoute } from '@angular/router';
 import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
 import { filter, map, switchMap } from 'rxjs/operators';
-import { from } from 'rxjs';
 import { TaskService } from '@core/modules/ser-task/services/task.service';
 import { TaskModel } from '@core/modules/ser-task/model/task.model';
 
@@ -16,6 +14,14 @@ import { TaskModel } from '@core/modules/ser-task/model/task.model';
 })
 
 export class EditComponent implements OnInit {
+
+    /**
+     * all tasks which should be edited
+     *
+     * @type {ITask[]}
+     * @memberof EditComponent
+     */
+    public tasks: ITask[];
 
     /**
      * form helper service
@@ -45,15 +51,6 @@ export class EditComponent implements OnInit {
     private taskManagerService: TaskManagerService;
 
     /**
-     * activated route
-     *
-     * @private
-     * @type {ActivatedRoute}
-     * @memberof EditComponent
-     */
-    private route: ActivatedRoute;
-
-    /**
      *Creates an instance of EditComponent.
      * @param {FormService<ITask, any>} formHelperService
      * @param {ActivatedRoute} rote
@@ -63,9 +60,7 @@ export class EditComponent implements OnInit {
         formHelperService: FormService<TaskModel, any>,
         taskManagerService: TaskManagerService,
         taskService: TaskService,
-        route: ActivatedRoute
     ) {
-        this.route              = route;
         this.formHelperService  = formHelperService;
         this.taskManagerService = taskManagerService;
         this.taskService        = taskService;
@@ -78,13 +73,53 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     ngOnInit() {
-        const params = this.route.snapshot.params;
 
-        if ( params.hasOwnProperty('id') ) {
-            this.editExistingTask(params.id);
-        } else {
-            this.createNewtask(params.name);
-        }
+        this.taskManagerService.selectedTasks
+            .pipe(
+                filter((tasks: ITask[]) => {
+                    return tasks.length > 0;
+                })
+            )
+            .subscribe((tasks: ITask[]) => {
+                this.tasks = tasks;
+                this.editTask(tasks[0]);
+            });
+    }
+
+    /**
+     * apply form data and save to task model
+     *
+     * @memberof EditComponent
+     */
+    public onApply() {
+
+        const taskData = this.tasks[0];
+
+        this.formHelperService.updateModel()
+            .pipe(
+                switchMap((responseData: any[]) => {
+
+                    responseData.forEach((response) => {
+                        Object.keys(response.data.fields).forEach((field) => {
+                            taskData[field] = response.data.fields[field];
+                        });
+                    });
+
+                    return this.taskManagerService.updateTask(taskData.id, taskData);
+                })
+            )
+            .subscribe((response) => {
+                console.log(response)
+            });
+    }
+
+    /**
+     * cancel edit
+     * @todo implement
+     *
+     * @memberof EditComponent
+     */
+    public onCancel() {
     }
 
     /**
@@ -93,21 +128,9 @@ export class EditComponent implements OnInit {
      * @private
      * @memberof EditComponent
      */
-    private editExistingTask(id) {
-
-        this.taskManagerService.loadTasks()
-            .pipe(
-                switchMap((tasks: ITask[]) => {
-                    return from(tasks);
-                }),
-                filter( (task: ITask) => {
-                    return task.id === id;
-                })
-            )
-            .subscribe((task: ITask) => {
-                const model: TaskModel = this.taskService.buildTask(task);
-                this.formHelperService.loadModel(model);
-            });
+    private editTask(task: ITask) {
+        const model: TaskModel = this.taskService.buildTask(task);
+        this.formHelperService.loadModel(model);
     }
 
     /**

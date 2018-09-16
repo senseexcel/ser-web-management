@@ -10,11 +10,9 @@
             </div>
 
             <ul class="lui-list">
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-                <li>5</li>
+                <li class="lui-item" *ngFor="let task of tasks">
+                    {{task.name}}
+                </li>
             </ul>
         </div>
 
@@ -28,7 +26,12 @@
                 <app-task-form-execution></app-task-form-execution>
             </div>
 
-            <div class="qmc-page--content-footer"></div>
+            <div class="qmc-page--content-footer">
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary" (click)="onApply()">apply</button>
+                    <button type="button" class="btn btn-secondary" (click)="onCancel()">cancel</button>
+                </div>
+            </div>
         </div>
 
         <div class="qmc-page--sidebar sidebar-right">

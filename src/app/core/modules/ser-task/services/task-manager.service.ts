@@ -97,6 +97,17 @@ export class TaskManagerService {
     }
 
     /**
+     * update task
+     *
+     * @param {string} id
+     * @param {ITask} data
+     * @memberof TaskManagerService
+     */
+    public updateTask(id: string, data: ITask): Observable<ITask[]> {
+        return this.taskApiService.updateTask(data);
+    }
+
+    /**
      *
      *
      * @private

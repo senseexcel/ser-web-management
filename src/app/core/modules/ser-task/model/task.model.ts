@@ -61,7 +61,7 @@ export class TaskModel implements IModel {
      * @memberof TaskModel
      */
     public set identification(identification: IdentificationModel) {
-        this.identification = identification;
+        this.taskIdentification = identification;
     }
 
     /**

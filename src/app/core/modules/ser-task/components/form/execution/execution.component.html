@@ -1,12 +1,12 @@
-<div *ngIf="excutionForm">
+<div *ngIf="!isLoading">
     <header class="header">Execution</header>
 
-    <div [formGroup]="excutionForm">
+    <div [formGroup]="executionForm">
 
         <mat-checkbox formControlName="enabled">Enabled</mat-checkbox>
 
         <mat-form-field class="form-control">
-            <input matInput formControlName="timeout" placeholder="Session Timeout" type="number">
+            <input matInput formControlName="taskSessionTimeout" placeholder="Session Timeout" type="number">
         </mat-form-field>
 
         <mat-form-field class="form-control">

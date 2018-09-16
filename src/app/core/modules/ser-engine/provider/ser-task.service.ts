@@ -31,7 +31,7 @@ export class SerTaskService {
      * @memberof SerTaskApiService
      */
     public fetchAllTasks(): Observable<ITask[]> {
-        const url = this.buildUrl();
+        const url = this.buildUrl('full');
         return this.httpClient.get(url,
             {
                 withCredentials: true
@@ -52,13 +52,36 @@ export class SerTaskService {
      * @memberof SerTaskApiService
      */
     public fetchTasksForApp(appId: string): Observable<ITask[]> {
-        const url    = this.buildUrl();
+        const url    = this.buildUrl('full');
         const filter = this.filterService.createFilter('app.id', appId);
 
-        return this.httpClient.get(url,
-            {
+        return this.httpClient.get(url, {
                 params: {
                     filter: this.filterService.createFilterQueryString(filter)
+                },
+                withCredentials: true
+            }
+        )
+        .pipe(
+            map( (response: ITask[]) => {
+                return response;
+            })
+        );
+    }
+
+    /**
+     * update task
+     *
+     * @param {ITask} data
+     * @returns
+     * @memberof SerTaskService
+     */
+    public updateTask(data: ITask) {
+        const url = this.buildUrl('update');
+
+        return this.httpClient.post(url, { task: data }, {
+                headers: {
+                    'Content-Type': 'application/json'
                 },
                 withCredentials: true
             }
@@ -77,8 +100,8 @@ export class SerTaskService {
      * @returns {string}
      * @memberof SerTaskService
      */
-    private buildUrl(): string {
-        const endpoint = `${this.senseConfig.virtualProxy}qrs/reloadtask/full`;
+    private buildUrl(action: string): string {
+        const endpoint = `${this.senseConfig.virtualProxy}qrs/reloadtask/${action}`;
         let url;
         /// #if ! mode==='qmc'
             url = `/${endpoint}`;

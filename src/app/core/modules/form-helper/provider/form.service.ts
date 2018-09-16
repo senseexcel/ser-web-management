@@ -52,12 +52,12 @@ export class FormService<T, R> {
     }
 
     /**
-     * call update app, run all hooks for update
+     * call update model, run all hooks for update
      *
      * @returns {Observable<any>}
      * @memberof FormService
      */
-    public updateApp(): Observable<any> {
+    public updateModel(): Observable<any> {
 
         if ( this.hooks.has(FormService.HOOK_UPDATE) ) {
 
