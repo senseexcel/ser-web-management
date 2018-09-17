@@ -76,7 +76,7 @@ export class SerTaskService {
      * @returns
      * @memberof SerTaskService
      */
-    public updateTask(data: ITask) {
+    public updateTask(data: ITask): Observable<ITask> {
         const url = this.buildUrl('update');
 
         return this.httpClient.post(url, { task: data }, {
@@ -87,7 +87,7 @@ export class SerTaskService {
             }
         )
         .pipe(
-            map( (response: ITask[]) => {
+            map( (response: ITask) => {
                 return response;
             })
         );

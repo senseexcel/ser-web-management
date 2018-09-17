@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormService } from '@core/modules/form-helper';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
-import { filter, map, switchMap } from 'rxjs/operators';
+import { filter, map, switchMap, catchError } from 'rxjs/operators';
 import { TaskService } from '@core/modules/ser-task/services/task.service';
 import { TaskModel } from '@core/modules/ser-task/model/task.model';
+import { never, of, Observable } from 'rxjs';
 
 @Component({
     selector: 'app-task-edit',
@@ -92,24 +93,28 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     public onApply() {
-
         const taskData = this.tasks[0];
-
         this.formHelperService.updateModel()
             .pipe(
                 switchMap((responseData: any[]) => {
-
                     responseData.forEach((response) => {
                         Object.keys(response.data.fields).forEach((field) => {
                             taskData[field] = response.data.fields[field];
                         });
                     });
-
                     return this.taskManagerService.updateTask(taskData.id, taskData);
+                }),
+                catchError((error, caught: Observable<ITask>) => {
+                    console.log(error);
+                    console.log(caught);
+                    return of(null);
                 })
             )
-            .subscribe((response) => {
-                console.log(response)
+            .subscribe((task: ITask) => {
+                if ( task ) {
+                    // update current task object we have edited
+                    this.tasks[0] = task;
+                }
             });
     }
 

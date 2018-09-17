@@ -127,7 +127,7 @@ export class ListComponent implements OnDestroy, OnInit {
     public ngOnInit() {
         this.tableHeaderFields = ['id', 'name', 'enabled', 'status', 'lastExecution', 'nextExecution', 'tags'];
 
-        const selectedApp = null; // this.appManagerService.getSelectedApps()[0] || null;
+        const selectedApp = this.appManagerService.getSelectedApps()[0] || null;
         this.fetchTasks(selectedApp ? selectedApp.qDocId : null);
     }
 
@@ -199,8 +199,6 @@ export class ListComponent implements OnDestroy, OnInit {
      * @memberof TasksComponent
      */
     private fetchTasks(appId: string) {
-
-        appId = 'ba16ebd1-1e3d-44f3-8450-ae7bd77435d3';
 
         this.taskManagerService.loadTasks(appId)
             .pipe(

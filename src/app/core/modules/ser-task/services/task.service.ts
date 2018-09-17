@@ -38,7 +38,8 @@ export class TaskService {
      *
      * @memberof TaskService
      */
-    public updateTask() {}
+    public updateTask() {
+    }
 
     /**
      *

@@ -3,6 +3,7 @@ import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.service';
 import { switchMap } from 'rxjs/operators';
+import { updateHook } from './rxjs/update.hook';
 
 @Injectable()
 export class TaskManagerService {
@@ -24,14 +25,6 @@ export class TaskManagerService {
     private readonly loadedTasks: BehaviorSubject<ITask[]>;
 
     /**
-     * all loaded tasks
-     *
-     * @type {BehaviorSubject<ITask[]>}
-     * @memberof TaskManagerService
-     */
-    private readonly loadedAppTasks: BehaviorSubject<ITask[]>;
-
-    /**
      * indicator tasks have allready been loaded
      *
      * @private
@@ -41,13 +34,13 @@ export class TaskManagerService {
     private tasksLoaded = false;
 
     /**
-     * indicator app tasks has been loaded
+     * cache for all loaded tasks
      *
      * @private
-     * @type {false}
+     * @type {Set<ITask>}
      * @memberof TaskManagerService
      */
-    private appTasksLoaded = false;
+    private taskCache: ITask[];
 
     /**
      * rest api service to fetch tassks
@@ -67,7 +60,8 @@ export class TaskManagerService {
     ) {
         this.selectedTasks  = new BehaviorSubject<ITask[]>([]);
         this.loadedTasks    = new BehaviorSubject<ITask[]>([]);
-        this.loadedAppTasks = new BehaviorSubject<ITask[]>([]);
+
+        this.taskCache = [];
 
         this.taskApiService = taskApiService;
     }
@@ -79,11 +73,7 @@ export class TaskManagerService {
      * @memberof TaskManagerService
      */
     public loadTasks(appId?: string) {
-
-        if ( appId ) {
-            return this.appTasksLoaded ? this.loadedAppTasks : this.fetchTasks(appId);
-        }
-        return this.tasksLoaded ? this.loadedTasks : this.fetchTasks();
+        return this.tasksLoaded ? this.loadedTasks : this.fetchTasks(appId);
     }
 
     /**
@@ -103,8 +93,17 @@ export class TaskManagerService {
      * @param {ITask} data
      * @memberof TaskManagerService
      */
-    public updateTask(id: string, data: ITask): Observable<ITask[]> {
-        return this.taskApiService.updateTask(data);
+    public updateTask(id: string, source: ITask): Observable<ITask> {
+        return this.taskApiService.updateTask(source)
+            .pipe(
+                updateHook((task: ITask) => {
+                    const index = this.taskCache.indexOf(source);
+                    if ( index > -1 ) {
+                        this.taskCache.splice(index, 1, task);
+                        this.loadedTasks.next(Array.from(this.taskCache));
+                    }
+                })
+            );
     }
 
     /**
@@ -115,24 +114,23 @@ export class TaskManagerService {
      */
     private fetchTasks(appId?: string): Observable<ITask[]> {
 
+        let source;
+
         if (!appId) {
-            return this.taskApiService.fetchAllTasks()
-                .pipe(
-                    switchMap( (tasks: ITask[]) => {
-                        this.tasksLoaded = true;
-                        this.loadedTasks.next(tasks);
-                        return this.loadedTasks;
-                    })
-                );
+            source = this.taskApiService.fetchAllTasks();
+        } else {
+            source = this.taskApiService.fetchTasksForApp(appId)
         }
 
-        return this.taskApiService.fetchTasksForApp(appId)
-            .pipe(
+        source.pipe(
                 switchMap((tasks: ITask[]) => {
-                    this.appTasksLoaded = true;
-                    this.loadedAppTasks.next(tasks);
-                    return this.loadedAppTasks;
+                    this.tasksLoaded = true;
+                    this.taskCache = tasks;
+                    this.loadedTasks.next(Array.from(this.taskCache));
+                    return this.loadedTasks;
                 })
             );
+
+        return source;
     }
 }
