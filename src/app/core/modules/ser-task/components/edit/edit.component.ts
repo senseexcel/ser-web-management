@@ -6,6 +6,7 @@ import { filter, map, switchMap, catchError } from 'rxjs/operators';
 import { TaskService } from '@core/modules/ser-task/services/task.service';
 import { TaskModel } from '@core/modules/ser-task/model/task.model';
 import { never, of, Observable } from 'rxjs';
+import { TaskFactoryService } from '@core/modules/ser-task/services/task-factory.service';
 
 @Component({
     selector: 'app-task-edit',
@@ -40,7 +41,7 @@ export class EditComponent implements OnInit {
      * @type {TaskService}
      * @memberof EditComponent
      */
-    private taskService: TaskService;
+    private taskService: TaskFactoryService;
 
     /**
      * taskmanager service to fetch tasks
@@ -60,11 +61,11 @@ export class EditComponent implements OnInit {
     constructor(
         formHelperService: FormService<TaskModel, any>,
         taskManagerService: TaskManagerService,
-        taskService: TaskService,
+        taskFactoryService: TaskFactoryService,
     ) {
         this.formHelperService  = formHelperService;
         this.taskManagerService = taskManagerService;
-        this.taskService        = taskService;
+        this.taskService        = taskFactoryService;
     }
 
     /**

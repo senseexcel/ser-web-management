@@ -5,9 +5,10 @@ import { ExecutionModel } from '@core/modules/ser-task/model/execution.model';
 import { IdentificationModel } from '@core/modules/ser-task/model/indetification.model';
 import { BehaviorSubject } from 'rxjs';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
+import { IQlikApp } from '@apps/api/app.interface';
 
 @Injectable()
-export class TaskService {
+export class TaskFactoryService {
 
     public selectedTasks: BehaviorSubject<ITask[]>;
 
@@ -39,6 +40,32 @@ export class TaskService {
      * @memberof TaskService
      */
     public updateTask() {
+    }
+
+    /**
+     * create default task data
+     *
+     * @param {string} name
+     * @param {IQlikApp} app
+     * @returns {ITask}
+     * @memberof TaskService
+     */
+    public createDefaultTaskData(name: string, app: IQlikApp): ITask {
+
+        return {
+            app: {
+                id: app.qDocId,
+                name: app.qDocName
+            },
+            customProperties: [],
+            enabled: true,
+            isManuallyTriggerd: false,
+            maxRetries: 0,
+            name: name,
+            tags: [],
+            taskSessionTimeout: 1440,
+            taskType: 0
+        };
     }
 
     /**

@@ -1,27 +1,29 @@
 export interface ITask {
 
-    id: string;
+    id?: string;
 
-    createdData: string;
+    createdData?: string;
 
-    modifiedData: string;
+    modifiedData?: string;
 
-    modifiedByUserName: string;
+    modifiedByUserName?: string;
 
     customProperties: [];
 
-    published: boolean;
+    tags: [];
 
-    publishTime: string;
+    published?: boolean;
+
+    publishTime?: string;
 
     app: {
         id: string;
 
         name: string;
 
-        publishTime: string;
+        publishTime?: string;
 
-        published: boolean;
+        published?: boolean;
     };
 
     isManuallyTriggerd: boolean;
@@ -30,9 +32,11 @@ export interface ITask {
 
     enabled: boolean;
 
-    nextExecution: string;
+    nextExecution?: string;
 
     taskSessionTimeout: number;
+
+    taskType: number;
 
     maxRetries: number;
 }

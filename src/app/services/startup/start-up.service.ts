@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@angular/core';
 import { Observable, empty, forkJoin } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ConfigFactory } from '../config/config-factory';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class StartUpService {
@@ -56,6 +57,7 @@ export class StartUpService {
                 'Authorization': `Bearer ${token}`
             },
             withCredentials: true,
+            observe: 'response',
             responseType: 'text'
         });
     }

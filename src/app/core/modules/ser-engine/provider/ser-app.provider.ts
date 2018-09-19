@@ -22,10 +22,12 @@ export class SerAppService {
 
         return new Promise<enigmaJS.ISession>((resolve) => {
             const url = buildUrl({
-                host: this.senseConfig.host,
+                host: this.senseConfig.host + '/ser',
                 appId,
                 identity: Math.random().toString(32).substr(2)
             });
+
+            console.log(url);
 
             const session: enigmaJS.ISession = create({ schema: qixSchema, url });
             resolve(session);

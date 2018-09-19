@@ -1,0 +1,39 @@
+<div class="qmc-page qmc-page--edit">
+
+    <div class="qmc-page--sidebar sidebar-left">
+        <div class="header sidebar-content">
+            <a (click)="navigateBack()">
+                <i class="lui-icon lui-icon--arrow-up"></i>
+                <span>Tasks</span>
+            </a>
+        </div>
+        <ul class="lui-list">
+            <li class="lui-item">
+                New Task
+            </li>
+        </ul>
+    </div>
+
+    <div class="qmc-page--content">
+        <div class="header qmc-page--content-header">
+            <span>Create New Task</span>
+        </div>
+        <div class="qmc-page--content-body">
+
+            <div>
+                <mat-form-field class="form-control">
+                    <input matInput [formControl]="nameControl" placeholder="Task Name" type="number">
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="qmc-page--content-footer">
+            <div class="button-group">
+                <button type="button" class="btn btn-secondary" (click)="onApply()">apply</button>
+                <button type="button" class="btn btn-secondary" (click)="onCancel()">cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="qmc-page--sidebar sidebar-right">
+    </div>
+</div>

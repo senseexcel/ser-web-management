@@ -11,9 +11,9 @@ import { FormHelperModule } from '@core/modules/form-helper';
 /** task routing module */
 import { TaskRoutingModule } from './ser-task-routing.module';
 /** task services */
-import { TaskService } from './services/task.service';
+import { TaskFactoryService } from './services/task-factory.service';
 /** task components */
-import { EditComponent, ListComponent, FormComponents, TaskComponent } from './components';
+import { EditComponent, NewComponent, ListComponent, FormComponents, TaskComponent } from './components';
 
 @NgModule({
     imports: [
@@ -28,11 +28,12 @@ import { EditComponent, ListComponent, FormComponents, TaskComponent } from './c
     declarations: [
         ...FormComponents,
         EditComponent,
+        NewComponent,
         ListComponent,
         TaskComponent
     ],
     providers: [
-        TaskService,
+        TaskFactoryService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: XrfkeyInterceptor,

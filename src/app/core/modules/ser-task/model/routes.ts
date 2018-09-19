@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { TaskComponent } from '../components/task/task.component';
 import { ListComponent } from '../components/list/list.component';
 import { EditComponent } from '../components/edit/edit.component';
+import { NewComponent } from '@core/modules/ser-task/components';
 
 export const TaskRoutes: Routes = [{
     path: '',
@@ -20,7 +21,7 @@ export const TaskRoutes: Routes = [{
         },
     }, {
         path: 'new',
-        component: EditComponent,
+        component: NewComponent,
         data: {
             breadcrumb: 'Create Task'
         },

@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.service';
-import { switchMap } from 'rxjs/operators';
-import { updateHook } from './rxjs/update.hook';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Injectable()
 export class TaskManagerService {
@@ -86,6 +85,11 @@ export class TaskManagerService {
         this.selectedTasks.next(tasks);
     }
 
+    public createTask(data: ITask) {
+
+        this.taskApiService.createTask(name);
+    }
+
     /**
      * update task
      *
@@ -96,7 +100,7 @@ export class TaskManagerService {
     public updateTask(id: string, source: ITask): Observable<ITask> {
         return this.taskApiService.updateTask(source)
             .pipe(
-                updateHook((task: ITask) => {
+                tap((task: ITask) => {
                     const index = this.taskCache.indexOf(source);
                     if ( index > -1 ) {
                         this.taskCache.splice(index, 1, task);
@@ -119,7 +123,7 @@ export class TaskManagerService {
         if (!appId) {
             source = this.taskApiService.fetchAllTasks();
         } else {
-            source = this.taskApiService.fetchTasksForApp(appId)
+            source = this.taskApiService.fetchTasksForApp(appId);
         }
 
         source.pipe(
