@@ -1,38 +1,42 @@
 export interface ITask {
 
-    id: string;
+    id?: string;
 
-    createdData: string;
+    createdData?: string;
 
-    modifiedData: string;
+    modifiedData?: string;
 
-    modifiedByUserName: string;
+    modifiedByUserName?: string;
 
-    customProperties: [];
+    customProperties?: [];
 
-    published: boolean;
+    published?: boolean;
 
-    publishTime: string;
+    publishTime?: string;
 
     app: {
         id: string;
 
         name: string;
 
-        publishTime: string;
+        publishTime?: string;
 
-        published: boolean;
+        published?: boolean;
     };
 
-    isManuallyTriggerd: boolean;
+    isManuallyTriggered?: boolean;
 
-    name: string;
+    name?: string;
 
-    enabled: boolean;
+    tags: [];
 
-    nextExecution: string;
+    enabled?: boolean;
 
-    taskSessionTimeout: number;
+    taskType: number;
 
-    maxRetries: number;
+    nextExecution?: string;
+
+    taskSessionTimeout?: number;
+
+    maxRetries?: number;
 }

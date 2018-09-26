@@ -241,7 +241,11 @@ export class AppEditComponent implements OnInit, OnDestroy {
                                 return from(apps)
                             }),
                             filter(app => app.qDocId === qDocId),
-                            switchMap( (app: IQlikApp) => this.appManager.openApp(app)),
+                            switchMap( (app: IQlikApp) => { 
+                                // TODO nicht alle apps mit ausgewaehlter app ueberschreiben
+                                this.appManager.selectApps([app]);
+                                return this.appManager.openApp(app)
+                            }),
                             switchMap( (app: ISerApp) => {
                                 this.app = app;
                                 this.formService.loadModel(app);
