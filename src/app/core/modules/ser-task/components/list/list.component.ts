@@ -189,7 +189,9 @@ export class ListComponent implements OnDestroy, OnInit {
      *
      * @memberof ListComponent
      */
-    public createNew() {}
+    public createNew() {
+        this.router.navigate(['new'], { relativeTo: this.route});
+    }
 
     /**
      * get all tasks for specific app id

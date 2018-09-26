@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 @Component({
     selector: 'app-task-new',
@@ -6,7 +7,11 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class NewComponent implements OnInit {
+    name = new FormControl('');
     constructor() { }
 
     ngOnInit() { }
+    onApply() {
+        console.log(this.name.value)
+    }
 }

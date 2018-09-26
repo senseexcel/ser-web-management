@@ -54,6 +54,9 @@ export const AppRoutes: Routes = [{
             data: {
                 breadcrumb: 'Report Preview'
             }
+        }, {
+            path: 'tasks',
+            loadChildren: () => SerTaskModule
         }]
     }]
 }];
