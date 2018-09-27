@@ -22,21 +22,27 @@ export interface ITask {
         publishTime?: string;
 
         published?: boolean;
+
+        availabilityStatus?: number;
     };
 
     isManuallyTriggered?: boolean;
 
-    name?: string;
+    name: string;
 
     tags: [];
+    
+    privileges?: [];
 
     enabled?: boolean;
 
-    taskType: number;
+    taskType?: number;
 
     nextExecution?: string;
 
     taskSessionTimeout?: number;
 
     maxRetries?: number;
+
+    schemaPath?: string;
 }

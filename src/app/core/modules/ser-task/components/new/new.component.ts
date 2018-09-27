@@ -54,8 +54,17 @@ export class NewComponent implements OnInit {
                 })
             )
             .subscribe((task: ITask) => {
+                const mockTask = {
+                    app: {
+                        id: app.qDocId,
+                        name: app.qDocName
+                    },
+                    name: "some name",
+                    tags: [],
+                    id: "30f7b1a7-a927-4ee4-a763-ffaf218add1d"
+                }
                 this.taskManager.addTask(task)
-                this.router.navigate(['/apps', 'edit', app.qDocId, 'tasks', 'edit', task.id])
+                this.router.navigate(['/apps', 'edit', app.qDocId, 'tasks', 'edit', mockTask.id])
             });
             
         }
