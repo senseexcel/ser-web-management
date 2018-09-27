@@ -67,6 +67,14 @@ export class TaskManagerService {
     }
 
     /**
+     * add task
+     */
+    public addTask(task: ITask) {
+        this.taskCache.push(task);
+        this.loadedTasks.next(Array.from(this.taskCache));
+    }
+
+    /**
      * load tasks
      *
      * @param {string} [appId]

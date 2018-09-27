@@ -7,6 +7,7 @@ import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.servi
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs/internal/observable/of';
+import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
 
 @Component({
     selector: 'app-task-new',
@@ -15,16 +16,20 @@ import { of } from 'rxjs/internal/observable/of';
 
 export class NewComponent implements OnInit {
     name = new FormControl('');
-    public task: ITask;
+    public tasks: ITask[];
 
     constructor(
         private router: Router,
         private appManager: SerAppManagerService,
-        private api: SerTaskService
+        private api: SerTaskService,
+        private taskManager: TaskManagerService
         ) { }
         
-        ngOnInit() { }
+        ngOnInit() { 
+
+        }
         onApply() {
+
             const app: IQlikApp = this.appManager.getSelectedApps()[0]
             const newTask: ITask = {
                 app: {
@@ -49,12 +54,8 @@ export class NewComponent implements OnInit {
                 })
             )
             .subscribe((task: ITask) => {
-                this.task = task
-                this.router.navigate([])
-                // if ( task ) {
-                //     // update current task object we have edited
-                //     this.tasks[0] = task;
-                // }
+                this.taskManager.addTask(task)
+                this.router.navigate(['/apps', 'edit', app.qDocId, 'tasks', 'edit', task.id])
             });
             
         }
