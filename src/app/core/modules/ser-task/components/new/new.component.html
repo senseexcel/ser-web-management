@@ -22,9 +22,9 @@
         </div>
         
         <div class="qmc-page--content-body">
-            <label for="name">Name</label>
-            <input id="name" type="text" [formControl]="name">
-            
+            <mat-form-field class="form-control">
+                <input id="name" matInput [formControl]="name" type="text" placeholder="Enter task name here">
+            </mat-form-field>
         </div>
         
         <div class="qmc-page--content-footer">
