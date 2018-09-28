@@ -24,27 +24,27 @@ export class NewComponent implements OnInit {
         private api: SerTaskService,
         private taskManager: TaskManagerService
         ) { }
-        
-        ngOnInit() { 
+
+        ngOnInit() {
 
         }
         onApply() {
 
-            const app: IQlikApp = this.appManager.getSelectedApps()[0]
+            const app: IQlikApp = this.appManager.getSelectedApps()[0];
             const newTask: ITask = {
                 app: {
                     id: app.qDocId,
                     name: app.qDocName
                 },
-                customProperties: [], //default
-                enabled: true, //default
-                isManuallyTriggered: false, //default
-                maxRetries: 0, //default
+                customProperties: [], // default
+                enabled: true, // default
+                isManuallyTriggered: false, // default
+                maxRetries: 0, // default
                 name: this.name.value,
-                tags: [], //default
-                taskSessionTimeout: 1440, //default
-                taskType: 0, //default 
-            }
+                tags: [], // default
+                taskSessionTimeout: 1440, // default
+                taskType: 0, // default
+            };
             this.api.createTask(newTask)
             .pipe(
                 catchError((err, caught) => {
@@ -59,14 +59,14 @@ export class NewComponent implements OnInit {
                         id: app.qDocId,
                         name: app.qDocName
                     },
-                    name: "some name",
+                    name: 'some name',
                     tags: [],
-                    id: "30f7b1a7-a927-4ee4-a763-ffaf218add1d"
-                }
-                this.taskManager.addTask(task)
-                this.router.navigate(['/apps', 'edit', app.qDocId, 'tasks', 'edit', mockTask.id])
+                    id: '30f7b1a7-a927-4ee4-a763-ffaf218add1d'
+                };
+                this.taskManager.addTask(task);
+                this.router.navigate(['/apps', 'edit', app.qDocId, 'tasks', 'edit', mockTask.id]);
             });
-            
+
         }
     }
-    
+
