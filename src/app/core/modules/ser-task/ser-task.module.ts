@@ -13,7 +13,7 @@ import { TaskRoutingModule } from './ser-task-routing.module';
 /** task services */
 import { TaskService } from './services/task.service';
 /** task components */
-import { EditComponent, ListComponent, FormComponents, TaskComponent } from './components';
+import { EditComponent, ListComponent, FormComponents, TaskComponent, NewComponent } from './components';
 
 @NgModule({
     imports: [
@@ -28,6 +28,7 @@ import { EditComponent, ListComponent, FormComponents, TaskComponent } from './c
     declarations: [
         ...FormComponents,
         EditComponent,
+        NewComponent,
         ListComponent,
         TaskComponent
     ],

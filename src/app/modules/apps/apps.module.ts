@@ -48,6 +48,7 @@ import { SerTaskModule } from '@core/modules/ser-task/ser-task.module';
   ],
   entryComponents: [
     AppsComponent,
+    AppNewComponent,
     AppListComponent,
     AppEditComponent,
     ReportPreviewComponent
