@@ -13,7 +13,7 @@ import { TaskRoutingModule } from './ser-task-routing.module';
 /** task services */
 import { TaskFactoryService } from './services/task-factory.service';
 /** task components */
-import { EditComponent, NewComponent, ListComponent, FormComponents, TaskComponent } from './components';
+import { EditComponent, ListComponent, FormComponents, TaskComponent, NewComponent } from './components';
 
 @NgModule({
     imports: [

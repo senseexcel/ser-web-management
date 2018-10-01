@@ -48,6 +48,17 @@ export class SerTaskService {
     }
 
     /**
+     * create a new task
+     */
+    public createTask(newTask: ITask): Observable<Object> {
+        const url = this.buildUrl('create');
+        // const url = "https://desktop-u50tnti/ser/qrs/reloadtask/create"
+        console.log(newTask);
+        return this.httpClient.post(url, newTask, { withCredentials: true });
+    }
+
+
+    /**
      * fetch all tasks for an app
      *
      * @param {string} appId

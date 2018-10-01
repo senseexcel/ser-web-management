@@ -8,9 +8,7 @@ export interface ITask {
 
     modifiedByUserName?: string;
 
-    customProperties: [];
-
-    tags: [];
+    customProperties?: [];
 
     published?: boolean;
 
@@ -24,19 +22,27 @@ export interface ITask {
         publishTime?: string;
 
         published?: boolean;
+
+        availabilityStatus?: number;
     };
 
-    isManuallyTriggerd: boolean;
+    isManuallyTriggered?: boolean;
 
     name: string;
 
-    enabled: boolean;
+    tags: [];
+    
+    privileges?: [];
+
+    enabled?: boolean;
+
+    taskType?: number;
 
     nextExecution?: string;
 
-    taskSessionTimeout: number;
+    taskSessionTimeout?: number;
 
-    taskType: number;
+    maxRetries?: number;
 
-    maxRetries: number;
+    schemaPath?: string;
 }
