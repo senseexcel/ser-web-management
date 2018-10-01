@@ -1,0 +1,19 @@
+{
+    "development": {
+        "host": "desktop-u50tnti",
+        "userDirectory": "desktop-u50tnti",
+        "userId": "standard",
+        "virtualProxy": "ser/",
+        "jwt": {
+            "endpoint": "sense/app",
+            "signOptions": {
+                "algorithm": "RS512" 
+            },
+            "token": "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiJkZXNrdG9wLXU1MHRudGkiLCJVc2VyRGlyZWN0b3J5Ijoic3RhbmRhcmQiLCJpYXQiOjE1MTYyMzkwMjJ9.V7xaQPyia1TE_3C_kym3O5ykBel55deCyHGLX1yMShcTnVGog218Jd9E1BvCvFZDZq8c86QceRJmD6M2i2o88PTPpSsHq57gTG8pFKU6kVyUMd9Rw9FpJfTsMzJVsWHOk0Cz19UmcbmHlFBJzw_qvmLgmanVK127uCcpnkY1aKaYb2tP8CtS96RlBHW93zRB3C1SrEal3psUst0LdUxT7o9rUHxoehSy7QYJ6hQ3EIiR43kvYTbKcoXTJPJ7t0_GraPyvakSr4SBXgTBv_e0v_FZQ5sQ_wLkZ7SbpA7beQycoePbrdFwa29wtnD2NDLpNPdYNi9-i67fseMdUcxjBQ"
+        }
+    },
+    "qmc": {
+        "host": "",
+        "virtualProxy": ""
+    }
+}

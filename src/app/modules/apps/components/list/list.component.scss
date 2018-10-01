@@ -19,19 +19,5 @@
         flex: 1 1 0;
         background: #FFF;
         overflow-y: auto;
-
-        .mat-row {
-            height: auto;
-            line-height: 2.5rem;
-        }
-
-        .mat-row.selected {
-            background: #737373;
-            color: #FFF;
-        }
-
-        .mat-cell {
-            color: inherit;
-        }
     }
 }

@@ -23,3 +23,14 @@
         padding: 1rem 0 0;
     }
 }
+
+/** input remove number spinner */
+input[type="number"] {
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+    }
+
+    -moz-appearance: textfield;
+}

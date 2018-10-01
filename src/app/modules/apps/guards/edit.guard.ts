@@ -12,6 +12,8 @@ export class EditGuard implements CanActivate {
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
+        return true;
+
         if (this.appManager.getSelectedApps().length) {
             return true ;
         }

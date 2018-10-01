@@ -36,7 +36,7 @@ export class TemplateComponent implements OnInit {
         this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
         /** register on app has been loaded */
-        this.formService.loadApp()
+        this.formService.editModel()
         .subscribe ((app: ISerApp) => {
             this.currentApp = app;
 

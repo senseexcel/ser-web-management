@@ -12,22 +12,22 @@ import {
   DistributionHubComponent,
   DistributionMailComponent
 } from './components/edit/form/distribution';
+
 import { FormHelperModule } from '@core/modules/form-helper/form-helper.module';
 import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
 import { HJSonPipe } from '@core/pipes/hsjon.pipe';
 import { SerTaskModule } from '@core/modules/ser-task/ser-task.module';
-import { TaskOverviewComponent } from '@apps/components/task-overview/task-overview.component';
 
 @NgModule({
   imports: [
-    AppsRoutingModule,
     CommonModule,
     FormHelperModule,
     MaterialModule,
     ReactiveFormsModule,
     SerAppModule,
-    SerTaskModule
+    SerTaskModule,
+    AppsRoutingModule
   ],
   exports: [MaterialModule],
   declarations: [
@@ -45,7 +45,13 @@ import { TaskOverviewComponent } from '@apps/components/task-overview/task-overv
     AppNewComponent,
     ReportPreviewComponent,
     HJSonPipe,
-    TaskOverviewComponent
+  ],
+  entryComponents: [
+    AppsComponent,
+    AppNewComponent,
+    AppListComponent,
+    AppEditComponent,
+    ReportPreviewComponent
   ]
 })
 export class AppsModule { }

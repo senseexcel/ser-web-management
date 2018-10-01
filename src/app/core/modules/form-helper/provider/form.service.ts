@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, forkJoin, of, from } from 'rxjs';
 import { switchMap, bufferCount } from 'rxjs/operators';
-import { IFormResponse } from '../api/response.interface';
 
 @Injectable()
 export class FormService<T, R> {
@@ -15,7 +14,7 @@ export class FormService<T, R> {
      * @type {BehaviorSubject<T>}
      * @memberof FormService
      */
-    private app: BehaviorSubject<T>;
+    private model: BehaviorSubject<T>;
 
     /**
      * available hooks
@@ -27,19 +26,18 @@ export class FormService<T, R> {
     private hooks: Map<string, Observable<R>[]>;
 
     constructor() {
-        this.app   = new BehaviorSubject<T>(null);
+        this.model = new BehaviorSubject<T>(null);
         this.hooks = new Map<string, Observable<R>[]>();
     }
 
     /**
      * set model which should edited
-     * @todo rename to loadModel oder simple load
      *
      * @param {T} app
      * @memberof FormService
      */
-    public editApp(app: T) {
-        this.app.next(app);
+    public loadModel(model: T) {
+        this.model.next(model);
     }
 
     /**
@@ -49,17 +47,17 @@ export class FormService<T, R> {
      * @returns {Observable<T>}
      * @memberof FormService
      */
-    public loadApp(): Observable<T> {
-        return this.app;
+    public editModel(): Observable<T> {
+        return this.model;
     }
 
     /**
-     * call update app, run all hooks for update
+     * call update model, run all hooks for update
      *
      * @returns {Observable<any>}
      * @memberof FormService
      */
-    public updateApp(): Observable<any> {
+    public updateModel(): Observable<any> {
 
         if ( this.hooks.has(FormService.HOOK_UPDATE) ) {
 

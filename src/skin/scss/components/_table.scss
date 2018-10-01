@@ -1,0 +1,35 @@
+table.mat-table {
+    border-collapse: collapse;
+
+    th.mat-header-cell,
+    td.mat-cell {
+        border: 1px solid #D9D9D9;
+        padding: 2px 10px;
+    }
+
+    /** TABLE HEADER */
+    tr.mat-header-row {
+        height: 2rem;
+    }
+
+    th.mat-header-cell {
+        vertical-align: middle;
+        background: #F2F2F2;
+        color: #000;
+        font-weight: bold;
+    }
+
+    /** TABLE BODY */
+    tr.mat-row {
+        height: auto;
+
+        &.selected {
+            background: #737373;
+            color: #FFF;
+        }
+    }
+
+    td.mat-cell {
+        color: inherit;
+    }
+}

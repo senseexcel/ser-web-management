@@ -38,7 +38,7 @@ export class SettingsComponent implements OnInit {
     ngOnInit() {
 
         this.formService.registerHook(FormService.HOOK_UPDATE, this.buildUpdateHook());
-        this.formService.loadApp()
+        this.formService.editModel()
         .subscribe( (app: ISerApp) => {
             if ( app !== null ) {
                 this.app = app;

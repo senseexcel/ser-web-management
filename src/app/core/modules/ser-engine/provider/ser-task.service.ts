@@ -25,13 +25,38 @@ export class SerTaskService {
         this.filterService  = serFilterService;
     }
 
+    public createTask(data) {
+    }
+
     /**
      * fetch all tasks
      *
      * @memberof SerTaskApiService
      */
-    public fetchAllTasks() {
+    public fetchAllTasks(): Observable<ITask[]> {
+        const url = this.buildUrl('full');
+        return this.httpClient.get(url,
+            {
+                withCredentials: true
+            }
+        )
+        .pipe(
+            map( (response: ITask[]) => {
+                return response;
+            })
+        );
     }
+
+    /**
+     * create a new task
+     */
+    public createTask(newTask: ITask): Observable<Object> {
+        const url = this.buildUrl('create');
+        // const url = "https://desktop-u50tnti/ser/qrs/reloadtask/create"
+        console.log(newTask);
+        return this.httpClient.post(url, newTask, { withCredentials: true });
+    }
+
 
     /**
      * fetch all tasks for an app
@@ -41,14 +66,10 @@ export class SerTaskService {
      * @memberof SerTaskApiService
      */
     public fetchTasksForApp(appId: string): Observable<ITask[]> {
-
-        const endpoint = `/${this.senseConfig.virtualProxy}qrs/reloadtask/full`;
-        const url = endpoint;
-        // const url      = `https://${this.senseConfig.host}/${endpoint}`;
+        const url    = this.buildUrl('full');
         const filter = this.filterService.createFilter('app.id', appId);
 
-        return this.httpClient.get(url,
-            {
+        return this.httpClient.get(url, {
                 params: {
                     filter: this.filterService.createFilterQueryString(filter)
                 },
@@ -60,5 +81,47 @@ export class SerTaskService {
                 return response;
             })
         );
+    }
+
+    /**
+     * update task
+     *
+     * @param {ITask} data
+     * @returns
+     * @memberof SerTaskService
+     */
+    public updateTask(data: ITask): Observable<ITask> {
+        const url = this.buildUrl('update');
+
+        return this.httpClient.post(url, { task: data }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            }
+        )
+        .pipe(
+            map( (response: ITask) => {
+                return response;
+            })
+        );
+    }
+
+    /**
+     * build url
+     *
+     * @private
+     * @returns {string}
+     * @memberof SerTaskService
+     */
+    private buildUrl(action: string): string {
+        const endpoint = `${this.senseConfig.virtualProxy}qrs/reloadtask/${action}`;
+        let url;
+        /// #if ! mode==='qmc'
+            url = `/${endpoint}`;
+        /// #else
+            url = `https://${this.senseConfig.host}/${endpoint}`;
+        /// #endif
+        return url;
     }
 }
