@@ -31,7 +31,7 @@ export interface ITask {
     name: string;
 
     tags: [];
-    
+
     privileges?: [];
 
     enabled?: boolean;
