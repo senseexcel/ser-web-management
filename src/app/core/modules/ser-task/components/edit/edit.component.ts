@@ -3,9 +3,8 @@ import { FormService } from '@core/modules/form-helper';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
 import { filter, map, switchMap, catchError } from 'rxjs/operators';
-import { TaskService } from '@core/modules/ser-task/services/task.service';
 import { TaskModel } from '@core/modules/ser-task/model/task.model';
-import { never, of, Observable } from 'rxjs';
+import { of, Observable } from 'rxjs';
 import { TaskFactoryService } from '@core/modules/ser-task/services/task-factory.service';
 
 @Component({

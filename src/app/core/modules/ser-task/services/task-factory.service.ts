@@ -59,7 +59,7 @@ export class TaskFactoryService {
             },
             customProperties: [],
             enabled: true,
-            isManuallyTriggerd: false,
+            isManuallyTriggered: false,
             maxRetries: 0,
             name: name,
             tags: [],

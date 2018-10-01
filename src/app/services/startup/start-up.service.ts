@@ -51,6 +51,8 @@ export class StartUpService {
 
         const url = `https://${host}/${virtualProxy}${endpoint}`;
 
+        console.log(url);
+
         return this.http.get(url, {
             headers: {
                 'Content-Type': 'text/html',

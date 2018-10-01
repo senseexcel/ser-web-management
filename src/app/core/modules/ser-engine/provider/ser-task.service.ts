@@ -25,9 +25,6 @@ export class SerTaskService {
         this.filterService  = serFilterService;
     }
 
-    public createTask(data) {
-    }
-
     /**
      * fetch all tasks
      *
