@@ -1,0 +1,23 @@
+<ng-template #pageTile let-content="content">
+    <div class="page-tile">
+        <div class="page-tile--header">
+            header
+        </div>
+        <div class="page-tile--body">
+            description
+        </div>
+    </div>
+</ng-template>
+
+<div class="qmc-page qmc-page--dashboard" [style.display]="isPreview ? 'none': 'flex'">
+    <div class="qmc-page--sidebar sidebar-left menu">
+        <app-menu></app-menu>
+    </div>
+    
+    <div class="qmc-page--content">
+        <div class="qmc-page--content-body">
+            <ng-container [ngTemplateOutlet]="pageTile">
+            </ng-container>
+        </div>
+    </div>
+</div>

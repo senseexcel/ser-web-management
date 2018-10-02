@@ -42,7 +42,7 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="tableHeaderFields"></tr>
-        <tr mat-row *matRowDef="let row; columns: tableHeaderFields;" [ngClass]="{'selected': selection.isSelected(row)}" (click)="selectTask(row)">
+        <tr mat-row *matRowDef="let row; columns: tableHeaderFields;" [ngClass]="{'selected': selection.isSelected(row)}" appMouseDblClick [delay]=200 (click)="selectTask(row)" (dblClick)="editTask()">
     </table>
 </div>
 

@@ -3,7 +3,7 @@ import { IQlikApp } from '@apps/api/app.interface';
 import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
 import { create } from 'enigma.js';
 import { buildUrl } from 'enigma.js/sense-utilities';
-import { from, Subject, Observable } from 'rxjs';
+import { from, Subject, Observable, of } from 'rxjs';
 import { mergeMap, switchMap, catchError, filter, buffer, map, bufferCount } from 'rxjs/operators';
 import { IQlikAppCreated } from '../api/response/app-created.interface';
 import { ISerEngineConfig } from '../api/ser-engine-config.interface';
@@ -22,19 +22,18 @@ export class SerAppService {
 
         return new Promise<enigmaJS.ISession>((resolve) => {
             const url = buildUrl({
-                host: this.senseConfig.host + '/ser',
+                host: this.senseConfig.host,
+                secure: true,
                 appId,
                 identity: Math.random().toString(32).substr(2)
             });
-
-            console.log(url);
 
             const session: enigmaJS.ISession = create({ schema: qixSchema, url });
             resolve(session);
         });
     }
 
-    public fetchApps(): Observable<IQlikApp[]> {
+    public fetchApps(): Observable<any[]> {
 
         return from(this.createSession()).pipe(
             mergeMap( (session) => {

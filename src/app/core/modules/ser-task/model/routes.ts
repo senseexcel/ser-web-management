@@ -5,7 +5,7 @@ import { EditComponent } from '../components/edit/edit.component';
 import { NewComponent } from '../components/new/new.component';
 
 export const TaskRoutes: Routes = [{
-    path: '',
+    path: 'tasks',
     component: TaskComponent,
     data: {
         breadcrumb: 'Tasks'

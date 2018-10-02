@@ -1,0 +1,56 @@
+[
+    {
+        "name": "Reports",
+        "show": true,
+        "description": "Reports will displayed here",
+        "disabled": false,
+        "icon": "apps",
+        "route": "apps",
+        "group": "manage content"
+    },
+    {
+        "name": "Report Tasks",
+        "show": true,
+        "description": "Tasks for Sense Excel Reporting",
+        "disabled": false,
+        "icon": "tasks",
+        "route": "tasks",
+        "group": "manage content"
+    },
+    {
+        "name": "License Management",
+        "show": true,
+        "description": "Tasks for Sense Excel Reporting",
+        "disabled": true,
+        "icon": "license",
+        "route": "",
+        "group": "manage resources"
+    },
+    {
+        "name": "Monitoring Report Apps",
+        "show": true,
+        "description": "Tasks for Sense Excel Reporting",
+        "disabled": true,
+        "icon": "streams",
+        "route": "",
+        "group": "Goverance"
+    },
+    {
+        "name": "Install Wizzard",
+        "show": true,
+        "description": "Tasks for Sense Excel Reporting",
+        "disabled": true,
+        "icon": "engines",
+        "route": "",
+        "group": "configure system"
+    },
+    {
+        "name": "Auto Update",
+        "show": true,
+        "description": "Tasks for Sense Excel Reporting",
+        "disabled": true,
+        "icon": "load",
+        "route": "",
+        "group": "configure system"
+    }
+]

@@ -14,9 +14,11 @@ import { TaskRoutingModule } from './ser-task-routing.module';
 import { TaskFactoryService } from './services/task-factory.service';
 /** task components */
 import { EditComponent, ListComponent, FormComponents, TaskComponent, NewComponent } from './components';
+import { CoreModule } from '@core/core.module';
 
 @NgModule({
     imports: [
+        CoreModule,
         CommonModule,
         FormHelperModule,
         MaterialModule,

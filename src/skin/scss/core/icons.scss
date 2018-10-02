@@ -1,0 +1,35 @@
+.ser-icon {
+    display: inline-block;
+    font-family: "LUI icons";
+    font-size: inherit;
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: inherit;
+    text-transform: none;
+    direction: ltr;
+    margin-right: 10px;
+}
+
+.ser-icon--apps {
+    &:before { content: "\077"; }
+}
+
+.ser-icon--tasks {
+    &:before { content: "\078"; }
+}
+
+.ser-icon--streams {
+    &:before { content: "\0E3"; }
+}
+
+.ser-icon--license {
+    &:before { content: "\0E4"; }
+}
+
+.ser-icon--load {
+    &:before { content: "\0F4"; }
+}
+
+.ser-icon--engines {
+    &:before { content: "\07B"; }
+}
