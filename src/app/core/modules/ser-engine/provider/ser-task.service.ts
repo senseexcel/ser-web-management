@@ -1,10 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ISerEngineConfig } from '@core/modules/ser-engine/api/ser-engine-config.interface';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 import { Observable } from 'rxjs';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { map } from 'rxjs/internal/operators/map';
+import { IQrsFilter } from '@core/modules/ser-engine/api/filter.interface';
 
 @Injectable()
 export class SerTaskService {
@@ -45,15 +46,34 @@ export class SerTaskService {
     }
 
     /**
+     * fetch current number of all tasks
+     *
+     * @returns {Observable<number>}
+     * @memberof SerTaskService
+     */
+    public fetchTaskCount(filter?: IQrsFilter): Observable<number> {
+        const url = this.buildUrl('count');
+        let params: HttpParams = new HttpParams();
+
+        if (filter) {
+            params = params.set('filter', this.filterService.createFilterQueryString(filter))
+        }
+
+        return this.httpClient.get(url, {params})
+            .pipe(
+                map((response: {value: number}) => {
+                    return response.value;
+                })
+            );
+    }
+
+    /**
      * create a new task
      */
     public createTask(newTask: ITask): Observable<Object> {
         const url = this.buildUrl('create');
-        // const url = "https://desktop-u50tnti/ser/qrs/reloadtask/create"
-        console.log(newTask);
         return this.httpClient.post(url, newTask, { withCredentials: true });
     }
-
 
     /**
      * fetch all tasks for an app
@@ -89,7 +109,6 @@ export class SerTaskService {
      */
     public updateTask(data: ITask): Observable<ITask> {
         const url = this.buildUrl('update');
-
         return this.httpClient.post(url, { task: data }, {
                 headers: {
                     'Content-Type': 'application/json'
@@ -112,13 +131,6 @@ export class SerTaskService {
      * @memberof SerTaskService
      */
     private buildUrl(action: string): string {
-        const endpoint = `${this.senseConfig.virtualProxy}qrs/reloadtask/${action}`;
-        let url;
-        /// #if ! mode==='qmc'
-            url = `/${endpoint}`;
-        /// #else
-            url = `https://${this.senseConfig.host}/${endpoint}`;
-        /// #endif
-        return url;
+        return `/${this.senseConfig.virtualProxy}qrs/reloadtask/${action}`;
     }
 }

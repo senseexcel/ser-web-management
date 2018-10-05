@@ -26,7 +26,7 @@ export class StartUpService {
     public load(): Promise<void> {
         const requests: Observable<any>[] = [];
         /// #if mode=="development"
-        requests.push(this.createSessionCookie());
+        // requests.push(this.createSessionCookie());
         /// #endif
 
         return forkJoin(...requests)
@@ -51,9 +51,7 @@ export class StartUpService {
 
         const url = `https://${host}/${virtualProxy}${endpoint}`;
 
-        console.log(url);
-
-        return this.http.get(url, {
+        return this.http.get('https://nb-fc-207996/qmc/', {
             headers: {
                 'Content-Type': 'text/html',
                 'Authorization': `Bearer ${token}`

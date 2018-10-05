@@ -9,11 +9,12 @@ export class XrfkeyInterceptor implements HttpInterceptor {
 
         const request: HttpRequest<any> = req.clone({
             setHeaders: {
-                'X-Qlik-xrfkey': xrfkey
+                'X-Qlik-xrfkey': xrfkey,
             },
             setParams: {
                 'xrfkey': xrfkey
-            }
+            },
+            withCredentials: true
         });
 
         return next.handle(request);

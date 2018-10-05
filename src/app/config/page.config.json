@@ -20,7 +20,7 @@
     {
         "name": "License Management",
         "show": true,
-        "description": "Tasks for Sense Excel Reporting",
+        "description": "License Management",
         "disabled": true,
         "icon": "license",
         "route": "",
@@ -29,7 +29,7 @@
     {
         "name": "Monitoring Report Apps",
         "show": true,
-        "description": "Tasks for Sense Excel Reporting",
+        "description": "Monitoring Report Apps",
         "disabled": true,
         "icon": "streams",
         "route": "",
@@ -38,7 +38,7 @@
     {
         "name": "Install Wizzard",
         "show": true,
-        "description": "Tasks for Sense Excel Reporting",
+        "description": "Install Wizzard comes here",
         "disabled": true,
         "icon": "engines",
         "route": "",
@@ -47,7 +47,7 @@
     {
         "name": "Auto Update",
         "show": true,
-        "description": "Tasks for Sense Excel Reporting",
+        "description": "Auto Update works fine if the user automatically clicks on the update button",
         "disabled": true,
         "icon": "load",
         "route": "",

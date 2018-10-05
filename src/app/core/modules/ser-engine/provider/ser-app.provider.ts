@@ -7,15 +7,24 @@ import { from, Subject, Observable, of } from 'rxjs';
 import { mergeMap, switchMap, catchError, filter, buffer, map, bufferCount } from 'rxjs/operators';
 import { IQlikAppCreated } from '../api/response/app-created.interface';
 import { ISerEngineConfig } from '../api/ser-engine-config.interface';
+import { IQrsFilter } from '@core/modules/ser-engine/api/filter.interface';
+import { HttpParams, HttpClient } from '@angular/common/http';
+import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 
 export class SerAppService {
 
     private senseConfig: ISerEngineConfig;
+    private filterService: any;
+    private httpClient: any;
 
     public constructor(
         @Inject('SerEngineConfig') senseConfig: ISerEngineConfig,
+        httpClient: HttpClient,
+        qrsFilterService: SerFilterService
     ) {
-        this.senseConfig = senseConfig;
+        this.senseConfig   = senseConfig;
+        this.filterService = qrsFilterService;
+        this.httpClient    = httpClient;
     }
 
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
@@ -28,7 +37,11 @@ export class SerAppService {
                 identity: Math.random().toString(32).substr(2)
             });
 
-            const session: enigmaJS.ISession = create({ schema: qixSchema, url });
+            const session: enigmaJS.ISession = create({
+                schema: qixSchema,
+                url
+             });
+
             resolve(session);
         });
     }
@@ -62,6 +75,29 @@ export class SerAppService {
                 return [];
             })
         );
+    }
+
+    /**
+     * fetch current number of all sense excel apps
+     *
+     * @returns {Observable<number>}
+     * @memberof SerTaskService
+     */
+    public fetchAppCount(qrsFilter?: IQrsFilter): Observable<number> {
+
+        const url = `/${this.senseConfig.virtualProxy}qrs/App/count`;
+        let params: HttpParams = new HttpParams();
+
+        if (qrsFilter) {
+            params = params.set('filter', this.filterService.createFilterQueryString(qrsFilter));
+        }
+
+        return this.httpClient.get(url, {params})
+            .pipe(
+                map((response: {value: number}) => {
+                    return response.value;
+                })
+            );
     }
 
     /**

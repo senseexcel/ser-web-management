@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { IPage } from '@api/page.interface';
 import { IMenuItem, IMenuGroup } from '@api/menu-item.interface';
 import PageConfig from '../config/page.config.json';
+import { ReturnStatement } from '@angular/compiler';
 
 @Injectable()
 export class PageService {
@@ -13,10 +14,18 @@ export class PageService {
      *
      * @param name
      */
-    public getPageData(name: string) {
-        return PageConfig.filter((page: IPage) => {
-            return page.name === name;
-        });
+    public getPageData(name?: string): IPage[] {
+
+        let pages: IPage[] = PageConfig.slice();
+
+        if (name) {
+            pages = PageConfig.filter((page: IPage) => {
+                return page.name === name;
+            });
+        }
+
+        /** create clone so page data could not be modified */
+        return JSON.parse(JSON.stringify(pages));
     }
 
     /**

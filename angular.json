@@ -62,7 +62,7 @@
         "builder": "@angular-builders/dev-server:generic",
           "options": {
             "browserTarget": "serWebManagement:build",
-            "baseHref": "/"
+            "baseHref": "/extensions/ser-web-management/"
           },
           "configurations": {
             "production": {
