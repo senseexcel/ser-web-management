@@ -33,3 +33,20 @@
 .ser-icon--engines {
     &:before { content: "\07B"; }
 }
+
+.ser-icon--arrow-up {
+    content: "\052"; 
+}
+
+.icon--right {
+
+    position: relative;
+    padding: 0 30px 0 0;
+
+    &:after { 
+        position: absolute;
+        @extend .ser-icon;
+        content: "\053"; 
+        right: 0;
+    }
+}

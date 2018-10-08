@@ -56,7 +56,7 @@ export class SerTaskService {
         let params: HttpParams = new HttpParams();
 
         if (filter) {
-            params = params.set('filter', this.filterService.createFilterQueryString(filter))
+            params = params.set('filter', this.filterService.createFilterQueryString(filter));
         }
 
         return this.httpClient.get(url, {params})

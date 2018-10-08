@@ -1,0 +1,27 @@
+:host {
+
+    button {
+        margin: 0;
+    }
+
+    .btn {
+        display: inline-block;
+    }
+
+    .navbar {
+        background: #8C8C8C;
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+    }
+
+    .navbar-group {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+    }
+
+    .navbar-group > *:nth-child(2n) {
+        margin-left: 1rem;
+    }
+}

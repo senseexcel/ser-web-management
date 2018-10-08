@@ -7,6 +7,7 @@ import { IPageInformation } from '@api/page-information.interface';
 import { SerAppService } from '@core/modules/ser-engine/provider/ser-app.provider';
 import { IPage } from '@api/page.interface';
 import { Router } from '@angular/router';
+import { IMenuGroup } from '@core/modules/menu/api/menu-item.interface';
 
 @Component({
     selector: 'app-dashboard',
@@ -18,6 +19,8 @@ export class DashboardComponent implements OnInit {
 
     @HostBinding('class.dashboard')
     public static readonly hostClass = true;
+
+    public menuGroups: IMenuGroup[];
 
     public pages: IPageInformation[] = [];
 
@@ -55,8 +58,11 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     ngOnInit() {
+
         const taskCountSource$ = this.fetchTaskCount();
         const serAppCountSource$ = this.fetchSerApps();
+
+        this.menuGroups = this.pageService.getMenuGroups();
 
         forkJoin(taskCountSource$, serAppCountSource$)
             .subscribe((counts: number[]) => {

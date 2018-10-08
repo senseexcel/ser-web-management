@@ -1,0 +1,76 @@
+.top-bar {
+
+    button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: auto;
+    }
+
+    app-drop-down {
+
+        button {
+            margin: 0;
+            background: transparent;
+            border: 0;
+            
+            &:hover {
+                box-shadow: 0px 0px 0px 2px white;
+            }
+        }
+    }
+}
+
+.top-bar--menu {
+
+    color: #595959;
+
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+
+    &:before {
+        @extend .ser-icon;
+        @extend .ser-icon--arrow-up;
+        margin-right: 0px !important;
+        font-size: 20px !important;
+        line-height: 10px;
+        align-self: center;
+        color: #404040;
+    }
+
+    .menu-wrapper {
+        border-radius: 8px;
+        border-style: solid;
+        border-color: #404040;
+        border-width: 10px 1px;
+        -webkit-box-shadow: 0px 7px 10px -3px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 7px 10px -3px rgba(0,0,0,0.75);
+        box-shadow: 0px 7px 10px -3px rgba(0,0,0,0.75);
+    }
+
+    ul {
+        background: #FFF;
+        color: #000;
+        background: #FFF;
+        max-height: 300px;
+        overflow-y: auto;
+        padding: 5px 8px;
+        border: 1px solid #404040;
+        border-width: 0px 1px;
+    }
+
+    .lui-list--header {
+
+        text-transform: uppercase;
+        margin-bottom: 10px;
+
+        &:nth-child(2n) {
+            margin-top: 10px;
+        }
+    }
+
+    .lui-list--item:not(.lui-list--header) {
+        font-size: 13px;
+    }
+}

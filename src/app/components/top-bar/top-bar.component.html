@@ -1,0 +1,18 @@
+<nav class="navbar navbar-expand top-bar">
+
+    <div class="navbar-group navbar-group--left">
+        <a class="btn" routerLink="" routerLinkActive="router-link-active" >
+            <img src="assets/logo-ser.png" alt="ser">
+        </a>
+
+        <app-drop-down [hostClass]="'top-bar--menu'">
+            <app-menu [menuGroups]="menuGroups"></app-menu>
+        </app-drop-down>
+    </div>
+
+    <div class="navbar-group navbar-group--right">
+        <button class="btn">
+            logout
+        </button>
+    </div>
+</nav>

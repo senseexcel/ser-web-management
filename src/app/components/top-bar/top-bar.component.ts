@@ -1,14 +1,14 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PageService } from '../../services';
-import { IMenuGroup } from '@api/menu-item.interface';
+import { IMenuGroup } from '@core/modules/menu/api/menu-item.interface';
 
 @Component({
-    selector: 'app-menu',
-    templateUrl: 'menu.component.html',
-    styleUrls: ['menu.component.scss']
+    selector: 'app-top-bar',
+    templateUrl: 'top-bar.component.html',
+    styleUrls: ['./top-bar.component.scss']
 })
 
-export class MenuComponent implements OnInit {
+export class TopBarComponent implements OnInit {
 
     public menuGroups: IMenuGroup[];
 
@@ -20,5 +20,5 @@ export class MenuComponent implements OnInit {
 
     ngOnInit() {
         this.menuGroups = this.pageService.getMenuGroups();
-    }
+     }
 }
