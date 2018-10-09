@@ -5,7 +5,7 @@
             <img src="assets/logo-ser.png" alt="ser">
         </a>
 
-        <app-drop-down [hostClass]="'top-bar--menu'" (show)="showMenuOverlay($event)">
+        <app-drop-down [hostClass]="['top-bar--menu','menu-main']" (show)="showMenuOverlay($event)">
             <app-menu [menuItems]="mainMenu"></app-menu>
         </app-drop-down>
     </div>

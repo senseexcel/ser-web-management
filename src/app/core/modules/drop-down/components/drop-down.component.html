@@ -8,7 +8,7 @@
 <div class="drop-down-component">
     <div class="btn-wrapper">
         <button class="btn" (click)="toggleDropDown($event)">
-            <span *ngIf="label">{{label}}</span>
+            <span *ngIf="label" class="label">{{label}}</span>
             <i class="ser-icon ser-icon--arrow-down" [ngClass]="{'ser-icon--left': label}"></i>
         </button>
     </div>

@@ -7,4 +7,12 @@
         justify-content: center;
         min-width: auto;
     }
+
+    button > i.ser-icon {
+        margin: 0;
+    }
+
+    button > .label + i.ser-icon {
+        margin-left: 10px;
+    }
 }
