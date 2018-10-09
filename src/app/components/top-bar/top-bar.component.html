@@ -5,14 +5,19 @@
             <img src="assets/logo-ser.png" alt="ser">
         </a>
 
-        <app-drop-down [hostClass]="'top-bar--menu'">
+        <app-drop-down [hostClass]="'top-bar--menu'" (show)="showMenuOverlay($event)">
             <app-menu [menuItems]="mainMenu"></app-menu>
         </app-drop-down>
     </div>
 
     <div class="navbar-group navbar-group--right">
-        <app-drop-down [hostClass]="'top-bar--menu'">
+
+        <app-drop-down [hostClass]="'top-bar--menu'" [label]="'Hilfe'" (show)="showMenuOverlay($event)">
             <app-menu [menuItems]="helpMenu"></app-menu>
+        </app-drop-down>
+
+        <app-drop-down [hostClass]="'top-bar--menu'" [label]="loggedInUser.userId" (show)="showMenuOverlay($event)">
+            <app-menu [menuItems]="userMenu"></app-menu>
         </app-drop-down>
     </div>
 </nav>

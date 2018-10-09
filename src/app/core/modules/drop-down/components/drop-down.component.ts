@@ -1,8 +1,10 @@
-import { Component, OnInit, ViewContainerRef, ViewChild, TemplateRef, Input } from '@angular/core';
+import { Component, OnInit, ViewContainerRef, ViewChild, TemplateRef, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { fromEvent } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { DropDownOverlay } from '../model/drop-down-overlay';
-import { DropDownService } from '../services/drop-down.service';
+import { Overlay, OverlayConfig } from '@angular/cdk/overlay';
+import { POSITION_BOTTOM_CENTER, POSITION_BOTTOM_LEFT } from '@core/modules/drop-down/model/positions';
+import { TemplatePortal } from '@angular/cdk/portal';
 
 @Component({
     selector: 'app-drop-down',
@@ -21,6 +23,20 @@ export class DropDownComponent implements OnInit {
     @Input()
     public hostClass: string;
 
+    @Input()
+    public label: string;
+
+    @Output()
+    public show: EventEmitter<DropDownOverlay>;
+
+    @Output()
+    public close: EventEmitter<DropDownOverlay>;
+
+    @ViewChild('arrowUp')
+    private arrowUpIcon: ElementRef;
+
+    private overlay: Overlay;
+
     /**
      * template which holds drop down content
      *
@@ -29,15 +45,6 @@ export class DropDownComponent implements OnInit {
      */
     @ViewChild('contentWrapper')
     public template: TemplateRef<any>;
-
-    /**
-     * drop down service to create drop down element
-     *
-     * @private
-     * @type {DropDownService}
-     * @memberof DropDownComponent
-     */
-    private dropDownService: DropDownService;
 
     /**
      * drop down overlay
@@ -64,11 +71,14 @@ export class DropDownComponent implements OnInit {
      * @memberof DropDownComponent
      */
     constructor(
-        dropDownService: DropDownService,
+        overlay: Overlay,
         viewContainer: ViewContainerRef
     ) {
-        this.dropDownService = dropDownService;
         this.viewContainerRef = viewContainer;
+
+        this.close   = new EventEmitter<DropDownOverlay>();
+        this.overlay = overlay;
+        this.show    = new EventEmitter<DropDownOverlay>();
     }
 
     /**
@@ -77,7 +87,8 @@ export class DropDownComponent implements OnInit {
      * @memberof DropDownComponent
      */
     ngOnInit() {
-        this.dropDownOverlay = this.dropDownService.create(this.template, this.viewContainerRef, { panelClass: this.hostClass });
+
+        this.dropDownOverlay = this.createOverlay(this.template, this.viewContainerRef);
 
         /** register click event on document and skip if overlay is not visible */
         fromEvent(document, 'click')
@@ -96,8 +107,56 @@ export class DropDownComponent implements OnInit {
         event.stopPropagation();
         if (!this.dropDownOverlay.isVisible) {
             this.dropDownOverlay.show();
+            this.show.emit(this.dropDownOverlay);
             return;
         }
         this.dropDownOverlay.close();
+    }
+
+    /**
+     * show drop down overlay
+     *
+     * @param {TemplateRef<any>} template
+     * @param {ViewContainerRef} viewContainer
+     * @param {ElementRef} element
+     * @param {IDropDownOverlayConfig} [config={}]
+     * @memberof DropDownService
+     */
+    private createOverlay(
+        template: TemplateRef<any>,
+        viewContainer: ViewContainerRef
+    ): DropDownOverlay {
+
+        const positionStrategy = this.overlay.position()
+            .flexibleConnectedTo(viewContainer.element)
+            .withViewportMargin(10)
+            .withFlexibleDimensions(false)
+            .withPositions([POSITION_BOTTOM_CENTER, POSITION_BOTTOM_LEFT]);
+
+        const overlayConfig = new OverlayConfig({
+            panelClass: this.hostClass,
+            positionStrategy
+        });
+
+        const overlayRef      = this.overlay.create(overlayConfig);
+        const componentPortal = new TemplatePortal(template, viewContainer);
+        const dropDownOverlay = new DropDownOverlay(overlayRef, componentPortal);
+
+        /** register on position change to rearrange the arrow */
+        positionStrategy.positionChanges.subscribe(() => {
+
+            const rectOverlay = overlayRef.overlayElement.getBoundingClientRect();
+            const rectSource  = viewContainer.element.nativeElement.getBoundingClientRect();
+
+            const centerOverlayX = rectOverlay.left + rectOverlay.width / 2;
+            const centerSourceX  = rectSource.left  + rectSource.width / 2;
+
+            const deltaCenter = centerSourceX - centerOverlayX;
+
+            this.arrowUpIcon.nativeElement.style.position = 'relative';
+            this.arrowUpIcon.nativeElement.style.left     =  `${deltaCenter}px`;
+        });
+
+        return dropDownOverlay;
     }
 }

@@ -24,19 +24,19 @@
 .top-bar--menu {
 
     color: #595959;
+    padding-top: 2px;
 
     display: flex;
     flex-direction: column;
     font-size: 13px;
+    width: 150px;
 
-    &:before {
-        @extend .ser-icon;
-        @extend .ser-icon--arrow-up;
-        margin-right: 0px !important;
-        font-size: 20px !important;
-        line-height: 10px;
+    >.ser-icon.ser-icon--arrow-up {
         align-self: center;
+        font-size: 16px;
+        line-height:8px;
         color: #404040;
+        margin: 0;
     }
 
     .menu-wrapper {

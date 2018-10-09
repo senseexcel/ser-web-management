@@ -1,5 +1,6 @@
-import { OverlayRef } from '@angular/cdk/overlay';
+import { OverlayRef, PositionStrategy } from '@angular/cdk/overlay';
 import { Portal } from '@angular/cdk/portal';
+import { Observable } from 'rxjs';
 
 export class DropDownOverlay {
 
@@ -9,7 +10,10 @@ export class DropDownOverlay {
 
     private overlayIsVisible = false;
 
-    public constructor(overlay: OverlayRef, portalHost: Portal<any>) {
+    public constructor(
+        overlay: OverlayRef,
+        portalHost: Portal<any>
+    ) {
         this.overlayRef = overlay;
         this.portalHost = portalHost;
     }

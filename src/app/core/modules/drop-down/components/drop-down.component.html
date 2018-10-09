@@ -1,12 +1,15 @@
 <!-- simple ng template for cotent -->
 <ng-template #contentWrapper>
+    <i class="ser-icon ser-icon--arrow-up" #arrowUp></i>
     <!-- content which should displayed -->
     <ng-content></ng-content>
 </ng-template>
 
 <div class="drop-down-component">
     <div class="btn-wrapper">
-        <button class="icon--right icon-arrow--down" (click)="toggleDropDown($event)">
+        <button class="btn" (click)="toggleDropDown($event)">
+            <span *ngIf="label">{{label}}</span>
+            <i class="ser-icon ser-icon--arrow-down" [ngClass]="{'ser-icon--left': label}"></i>
         </button>
     </div>
 </div>
