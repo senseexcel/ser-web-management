@@ -1,22 +1,36 @@
 .top-bar {
 
+    font-size: 13px;
+    color: #FFF;
+    padding: 0 5px;
+
+    a {
+        color: #FFF;
+    }
+
+    .navbar-brand {
+        margin-right: 0;
+    }
+
     button {
         display: flex;
         align-items: center;
         justify-content: center;
         min-width: auto;
+        outline: none;
+        margin: 0;
+        background: transparent;
+        border: 0;
+        line-height: 18px;
+            
+        &:hover {
+            box-shadow: 0px 0px 0px 2px white;
+        }
     }
 
-    app-drop-down {
-
+    .btn-group app-drop-down {
         button {
-            margin: 0;
-            background: transparent;
-            border: 0;
-            
-            &:hover {
-                box-shadow: 0px 0px 0px 2px white;
-            }
+            border-radius: 0 8px 8px 0;
         }
     }
 }
@@ -31,11 +45,14 @@
     font-size: 13px;
     min-width: 150px;
     max-width: 250px;
+    position: relative;
 
     >.ser-icon.ser-icon--arrow-up {
+        position: relative;
         align-self: center;
-        font-size: 16px;
-        line-height:8px;
+        font-size: 24px;
+        line-height: 9px;
+        top: -1px;
         color: #404040;
         margin: 0;
     }
@@ -61,10 +78,13 @@
     .lui-list {
         border: 1px solid #404040;
         max-height: 300px;
+
+        >.lui-list--item {
+            padding: 0 8px;
+        }
     }
 
     .lui-list--item {
-        padding: 0 8px;
         cursor: pointer;
     }
 

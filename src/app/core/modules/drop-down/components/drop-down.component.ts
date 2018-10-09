@@ -131,7 +131,7 @@ export class DropDownComponent implements OnInit {
             .flexibleConnectedTo(viewContainer.element)
             .withViewportMargin(10)
             .withFlexibleDimensions(false)
-            .withPositions([POSITION_BOTTOM_CENTER, POSITION_BOTTOM_LEFT]);
+            .withPositions([POSITION_BOTTOM_CENTER]);
 
         const overlayConfig = new OverlayConfig({
             panelClass: this.hostClass,

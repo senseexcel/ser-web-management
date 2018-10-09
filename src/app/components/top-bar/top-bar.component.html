@@ -1,13 +1,20 @@
 <nav class="navbar navbar-expand top-bar">
 
     <div class="navbar-group navbar-group--left">
-        <a class="btn" routerLink="" routerLinkActive="router-link-active" >
-            <img src="assets/logo-ser.png" alt="ser">
-        </a>
+        <div class="navbar-brand">
+            <img src="assets/top-header-logo-ser.svg" alt="ser" width="35">
+        </div>
 
-        <app-drop-down [hostClass]="['top-bar--menu','menu-main']" (show)="showMenuOverlay($event)">
-            <app-menu [menuItems]="mainMenu"></app-menu>
-        </app-drop-down>
+        <div class="btn-group">
+            <button class="btn">
+                <a routerLink="" routerLinkActive="router-link-active" >
+                    Start
+                </a>
+            </button>
+            <app-drop-down [hostClass]="['top-bar--menu','menu-main']" (show)="showMenuOverlay($event)">
+                <app-menu [menuItems]="mainMenu"></app-menu>
+            </app-drop-down>
+        </div>
     </div>
 
     <div class="navbar-group navbar-group--right">
