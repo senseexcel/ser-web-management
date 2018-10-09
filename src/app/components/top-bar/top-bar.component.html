@@ -6,13 +6,13 @@
         </a>
 
         <app-drop-down [hostClass]="'top-bar--menu'">
-            <app-menu [menuGroups]="menuGroups"></app-menu>
+            <app-menu [menuItems]="mainMenu"></app-menu>
         </app-drop-down>
     </div>
 
     <div class="navbar-group navbar-group--right">
-        <button class="btn">
-            logout
-        </button>
+        <app-drop-down [hostClass]="'top-bar--menu'">
+            <app-menu [menuItems]="helpMenu"></app-menu>
+        </app-drop-down>
     </div>
 </nav>

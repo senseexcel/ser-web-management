@@ -1,9 +1,5 @@
-export interface IPage {
-    name: string;
-    show: boolean;
+import { IMenuItem } from '@core/modules/menu/api/menu-item.interface';
+
+export interface IPage extends IMenuItem {
     description: string;
-    disabled: boolean;
-    icon: string;
-    route: string;
-    group: string;
 }

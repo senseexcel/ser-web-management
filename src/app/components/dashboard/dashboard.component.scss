@@ -8,6 +8,10 @@ $colors: (
 
     .sidebar-left.menu {
         margin: 0;
+
+        .lui-list--group {
+            margin: 0;
+        }
     }
 
     .qmc-page--content-body {

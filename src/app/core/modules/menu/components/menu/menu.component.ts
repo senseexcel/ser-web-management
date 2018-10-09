@@ -1,5 +1,4 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
-import { IMenuGroup } from '@api/menu-item.interface';
 import { IMenuItem } from '../../api/menu-item.interface';
 
 @Component({
@@ -9,9 +8,6 @@ import { IMenuItem } from '../../api/menu-item.interface';
 })
 
 export class MenuComponent {
-
-    @Input()
-    public menuGroups: IMenuGroup[];
 
     @Input()
     public menuItems: IMenuItem[];

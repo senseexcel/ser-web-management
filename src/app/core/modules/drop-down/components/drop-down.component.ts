@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewContainerRef, ViewChild, TemplateRef, Input } from '@angular/core';
-import { DropDownService } from '@core/modules/drop-down/services/drop-down.service';
-import { DropDownOverlay } from '@core/modules/drop-down/model/drop-down-overlay';
 import { fromEvent } from 'rxjs';
 import { filter } from 'rxjs/operators';
+import { DropDownOverlay } from '../model/drop-down-overlay';
+import { DropDownService } from '../services/drop-down.service';
 
 @Component({
     selector: 'app-drop-down',

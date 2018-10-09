@@ -20,6 +20,18 @@
             margin-bottom: 1px;
         }
 
+        .lui-list--group {
+            padding: 0;
+            background: transparent;
+            border-left: 0;
+
+            &>span {
+                line-height: 34px;
+                text-transform: uppercase;
+                border-left: 4px solid transparent;
+            }
+        }
+
         .lui-list--item.disabled {
             color: darken(#FFF, 20);
         }
@@ -31,13 +43,6 @@
         .lui-list--text a,
         .lui-list--text span {
             line-height: 24px;
-        }
-
-        .lui-list--header {
-            background: transparent;
-            line-height: 34px;
-            text-transform: uppercase;
-            border-left: 4px solid transparent;
         }
     }
 }

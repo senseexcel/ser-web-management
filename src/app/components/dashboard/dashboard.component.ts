@@ -7,7 +7,7 @@ import { IPageInformation } from '@api/page-information.interface';
 import { SerAppService } from '@core/modules/ser-engine/provider/ser-app.provider';
 import { IPage } from '@api/page.interface';
 import { Router } from '@angular/router';
-import { IMenuGroup } from '@core/modules/menu/api/menu-item.interface';
+import { IMenuItem } from '@core/modules/menu/api/menu-item.interface';
 
 @Component({
     selector: 'app-dashboard',
@@ -20,18 +20,58 @@ export class DashboardComponent implements OnInit {
     @HostBinding('class.dashboard')
     public static readonly hostClass = true;
 
-    public menuGroups: IMenuGroup[];
+    /**
+     * main menu data
+     *
+     * @type {IMenuItem[]}
+     * @memberof DashboardComponent
+     */
+    public mainMenu: IMenuItem[];
 
+    /**
+     * page informations for page tiles
+     *
+     * @type {IPageInformation[]}
+     * @memberof DashboardComponent
+     */
     public pages: IPageInformation[] = [];
 
     private router: Router;
 
+    /**
+     * app service to fetch current apps
+     *
+     * @private
+     * @type {SerAppService}
+     * @memberof DashboardComponent
+     */
     private serAppService: SerAppService;
 
+    /**
+     * filter service to create filter for qrs requests
+     *
+     * @private
+     * @type {SerFilterService}
+     * @memberof DashboardComponent
+     */
     private serFilterService: SerFilterService;
 
+    /**
+     * task api service to fetch tassk
+     *
+     * @private
+     * @type {SerTaskService}
+     * @memberof DashboardComponent
+     */
     private taskApiService: SerTaskService;
 
+    /**
+     * page service to get page data
+     *
+     * @private
+     * @type {PageService}
+     * @memberof DashboardComponent
+     */
     private pageService: PageService;
 
     /**
@@ -62,28 +102,10 @@ export class DashboardComponent implements OnInit {
         const taskCountSource$ = this.fetchTaskCount();
         const serAppCountSource$ = this.fetchSerApps();
 
-        this.menuGroups = this.pageService.getMenuGroups();
-
         forkJoin(taskCountSource$, serAppCountSource$)
             .subscribe((counts: number[]) => {
-                this.pageService.getPageData().forEach((page) => {
-                    let title: string;
-                    switch (page.name) {
-                        case 'Reports':
-                            title =  `${page.name} (${counts[1]})`;
-                            break;
-                        case 'Report Tasks':
-                            title =  `${page.name} (${counts[0]})`;
-                            break;
-                        default:
-                            title = page.name;
-                    }
-
-                    this.pages.push({
-                        ...page,
-                        title
-                    });
-                });
+                this.mainMenu = this.pageService.pageData;
+                this.pages    = this.createPageTileData(counts, this.pageService.pageData);
             });
     }
 
@@ -94,6 +116,39 @@ export class DashboardComponent implements OnInit {
      */
     public displayPage(page: IPage) {
         this.router.navigate([`/${page.route}`]);
+    }
+
+    /**
+     * create page tile data
+     *
+     * @private
+     * @param {number[]} counts
+     * @param {IPage[]} pageData
+     * @returns {IPageInformation[]}
+     * @memberof DashboardComponent
+     */
+    private createPageTileData(counts: number[], pageData: IPage[]): IPageInformation[] {
+        // flatten menu data to get pages directly
+        return pageData.reduce((current: IPage[] | null, previous: IPage) => {
+            const children = <IPage[]>previous.children || [];
+            if (!current) {
+                return children || [previous];
+            }
+
+            return current.concat(
+                children || previous
+            );
+        }, null)
+        // add title
+        .map((item: IPage): IPageInformation => {
+            let title: string;
+            switch (item.name) {
+                case 'Reports'     : title = `${item.name} (${counts[1]})`; break;
+                case 'Report Tasks': title = `${item.name} (${counts[0]})`; break;
+                default            : title = item.name;
+            }
+            return { ...item, title };
+        });
     }
 
     /**
