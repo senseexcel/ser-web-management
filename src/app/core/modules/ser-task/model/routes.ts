@@ -8,7 +8,7 @@ export const TaskRoutes: Routes = [{
     path: 'tasks',
     component: TaskComponent,
     data: {
-        breadcrumb: 'Tasks'
+        breadcrumb: 'Report Tasks'
     },
     children: [{
         path: '',

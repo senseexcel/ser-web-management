@@ -18,16 +18,20 @@ import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
 import { HJSonPipe } from '@core/pipes/hsjon.pipe';
 import { SerTaskModule } from '@core/modules/ser-task/ser-task.module';
+import { ListHeaderModule } from '@core/modules/list-header/list-header.module';
+import { CoreModule } from '@core/core.module';
 
 @NgModule({
   imports: [
     CommonModule,
+    CoreModule,
     FormHelperModule,
     MaterialModule,
     ReactiveFormsModule,
     SerAppModule,
     SerTaskModule,
-    AppsRoutingModule
+    AppsRoutingModule,
+    ListHeaderModule,
   ],
   exports: [MaterialModule],
   declarations: [

@@ -15,12 +15,14 @@ import { TaskFactoryService } from './services/task-factory.service';
 /** task components */
 import { EditComponent, ListComponent, FormComponents, TaskComponent, NewComponent } from './components';
 import { CoreModule } from '@core/core.module';
+import { ListHeaderModule } from '@core/modules/list-header/list-header.module';
 
 @NgModule({
     imports: [
         CoreModule,
         CommonModule,
         FormHelperModule,
+        ListHeaderModule,
         MaterialModule,
         SerEngineModule,
         TaskRoutingModule,

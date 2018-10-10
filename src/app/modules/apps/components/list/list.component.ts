@@ -4,11 +4,13 @@ import { IQlikApp } from '@apps/api/app.interface';
 import { SerAppManagerService } from '@core/modules//ser-app/provider/ser-app-manager.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Subscription } from 'rxjs';
+import { ListHeaderService } from '@core/modules/list-header/services/list-header.service';
 
 @Component({
     selector: 'app-list',
     templateUrl: 'list.component.html',
     styleUrls: ['./list.component.scss'],
+    viewProviders: [ListHeaderService]
 })
 export class AppListComponent implements OnInit {
 
@@ -28,15 +30,19 @@ export class AppListComponent implements OnInit {
 
     private route: ActivatedRoute;
 
+    private listHeaderService: ListHeaderService;
+
     constructor(
         route: ActivatedRoute,
         routerProvider: Router,
-        appManager: SerAppManagerService
+        appManager: SerAppManagerService,
+        listHeaderService: ListHeaderService
     ) {
         this.route      = route;
         this.router     = routerProvider;
         this.appManager = appManager;
         this.selection  = new SelectionModel<IQlikApp>();
+        this.listHeaderService = listHeaderService;
      }
 
     public async ngOnInit() {
@@ -45,6 +51,10 @@ export class AppListComponent implements OnInit {
             .subscribe( (apps) => {
                 this.isLoading = false;
                 this.qlikApps = apps;
+
+                this.listHeaderService.updateData({
+                    total: apps.length, showing: apps.length, selected: 0
+                });
             });
     }
 
@@ -76,6 +86,12 @@ export class AppListComponent implements OnInit {
      */
     public selectApp(app: IQlikApp) {
         this.selection.select(app);
+
+        this.listHeaderService.updateData({
+            total: this.qlikApps.length,
+            showing: this.qlikApps.length,
+            selected: this.selection.selected.length
+        });
     }
 
     /**
@@ -101,6 +117,10 @@ export class AppListComponent implements OnInit {
             .subscribe( (apps: IQlikApp[]) => {
                 this.isLoading = false;
                 this.qlikApps = apps;
+
+                this.listHeaderService.updateData({
+                    total: apps.length, showing: apps.length, selected: 0
+                });
             });
     }
 }

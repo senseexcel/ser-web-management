@@ -11,7 +11,7 @@ export class MouseDblClickDirective implements OnInit, OnDestroy {
     public dblClick: EventEmitter<any> = new EventEmitter();
 
     @Input()
-    public delay = 300;
+    public delay = 250;
 
     private isDestroyed: Subject<boolean>;
 

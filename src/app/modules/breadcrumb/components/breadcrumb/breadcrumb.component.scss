@@ -4,7 +4,7 @@ $breadcrumb-list-height: 36px;
 
     display: flex;
     list-style-type: none;
-    margin: 0 0 .5rem;
+    margin: 0;
     padding: 0;
 
     background: #1A1A1A;
@@ -30,7 +30,7 @@ $breadcrumb-list-height: 36px;
 
         &:last-child {
             background: #666;
-            padding-left: 2.5rem;
+            padding-left: 20px;
         }
 
         &:last-child:after {

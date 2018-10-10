@@ -1,16 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { SelectionModel } from '@angular/cdk/collections';
-import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { ListHeaderService } from '@core/modules/list-header/services/list-header.service';
 
 @Component({
     selector: 'app-ser-task-list',
     templateUrl: 'list.component.html',
     styleUrls: ['list.component.scss', 'table.scss'],
+    viewProviders: [ListHeaderService]
 })
 
 export class ListComponent implements OnDestroy, OnInit {
@@ -38,15 +39,6 @@ export class ListComponent implements OnDestroy, OnInit {
      * @memberof TasksComponent
      */
     public selection: SelectionModel<ITask>;
-
-    /**
-     * app manager service to get selected apps
-     *
-     * @private
-     * @type {SerAppManagerService}
-     * @memberof ListComponent
-     */
-    private appManagerService: SerAppManagerService;
 
     /**
      * current router service
@@ -85,6 +77,8 @@ export class ListComponent implements OnDestroy, OnInit {
      */
     private isDestroyed$: Subject<boolean>;
 
+    private listHeaderService: ListHeaderService;
+
     /**
      *Creates an instance of ListComponent.
      * @param {SerAppManagerService} appManager
@@ -94,19 +88,19 @@ export class ListComponent implements OnDestroy, OnInit {
      * @memberof ListComponent
      */
     constructor(
-        appManager: SerAppManagerService,
         router: Router,
         route: ActivatedRoute,
-        taskManagerService: TaskManagerService
+        taskManagerService: TaskManagerService,
+        listHeaderService: ListHeaderService
     ) {
         this.route = route;
         this.router = router;
-        this.appManagerService  = appManager;
         this.taskManagerService = taskManagerService;
         this.isDestroyed$       = new Subject<boolean>();
 
         this.tasks = [];
         this.selection = new SelectionModel<ITask>();
+        this.listHeaderService = listHeaderService;
     }
 
     /**
@@ -125,10 +119,16 @@ export class ListComponent implements OnDestroy, OnInit {
      * @memberof ListComponent
      */
     public ngOnInit() {
-        this.tableHeaderFields = ['id', 'name', 'enabled', 'status', 'lastExecution', 'nextExecution', 'tags'];
-
-        const selectedApp = this.appManagerService.getSelectedApps()[0] || null;
-        this.fetchTasks(selectedApp ? selectedApp.qDocId : null);
+        this.tableHeaderFields = [
+            'id',
+            'name',
+            'enabled',
+            'status',
+            'lastExecution',
+            'nextExecution',
+            'tags'
+        ];
+        this.fetchTasks();
     }
 
     /**
@@ -140,6 +140,11 @@ export class ListComponent implements OnDestroy, OnInit {
     public selectTask(task: ITask) {
         this.selection.select(task);
         this.taskManagerService.selectTasks([task]);
+        this.listHeaderService.updateData({
+            selected: this.selection.selected.length,
+            showing: this.tasks.length,
+            total: this.tasks.length
+        });
     }
 
     /**
@@ -200,7 +205,7 @@ export class ListComponent implements OnDestroy, OnInit {
      * @param {string} appId
      * @memberof TasksComponent
      */
-    private fetchTasks(appId: string) {
+    private fetchTasks(appId?: string) {
 
         this.taskManagerService.loadTasks(appId)
             .pipe(
@@ -208,6 +213,11 @@ export class ListComponent implements OnDestroy, OnInit {
             )
             .subscribe( (tasks: ITask[]) => {
                 this.tasks = tasks;
+                this.listHeaderService.updateData({
+                    selected: this.selection.selected.length,
+                    showing: this.tasks.length,
+                    total: this.tasks.length
+                });
             });
     }
 }

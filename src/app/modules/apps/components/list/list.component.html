@@ -1,6 +1,12 @@
 
 <div class="qapp-list--table">
     <mat-spinner *ngIf="isLoading"></mat-spinner>
+    <app-list-header>
+        <span>
+            <i class="ser-icon ser-icon--apps"></i>
+            Reports
+        </span>
+    </app-list-header>
     <table class="table" *ngIf="qlikApps.length && !isLoading" mat-table [dataSource]="qlikApps">
         <!-- Position Column -->
         <ng-container matColumnDef="name">
@@ -13,7 +19,7 @@
             <td mat-cell *matCellDef="let app"> {{app.qDocId}} </td>
         </ng-container>
         <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
-        <tr mat-row *matRowDef="let row; columns: tableHeaders;" [ngClass]="{'selected': selection.isSelected(row)}" (click)="selectApp(row)">
+        <tr mat-row *matRowDef="let row; columns: tableHeaders;" appMouseDblClick (dblClick)="editApp()" [ngClass]="{'selected': selection.isSelected(row)}" (click)="selectApp(row)">
     </table>
 </div>
 

@@ -9,7 +9,7 @@ export const AppRoutes: Routes = [{
     path: 'apps',
     component: AppsComponent,
     data: {
-        breadcrumb: 'Applications'
+        breadcrumb: 'Reports'
     },
     children: [{
         path: '',
