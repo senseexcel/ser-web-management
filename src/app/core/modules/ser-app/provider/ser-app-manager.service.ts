@@ -11,6 +11,8 @@ import { ISerScriptData } from '@core/modules/ser-script/api/ser-script-data.int
 import { defaultScript } from '@core/modules/ser-script/data/default-script';
 import { ReportService } from '@core/modules/ser-report/services/report.service';
 import { ISerApp } from '../api/ser-app.interface';
+import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.service';
+import { ITask } from '@core/modules/ser-engine/api/task.interface';
 
 @Injectable()
 export class SerAppManagerService {
@@ -27,6 +29,7 @@ export class SerAppManagerService {
     private reportService: ReportService;
     private serAppService: SerAppService;
     private serScriptService: SerScriptService;
+    private taskService: SerTaskService;
     private openApps: WeakMap<ISerApp, EngineAPI.IApp>;
     private isLoadingApps = false;
     private isLoadingSerApps = false;
@@ -34,11 +37,13 @@ export class SerAppManagerService {
     constructor(
         serAppService: SerAppService,
         scriptService: SerScriptService,
-        reportService: ReportService
+        reportService: ReportService,
+        taskService: SerTaskService
     ) {
         this.serAppService    = serAppService;
         this.serScriptService = scriptService;
         this.reportService    = reportService;
+        this.taskService      = taskService;
         this.openApps         = new WeakMap<ISerApp, EngineAPI.IApp>();
 
         this.loadedApps    = [];
@@ -211,6 +216,10 @@ export class SerAppManagerService {
      */
     public selectApps(apps: IQlikApp[]) {
         this.selectedApps = apps;
+    }
+
+    public getAppTasks(appId: string): Observable<ITask[]> {
+        return this.taskService.fetchTasksForApp(appId);
     }
 
     /**

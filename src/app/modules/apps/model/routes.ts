@@ -1,9 +1,10 @@
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 import { AppListComponent, AppEditComponent, AppsComponent, AppNewComponent  } from '../components';
 import { EditGuard } from '../guards/edit.guard';
 import { CreateGuard  } from '../guards/create.guard';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
-import { SerTaskModule } from '@core/modules/ser-task/ser-task.module';
+import { ListComponent, EditComponent } from '@core/modules/ser-task/components';
+import { TasksComponent } from '@apps/components/tasks/task.component';
 
 export const AppRoutes: Routes = [{
     path: 'apps',
@@ -29,8 +30,21 @@ export const AppRoutes: Routes = [{
                 breadcrumb: 'Report Preview'
             }
         }, {
-            path: 'tasks',
-            loadChildren: () => SerTaskModule
+            path: 'tasks/:id',
+            component: TasksComponent,
+            data: {
+                breadcrumb: 'Tasks',
+            },
+            children: [{
+                path: '',
+                component: ListComponent
+            }, {
+                path: 'edit/:id',
+                component: EditComponent,
+                data: {
+                    breadcrumb: 'Edit Task'
+                }
+            }]
         }]
     }, {
         path: 'new',
@@ -54,9 +68,6 @@ export const AppRoutes: Routes = [{
             data: {
                 breadcrumb: 'Report Preview'
             }
-        }, {
-            path: 'tasks',
-            loadChildren: () => SerTaskModule
         }]
     }]
 }];

@@ -1,6 +1,6 @@
 <router-outlet></router-outlet>
 
-<div class="qapp-detail" [style.display]="isPreview ? 'none': 'flex'">
+<div class="qapp-detail" [style.display]="isSubRoute ? 'none': 'flex'">
 
         <div class="qapp-detail--sidebar sidebar-left">
 
@@ -58,5 +58,16 @@
                     {{property.label}}
                 </li>
             </ul>
+
+            <ng-container *ngIf="associatedItems && associatedItems.length">
+                <div class="header">
+                    Associated Items
+                </div>
+                <ul class="lui-list">
+                    <li class="lui-item" *ngFor="let item of associatedItems">
+                        <a (click)="showTasks()">{{item.label}}</a>
+                    </li>
+                </ul>
+            </ng-container>
         </div>
 </div>

@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, switchMap } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { ListHeaderService } from '@core/modules/list-header/services/list-header.service';
 
@@ -154,7 +154,7 @@ export class ListComponent implements OnDestroy, OnInit {
      */
     public editTask() {
         const task = this.selection.selected[0];
-        this.router.navigate([`edit/${task.id}`], { relativeTo: this.route});
+        this.router.navigate([`./edit/${task.id}`], { relativeTo: this.route});
     }
 
     /**
@@ -205,19 +205,22 @@ export class ListComponent implements OnDestroy, OnInit {
      * @param {string} appId
      * @memberof TasksComponent
      */
-    private fetchTasks(appId?: string) {
+    private fetchTasks() {
 
-        this.taskManagerService.loadTasks(appId)
-            .pipe(
-                takeUntil(this.isDestroyed$)
-            )
-            .subscribe( (tasks: ITask[]) => {
-                this.tasks = tasks;
-                this.listHeaderService.updateData({
-                    selected: this.selection.selected.length,
-                    showing: this.tasks.length,
-                    total: this.tasks.length
-                });
+        this.route.params.pipe(
+            switchMap((params: Params) => {
+                const appId = params.id || null;
+                return this.taskManagerService.loadTasks(appId);
+            }),
+            takeUntil(this.isDestroyed$)
+        )
+        .subscribe( (tasks: ITask[]) => {
+            this.tasks = tasks;
+            this.listHeaderService.updateData({
+                selected: this.selection.selected.length,
+                showing: this.tasks.length,
+                total: this.tasks.length
             });
+        });
     }
 }

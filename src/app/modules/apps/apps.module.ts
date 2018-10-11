@@ -20,6 +20,7 @@ import { HJSonPipe } from '@core/pipes/hsjon.pipe';
 import { SerTaskModule } from '@core/modules/ser-task/ser-task.module';
 import { ListHeaderModule } from '@core/modules/list-header/list-header.module';
 import { CoreModule } from '@core/core.module';
+import { TasksComponent } from './components/tasks/task.component';
 
 @NgModule({
   imports: [
@@ -41,6 +42,7 @@ import { CoreModule } from '@core/core.module';
     ConnectionComponent,
     FormControlsComponent,
     SettingsComponent,
+    TasksComponent,
     TemplateComponent,
     DistributionComponent,
     DistributionFileComponent,
@@ -55,7 +57,8 @@ import { CoreModule } from '@core/core.module';
     AppNewComponent,
     AppListComponent,
     AppEditComponent,
-    ReportPreviewComponent
+    ReportPreviewComponent,
+    TasksComponent
   ]
 })
 export class AppsModule { }

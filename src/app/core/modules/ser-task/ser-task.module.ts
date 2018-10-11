@@ -16,6 +16,7 @@ import { TaskFactoryService } from './services/task-factory.service';
 import { EditComponent, ListComponent, FormComponents, TaskComponent, NewComponent } from './components';
 import { CoreModule } from '@core/core.module';
 import { ListHeaderModule } from '@core/modules/list-header/list-header.module';
+import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
 
 @NgModule({
     imports: [
@@ -37,6 +38,7 @@ import { ListHeaderModule } from '@core/modules/list-header/list-header.module';
         TaskComponent
     ],
     providers: [
+        TaskManagerService,
         TaskFactoryService,
         {
             provide: HTTP_INTERCEPTORS,
