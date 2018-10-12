@@ -8,7 +8,7 @@ export interface ITask {
 
     modifiedByUserName?: string;
 
-    customProperties?: [];
+    customProperties?: any[];
 
     published?: boolean;
 

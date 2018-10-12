@@ -72,7 +72,7 @@ export class SerTaskService {
      */
     public createTask(newTask: ITask): Observable<Object> {
         const url = this.buildUrl('create');
-        return this.httpClient.post(url, newTask, { withCredentials: true });
+        return this.httpClient.post(url, {task: newTask}, { withCredentials: true });
     }
 
     /**

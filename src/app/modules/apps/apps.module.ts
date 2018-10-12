@@ -16,11 +16,13 @@ import {
 import { FormHelperModule } from '@core/modules/form-helper/form-helper.module';
 import { SerAppModule } from '@core/modules/ser-app/ser-app.module';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
+import { ConvertEnumPipe } from '@core/pipes/convert-enum.pipe';
 import { HJSonPipe } from '@core/pipes/hsjon.pipe';
 import { SerTaskModule } from '@core/modules/ser-task/ser-task.module';
 import { ListHeaderModule } from '@core/modules/list-header/list-header.module';
 import { CoreModule } from '@core/core.module';
 import { TasksComponent } from './components/tasks/task.component';
+import { SelectionComponent } from '@apps/components/edit/form/selections/selection.component';
 
 @NgModule({
   imports: [
@@ -48,9 +50,11 @@ import { TasksComponent } from './components/tasks/task.component';
     DistributionFileComponent,
     DistributionHubComponent,
     DistributionMailComponent,
+    SelectionComponent,
     AppNewComponent,
     ReportPreviewComponent,
     HJSonPipe,
+    ConvertEnumPipe
   ],
   entryComponents: [
     AppsComponent,

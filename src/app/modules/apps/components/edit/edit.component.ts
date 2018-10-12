@@ -42,6 +42,9 @@ export class AppEditComponent implements OnInit, OnDestroy {
     @ViewChild('template')
     private templateContainer: ElementRef;
 
+    @ViewChild('selections')
+    private selectionContainer: ElementRef;
+
     @ViewChild('settings')
     private settingsContainer: ElementRef;
 
@@ -99,6 +102,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
         this.properties = [
             { label: 'App' },
             { label: 'Template' },
+            { label: 'Selections' },
             { label: 'Distribution' },
             { label: 'Settings' }
         ];
@@ -181,18 +185,24 @@ export class AppEditComponent implements OnInit, OnDestroy {
             case 'template':
                 scrollToContainer = this.templateContainer;
                 break;
+            case 'selections':
+                scrollToContainer = this.selectionContainer;
+                break;
             case 'distribution':
                 scrollToContainer = this.distributeContainer;
                 break;
             case 'settings':
                 scrollToContainer = this.settingsContainer;
                 break;
+            default:
+                return;
         }
 
         scrollToContainer.nativeElement.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
         });
+
         this.selectedProperty = property;
     }
 

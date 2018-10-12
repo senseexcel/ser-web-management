@@ -3,7 +3,7 @@ import { AppListComponent, AppEditComponent, AppsComponent, AppNewComponent  } f
 import { EditGuard } from '../guards/edit.guard';
 import { CreateGuard  } from '../guards/create.guard';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
-import { ListComponent, EditComponent } from '@core/modules/ser-task/components';
+import { ListComponent, EditComponent, NewComponent } from '@core/modules/ser-task/components';
 import { TasksComponent } from '@apps/components/tasks/task.component';
 
 export const AppRoutes: Routes = [{
@@ -43,6 +43,12 @@ export const AppRoutes: Routes = [{
                 component: EditComponent,
                 data: {
                     breadcrumb: 'Edit Task'
+                }
+            }, {
+                path: 'new',
+                component: NewComponent,
+                data: {
+                    breadcrumb: 'Create Task'
                 }
             }]
         }]
