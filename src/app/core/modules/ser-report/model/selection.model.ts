@@ -1,4 +1,5 @@
-import { ISerSenseSelection, SelectionType } from 'ser.api';
+import { ISerSenseSelection, SelectionType } from '../api/ser-selection.interface';
+import { IModel } from '@core/api/model.interface';
 
 export enum SelectionObjectType {
     BOOKMARK = 'bookmark',
@@ -6,7 +7,7 @@ export enum SelectionObjectType {
     DEFAULT = 'field'
 }
 
-export class SelectionModel implements ISerSenseSelection {
+export class SelectionModel implements ISerSenseSelection, IModel {
 
     /**
      * sense excel reporting selection object type

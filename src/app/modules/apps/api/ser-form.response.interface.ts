@@ -11,5 +11,7 @@ export interface ISerReportFormGroup {
 
 export interface ISerFormResponse extends IFormResponse {
 
+    skip?: boolean;
+
     data?: ISerReportFormGroup[];
 }

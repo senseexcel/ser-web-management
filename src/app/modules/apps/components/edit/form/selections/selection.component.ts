@@ -4,8 +4,8 @@ import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { ISerFormResponse } from '@apps/api/ser-form.response.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { SelectionObjectType } from '@core/modules/ser-report/model/selection.model';
-import { SelectionType } from 'ser.api';
+import { SelectionObjectType, SelectionModel } from '@core/modules/ser-report/model/selection.model';
+import { SelectionType } from '@core/modules/ser-report/api/ser-selection.interface';
 
 @Component({
     selector: 'app-edit-form-selections',
@@ -128,23 +128,33 @@ export class SelectionComponent implements OnInit {
     private buildSelectionForm(): FormGroup {
 
         const selectionSettings = this.currentApp.report.template.selections[0] || {};
+        const selectionType     = selectionSettings.type || SelectionType.Dynamic;
+
         const formGroup: FormGroup = this.formBuilder.group({
-            type: this.formBuilder.control(
-                selectionSettings.type || SelectionType.Dynamic
-            ),
+            type: this.formBuilder.control(null),
             selection: this.formBuilder.group({
                 name: this.formBuilder.control(
                     selectionSettings.name
                 ),
-                objectType: this.formBuilder.control(
-                    SelectionObjectType.DEFAULT
-                ),
+                objectType: this.formBuilder.control(selectionSettings.objectType || SelectionObjectType.DEFAULT),
                 values: this.formBuilder.control(
                     selectionSettings.values ? selectionSettings.values[0] : ''
                 )
             })
         });
 
+        formGroup.controls.type.valueChanges.subscribe((value) => {
+            const selectionFormGroup = formGroup.controls.selection as FormGroup;
+            if (value === SelectionType.Dynamic) {
+                selectionFormGroup.controls.objectType.setValue(SelectionObjectType.DEFAULT);
+                selectionFormGroup.controls.objectType.disable({onlySelf: true, emitEvent: false});
+            } else {
+                selectionFormGroup.controls.objectType.enable({onlySelf: true, emitEvent: false});
+            }
+        });
+
+        // set type one time to trigger change event
+        formGroup.controls.type.setValue(selectionType);
         return formGroup;
     }
 
@@ -175,12 +185,26 @@ export class SelectionComponent implements OnInit {
     private buildUpdateHook(): Observable<ISerFormResponse> {
 
         const observer = new Observable<ISerFormResponse>((obs) => {
+
+            const fields     = this.selectionForm.getRawValue();
+
+            let selection = this.currentApp.report.template.selections[0];
+            if (!selection) {
+                selection = new SelectionModel();
+                this.currentApp.report.template.selections = [selection];
+            }
+
+            selection.values  = fields.selection.values;
+            selection.name    = fields.selection.name;
+            selection.type    = fields.type;
+
+            console.log(selection.type);
+
+            selection.objectType = fields.selection.type === SelectionType.Dynamic
+                ? SelectionObjectType.HIDDEN_BOOKMARK
+                : fields.selection.objectType;
+
             obs.next({
-                data: [{
-                    fields: this.selectionForm.getRawValue(),
-                    group: 'selections',
-                    path: 'template'
-                }],
                 errors: [],
                 valid: this.selectionForm.valid,
             });

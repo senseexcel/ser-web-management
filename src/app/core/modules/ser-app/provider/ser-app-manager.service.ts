@@ -199,6 +199,7 @@ export class SerAppManagerService {
 
         const report = this.reportService.cleanReport((app.report as ReportModel).raw);
         app.script.script.tasks[0].reports[0] = report;
+        console.dir(report);
         const newScript = this.serScriptService.stringify(app.script);
 
         if ( this.openApps.has(app) ) {

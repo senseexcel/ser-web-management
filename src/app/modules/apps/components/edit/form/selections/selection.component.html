@@ -12,8 +12,9 @@
         </mat-form-field>
 
         <ng-container formGroupName="selection">
+
             <!-- selection object type -->
-            <mat-form-field class="form-control">
+            <mat-form-field class="form-control" [hidden]="selectionForm.controls.selection.controls.objectType.disabled">
                 <mat-select formControlName="objectType">
                     <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
                         {{type.label}}

@@ -1,4 +1,6 @@
 import { ISerTemplate, ISerSenseSelection } from 'ser.api';
+import { SelectionModel } from '@core/modules/ser-report/model/selection.model';
+import { IModel } from '@core/api/model.interface';
 
 export class TemplateModel implements ISerTemplate {
 
@@ -10,7 +12,7 @@ export class TemplateModel implements ISerTemplate {
     private templateKeepFormula: boolean;
     private templateScriptKeys: string[];
     private templateScriptArgs: string[];
-    private templateSelections: ISerSenseSelection[];
+    private templateSelections: SelectionModel[];
 
     public get generated(): boolean {
         return this.templateGenerated;
@@ -44,7 +46,7 @@ export class TemplateModel implements ISerTemplate {
         return this.templateScriptArgs;
     }
 
-    public get selections(): ISerSenseSelection[] {
+    public get selections(): SelectionModel[] {
         return this.templateSelections;
     }
 
@@ -80,11 +82,17 @@ export class TemplateModel implements ISerTemplate {
         this.templateScriptArgs = args;
     }
 
-    public set selections(selection: ISerSenseSelection[]) {
+    public set selections(selection: SelectionModel[]) {
         this.templateSelections = selection;
     }
 
     public get raw(): ISerTemplate {
+
+        let selections = this.templateSelections as IModel[];
+
+        if (!selections) {
+            selections = [new SelectionModel()];
+        }
 
         return {
             generated: this.templateGenerated,
@@ -95,7 +103,7 @@ export class TemplateModel implements ISerTemplate {
             keepFormula: this.templateKeepFormula,
             scriptKeys: this.templateScriptKeys,
             scriptArgs: this.templateScriptArgs,
-            selections: this.templateSelections,
+            selections: [selections[0].raw],
         };
     }
 }
