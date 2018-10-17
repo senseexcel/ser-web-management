@@ -19,7 +19,7 @@ export class IdentificationModel implements IModel {
     public identificationApp: string;
 
     /**
-     * get tassk name
+     * get task name
      *
      * @type {string}
      * @memberof IdentificationModel

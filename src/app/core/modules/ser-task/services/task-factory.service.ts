@@ -26,13 +26,15 @@ export class TaskFactoryService {
      */
     public buildTask(data?: ITask): TaskModel {
 
-        const task = new TaskModel();
+        const task           = new TaskModel();
         const exectuion      = this.createModel(new ExecutionModel()     , data || {});
         const identification = this.createModel(new IdentificationModel(), data || {});
-        const trigger        = this.createModel(new TriggerModel(), data || {} );
+        const trigger        = this.createModel(new TriggerModel()       , data || {} );
 
-        task.execution = exectuion as ExecutionModel;
+        task.id             = data ? data.id : null;
+        task.execution      = exectuion as ExecutionModel;
         task.identification = identification as IdentificationModel;
+        task.trigger        = trigger as TriggerModel;
 
         return task;
     }
@@ -90,7 +92,7 @@ export class TaskFactoryService {
             eventType: 0,
             name: 'ser daily schema',
             incrementDescription: '0 0 1 0', // day
-            incrementOption: '1', // amount of days 
+            incrementOption: '1', // amount of days
             privileges: ['read', 'update', 'create', 'delete'],
             schemaFilterDescription: ['* * - * * * * *'],
             timeZone: 'Europe/Paris'

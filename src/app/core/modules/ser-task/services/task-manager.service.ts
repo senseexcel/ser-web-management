@@ -99,26 +99,6 @@ export class TaskManagerService {
     }
 
     /**
-     * update task
-     *
-     * @param {string} id
-     * @param {ITask} data
-     * @memberof TaskManagerService
-     */
-    public updateTask(id: string, source: ITask): Observable<ITask> {
-        return this.taskApiService.updateTask(source)
-            .pipe(
-                tap((task: ITask) => {
-                    const index = this.taskCache.indexOf(source);
-                    if ( index > -1 ) {
-                        this.taskCache.splice(index, 1, task);
-                        this.loadedTasks.next(Array.from(this.taskCache));
-                    }
-                })
-            );
-    }
-
-    /**
      *
      *
      * @private

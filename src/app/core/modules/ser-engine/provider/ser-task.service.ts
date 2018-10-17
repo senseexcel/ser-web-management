@@ -34,9 +34,14 @@ export class SerTaskService {
      */
     public fetchAllTasks(): Observable<ITask[]> {
         const url = this.buildUrl('full');
+        const propFilter = this.filterService.createFilter('customProperties.value', `'sense-excel-reporting-task'`);
+
         return this.httpClient.get(url,
             {
-                withCredentials: true
+                withCredentials: true,
+                params: {
+                    filter: this.filterService.createFilterQueryString(propFilter)
+                }
             }
         )
         .pipe(
@@ -44,6 +49,11 @@ export class SerTaskService {
                 return response;
             })
         );
+    }
+
+    public fetchTask(taskId: string): Observable<any> {
+        const url = this.buildUrl(taskId);
+        return this.httpClient.get(url);
     }
 
     /**
@@ -69,6 +79,28 @@ export class SerTaskService {
     }
 
     /**
+     * fetch all schema events
+     *
+     * @param {string} taskId
+     * @returns {Observable<any>}
+     * @memberof SerTaskService
+     */
+    public fetchSchemaEvent(taskId: string): Observable<any> {
+
+        const url = '/qrs/schemaevent/full';
+        const propFilter = this.filterService.createFilter('reloadTask.id', taskId);
+
+        return this.httpClient.get(url,
+            {
+                withCredentials: true,
+                params: {
+                    filter: this.filterService.createFilterQueryString(propFilter)
+                }
+            }
+        );
+    }
+
+    /**
      * create a new task
      */
     public createTask(taskDefinition: IQrsTask): Observable<any> {
@@ -84,12 +116,14 @@ export class SerTaskService {
      * @memberof SerTaskApiService
      */
     public fetchTasksForApp(appId: string): Observable<ITask[]> {
-        const url    = this.buildUrl('full');
-        const filter = this.filterService.createFilter('app.id', appId);
+        const url       = this.buildUrl('full');
+        const appFilter  = this.filterService.createFilter('app.id', appId);
+        const propFilter = this.filterService.createFilter('customProperties.value', `'sense-excel-reporting-task'`);
 
         return this.httpClient.get(url, {
                 params: {
-                    filter: this.filterService.createFilterQueryString(filter)
+                    filter: this.filterService.createFilterQueryString(
+                        this.filterService.createFilterGroup([appFilter, propFilter]))
                 },
                 withCredentials: true
             }
@@ -108,9 +142,10 @@ export class SerTaskService {
      * @returns
      * @memberof SerTaskService
      */
-    public updateTask(data: ITask): Observable<ITask> {
+    public updateTask(taskDefinition: IQrsTask): Observable<ITask> {
         const url = this.buildUrl('update');
-        return this.httpClient.post(url, { task: data }, {
+
+        return this.httpClient.post(url, taskDefinition, {
                 headers: {
                     'Content-Type': 'application/json'
                 },

@@ -2,9 +2,9 @@ export interface ITask {
 
     id?: string;
 
-    createdData?: string;
+    createdDate?: string;
 
-    modifiedData?: string;
+    modifiedDate?: string;
 
     modifiedByUserName?: string;
 
@@ -30,7 +30,7 @@ export interface ITask {
 
     name: string;
 
-    tags: [];
+    tags?: [];
 
     privileges?: [];
 

@@ -5,5 +5,5 @@ export interface IQrsTask {
 
     task: ITask;
 
-    schemaEvents: ISchemaEvent[];
+    schemaEvents?: ISchemaEvent[];
 }

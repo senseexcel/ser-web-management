@@ -8,7 +8,7 @@ import { IModel } from '@core/api/model.interface';
  */
 export class TriggerModel implements IModel {
 
-    private triggerStartTime: number;
+    private triggerHour: number;
 
     private triggerEnabled: boolean;
 
@@ -20,18 +20,18 @@ export class TriggerModel implements IModel {
         this.triggerEnabled = enabled;
     }
 
-    public get startTime(): number {
-        return this.triggerStartTime;
+    public set hour(hour: number) {
+        this.triggerHour = hour;
     }
 
-    public set startTime(time: number) {
-        this.triggerStartTime = time;
+    public get hour(): number {
+        return this.triggerHour;
     }
 
     public get raw() {
         return {
             enabled: this.enabled,
-            startTime: this.startTime
+            hour:    this.hour
         };
     }
 }

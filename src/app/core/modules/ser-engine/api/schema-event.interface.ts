@@ -2,17 +2,17 @@ export interface ISchemaEvent {
 
     daylightSavingTime?: number;
 
-    enabled: boolean;
+    enabled?: boolean;
 
-    eventType: number;
+    eventType?: number;
 
-    expirationDate: string;
+    expirationDate?: string;
 
     incrementDescription?: string;
 
     incrementOption?: string;
 
-    name: string;
+    name?: string;
 
     privileges?: string[];
 
@@ -20,5 +20,9 @@ export interface ISchemaEvent {
 
     startDate: string;
 
-    timeZone: string;
+    timeZone?: string;
+
+    id?: string;
+
+    modifiedDate?: string;
 }

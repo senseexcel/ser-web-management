@@ -70,11 +70,12 @@ export class FormIdentificationComponent implements OnInit {
      */
     private createIdentificationForm(): FormGroup {
 
-        const appId = this.formModel.task.identification.app || null;
+        const identification = this.formModel.task.identification;
+        const app            = this.formModel.task.identification.app as any;
 
         return this.formBuilder.group({
-            app : this.formBuilder.control(appId, Validators.required),
-            name: this.formBuilder.control(''   , Validators.required)
+            app : this.formBuilder.control(app ? app.id : null, Validators.required),
+            name: this.formBuilder.control(identification.name, Validators.required)
         });
     }
 

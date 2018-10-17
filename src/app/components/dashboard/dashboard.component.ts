@@ -159,13 +159,11 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     private fetchTaskCount(): Observable<number> {
-        /** task filter*
         const taskFilter = this.serFilterService.createFilter(
-            'app.id',
-            '1e85e254-5476-4a39-a599-2cbdba91cafb'
+            'customProperties.value',
+            `'sense-excel-reporting-task'`
         );
-       */
-        return this.taskApiService.fetchTaskCount();
+        return this.taskApiService.fetchTaskCount(taskFilter);
     }
 
     /**

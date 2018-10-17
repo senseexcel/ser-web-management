@@ -59,7 +59,7 @@ export class SerFilterService {
             const filterQuery = `${qrsFilter.by} ${qrsFilter.operator} ${qrsFilter.value}`;
 
             if ( query.length ) {
-                query += groupedFilter.conditional;
+                query += ` ${groupedFilter.conditional}`;
             }
 
             return `${query} ${filterQuery}`;

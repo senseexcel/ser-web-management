@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormService } from '@core/modules/form-helper';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
-import { switchMap, catchError } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
+import { of, Observable, forkJoin } from 'rxjs';
 import { TaskFactoryService } from '@core/modules/ser-task/services/task-factory.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Data, Router } from '@angular/router';
 import { TaskFormModel } from '../../model/task-form.model';
 import { SerAppService } from '@core/modules/ser-engine/provider/ser-app.provider';
 import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
@@ -100,22 +100,19 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     ngOnInit() {
-
-        this.activeRoute.data.subscribe((data) => {
-
-            if (data.action === 'create') {
-                this.appApiService.fetchSerApps()
-                    .subscribe((apps: IQrsApp[]) => {
-
-                        this.taskFormModel.isNew = true;
-                        this.taskFormModel.apps = apps;
-                        this.taskFormModel.task = this.taskFactoryService.buildTask();
-
-                        this.formHelperService.loadModel(this.taskFormModel);
-                    });
-                return;
-            }
-        });
+        this.activeRoute.data
+            .pipe(
+                switchMap((data: Data) => {
+                    if (data.action === 'create') {
+                        return this.initNewTask();
+                    } else {
+                        return this.initExistingTask();
+                    }
+                })
+            )
+            .subscribe(() => {
+                this.formHelperService.loadModel(this.taskFormModel);
+            });
     }
 
     /**
@@ -131,17 +128,15 @@ export class EditComponent implements OnInit {
                     if (this.taskFormModel.isNew) {
                         return this.createNewtask();
                     }
+                    return this.updateTask();
                 }),
-                catchError((error, caught: Observable<ITask>) => {
-                    console.dir(error);
+                catchError((error) => {
+                    console.error(error);
                     return of(null);
                 })
             )
             .subscribe((task: ITask) => {
-                if ( task ) {
-                    // update current task object we have edited
-                    this.tasks[0] = task;
-                }
+                // tell the breadcrumb service to go back one step
             });
     }
 
@@ -154,13 +149,97 @@ export class EditComponent implements OnInit {
     public onCancel() {
     }
 
+    private buildFormModel() {
+        this.taskFormModel.isNew = true;
+        this.taskFormModel.task = this.taskFactoryService.buildTask();
+    }
+
     /**
-     * edit existing task
+     * initialize an existing task
+     *
+     * @private
+     * @returns {Observable<any>}
+     * @memberof EditComponent
+     */
+    private initExistingTask(): Observable<any> {
+
+        return this.activeRoute.params
+            .pipe(
+                switchMap((params) => {
+                    const id = params.id;
+                    return this.taskApiService.fetchTask(id);
+                }),
+                mergeMap((task: ITask) => {
+                    this.taskFormModel.isNew = false;
+                    this.taskFormModel.task  = this.taskFactoryService.buildTask(task);
+
+                    return this.appApiService.fetchSerApps();
+                }),
+                map((apps: IQrsApp[]) => {
+                    this.taskFormModel.apps = apps;
+                })
+            );
+    }
+
+    /**
+     * initialize a new task
+     *
+     * @private
+     * @returns {Observable<any>}
+     * @memberof EditComponent
+     */
+    private initNewTask(): Observable<any> {
+
+        return this.appApiService.fetchSerApps()
+            .pipe(
+                map((apps: IQrsApp[]) => {
+                    this.taskFormModel.apps = apps;
+                    this.taskFormModel.isNew = true;
+                    this.taskFormModel.task = this.taskFactoryService.buildTask();
+                })
+            );
+    }
+
+    /**
+     * update a task
      *
      * @private
      * @memberof EditComponent
      */
-    private editTask(task: ITask) {
+    private updateTask(): Observable<ITask> {
+
+        return this.createTaskData().pipe(
+            mergeMap((task: ITask) => {
+
+                return forkJoin(
+                    this.taskApiService.fetchTask(this.taskFormModel.task.id),
+                    this.taskApiService.fetchSchemaEvent(this.taskFormModel.task.id)
+                ).pipe(
+                    switchMap((source) => {
+                        const sourceTask = source[0];
+                        const schemaEvent = source[1];
+
+                        task.id = sourceTask.id;
+                        task.modifiedDate = sourceTask.modifiedDate;
+
+                        const event = schemaEvent[0];
+                        const startDate = new Date();
+
+                        startDate.setHours(this.taskFormModel.task.trigger.hour || 12);
+                        startDate.setMinutes(0);
+                        startDate.setSeconds(0);
+                        startDate.setMilliseconds(0);
+
+                        event.startDate = startDate.toISOString();
+
+                        return this.taskApiService.updateTask({
+                            task,
+                            schemaEvents: [event]
+                        });
+                    })
+                );
+            })
+        );
     }
 
     /**
@@ -172,12 +251,32 @@ export class EditComponent implements OnInit {
      */
     private createNewtask(): Observable<ITask> {
 
+        return this.createTaskData().pipe(
+            switchMap((task: ITask) => {
+                return this.taskApiService.createTask({
+                    task,
+                    schemaEvents: [
+                        this.taskFactoryService.createSchemaEvent(this.taskFormModel.task.trigger.hour || 12)
+                    ]
+                });
+            })
+        );
+    }
+
+    /**
+     * create default task data for update and create
+     *
+     * @private
+     * @returns {Observable<ITask>}
+     * @memberof EditComponent
+     */
+    private createTaskData(): Observable<ITask> {
+
         const taskName = this.taskFormModel.task.identification.name;
         const app      = this.taskFormModel.task.app;
 
-
         return this.customPropertyProvider.fetchCustomProperties().pipe(
-            switchMap((prop) => {
+            map((prop) => {
 
                 /** qlik app data */
                 const qApp: IQlikApp = { qDocId  : app.id, qDocName: app.name };
@@ -194,10 +293,7 @@ export class EditComponent implements OnInit {
                     schemaPath: 'CustomPropertyValue'
                 });
 
-                return this.taskApiService.createTask({
-                    task: newTask,
-                    schemaEvents: [this.taskFactoryService.createSchemaEvent(14)]
-                });
+                return newTask;
             })
         );
     }

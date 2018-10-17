@@ -2,6 +2,7 @@ import { IModel, IDataNode } from '@core/api/model.interface';
 import { ExecutionModel } from './execution.model';
 import { IdentificationModel } from './indetification.model';
 import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
+import { TriggerModel } from './trigger.model';
 
 /**
  * task model
@@ -27,7 +28,25 @@ export class TaskModel implements IModel {
      */
     private taskIdentification: IdentificationModel;
 
+    /**
+     *
+     *
+     * @private
+     * @type {IQrsApp}
+     * @memberof TaskModel
+     */
     private taskApp: IQrsApp;
+
+    /**
+     * id of the task
+     *
+     * @private
+     * @type {string}
+     * @memberof TaskModel
+     */
+    private taskId: string;
+
+    private taskTrigger: TriggerModel;
 
     /**
      *
@@ -77,6 +96,33 @@ export class TaskModel implements IModel {
         this.taskExecution = excetution;
     }
 
+    public set trigger(trigger: TriggerModel) {
+        this.taskTrigger = trigger;
+    }
+
+    public get trigger(): TriggerModel {
+        return this.taskTrigger;
+    }
+
+    /**
+     * set id of task
+     *
+     * @memberof TaskModel
+     */
+    public set id(id: string) {
+        this.taskId = id;
+    }
+
+    /**
+     * get id from task
+     *
+     * @type {string}
+     * @memberof TaskModel
+     */
+    public get id(): string {
+        return this.taskId;
+    }
+
     /**
      * set task identification model
      *
@@ -93,7 +139,6 @@ export class TaskModel implements IModel {
      * @memberof TaskModel
      */
     public get raw(): IDataNode {
-
         return {
             execution: this.execution.raw,
             identification: this.identification.raw
