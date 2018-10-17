@@ -5,7 +5,7 @@ import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { ReportService } from '@core/modules/ser-report/services/report.service';
 import { IQlikApp } from '@apps/api/app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
-import { Subject, from } from 'rxjs';
+import { Subject, from, of } from 'rxjs';
 import { switchMap, map, filter } from 'rxjs/operators';
 import { ISerFormResponse, ISerReportFormGroup } from '@apps/api/ser-form.response.interface';
 import { BreadcrumbService } from '@breadcrumb/provider/breadcrumb.service';
@@ -244,17 +244,13 @@ export class AppEditComponent implements OnInit, OnDestroy {
     * @private
     * @memberof AppEditComponent
     */
-    private initNewApp(name: string) {
+    private async initNewApp(name: string): Promise<ITask[]> {
 
-        return this.appManager.createApp(name)
-            .pipe(
-                switchMap((app: ISerApp) => {
-                    this.app = app;
-                    this.formService.loadModel(app);
-                    // fake tasks just send empty array
-                    return [];
-                })
-            );
+        const app = await this.appManager.createApp(name);
+        this.app = app;
+        this.formService.loadModel(app);
+
+        return [];
     }
 
     /**

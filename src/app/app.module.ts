@@ -12,7 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StartUpService, startUpServiceFactory, PageService } from './services';
 import { configServiceFactory } from './services/config/config-service.factory';
-import { ConfigFactory, CONFIGURATIONS } from './services/config/config-factory';
+import { ConfigFactory } from './services/config/config-factory';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
 

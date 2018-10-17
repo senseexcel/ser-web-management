@@ -3,28 +3,33 @@ import { IQlikApp } from '@apps/api/app.interface';
 import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
 import { create } from 'enigma.js';
 import { buildUrl } from 'enigma.js/sense-utilities';
-import { from, Subject, Observable, of } from 'rxjs';
-import { mergeMap, switchMap, catchError, filter, buffer, map, bufferCount } from 'rxjs/operators';
+import { from, Observable } from 'rxjs';
+import { mergeMap, switchMap, catchError, filter, buffer, map } from 'rxjs/operators';
 import { IQlikAppCreated } from '../api/response/app-created.interface';
 import { ISerEngineConfig } from '../api/ser-engine-config.interface';
 import { IQrsFilter } from '@core/modules/ser-engine/api/filter.interface';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
+import { CustomPropertyProvider } from './custom-property.providert';
+import { IQrsApp } from '../api/response/qrs/app.interface';
 
 export class SerAppService {
 
     private senseConfig: ISerEngineConfig;
     private filterService: any;
+    private customPropertyProvider: CustomPropertyProvider;
     private httpClient: any;
 
     public constructor(
         @Inject('SerEngineConfig') senseConfig: ISerEngineConfig,
         httpClient: HttpClient,
-        qrsFilterService: SerFilterService
+        qrsFilterService: SerFilterService,
+        customPropertyService: CustomPropertyProvider
     ) {
         this.senseConfig   = senseConfig;
         this.filterService = qrsFilterService;
         this.httpClient    = httpClient;
+        this.customPropertyProvider = customPropertyService;
     }
 
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
@@ -58,23 +63,9 @@ export class SerAppService {
         );
     }
 
-    /**
-     * get all sense excel reporting apps
-     *
-     * @returns {Observable<IQlikApp[]>}
-     * @memberof SerAppService
-     */
-    public fetchSenseExcelReportingApps(): Observable<IQlikApp[]> {
-
-        return from(this.fetchApps()).pipe(
-            mergeMap( (apps: IQlikApp[]) => {
-                return this.getSerApps(apps);
-            }),
-            catchError( (error) => {
-                console.log(error);
-                return [];
-            })
-        );
+    public fetchApp(id: string): Observable<IQrsApp> {
+        const url = `/qrs/app/${id}`;
+        return this.httpClient.get(url);
     }
 
     /**
@@ -108,49 +99,19 @@ export class SerAppService {
      * @returns {Observable<IQlikApp[]>}
      * @memberof SerAppService
      */
-    private getSerApps(apps: IQlikApp[]): Observable<IQlikApp[]> {
+    public fetchSerApps(): Observable<IQrsApp[]> {
 
-        const need = apps.length;
-        const appsLoaded: Subject<boolean> = new Subject<boolean>();
-        let appsChecked  = 0;
-
-        return from(apps).pipe(
-            mergeMap((app: IQlikApp) => {
-                return this.createSession(app.qDocId)
-                    .then( async (session) => {
-
-                        const global = await session.open() as any;
-                        const qApp: EngineAPI.IApp = await global.openDoc(app.qDocId, '', '', '', true);
-                        const script = await qApp.getScript();
-                        await qApp.session.close();
-
-                        return {
-                            qapp: app,
-                            script
-                        };
-                    })
-                    .catch((error) => {
-                        return null;
-                    });
-            }),
-            filter((appData: any) => {
-                appsChecked++;
-
-                if ( appsChecked === need ) {
-                    appsLoaded.next(true);
-                }
-
-                if ( ! appData ) {
-                    return false;
-                }
-                const config = appData.script as string;
-                return config && config.indexOf('SER.START') !== -1;
-            }),
-            map((data): IQlikApp => {
-                return data.qapp;
-            }),
-            buffer(appsLoaded)
+        const url = `/${this.senseConfig.virtualProxy}qrs/app/full/`;
+        const appFilter = this.filterService.createFilter(
+            'customProperties.value',
+            `'sense-excel-reporting-app'`
         );
+
+        return this.httpClient.get(url, {
+            params: {
+                filter: this.filterService.createFilterQueryString(appFilter)
+            }
+        });
     }
 
     /**
@@ -178,22 +139,38 @@ export class SerAppService {
      * @returns {Observable<any>}
      * @memberof SerAppService
      */
-    public createApp(appName: string): Observable<any> {
+    public createApp(appName: string): Promise<any> {
 
-        return from(this.createSession())
-        .pipe(
-            mergeMap( async (session: enigmaJS.ISession) => {
-                const global  = await session.open() as any;
-                const newApp = await global.createApp(appName, 'main') as IQlikAppCreated;
+        let app;
 
-                return {
-                    global,
-                    newApp
-                };
-            }),
-            switchMap((response) => {
-                return response.global.openDoc(response.newApp.qAppId, '', '', '', true);
+        return this.createSession()
+            .then((session: enigmaJS.ISession) => {
+                return session.open();
             })
-        );
+            .then(async (global: any) => {
+                const newApp = await global.createApp(appName, 'main') as IQlikAppCreated;
+                app          = await global.openDoc(newApp.qAppId, '', '', '', true);
+
+                return Promise.all([
+                    this.fetchApp(newApp.qAppId).toPromise(),
+                    this.customPropertyProvider.fetchCustomProperties().toPromise()
+                ]);
+            }).
+            then((data) => {
+                const newApp = data[0];
+                const updateData = {
+                    modifiedDate: newApp.modifiedDate,
+                    customProperties: [{
+                        value: 'sense-excel-reporting-app',
+                        definition: data[1][0]
+                    }],
+                    schemaPath: 'CustomPropertyValue'
+                };
+
+                return this.httpClient.put(`/qrs/app/${newApp.id}`, updateData).toPromise();
+            })
+            .then(() => {
+                return app;
+            });
     }
 }

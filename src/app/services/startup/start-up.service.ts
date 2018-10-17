@@ -1,8 +1,10 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable, empty, forkJoin } from 'rxjs';
+import { Observable, forkJoin, of} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ConfigFactory } from '../config/config-factory';
-import { map } from 'rxjs/operators';
+import { CustomPropertyProvider } from '@core/modules/ser-engine/provider/custom-property.providert';
+import { switchMap } from 'rxjs/operators';
+import { ICustomProperty, CustomPropertyObjectType } from '@core/modules/ser-engine/api/custom-property.interface';
 
 @Injectable()
 export class StartUpService {
@@ -11,9 +13,16 @@ export class StartUpService {
 
     private configFactory: ConfigFactory;
 
-    constructor(http: HttpClient, configFactory: ConfigFactory) {
+    private propertyProvider: CustomPropertyProvider;
+
+    constructor(
+        http: HttpClient,
+        configFactory: ConfigFactory,
+        customPropertyProvider: CustomPropertyProvider
+    ) {
         this.http = http;
         this.configFactory = configFactory;
+        this.propertyProvider = customPropertyProvider;
     }
 
     /**
@@ -25,40 +34,33 @@ export class StartUpService {
      */
     public load(): Promise<void> {
         const requests: Observable<any>[] = [];
-        /// #if mode=="development"
-        // requests.push(this.createSessionCookie());
-        /// #endif
+        requests.push(this.initializeCustomProperties());
 
         return forkJoin(...requests)
             .toPromise();
     }
 
     /**
-     * create session cookie only needed if we develop not in qmc
+     * validate properties exists
      *
      * @private
      * @returns {Observable<any>}
      * @memberof StartUpService
      */
-    private createSessionCookie(): Observable<any> {
+    private initializeCustomProperties(): Observable<any> {
 
-        const config: any = this.configFactory.buildSerEngineConfig();
-
-        const endpoint     = config.jwt.endpoint;
-        const token        = config.jwt.token;
-        const host         = config.host;
-        const virtualProxy = config.virtualProxy;
-
-        const url = `https://${host}/${virtualProxy}${endpoint}`;
-
-        return this.http.get('https://nb-fc-207996/qmc/', {
-            headers: {
-                'Content-Type': 'text/html',
-                'Authorization': `Bearer ${token}`
-            },
-            withCredentials: true,
-            observe: 'response',
-            responseType: 'text'
-        });
+        return this.propertyProvider
+            .fetchCustomProperties()
+            .pipe(
+                switchMap((result: ICustomProperty[]) => {
+                    if (result.length === 0) {
+                        return this.propertyProvider.createCustomProperty('senseExcelReporting', [
+                            CustomPropertyObjectType.App,
+                            CustomPropertyObjectType.ReloadTask
+                        ]);
+                    }
+                    return of(result);
+                }),
+            );
     }
 }

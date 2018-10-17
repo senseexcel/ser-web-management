@@ -159,14 +159,12 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     private fetchTaskCount(): Observable<number> {
-        /** task filter
-         * @todo filter only ser tasks
+        /** task filter*
         const taskFilter = this.serFilterService.createFilter(
             'app.id',
             '1e85e254-5476-4a39-a599-2cbdba91cafb'
         );
-        */
-
+       */
         return this.taskApiService.fetchTaskCount();
     }
 
@@ -178,7 +176,10 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     private fetchSerApps(): Observable<number> {
-        // @todo create filter for ser apps
-        return this.serAppService.fetchAppCount();
+        const appFilter = this.serFilterService.createFilter(
+            'customProperties.value',
+            `'sense-excel-reporting-app'`
+        );
+        return this.serAppService.fetchAppCount(appFilter);
     }
 }

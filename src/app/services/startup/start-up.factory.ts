@@ -1,7 +1,7 @@
 import { StartUpService } from './start-up.service';
 
 export function startUpServiceFactory(startUpService: StartUpService): Function {
-    return () => {
+    return (): Promise<any> => {
         return startUpService.load();
     };
 }

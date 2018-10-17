@@ -6,12 +6,14 @@ import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.servi
 import { XrfkeyInterceptor } from '@core/modules/ser-engine/interceptor/xrfkey.interceptor';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 import { SerUserService } from '@core/modules/ser-engine/provider/ser-user.service';
+import { CustomPropertyProvider } from './provider/custom-property.providert';
 
 @NgModule({
     imports: [HttpClientModule],
     exports: [],
     declarations: [],
     providers: [
+        CustomPropertyProvider,
         SerAppService,
         SerUserService,
         SerFilterService,
