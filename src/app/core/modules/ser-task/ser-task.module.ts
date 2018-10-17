@@ -13,7 +13,7 @@ import { TaskRoutingModule } from './ser-task-routing.module';
 /** task services */
 import { TaskFactoryService } from './services/task-factory.service';
 /** task components */
-import { EditComponent, ListComponent, FormComponents, TaskComponent, NewComponent } from './components';
+import { EditComponent, ListComponent, FormComponents, TaskComponent,  } from './components';
 import { CoreModule } from '@core/core.module';
 import { ListHeaderModule } from '@core/modules/list-header/list-header.module';
 import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
@@ -33,7 +33,6 @@ import { TaskManagerService } from '@core/modules/ser-task/services/task-manager
     declarations: [
         ...FormComponents,
         EditComponent,
-        NewComponent,
         ListComponent,
         TaskComponent
     ],
@@ -46,5 +45,8 @@ import { TaskManagerService } from '@core/modules/ser-task/services/task-manager
             multi: true
         }
     ],
+    entryComponents: [
+        EditComponent
+    ]
 })
 export class SerTaskModule { }

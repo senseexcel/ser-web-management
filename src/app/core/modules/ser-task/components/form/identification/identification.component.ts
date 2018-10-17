@@ -1,0 +1,112 @@
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
+import { FormService } from '@core/modules/form-helper';
+import { TaskFormModel } from '@core/modules/ser-task/model/task-form.model';
+import { Observable } from 'rxjs';
+
+@Component({
+    selector: 'app-task-form-identification',
+    templateUrl: 'identification.component.html'
+})
+
+export class FormIdentificationComponent implements OnInit {
+
+    /**
+     * all task can only applied to an sense excel reporting app
+     *
+     * @type {IQrsApp[]}
+     * @memberof FormIdentificationComponent
+     */
+    public apps: IQrsApp[];
+
+    public identificationForm: FormGroup;
+
+    private formBuilder: FormBuilder;
+
+    private formModel: TaskFormModel;
+
+    /**
+     * form helper sevice to get current model which should edited
+     * add hooks on save.
+     *
+     * @private
+     * @type {FormService<TaskModel, any>}
+     * @memberof FormExcecutionComponent
+     */
+    private formService: FormService<TaskFormModel, any>;
+
+    constructor(
+        formBuilder: FormBuilder,
+        formService: FormService<TaskFormModel, any>
+    ) {
+        this.formBuilder = formBuilder;
+        this.formService = formService;
+    }
+
+    ngOnInit() {
+
+        /** create / register update hook if form should be updated */
+        const updateHook = this.buildUpdateHook();
+        this.formService.registerHook(FormService.HOOK_UPDATE, updateHook);
+
+        this.formService.editModel().subscribe((model: TaskFormModel) => {
+
+            if (!model) {
+                return;
+            }
+            this.formModel = model;
+            this.apps      = model.apps;
+
+            this.identificationForm = this.createIdentificationForm();
+        });
+    }
+
+    /**
+     * create form group for apps
+     *
+     * @private
+     * @memberof TaskFormAppComponent
+     */
+    private createIdentificationForm(): FormGroup {
+
+        const appId = this.formModel.task.identification.app || null;
+
+        return this.formBuilder.group({
+            app : this.formBuilder.control(appId, Validators.required),
+            name: this.formBuilder.control(''   , Validators.required)
+        });
+    }
+
+    /**
+     * create hook for form should updated
+     *
+     * @private
+     * @returns {Observable<string>}
+     * @memberof ConnectionComponent
+     */
+    private buildUpdateHook(): Observable<any> {
+
+        const observer = new Observable<any>((obs) => {
+
+            /** update model data */
+            const formData = this.identificationForm.getRawValue();
+
+            /** find selected app */
+            const selectedApp = this.formModel.apps.find((app: IQrsApp) => {
+                return app.id === formData.app;
+            });
+
+            /** write data to model */
+            this.formModel.task.app = selectedApp || null;
+            this.formModel.task.identification.app = formData.app;
+            this.formModel.task.identification.identificationName = formData.name;
+
+            obs.next({
+                valid: this.identificationForm.valid,
+            });
+        });
+
+        return observer;
+    }
+}

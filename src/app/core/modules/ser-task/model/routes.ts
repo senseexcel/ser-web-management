@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { TaskComponent } from '../components/task/task.component';
 import { ListComponent } from '../components/list/list.component';
 import { EditComponent } from '../components/edit/edit.component';
-import { NewComponent } from '../components/new/new.component';
 
 export const TaskRoutes: Routes = [{
     path: 'tasks',
@@ -17,13 +16,15 @@ export const TaskRoutes: Routes = [{
         path: 'edit/:id',
         component: EditComponent,
         data: {
-            breadcrumb: 'Edit Task'
+            breadcrumb: 'Edit Task',
+            action: 'update'
         },
     }, {
         path: 'new',
-        component: NewComponent,
+        component: EditComponent,
         data: {
-            breadcrumb: 'Create Task'
+            breadcrumb: 'Create Task',
+            action: 'create'
         },
     }, {
         path: 'new/:name',

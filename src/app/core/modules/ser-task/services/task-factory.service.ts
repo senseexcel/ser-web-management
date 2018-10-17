@@ -6,6 +6,8 @@ import { IdentificationModel } from '@core/modules/ser-task/model/indetification
 import { BehaviorSubject } from 'rxjs';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { IQlikApp } from '@apps/api/app.interface';
+import { ISchemaEvent } from '../../ser-engine/api/schema-event.interface';
+import { TriggerModel } from '../model/trigger.model';
 
 @Injectable()
 export class TaskFactoryService {
@@ -27,6 +29,7 @@ export class TaskFactoryService {
         const task = new TaskModel();
         const exectuion      = this.createModel(new ExecutionModel()     , data || {});
         const identification = this.createModel(new IdentificationModel(), data || {});
+        const trigger        = this.createModel(new TriggerModel(), data || {} );
 
         task.execution = exectuion as ExecutionModel;
         task.identification = identification as IdentificationModel;
@@ -65,6 +68,32 @@ export class TaskFactoryService {
             tags: [],
             taskSessionTimeout: 1440,
             taskType: 0
+        };
+    }
+
+    public createSchemaEvent(startTime: number): ISchemaEvent {
+
+        const start = new Date();
+        const end   = new Date('31 December 9999 00:00 UTC');
+
+        if (startTime) {
+            start.setHours(startTime || 2);
+            start.setMinutes(0);
+            start.setSeconds(0);
+            start.setMilliseconds(0);
+        }
+
+        return {
+            enabled: true,
+            expirationDate: end.toISOString(),
+            startDate: start.toISOString(),
+            eventType: 0,
+            name: 'ser daily schema',
+            incrementDescription: '0 0 1 0', // day
+            incrementOption: '1', // amount of days 
+            privileges: ['read', 'update', 'create', 'delete'],
+            schemaFilterDescription: ['* * - * * * * *'],
+            timeZone: 'Europe/Paris'
         };
     }
 

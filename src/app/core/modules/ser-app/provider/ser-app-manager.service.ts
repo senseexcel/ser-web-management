@@ -103,20 +103,6 @@ export class SerAppManagerService {
     }
 
     public getSelectedApps(): IQlikApp[] {
-        const data = {
-            properties: [
-                {
-                    name: '@620c517a-0899-4a32-b042-8fe55ec9b8a7',
-                    value: {
-                        added: ['sense-excel-reporting-app'],
-                        removed: []
-                    },
-                    valueIsDifferent: false,
-                    valueIsModified: true
-                }
-            ],
-            type: 'App'
-        };
         return this.selectedApps;
     }
 

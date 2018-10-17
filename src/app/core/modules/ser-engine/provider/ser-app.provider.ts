@@ -32,6 +32,14 @@ export class SerAppService {
         this.customPropertyProvider = customPropertyService;
     }
 
+    /**
+     * create new session for app
+     *
+     * @private
+     * @param {string} [appId='engineData']
+     * @returns {Promise<enigmaJS.ISession>}
+     * @memberof SerAppService
+     */
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
 
         return new Promise<enigmaJS.ISession>((resolve) => {
@@ -51,18 +59,35 @@ export class SerAppService {
         });
     }
 
-    public fetchApps(): Observable<any[]> {
-
-        return from(this.createSession()).pipe(
-            mergeMap( (session) => {
-                return session.open()
-                    .then( (global: any) => {
-                        return global.getDocList() as IQlikApp[];
+    /**
+     * fetch all apps
+     *
+     * @returns {Observable<IQlikApp[]>}
+     * @memberof SerAppService
+     */
+    public fetchApps(): Observable<IQlikApp[]> {
+        const url = `/${this.senseConfig.virtualProxy}qrs/app/full/`;
+        return this.httpClient.get(url)
+            .pipe(
+                map((apps: IQrsApp[]): IQlikApp[] => {
+                    return apps.map((app: IQrsApp): IQlikApp => {
+                        return {
+                            qDocId  : app.id,
+                            qDocName: app.name,
+                            qTitle  : app.name
+                        };
                     });
-            })
-        );
+                })
+            );
     }
 
+    /**
+     * get app by id
+     *
+     * @param {string} id
+     * @returns {Observable<IQrsApp>}
+     * @memberof SerAppService
+     */
     public fetchApp(id: string): Observable<IQrsApp> {
         const url = `/qrs/app/${id}`;
         return this.httpClient.get(url);
@@ -75,7 +100,6 @@ export class SerAppService {
      * @memberof SerTaskService
      */
     public fetchAppCount(qrsFilter?: IQrsFilter): Observable<number> {
-
         const url = `/${this.senseConfig.virtualProxy}qrs/App/count`;
         let params: HttpParams = new HttpParams();
 
@@ -92,7 +116,7 @@ export class SerAppService {
     }
 
     /**
-     * filters all given apps for sense excel reporting apps
+     *  fetch all sense excel reporting apps
      *
      * @private
      * @param {IQlikApp[]} apps
@@ -162,9 +186,9 @@ export class SerAppService {
                     modifiedDate: newApp.modifiedDate,
                     customProperties: [{
                         value: 'sense-excel-reporting-app',
-                        definition: data[1][0]
+                        definition: data[1][0],
+                        schemaPath: 'CustomPropertyValue'
                     }],
-                    schemaPath: 'CustomPropertyValue'
                 };
 
                 return this.httpClient.put(`/qrs/app/${newApp.id}`, updateData).toPromise();

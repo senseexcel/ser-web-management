@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { map } from 'rxjs/internal/operators/map';
 import { IQrsFilter } from '@core/modules/ser-engine/api/filter.interface';
+import { IQrsTask } from '../api/response/qrs/task.interface';
 
 @Injectable()
 export class SerTaskService {
@@ -70,9 +71,9 @@ export class SerTaskService {
     /**
      * create a new task
      */
-    public createTask(newTask: ITask): Observable<Object> {
+    public createTask(taskDefinition: IQrsTask): Observable<any> {
         const url = this.buildUrl('create');
-        return this.httpClient.post(url, {task: newTask}, { withCredentials: true });
+        return this.httpClient.post(url, taskDefinition, { withCredentials: true });
     }
 
     /**

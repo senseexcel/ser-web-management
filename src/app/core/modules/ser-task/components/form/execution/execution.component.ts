@@ -5,6 +5,7 @@ import { TaskModel } from '@core/modules/ser-task/model/task.model';
 import { ExecutionModel } from '@core/modules/ser-task/model/execution.model';
 import { Subject, Observable } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
+import { TaskFormModel } from '@core/modules/ser-task/model/task-form.model';
 
 @Component({
     selector: 'app-task-form-execution',
@@ -48,6 +49,15 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
     private formBuilder: FormBuilder;
 
     /**
+     * task form model
+     *
+     * @private
+     * @type {TaskFormModel}
+     * @memberof FormExcecutionComponent
+     */
+    private formModel: TaskFormModel;
+
+    /**
      * form helper sevice to get current model which should edited
      * add hooks on save.
      *
@@ -55,7 +65,7 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
      * @type {FormService<TaskModel, any>}
      * @memberof FormExcecutionComponent
      */
-    private formService: FormService<TaskModel, any>;
+    private formService: FormService<TaskFormModel, any>;
 
     /**
      * registered update hook
@@ -74,7 +84,7 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
      */
     constructor(
         formBuilder: FormBuilder,
-        formService: FormService<TaskModel, any>
+        formService: FormService<TaskFormModel, any>
     ) {
         this.formService = formService;
         this.formBuilder = formBuilder;
@@ -92,13 +102,14 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
         this.formService.registerHook(FormService.HOOK_UPDATE, this.buildUpdateHook());
         this.formService.editModel()
             .pipe(
-                filter((model: TaskModel) => {
+                filter((model: TaskFormModel) => {
                     return model !== null;
                 }),
                 takeUntil(this.isDestroyed$)
             )
-            .subscribe((model: TaskModel) => {
-                this.executionForm = this.buildExecutionForm(model.execution);
+            .subscribe((formModel: TaskFormModel) => {
+                this.formModel     = formModel;
+                this.executionForm = this.buildExecutionForm(formModel.task.execution);
                 this.isLoading     = false;
             });
     }
@@ -139,13 +150,16 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
      * @memberof FormExcecutionComponent
      */
     private buildUpdateHook(): Observable<any> {
+
         const observer = new Observable<any>((obs) => {
-            const execution = this.executionForm.getRawValue();
+
+            /** update model data */
+            const formData = this.executionForm.getRawValue();
+            this.formModel.task.execution.enabled            = formData.enabled;
+            this.formModel.task.execution.maxRetries         = formData.maxRetries;
+            this.formModel.task.execution.taskSessionTimeout = formData.taskSessionTimeout;
+
             obs.next({
-                data: {
-                    fields: execution,
-                    group: 'exceution'
-                },
                 errors: [],
                 valid: this.executionForm.valid,
             });
