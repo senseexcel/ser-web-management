@@ -10,11 +10,12 @@ import { SerEngineModule } from '@core/modules/ser-engine/ser-engine.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { StartUpService, startUpServiceFactory, PageService } from './services';
+import { PageService } from './services';
 import { configServiceFactory } from './services/config/config-service.factory';
 import { ConfigFactory } from './services/config/config-factory';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
+import { CoreModule } from '@core/core.module';
 
 @NgModule({
   declarations: [
@@ -29,25 +30,19 @@ import { TopBarComponent } from './components/top-bar/top-bar.component';
     BreadcrumbModule,
     BrowserAnimationsModule,
     BrowserModule,
+    CoreModule,
     DropDownModule,
     MenuModule,
     SerEngineModule
   ],
   providers: [
     PageService,
-    StartUpService,
     ConfigFactory,
     {
       provide: 'SerEngineConfig',
       useFactory: configServiceFactory,
       deps: [ConfigFactory],
       multi: false
-    },
-    {
-      provide: APP_INITIALIZER,
-      useFactory: startUpServiceFactory,
-      deps: [StartUpService],
-      multi: true
     }
   ],
   bootstrap: [AppComponent]

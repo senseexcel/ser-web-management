@@ -1,4 +1,4 @@
-import { Component, OnInit, HostBinding } from '@angular/core';
+import { Component, OnInit, HostBinding, Inject } from '@angular/core';
 import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.service';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 import { Observable, forkJoin, of } from 'rxjs';
@@ -8,6 +8,7 @@ import { SerAppService } from '@core/modules/ser-engine/provider/ser-app.provide
 import { IPage } from '@api/page.interface';
 import { Router } from '@angular/router';
 import { IMenuItem } from '@core/modules/menu/api/menu-item.interface';
+import { AppData } from '@core/model/app-data';
 
 @Component({
     selector: 'app-dashboard',
@@ -74,11 +75,14 @@ export class DashboardComponent implements OnInit {
      */
     private pageService: PageService;
 
+    private appData: AppData;
+
     /**
      *Creates an instance of DashboardComponent.
      * @memberof DashboardComponent
      */
     constructor(
+        @Inject('AppData') appData,
         pageService: PageService,
         router: Router,
         serAppService: SerAppService,
@@ -90,6 +94,7 @@ export class DashboardComponent implements OnInit {
         this.serAppService    = serAppService;
         this.serFilterService = serFilterService;
         this.taskApiService   = taskApiService;
+        this.appData          = appData;
     }
 
     /**
@@ -159,10 +164,14 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     private fetchTaskCount(): Observable<number> {
+
+        if (!this.appData.tag) {
+            return of(0);
+        }
+
         const taskFilter = this.serFilterService.createFilter(
-            'customProperties.value',
-            `'sense-excel-reporting-task'`
-        );
+            'tags.id', this.appData.tag.id);
+
         return this.taskApiService.fetchTaskCount(taskFilter);
     }
 
@@ -174,9 +183,13 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     private fetchSerApps(): Observable<number> {
+
+        if (!this.appData.tag) {
+            return of(0);
+        }
+
         const appFilter = this.serFilterService.createFilter(
-            'customProperties.value',
-            `'sense-excel-reporting-app'`
+            'tags.id', this.appData.tag.id
         );
         return this.serAppService.fetchAppCount(appFilter);
     }

@@ -1,0 +1,11 @@
+/* BOX SHADOW
+- usage: @include box-shadow; or @include box-shadow(0, 2px, 2px, #333);
+*/
+@mixin box-shadow($x-axis: 0, $y-axis: 1px, $blur: 2px, $color: $default) {
+    box-shadow: $x-axis $y-axis $blur $color;
+}
+
+:host {
+    background: yellow;
+    @include box-shadow(5px, 10px, 5px, rgba(#000, .5)); 
+}

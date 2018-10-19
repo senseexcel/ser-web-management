@@ -29,7 +29,7 @@ export class TaskFactoryService {
         const task           = new TaskModel();
         const exectuion      = this.createModel(new ExecutionModel()     , data || {});
         const identification = this.createModel(new IdentificationModel(), data || {});
-        const trigger        = this.createModel(new TriggerModel()       , data || {} );
+        const trigger        = this.createTriggerModel(data);
 
         task.id             = data ? data.id : null;
         task.execution      = exectuion as ExecutionModel;
@@ -97,6 +97,17 @@ export class TaskFactoryService {
             schemaFilterDescription: ['* * - * * * * *'],
             timeZone: 'Europe/Paris'
         };
+    }
+
+    /**
+     * create trigger model
+     *
+     * @param {*} data
+     * @returns {TriggerModel}
+     * @memberof TaskFactoryService
+     */
+    public createTriggerModel(data): TriggerModel {
+        return null;
     }
 
     /**

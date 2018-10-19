@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { PageService } from '../../services';
 import { IMenuItem } from '@core/modules/menu/api/menu-item.interface';
 import { DropDownOverlay } from '@core/modules/drop-down/model/drop-down-overlay';
-import { SerUserService } from '@core/modules/ser-engine/provider/ser-user.service';
-import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
+import { AppData } from '@core/model/app-data';
+import { IDomainUser } from 'ser.api';
 
 @Component({
     selector: 'app-top-bar',
@@ -37,6 +37,8 @@ export class TopBarComponent implements OnInit {
      */
     public userMenu: IMenuItem[];
 
+    public loggedInUser: IDomainUser;
+
     /**
      * holds the current drop down overlay for an
      * open menu
@@ -56,27 +58,18 @@ export class TopBarComponent implements OnInit {
      */
     private pageService: PageService;
 
-    private userApiService: SerUserService;
-
-    private filterService: SerFilterService;
+    private appData: AppData;
 
     constructor(
+        @Inject('AppData') appData,
         pageService: PageService,
-        userApiService: SerUserService,
-        filterService: SerFilterService
     ) {
-        this.pageService    = pageService;
-        this.userApiService = userApiService;
-        this.filterService  = filterService;
+        this.pageService = pageService;
+        this.appData = appData;
     }
 
     ngOnInit() {
-
-        this.loggedInUser()
-        .subscribe( (users: any[]) => {
-            this.loggedInUser = users[0];
-        });
-
+        this.loggedInUser = this.appData.user;
         this.mainMenu = this.pageService.pageData;
         this.helpMenu = this.createHelpMenu();
         this.userMenu = this.createUserMenu();
@@ -128,14 +121,5 @@ export class TopBarComponent implements OnInit {
             disabled: true,
             show: true
         }];
-    }
-
-    private loggedInUser() {
-        const userFilter = this.filterService.createFilter(
-            'userDirectory',
-            `'${window.location.hostname}'`
-        );
-
-        return this.userApiService.fetchUsers(userFilter);
     }
 }
