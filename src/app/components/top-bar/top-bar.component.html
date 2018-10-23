@@ -20,9 +20,11 @@
 
     <div class="navbar-group navbar-group--right">
 
-        <app-drop-down [hostClass]="'top-bar--menu'" [label]="'Hilfe'" (show)="showMenuOverlay($event)">
-            <app-menu [menuItems]="helpMenu"></app-menu>
-        </app-drop-down>
+        <!--
+            <app-drop-down [hostClass]="'top-bar--menu'" [label]="'Hilfe'" (show)="showMenuOverlay($event)">
+                <app-menu [menuItems]="helpMenu"></app-menu>
+            </app-drop-down>
+        -->
 
         <app-drop-down [hostClass]="'top-bar--menu'" [label]="loggedInUser.userId" (show)="showMenuOverlay($event)">
             <app-menu [menuItems]="userMenu"></app-menu>

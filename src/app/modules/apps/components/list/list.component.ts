@@ -7,7 +7,7 @@ import { Subscription, empty, Observable } from 'rxjs';
 import { ListHeaderService } from '@core/modules/list-header/services/list-header.service';
 import { AppData } from '@core/model/app-data';
 import { ModalService } from '@core/modules/modal/services/modal.service';
-import { switchMap, map, tap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-list',
@@ -141,10 +141,12 @@ export class AppListComponent implements OnInit {
     public repairApps() {
 
         const updateStream$ = this.appManager.updateSerAppsWithTag()
-            .pipe(tap((apps) => {
-                console.dir(apps);
-                return this.dialogService.openMessageModal('Apps Synchronized', `${apps.length} App(s) where synchronized.`);
-            }));
+            .pipe(
+                tap((apps) => {
+                    return this.dialogService.openMessageModal('Apps Synchronized', `${apps.length} App(s) where synchronized.`);
+                }),
+                switchMap(() => this.reloadApps())
+            );
 
         const dialogCtrl    = this.dialogService.openDialog(
             'Synchronize SER Apps',
@@ -160,11 +162,9 @@ export class AppListComponent implements OnInit {
                     }
                     return empty();
                 }),
-                switchMap(() => this.reloadApps())
             )
             .subscribe((apps) => {
-                this.isLoading = false;
-                this.qlikApps = apps;
+                // this.isLoading = false;
             });
     }
 
