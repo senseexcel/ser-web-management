@@ -1,4 +1,5 @@
 import { IQrsCustomProperty } from './custom-property.interface';
+import { ITag } from '@core/api/tag.interface';
 
 export interface IQrsApp {
 
@@ -53,7 +54,7 @@ export interface IQrsApp {
 
     published: string;
 
-    tags: string;
+    tags?: ITag[];
 
     description: string;
 

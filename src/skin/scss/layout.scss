@@ -44,3 +44,7 @@ a:hover, a:active, a:visited {
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.ser-overlay--backdrop {
+    background: rgba(#000000, .2);
+}

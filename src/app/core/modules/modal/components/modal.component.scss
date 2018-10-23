@@ -6,6 +6,33 @@
 }
 
 :host {
-    background: yellow;
-    @include box-shadow(5px, 10px, 5px, rgba(#000, .5)); 
+    border-radius: 12px;
+    background: #595959;
+    border: 2px solid #898b8c;
+    max-width: 30vw;
+    min-width: 20vw;
+    font-size: 13px;
+
+    .ser-modal--header {
+        font-weight: 700;
+        color: #FFF;
+
+        .navbar {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+
+    .ser-modal--body {
+        padding: 20px;
+        background: #FFF;
+    }
+
+    .ser-modal--footer {
+        padding: .5rem 20px;
+
+        .btn {
+            margin-top: 0;
+        }
+    }
 }

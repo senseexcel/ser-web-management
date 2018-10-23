@@ -12,7 +12,7 @@
         {
             "name": "Report Tasks",
             "show": true,
-            "description": "Tasks for Sense Excel Reporting",
+            "description": "Tasks for Sense Excel Reporting das funktioniert",
             "disabled": false,
             "icon": "tasks",
             "route": "tasks"

@@ -1,14 +1,12 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, AfterContentInit } from '@angular/core';
 import { AppData } from '@core/model/app-data';
 import { ModalService } from '@core/modules/modal/services/modal.service';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { IModalData } from '@core/modules/modal/api/modal-config.interface';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
   private appData: AppData;
 
@@ -20,9 +18,6 @@ export class AppComponent implements OnInit {
   ) {
     this.appData = appData;
     this.modalService = modalService;
-  }
-
-  public ngOnInit() {
 
     if (!this.appData.tag) {
       this.displayModal();
@@ -31,11 +26,10 @@ export class AppComponent implements OnInit {
 
   private displayModal() {
 
-    const modalData: IModalData = {
-      title: 'Slow Motion',
-      content: DashboardComponent,
-    };
-
-    this.modalService.open(modalData);
+    this.modalService.openMessageModal(
+      'SER Tag not found',
+      `SER Tag wurde nicht gefunden was die Ladezeiten stark erhöhen kann.
+       Bitte kontaktieren sie ihren Akquinet Qlik Berater oder Administrator.`
+      );
   }
 }

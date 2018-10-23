@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { SerAppService } from '@core/modules/ser-engine/provider/ser-app.provider';
-import { BehaviorSubject, Observable, concat } from 'rxjs';
-import { switchMap, map } from 'rxjs/operators';
+import { BehaviorSubject, Observable, concat, from, empty, of } from 'rxjs';
+import { switchMap, map, filter, concatAll, mergeMap, concatMap, tap, catchError, bufferCount } from 'rxjs/operators';
 // @todo move interface to core
 import { IQlikApp } from '@apps/api/app.interface';
 import { SerApp } from '@core/modules/ser-app/model/app.model';
@@ -14,6 +14,10 @@ import { ISerApp } from '../api/ser-app.interface';
 import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.service';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
+import { AppData } from '@core/model/app-data';
+import { ITag } from '@core/api/tag.interface';
+import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
+import { FilterOperator } from '@core/modules/ser-engine/api/filter.interface';
 
 @Injectable()
 export class SerAppManagerService {
@@ -21,9 +25,9 @@ export class SerAppManagerService {
     private loadedApps$: BehaviorSubject<IQlikApp[]> ;
     private loadedSerApps$: BehaviorSubject<IQlikApp[]> ;
 
+    private appData: AppData;
     private loadedApps: IQlikApp[]    = [];
     private loadedSerApps: IQlikApp[] = [];
-
     private selectedApps: IQlikApp[];
     private isAppsLoaded = false;
     private isSerAppsLoaded = false;
@@ -34,13 +38,18 @@ export class SerAppManagerService {
     private openApps: WeakMap<ISerApp, EngineAPI.IApp>;
     private isLoadingApps = false;
     private isLoadingSerApps = false;
+    private filterService: SerFilterService;
 
     constructor(
+        @Inject('AppData') appData: AppData,
         serAppService: SerAppService,
         scriptService: SerScriptService,
+        filterService: SerFilterService,
         reportService: ReportService,
         taskService: SerTaskService
     ) {
+        this.appData = appData;
+        this.filterService    = filterService;
         this.serAppService    = serAppService;
         this.serScriptService = scriptService;
         this.reportService    = reportService;
@@ -225,6 +234,27 @@ export class SerAppManagerService {
 
     public getAppTasks(appId: string): Observable<ITask[]> {
         return this.taskService.fetchTasksForApp(appId);
+    }
+
+    /**
+     * add existing SER tag to app
+     *
+     * @memberof SerAppManagerService
+     */
+    public updateSerAppsWithTag() {
+        return this.serAppService.fetchSerApps(false, true)
+            .pipe(
+                switchMap((apps) => {
+                    if (apps.length) {
+                        return from(apps)
+                            .pipe(
+                                concatMap(app => this.serAppService.addTagToApp(app)),
+                                bufferCount(apps.length)
+                            );
+                    }
+                    return of([]);
+                }),
+            );
     }
 
     /**

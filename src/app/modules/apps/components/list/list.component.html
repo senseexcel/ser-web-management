@@ -49,5 +49,11 @@
                 Reload
             </span>
         </button>
+
+        <button type="button" class="nav-item" *ngIf="appData.tag" [disabled]="isLoading" (click)="repairApps()">
+            <span class="button-label">
+                Synchronize Apps
+            </span>
+        </button>
     </div>
 </nav>

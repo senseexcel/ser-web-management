@@ -54,7 +54,7 @@ export class BootstrapService implements IBootstrap {
         }).pipe(
             map((response: ITag[]) => {
                 if (!response.length) {
-                    return;
+                    return null;
                 }
                 this.appData.tag = response[0];
             })

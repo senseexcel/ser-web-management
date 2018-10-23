@@ -1,8 +1,17 @@
-export interface IModalData {
+import { OverlayDialogComponent } from '../components/dialog/dialog.component';
+import { ComponentType } from '@angular/cdk/portal';
+
+export interface IModalData<T> {
 
     title: string;
 
-    content: any;
+    bodyComponent: ComponentType<T>;
+
+    footerComponent?: ComponentType<any>;
+}
+
+export interface IModalDialogData {
+    message: string;
 }
 
 export interface IOverlayConfig {
@@ -13,5 +22,3 @@ export interface IOverlayConfig {
 
     backdropClass?: string;
 }
-
-export 

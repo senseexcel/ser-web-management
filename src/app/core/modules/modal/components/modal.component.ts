@@ -13,6 +13,9 @@ export class ModalComponent implements OnInit, OnDestroy {
     @ViewChild('body', {read: ViewContainerRef})
     private bodyViewContainer: ViewContainerRef;
 
+    @ViewChild('footer', {read: ViewContainerRef})
+    private footerViewContainer: ViewContainerRef;
+
     /**
      * component factory resolver to create component factory which is
      * included to view container for body, footer
@@ -30,7 +33,7 @@ export class ModalComponent implements OnInit, OnDestroy {
      * @type {*}
      * @memberof ModalComponent
      */
-    private modalData: any;
+    private modalData: IModalData<any>;
 
     /**
      * modal overlay control
@@ -48,7 +51,7 @@ export class ModalComponent implements OnInit, OnDestroy {
      * @memberof ModalComponent
      */
     constructor(
-        @Inject(MODAL_OVERLAY_DATA) data: IModalData,
+        @Inject(MODAL_OVERLAY_DATA) data: IModalData<Component>,
         @Inject(MODAL_OVERLAY_CTRL) overlayCtrl: ModalControl,
         resolver: ComponentFactoryResolver
     ) {
@@ -63,8 +66,13 @@ export class ModalComponent implements OnInit, OnDestroy {
      * @memberof ModalComponent
      */
     ngOnInit() {
-        const factory = this.componentFactoryResolver.resolveComponentFactory(this.modalData.content);
-        this.bodyViewContainer.createComponent(factory);
+        const bodyFactory = this.componentFactoryResolver.resolveComponentFactory(this.modalData.bodyComponent);
+        this.bodyViewContainer.createComponent(bodyFactory);
+
+        if (this.modalData.footerComponent) {
+            const footerFactory = this.componentFactoryResolver.resolveComponentFactory(this.modalData.footerComponent);
+            this.footerViewContainer.createComponent(footerFactory);
+        }
     }
 
     /**
