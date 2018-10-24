@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, HostBinding, ViewChild, ElementRef } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
 import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
@@ -6,12 +7,13 @@ import { ReportService } from '@core/modules/ser-report/services/report.service'
 import { IQlikApp } from '@apps/api/app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
 import { Subject, from, of } from 'rxjs';
-import { switchMap, map, filter } from 'rxjs/operators';
+import { switchMap, map, filter, catchError } from 'rxjs/operators';
 import { ISerFormResponse, ISerReportFormGroup } from '@apps/api/ser-form.response.interface';
 import { BreadcrumbService } from '@breadcrumb/provider/breadcrumb.service';
 import { IBreadCrumb } from '@breadcrumb/api/breadcrumb.interface';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.service';
+import { ModalService } from '@core/modules/modal/services/modal.service';
 
 @Component({
     selector: 'app-qlik-edit',
@@ -56,16 +58,22 @@ export class AppEditComponent implements OnInit, OnDestroy {
     private router: Router;
     private breadCrumbService: BreadcrumbService;
     private taskApiService: SerTaskService;
+    private location: Location;
+    private modalService: ModalService;
 
     constructor(
         activeRoute: ActivatedRoute,
         appManager: SerAppManagerService,
         formService: FormService<ISerApp, ISerFormResponse>,
+        location: Location,
+        modalService: ModalService,
         reportService: ReportService,
         router: Router,
         breadcrumbService: BreadcrumbService,
         taskApiService: SerTaskService
     ) {
+        this.location = location;
+        this.modalService = modalService;
         this.isDestroyed$ = new Subject<boolean>();
         this.activeRoute = activeRoute;
         this.appManager = appManager;
@@ -78,6 +86,15 @@ export class AppEditComponent implements OnInit, OnDestroy {
     }
 
     public cancel() {
+        const title = `Warning`;
+        const message = `Cancel current process will discard all changes.\n\nContinue ?`;
+
+        this.modalService.openDialog(title, message)
+            .switch.subscribe((confirm) => {
+                if (confirm) {
+                    this.location.back();
+                }
+            });
     }
 
     /**
@@ -151,10 +168,28 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 map(() => {
                     /** save app */
                     return this.appManager.saveApp(this.app);
+                }),
+                catchError(() => {
+                    return of(null);
                 })
             )
-            .subscribe(() => {
-                console.log('app saved');
+            .subscribe((app: ISerApp) => {
+                let title: string;
+                let message: string;
+
+                if (app) {
+                    title   = `Success`;
+                    message = `App was successfully saved.`;
+                    this.modalService.openMessageModal(title, message)
+                        .onClose.subscribe(() => {
+                            this.location.back();
+                        });
+                } else {
+                    title   = `An error occurred.`;
+                    message = `Application could not saved.`;
+                    this.modalService
+                        .openMessageModal(title, message);
+                }
             });
     }
 
