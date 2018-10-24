@@ -285,12 +285,11 @@ export class SerAppService {
                 const newApp = data[0];
                 const updateData = {
                     modifiedDate: newApp.modifiedDate,
-                    customProperties: [{
-                        value: 'sense-excel-reporting-app',
-                        definition: data[1][0],
-                        schemaPath: 'CustomPropertyValue'
-                    }],
                 };
+
+                if (this.appData.tag) {
+                    updateData['tags'] = [this.appData.tag];
+                }
 
                 return this.httpClient.put(`/qrs/app/${newApp.id}`, updateData).toPromise();
             })
