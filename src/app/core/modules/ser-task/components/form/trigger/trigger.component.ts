@@ -66,7 +66,6 @@ export class FormTriggerComponent implements OnInit {
      * @memberof FormTriggerComponent
      */
     ngOnInit() {
-
         const updateHook = this.buildUpdateHook();
         this.formService.registerHook(FormService.HOOK_UPDATE, updateHook);
 
@@ -102,7 +101,6 @@ export class FormTriggerComponent implements OnInit {
     private buildUpdateHook(): Observable<any> {
 
         const observer = new Observable<any>((obs) => {
-
             /** update model data */
             const formData = this.triggerForm.getRawValue();
             this.formModel.task.trigger.hour = formData.hour;

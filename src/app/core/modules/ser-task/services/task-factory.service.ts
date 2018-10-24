@@ -73,7 +73,7 @@ export class TaskFactoryService {
         };
     }
 
-    public createSchemaEvent(startTime: number): ISchemaEvent {
+    public createSchemaEvent(startTime: number, task?: ITask): ISchemaEvent {
 
         const start = new Date();
         const end   = new Date('31 December 9999 00:00 UTC');
@@ -85,7 +85,7 @@ export class TaskFactoryService {
             start.setMilliseconds(0);
         }
 
-        return {
+        const eventData: ISchemaEvent = {
             enabled: true,
             expirationDate: end.toISOString(),
             startDate: start.toISOString(),
@@ -97,6 +97,15 @@ export class TaskFactoryService {
             schemaFilterDescription: ['* * - * * * * *'],
             timeZone: 'Europe/Paris'
         };
+
+        if (task ) {
+            eventData.reloadTask = {
+                id: task.id,
+                name: task.name
+            };
+        }
+
+        return eventData;
     }
 
     /**
@@ -107,7 +116,8 @@ export class TaskFactoryService {
      * @memberof TaskFactoryService
      */
     public createTriggerModel(data): TriggerModel {
-        return null;
+        const model = new TriggerModel();
+        return model;
     }
 
     /**

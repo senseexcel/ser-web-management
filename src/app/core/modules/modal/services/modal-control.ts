@@ -3,6 +3,8 @@ import { Subject } from 'rxjs';
 
 export class ModalControl {
 
+    public readonly onClose: Subject<boolean> = new Subject();
+
     private overlayRef: OverlayRef;
 
     public constructor(overlayRef: OverlayRef) {
@@ -11,6 +13,7 @@ export class ModalControl {
 
     public close() {
         this.overlayRef.dispose();
+        this.onClose.next(true);
     }
 }
 

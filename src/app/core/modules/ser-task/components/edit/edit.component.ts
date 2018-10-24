@@ -1,4 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
+import { Location } from '@angular/common';
 import { FormService } from '@core/modules/form-helper';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
@@ -51,14 +52,11 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     private taskFactoryService: TaskFactoryService;
-
     private appApiService: SerAppService;
-
     private taskApiService: SerTaskService;
-
     private activeRoute: ActivatedRoute;
-
     private appData: AppData;
+    private location: Location;
 
     /**
      *Creates an instance of EditComponent.
@@ -68,22 +66,23 @@ export class EditComponent implements OnInit {
      */
     constructor(
         @Inject('AppData') appData: AppData,
-        modalService: ModalService,
+        activatedRoute: ActivatedRoute,
+        appApiService: SerAppService,
         formHelperService: FormService<TaskFormModel, any>,
+        location: Location,
+        modalService: ModalService,
         taskApiService: SerTaskService,
         taskFactoryService: TaskFactoryService,
-        appApiService: SerAppService,
-        activatedRoute: ActivatedRoute
     ) {
-        this.appData = appData;
-        this.modalService = modalService;
-        this.formHelperService  = formHelperService;
-        this.taskFactoryService = taskFactoryService;
         this.activeRoute        = activatedRoute;
-        this.appApiService = appApiService;
-        this.taskApiService = taskApiService;
-
-        this.taskFormModel = new TaskFormModel();
+        this.appApiService      = appApiService;
+        this.appData            = appData;
+        this.formHelperService  = formHelperService;
+        this.modalService       = modalService;
+        this.location           = location;
+        this.taskApiService     = taskApiService;
+        this.taskFactoryService = taskFactoryService;
+        this.taskFormModel      = new TaskFormModel();
     }
 
     /**
@@ -114,7 +113,6 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     public onApply() {
-
         this.formHelperService.updateModel()
             .pipe(
                 switchMap(() => {
@@ -129,11 +127,21 @@ export class EditComponent implements OnInit {
                 })
             )
             .subscribe((task: ITask) => {
-                if (task) {
-                    const title   = `Task ${this.taskFormModel.task.identification.name} Saved`;
-                    const message = `Task was successfully saved`;
+                let title: string;
+                let message: string;
 
-                    this.modalService.openMessageModal(title, message);
+                if (task) {
+                    title   = `Task ${this.taskFormModel.isNew ? 'created' : 'updated'} !`;
+                    message = `Task ${this.taskFormModel.task.identification.name} was successfully saved.`;
+                    this.modalService.openMessageModal(title, message)
+                        .onClose.subscribe(() => {
+                            this.location.back();
+                        });
+                } else {
+                    title   = `An error occurred.`;
+                    message = `Task ${this.taskFormModel.task.identification.name} could not saved.`;
+                    this.modalService
+                        .openMessageModal(title, message);
                 }
             });
     }
@@ -145,6 +153,15 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     public onCancel() {
+        const title = `Warning`;
+        const message = `Cancel current process will discard all current changes.\n\nContinue ?`;
+
+        this.modalService.openDialog(title, message)
+            .switch.subscribe((confirm) => {
+                if (confirm) {
+                    this.location.back();
+                }
+            });
     }
 
     /**
@@ -210,14 +227,15 @@ export class EditComponent implements OnInit {
             switchMap((source) => {
                 const sourceTask = source[0];
                 const schemaEvent = source[1];
+                const startTime   = this.taskFormModel.task.trigger.hour || 12;
 
                 task.id = sourceTask.id;
                 task.modifiedDate = sourceTask.modifiedDate;
 
-                const event = schemaEvent[0];
+                const event = schemaEvent[0] || this.taskFactoryService.createSchemaEvent(12, task);
                 const startDate = new Date();
 
-                startDate.setHours(this.taskFormModel.task.trigger.hour || 12);
+                startDate.setHours(startTime);
                 startDate.setMinutes(0);
                 startDate.setSeconds(0);
                 startDate.setMilliseconds(0);

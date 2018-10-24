@@ -18,6 +18,8 @@ export interface ISchemaEvent {
 
     schemaFilterDescription?: string[];
 
+    reloadTask?: any;
+
     startDate: string;
 
     timeZone?: string;
