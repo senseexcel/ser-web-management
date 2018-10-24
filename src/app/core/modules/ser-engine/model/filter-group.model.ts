@@ -16,6 +16,16 @@ export class FilterGroup implements IQrsFilterGroup {
     }
 
     /**
+     * add new filter
+     *
+     * @param {IQrsFilter} filter
+     * @memberof FilterGroup
+     */
+    public addFilter(filter: IQrsFilter) {
+        this.fgFilters.push(filter);
+    }
+
+    /**
      * get filters which should grouped
      *
      * @type {IQrsFilter[]}

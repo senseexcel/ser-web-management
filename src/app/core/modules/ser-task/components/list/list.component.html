@@ -89,6 +89,12 @@
             </span>
         </button>
 
+        <button type="button" class="nav-item" *ngIf="appData.tag" [disabled]="isLoading" (click)="syncTasks()">
+            <span class="button-label">
+                Synchronize Tasks
+            </span>
+        </button>
+
         <button type="button" [disabled]="isLoading" class="nav-item" (click)="createNew()">
             <span class="button-label">
                 Create new

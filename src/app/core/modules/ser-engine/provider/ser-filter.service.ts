@@ -14,7 +14,7 @@ export class SerFilterService {
      * @returns {IQrsFilterGroup}
      * @memberof SerFilterService
      */
-    public createFilterGroup(filters: IQrsFilter[], conditional = FilterConditionalOperator.AND): IQrsFilterGroup  {
+    public createFilterGroup(filters: IQrsFilter[] = [], conditional = FilterConditionalOperator.AND): IQrsFilterGroup  {
         const filterGroup: FilterGroup = new FilterGroup();
         filterGroup.filters = filters;
         filterGroup.conditional = conditional || FilterConditionalOperator.AND;

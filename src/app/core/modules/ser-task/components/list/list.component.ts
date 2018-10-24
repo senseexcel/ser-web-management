@@ -1,11 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
-import { takeUntil, switchMap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { takeUntil, switchMap, tap } from 'rxjs/operators';
+import { Subject, empty } from 'rxjs';
 import { ListHeaderService } from '@core/modules/list-header/services/list-header.service';
+import { AppData } from '@core/model/app-data';
+import { ModalService } from '@core/modules/modal/services/modal.service';
 
 @Component({
     selector: 'app-ser-task-list',
@@ -77,6 +79,10 @@ export class ListComponent implements OnDestroy, OnInit {
      */
     private isDestroyed$: Subject<boolean>;
 
+    public appData: AppData;
+
+    private dialog: ModalService;
+
     private listHeaderService: ListHeaderService;
 
     /**
@@ -88,13 +94,17 @@ export class ListComponent implements OnDestroy, OnInit {
      * @memberof ListComponent
      */
     constructor(
+        @Inject('AppData') appData: AppData,
+        dialog: ModalService,
         router: Router,
         route: ActivatedRoute,
         taskManagerService: TaskManagerService,
         listHeaderService: ListHeaderService
     ) {
-        this.route = route;
-        this.router = router;
+        this.appData = appData;
+        this.dialog  = dialog;
+        this.route   = route;
+        this.router  = router;
         this.taskManagerService = taskManagerService;
         this.isDestroyed$       = new Subject<boolean>();
 
@@ -125,8 +135,7 @@ export class ListComponent implements OnDestroy, OnInit {
             'enabled',
             'status',
             'lastExecution',
-            'nextExecution',
-            'tags'
+            'nextExecution'
         ];
         this.fetchTasks();
     }
@@ -196,6 +205,25 @@ export class ListComponent implements OnDestroy, OnInit {
      */
     public createNew() {
         this.router.navigate(['new'], { relativeTo: this.route});
+    }
+
+    public syncTasks() {
+
+       this.dialog.openDialog(
+            'Synchronize Tasks',
+            'This will Synchronize Sense Excel Reporting Tasks and add SER Tag to Task. This can take a while...'
+        ).switch.pipe(
+            switchMap((confirm: boolean) => {
+                if (confirm) {
+                    return this.taskManagerService.syncTasks();
+                }
+                return empty();
+            }),
+        )
+        .subscribe((tasks) => {
+            console.dir(tasks);
+            this.dialog.openMessageModal('Tasks Synchronized', `${tasks.length} Task(s) where synchronized.`);
+        });
     }
 
     /**

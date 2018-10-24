@@ -164,7 +164,7 @@ export class AppListComponent implements OnInit {
                 }),
             )
             .subscribe((apps) => {
-                // this.isLoading = false;
+                this.isLoading = false;
             });
     }
 

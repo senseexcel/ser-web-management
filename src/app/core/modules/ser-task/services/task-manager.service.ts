@@ -59,9 +59,7 @@ export class TaskManagerService {
     ) {
         this.selectedTasks  = new BehaviorSubject<ITask[]>([]);
         this.loadedTasks    = new BehaviorSubject<ITask[]>([]);
-
         this.taskCache = [];
-
         this.taskApiService = taskApiService;
     }
 
@@ -93,9 +91,15 @@ export class TaskManagerService {
         this.selectedTasks.next(tasks);
     }
 
-    public createTask(data: ITask) {
-
-        this.taskApiService.createTask(name);
+    /**
+     * synchronize tasks and add ser tag to this
+     *
+     * @returns
+     * @memberof TaskManagerService
+     */
+    public syncTasks() {
+        return this.taskApiService
+            .synchronizeTasks();
     }
 
     /**

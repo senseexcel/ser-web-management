@@ -1,3 +1,5 @@
+import { ITag } from '@core/api/tag.interface';
+
 export interface ITask {
 
     id?: string;
@@ -30,7 +32,7 @@ export interface ITask {
 
     name: string;
 
-    tags?: [];
+    tags?: ITag[];
 
     privileges?: [];
 

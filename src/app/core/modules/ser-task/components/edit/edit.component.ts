@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormService } from '@core/modules/form-helper';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
-import { TaskManagerService } from '@core/modules/ser-task/services/task-manager.service';
 import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
 import { of, Observable, forkJoin } from 'rxjs';
 import { TaskFactoryService } from '@core/modules/ser-task/services/task-factory.service';
@@ -11,7 +10,8 @@ import { SerAppService } from '@core/modules/ser-engine/provider/ser-app.provide
 import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
 import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.service';
 import { IQlikApp } from '@apps/api/app.interface';
-import { CustomPropertyProvider } from '@core/modules/ser-engine/provider/custom-property.providert';
+import { AppData } from '@core/model/app-data';
+import { ModalService } from '@core/modules/modal/services/modal.service';
 
 @Component({
     selector: 'app-task-edit',
@@ -29,6 +29,8 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     public tasks: ITask[];
+
+    private modalService: ModalService;
 
     private taskFormModel: TaskFormModel;
 
@@ -52,20 +54,11 @@ export class EditComponent implements OnInit {
 
     private appApiService: SerAppService;
 
-    /**
-     * taskmanager service to fetch tasks
-     *
-     * @private
-     * @type {TaskManagerService}
-     * @memberof EditComponent
-     */
-    private taskManagerService: TaskManagerService;
-
     private taskApiService: SerTaskService;
 
-    private customPropertyProvider: CustomPropertyProvider;
-
     private activeRoute: ActivatedRoute;
+
+    private appData: AppData;
 
     /**
      *Creates an instance of EditComponent.
@@ -74,17 +67,17 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     constructor(
-        customPropertyProvider: CustomPropertyProvider,
+        @Inject('AppData') appData: AppData,
+        modalService: ModalService,
         formHelperService: FormService<TaskFormModel, any>,
-        taskManagerService: TaskManagerService,
         taskApiService: SerTaskService,
         taskFactoryService: TaskFactoryService,
         appApiService: SerAppService,
         activatedRoute: ActivatedRoute
     ) {
-        this.customPropertyProvider = customPropertyProvider;
+        this.appData = appData;
+        this.modalService = modalService;
         this.formHelperService  = formHelperService;
-        this.taskManagerService = taskManagerService;
         this.taskFactoryService = taskFactoryService;
         this.activeRoute        = activatedRoute;
         this.appApiService = appApiService;
@@ -136,7 +129,12 @@ export class EditComponent implements OnInit {
                 })
             )
             .subscribe((task: ITask) => {
-                // tell the breadcrumb service to go back one step
+                if (task) {
+                    const title   = `Task ${this.taskFormModel.task.identification.name} Saved`;
+                    const message = `Task was successfully saved`;
+
+                    this.modalService.openMessageModal(title, message);
+                }
             });
     }
 
@@ -147,11 +145,6 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     public onCancel() {
-    }
-
-    private buildFormModel() {
-        this.taskFormModel.isNew = true;
-        this.taskFormModel.task = this.taskFactoryService.buildTask();
     }
 
     /**
@@ -208,36 +201,33 @@ export class EditComponent implements OnInit {
      */
     private updateTask(): Observable<ITask> {
 
-        return this.createTaskData().pipe(
-            mergeMap((task: ITask) => {
+        const task = this.createTaskData();
 
-                return forkJoin(
-                    this.taskApiService.fetchTask(this.taskFormModel.task.id),
-                    this.taskApiService.fetchSchemaEvent(this.taskFormModel.task.id)
-                ).pipe(
-                    switchMap((source) => {
-                        const sourceTask = source[0];
-                        const schemaEvent = source[1];
+        return forkJoin(
+            this.taskApiService.fetchTask(this.taskFormModel.task.id),
+            this.taskApiService.fetchSchemaEvent(this.taskFormModel.task.id)
+        ).pipe(
+            switchMap((source) => {
+                const sourceTask = source[0];
+                const schemaEvent = source[1];
 
-                        task.id = sourceTask.id;
-                        task.modifiedDate = sourceTask.modifiedDate;
+                task.id = sourceTask.id;
+                task.modifiedDate = sourceTask.modifiedDate;
 
-                        const event = schemaEvent[0];
-                        const startDate = new Date();
+                const event = schemaEvent[0];
+                const startDate = new Date();
 
-                        startDate.setHours(this.taskFormModel.task.trigger.hour || 12);
-                        startDate.setMinutes(0);
-                        startDate.setSeconds(0);
-                        startDate.setMilliseconds(0);
+                startDate.setHours(this.taskFormModel.task.trigger.hour || 12);
+                startDate.setMinutes(0);
+                startDate.setSeconds(0);
+                startDate.setMilliseconds(0);
 
-                        event.startDate = startDate.toISOString();
+                event.startDate = startDate.toISOString();
 
-                        return this.taskApiService.updateTask({
-                            task,
-                            schemaEvents: [event]
-                        });
-                    })
-                );
+                return this.taskApiService.updateTask({
+                    task,
+                    schemaEvents: [event]
+                });
             })
         );
     }
@@ -250,17 +240,13 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     private createNewtask(): Observable<ITask> {
-
-        return this.createTaskData().pipe(
-            switchMap((task: ITask) => {
-                return this.taskApiService.createTask({
-                    task,
-                    schemaEvents: [
-                        this.taskFactoryService.createSchemaEvent(this.taskFormModel.task.trigger.hour || 12)
-                    ]
-                });
-            })
-        );
+        const task = this.createTaskData();
+        return this.taskApiService.createTask({
+            task,
+            schemaEvents: [
+                this.taskFactoryService.createSchemaEvent(this.taskFormModel.task.trigger.hour || 12)
+            ]
+        });
     }
 
     /**
@@ -270,31 +256,24 @@ export class EditComponent implements OnInit {
      * @returns {Observable<ITask>}
      * @memberof EditComponent
      */
-    private createTaskData(): Observable<ITask> {
+    private createTaskData(): ITask {
 
         const taskName = this.taskFormModel.task.identification.name;
         const app      = this.taskFormModel.task.app;
 
-        return this.customPropertyProvider.fetchCustomProperties().pipe(
-            map((prop) => {
+        /** qlik app data */
+        const qApp: IQlikApp = { qDocId  : app.id, qDocName: app.name };
 
-                /** qlik app data */
-                const qApp: IQlikApp = { qDocId  : app.id, qDocName: app.name };
+        /** create new task data which we could save now */
+        const newTask = {
+            ...this.taskFactoryService.createDefaultTaskData(taskName, qApp),
+            ...this.taskFormModel.task.execution.raw
+        };
 
-                /** create new task data which we could save now */
-                const newTask = {
-                    ...this.taskFactoryService.createDefaultTaskData(taskName, qApp),
-                    ...this.taskFormModel.task.execution.raw
-                };
+        if (this.appData.tag) {
+            newTask.tags.push(this.appData.tag);
+        }
 
-                newTask.customProperties.push({
-                    value: 'sense-excel-reporting-task',
-                    definition: prop[0],
-                    schemaPath: 'CustomPropertyValue'
-                });
-
-                return newTask;
-            })
-        );
+        return newTask;
     }
 }

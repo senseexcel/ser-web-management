@@ -29,4 +29,6 @@ export interface IQrsFilterGroup {
     filters: IQrsFilter[];
 
     conditional: FilterConditionalOperator;
+
+    addFilter(filter: IQrsFilter): void;
 }
