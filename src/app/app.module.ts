@@ -16,6 +16,7 @@ import { ConfigFactory } from './services/config/config-factory';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { CoreModule } from '@core/core.module';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { CoreModule } from '@core/core.module';
     BreadcrumbModule,
     BrowserAnimationsModule,
     BrowserModule,
+    CommonModule,
     CoreModule,
     DropDownModule,
     MenuModule,

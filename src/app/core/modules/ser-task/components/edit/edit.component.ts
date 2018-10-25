@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormService } from '@core/modules/form-helper';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
@@ -13,6 +13,7 @@ import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.servi
 import { IQlikApp } from '@apps/api/app.interface';
 import { AppData } from '@core/model/app-data';
 import { ModalService } from '@core/modules/modal/services/modal.service';
+import { IDataNode } from '@core/api/model.interface';
 
 @Component({
     selector: 'app-task-edit',
@@ -37,7 +38,11 @@ export class EditComponent implements OnInit {
      * @type {string[]}
      * @memberof EditComponent
      */
-    public properties: string[];
+    public properties: IDataNode[];
+
+    public formDataLoaded = false;
+
+    public selectedProperty: any;
 
     private modalService: ModalService;
 
@@ -65,6 +70,15 @@ export class EditComponent implements OnInit {
     private activeRoute: ActivatedRoute;
     private appData: AppData;
     private location: Location;
+
+    @ViewChild('identification')
+    private identificationContainer: ElementRef;
+
+    @ViewChild('execution')
+    private executionContainer: ElementRef;
+
+    @ViewChild('trigger')
+    private triggerContainer: ElementRef;
 
     /**
      *Creates an instance of EditComponent.
@@ -100,8 +114,11 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     ngOnInit() {
-
-        this.properties = ['Identification', 'Execution', 'Trigger'];
+        this.properties = [
+            { label: 'identification' },
+            { label: 'execution' },
+            { label: 'trigger' },
+        ];
 
         this.activeRoute.data
             .pipe(
@@ -115,6 +132,7 @@ export class EditComponent implements OnInit {
             )
             .subscribe(() => {
                 this.formHelperService.loadModel(this.taskFormModel);
+                this.formDataLoaded = true;
             });
     }
 
@@ -155,6 +173,32 @@ export class EditComponent implements OnInit {
                         .openMessageModal(title, message);
                 }
             });
+    }
+
+    public showForm(property) {
+
+        let scrollToContainer: ElementRef;
+
+        switch (property.label.toLowerCase()) {
+            case 'identification':
+                scrollToContainer = this.identificationContainer;
+                break;
+            case 'execution':
+                scrollToContainer = this.executionContainer;
+                break;
+            case 'trigger':
+                scrollToContainer = this.triggerContainer;
+                break;
+            default:
+                return;
+        }
+
+        scrollToContainer.nativeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
+        this.selectedProperty = property;
     }
 
     /**

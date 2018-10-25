@@ -1,6 +1,8 @@
 import { NgModule, FactoryProvider } from '@angular/core';
 import { RouterModule, ROUTES, Routes} from '@angular/router';
 import { AppRoutes } from './model/app-routes';
+import { LocationStrategy } from '@angular/common';
+import { QmcLocationStrategy } from '@core/router/qmc-location.strategy';
 
 /**
  * @workarround
@@ -22,7 +24,8 @@ delete (<any>AppsModuleRoutesFactory).useValue;
 @NgModule({
     imports: [RouterModule.forRoot([])],
     providers: [
-        AppsModuleRoutesFactory
+        AppsModuleRoutesFactory,
+        { provide: LocationStrategy, useClass: QmcLocationStrategy }
     ],
     exports: [RouterModule]
 })
