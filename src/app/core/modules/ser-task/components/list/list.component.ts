@@ -195,7 +195,9 @@ export class ListComponent implements OnDestroy, OnInit {
      *
      * @memberof ListComponent
      */
-    public reloadList() {}
+    public reloadList() {
+        this.fetchTasks();
+    }
 
     /**
      * create new task

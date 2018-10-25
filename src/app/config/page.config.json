@@ -4,7 +4,7 @@
         "children": [{
             "name": "Reports",
             "show": true,
-            "description": "Reports will displayed here",
+            "description": "You can sell all the available apps from the overview and you can edit, delete, publish or duplicate the apps. An app can be reused, modified, and shared with others.",
             "disabled": false,
             "icon": "apps",
             "route": "apps"
@@ -12,7 +12,7 @@
         {
             "name": "Report Tasks",
             "show": true,
-            "description": "Tasks for Sense Excel Reporting das funktioniert",
+            "description": "You can see the task status from the overview and you can delete, start, stop, enable or disable the tasks. Tasks are used to reload the data in an app or to import users from a user directory.",
             "disabled": false,
             "icon": "tasks",
             "route": "tasks"
@@ -23,13 +23,13 @@
         "children": [{
             "name": "License Management",
             "show": true,
-            "description": "License Management",
+            "description": "The License Enable File (LEF) defines the terms of your license and the access types that you can allocate to users. On the Licence usage summary page, you can see the distribution of access types.",
             "disabled": true,
             "icon": "license"
         }] 
     },
     {
-        "name": "Goverance",
+        "name": "Governance",
         "children": [{
             "name": "Monitoring Report Apps",
             "show": true,
@@ -43,13 +43,13 @@
         "children": [{
             "name": "Install Wizzard",
             "show": true,
-            "description": "Install Wizzard comes here",
+            "description": "Install Wizzard helps to install an app.",
             "disabled": true,
             "icon": "engines"
         }, {
             "name": "Auto Update",
             "show": true,
-            "description": "Auto Update works fine if the user automatically clicks on the update button",
+            "description": "Auto Update",
             "disabled": true,
             "icon": "load"
         }]

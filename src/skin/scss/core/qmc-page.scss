@@ -90,8 +90,9 @@
     background: #8C8C8C;
 }
 
-
+/** qmc edit page */
 .qmc-page.qmc-page--edit {
+
     .qmc-page--sidebar {
 
         &.sidebar-left {
@@ -100,6 +101,26 @@
 
         &.sidebar-right {
             flex: 0 0 19%;
+        }
+    }
+
+    .qmc-page--content {
+        font-size: 13px;
+    }
+
+    .qmc-page--content-body {
+        padding: 10px 40px 10px 20px;
+    }
+
+    .edit-group {
+        display: block;
+        padding: 0 0 13px;
+        margin: 0 0 13px;
+
+        .header {
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
         }
     }
 }

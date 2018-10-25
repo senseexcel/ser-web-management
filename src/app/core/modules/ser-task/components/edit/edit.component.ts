@@ -31,6 +31,14 @@ export class EditComponent implements OnInit {
      */
     public tasks: ITask[];
 
+    /**
+     *
+     *
+     * @type {string[]}
+     * @memberof EditComponent
+     */
+    public properties: string[];
+
     private modalService: ModalService;
 
     private taskFormModel: TaskFormModel;
@@ -92,6 +100,9 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     ngOnInit() {
+
+        this.properties = ['Identification', 'Execution', 'Trigger'];
+
         this.activeRoute.data
             .pipe(
                 switchMap((data: Data) => {

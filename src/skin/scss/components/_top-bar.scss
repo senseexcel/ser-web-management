@@ -77,6 +77,10 @@
         background: #FFF;
         overflow-y: auto;
         border-width: 0px 1px;
+
+        .disabled {
+            color: lighten($color: #000000, $amount: 40);
+        }
     }
 
     .lui-list {

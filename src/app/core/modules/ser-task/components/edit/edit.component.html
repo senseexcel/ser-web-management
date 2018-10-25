@@ -19,13 +19,14 @@
         <div class="qmc-page--content">
 
             <div class="header qmc-page--content-header">
-                <span>Edit Task</span>
+                <i class="ser-icon ser-icon--tasks"></i>
+                <span>Edit Reload Task</span>
             </div>
 
             <div class="qmc-page--content-body">
-                <app-task-form-identification></app-task-form-identification>
-                <app-task-form-execution></app-task-form-execution>
-                <app-task-form-trigger></app-task-form-trigger>
+                <app-task-form-identification class="edit-group"></app-task-form-identification>
+                <app-task-form-execution class="edit-group"></app-task-form-execution>
+                <app-task-form-trigger class="edit-group"></app-task-form-trigger>
             </div>
 
             <div class="qmc-page--content-footer">
@@ -47,7 +48,7 @@
                     (click)="showForm(property)"
                     *ngFor="let property of properties"
                     [ngClass]="{'active': property == selectedProperty}" >
-                    {{property.label}}
+                    {{property}}
                 </li>
             </ul>
         </div>
