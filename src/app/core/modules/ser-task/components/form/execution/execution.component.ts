@@ -155,7 +155,7 @@ export class FormExcecutionComponent implements OnDestroy, OnInit {
 
             /** update model data */
             const formData = this.executionForm.getRawValue();
-            this.formModel.task.execution.enabled            = formData.enabled;
+            this.formModel.task.execution.enabled            = formData.enabled || false;
             this.formModel.task.execution.maxRetries         = formData.maxRetries;
             this.formModel.task.execution.taskSessionTimeout = formData.taskSessionTimeout;
 

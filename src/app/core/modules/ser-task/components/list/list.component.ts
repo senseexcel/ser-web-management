@@ -223,7 +223,6 @@ export class ListComponent implements OnDestroy, OnInit {
             }),
         )
         .subscribe((tasks) => {
-            console.dir(tasks);
             this.dialog.openMessageModal('Tasks Synchronized', `${tasks.length} Task(s) where synchronized.`);
         });
     }

@@ -8,7 +8,7 @@
 
         <!-- possible apps -->
         <mat-form-field class="form-control">
-            <mat-select formControlName="app" placeholder="Sense Excel Reporting App">
+            <mat-select formControlName="app" placeholder="Sense Excel Reporting App" >
                 <mat-option *ngFor="let app of apps" [value]="app.id">
                     {{app.name}}
                 </mat-option>

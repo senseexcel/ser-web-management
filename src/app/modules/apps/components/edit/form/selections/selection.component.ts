@@ -198,8 +198,6 @@ export class SelectionComponent implements OnInit {
             selection.name    = fields.selection.name;
             selection.type    = fields.type;
 
-            console.log(selection.type);
-
             selection.objectType = fields.selection.type === SelectionType.Dynamic
                 ? SelectionObjectType.HIDDEN_BOOKMARK
                 : fields.selection.objectType;

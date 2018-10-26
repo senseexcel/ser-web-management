@@ -41,7 +41,6 @@ export class QmcLocationStrategy extends LocationStrategy {
      */
     prepareExternalUrl(internal: string): string {
         const base = `${this.baseHref}index.html`;
-        const path = this.platformLocation.hash;
 
         if (internal.substr(1).length) {
             return [base, internal].join('#');

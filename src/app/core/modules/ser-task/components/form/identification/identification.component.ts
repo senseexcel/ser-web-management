@@ -22,6 +22,8 @@ export class FormIdentificationComponent implements OnInit {
 
     public identificationForm: FormGroup;
 
+    private app: IQrsApp;
+
     private formBuilder: FormBuilder;
 
     private formModel: TaskFormModel;
@@ -55,6 +57,7 @@ export class FormIdentificationComponent implements OnInit {
             if (!model) {
                 return;
             }
+
             this.formModel = model;
             this.apps      = model.apps;
 
@@ -74,7 +77,7 @@ export class FormIdentificationComponent implements OnInit {
         const app            = this.formModel.task.identification.app as any;
 
         return this.formBuilder.group({
-            app : this.formBuilder.control(app ? app.id : null, Validators.required),
+            app : this.formBuilder.control(app ? app : null, Validators.required),
             name: this.formBuilder.control(identification.name, Validators.required)
         });
     }

@@ -43,14 +43,16 @@ export const AppRoutes: Routes = [{
                 component: EditComponent,
                 data: {
                     breadcrumb: 'Edit Task',
-                    action: 'update'
+                    action: 'update',
+                    isApp: true
                 }
             }, {
                 path: 'new',
                 component: EditComponent,
                 data: {
                     breadcrumb: 'Create Task',
-                    action: 'create'
+                    action: 'create',
+                    isApp: true
                 }
             }]
         }]
@@ -76,6 +78,32 @@ export const AppRoutes: Routes = [{
             data: {
                 breadcrumb: 'Report Preview'
             }
+        }, {
+            path: 'tasks/:id',
+            component: TasksComponent,
+            data: {
+                breadcrumb: 'Tasks',
+            },
+            children: [{
+                path: '',
+                component: ListComponent
+            }, {
+                path: 'edit/:id',
+                component: EditComponent,
+                data: {
+                    breadcrumb: 'Edit Task',
+                    action: 'update',
+                    isApp: true
+                }
+            }, {
+                path: 'new',
+                component: EditComponent,
+                data: {
+                    breadcrumb: 'Create Task',
+                    action: 'create',
+                    isApp: true
+                }
+            }]
         }]
     }]
 }];

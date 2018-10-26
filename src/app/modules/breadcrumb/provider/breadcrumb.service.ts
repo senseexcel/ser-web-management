@@ -118,7 +118,6 @@ export class BreadcrumbService {
                     })
                 )
                 .subscribe( (urlSegmentPath) => {
-                    console.log(urlSegmentPath);
                     nextUrl = `${url}/${urlSegmentPath}`;
                 });
 

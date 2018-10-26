@@ -26,13 +26,13 @@
             <div class="qmc-page--content-body">
                 <ng-container *ngIf="formDataLoaded">
                     <div #identification class="edit-group">
-                        <app-task-form-identification ></app-task-form-identification>
+                        <app-task-form-identification></app-task-form-identification>
                     </div>
                     <div #execution class="edit-group">
-                        <app-task-form-execution #execution class="edit-group"></app-task-form-execution>
+                        <app-task-form-execution #execution></app-task-form-execution>
                     </div>
                     <div #trigger class="edit-group">
-                        <app-task-form-trigger #trigger class="edit-group"></app-task-form-trigger>
+                        <app-task-form-trigger #trigger></app-task-form-trigger>
                     </div>
                 </ng-container>
                 <mat-spinner *ngIf="!formDataLoaded"></mat-spinner>

@@ -2,10 +2,10 @@ import { Component, OnInit, Inject, ElementRef, ViewChild } from '@angular/core'
 import { Location } from '@angular/common';
 import { FormService } from '@core/modules/form-helper';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
-import { switchMap, catchError, map, mergeMap } from 'rxjs/operators';
-import { of, Observable, forkJoin } from 'rxjs';
+import { switchMap, catchError, map, mergeMap, filter, tap } from 'rxjs/operators';
+import { of, Observable, forkJoin, from, empty } from 'rxjs';
 import { TaskFactoryService } from '@core/modules/ser-task/services/task-factory.service';
-import { ActivatedRoute, Data, Router } from '@angular/router';
+import { ActivatedRoute, Data, Router, Params } from '@angular/router';
 import { TaskFormModel } from '../../model/task-form.model';
 import { SerAppService } from '@core/modules/ser-engine/provider/ser-app.provider';
 import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
@@ -114,6 +114,7 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     ngOnInit() {
+
         this.properties = [
             { label: 'identification' },
             { label: 'execution' },
@@ -123,12 +124,27 @@ export class EditComponent implements OnInit {
         this.activeRoute.data
             .pipe(
                 switchMap((data: Data) => {
+                    let source$: Observable<any> = empty();
+
                     if (data.action === 'create') {
-                        return this.initNewTask();
+                        source$ = this.initNewTask();
                     } else {
-                        return this.initExistingTask();
+                        source$ = this.initExistingTask();
                     }
-                })
+
+                    if (data.isApp) {
+                        source$ = source$.pipe(
+                            switchMap(() => this.activeRoute.parent.params),
+                            switchMap((params: Params) => {
+                                return this.appApiService.fetchApp(params.id);
+                            }),
+                            tap((app: IQrsApp) => {
+                                this.taskFormModel.task.identification.app = app.id;
+                            })
+                        );
+                    }
+                    return source$;
+                }),
             )
             .subscribe(() => {
                 this.formHelperService.loadModel(this.taskFormModel);
@@ -235,6 +251,7 @@ export class EditComponent implements OnInit {
                     return this.taskApiService.fetchTask(id);
                 }),
                 mergeMap((task: ITask) => {
+                    this.tasks = [task];
                     this.taskFormModel.isNew = false;
                     this.taskFormModel.task  = this.taskFactoryService.buildTask(task);
 
@@ -254,6 +271,11 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     private initNewTask(): Observable<any> {
+
+        this.tasks = [{
+            app: null,
+            name: 'New Task',
+        }];
 
         return this.appApiService.fetchSerApps()
             .pipe(

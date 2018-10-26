@@ -31,6 +31,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public formService: FormService<ISerApp, ISerFormResponse>;
     public formDataLoaded = false;
     public isSubRoute = false;
+    public taskCount = 0;
 
     @HostBinding('class.flex-container')
     protected hostClass = true;
@@ -115,7 +116,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public ngOnInit() {
 
         this.isLoading = true;
-        // @todo remove object
+
         this.properties = [
             { label: 'App' },
             { label: 'Template' },
@@ -139,7 +140,8 @@ export class AppEditComponent implements OnInit, OnDestroy {
             this.associatedItems = [{
                 label: 'Tasks',
                 items: 'tasks',
-                route: 'tasks'
+                route: 'tasks',
+                count: tasks.length
             }];
             this.formDataLoaded = true;
         });
@@ -182,6 +184,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
                     message = `App was successfully saved.`;
                     this.modalService.openMessageModal(title, message)
                         .onClose.subscribe(() => {
+                            // wenn das ne neue App ist müssste er nun zu edit gehen
                             this.location.back();
                         });
                 } else {
@@ -285,6 +288,11 @@ export class AppEditComponent implements OnInit, OnDestroy {
         this.app = app;
         this.formService.loadModel(app);
 
+        this.apps = [{
+            qDocName: this.app.title,
+            qDocId: this.app.appId
+        }];
+
         return [];
     }
 
@@ -296,10 +304,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
     */
     private initExistingApp(qDocId: string) {
 
-        /**
-         * @todo we should load the app now
-         */
-        this.apps = this.appManager.getSelectedApps();
         return this.appManager.loadSerApps()
             .pipe(
                 switchMap((apps: IQlikApp[]) => {
@@ -313,7 +317,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 switchMap((app: ISerApp) => {
                     this.app = app;
                     this.formService.loadModel(app);
-
+                    this.apps = this.appManager.getSelectedApps();
                     // load tasks
                     return this.taskApiService.fetchTasksForApp(app.appId);
                 })
