@@ -15,9 +15,7 @@ import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.servi
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
 import { AppData } from '@core/model/app-data';
-import { ITag } from '@core/api/tag.interface';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
-import { FilterOperator } from '@core/modules/ser-engine/api/filter.interface';
 
 @Injectable()
 export class SerAppManagerService {
@@ -38,18 +36,15 @@ export class SerAppManagerService {
     private openApps: WeakMap<ISerApp, EngineAPI.IApp>;
     private isLoadingApps = false;
     private isLoadingSerApps = false;
-    private filterService: SerFilterService;
 
     constructor(
         @Inject('AppData') appData: AppData,
         serAppService: SerAppService,
         scriptService: SerScriptService,
-        filterService: SerFilterService,
         reportService: ReportService,
         taskService: SerTaskService
     ) {
         this.appData = appData;
-        this.filterService    = filterService;
         this.serAppService    = serAppService;
         this.serScriptService = scriptService;
         this.reportService    = reportService;
@@ -129,6 +124,7 @@ export class SerAppManagerService {
         }
 
         this.isLoadingApps = true;
+
         // load apps
         return this.serAppService.fetchApps()
             .pipe(
@@ -140,6 +136,22 @@ export class SerAppManagerService {
                     return this.loadedApps$;
                 })
             );
+    }
+
+    public fetchApp(appId: string): Observable<IQlikApp> {
+        const source$ = this.serAppService.fetchApp(appId)
+            .pipe(
+                map((app: IQrsApp) => {
+                    const qApp: IQlikApp = {
+                        qDocId: app.id,
+                        qDocName: app.name,
+                        qTitle: app.name
+                    };
+                    return qApp;
+                })
+            );
+
+        return source$;
     }
 
     /**

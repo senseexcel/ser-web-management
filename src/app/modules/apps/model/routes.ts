@@ -64,7 +64,7 @@ export const AppRoutes: Routes = [{
             breadcrumb: 'New App',
         }
     }, {
-        path: 'new/:name',
+        path: 'new/:id',
         component: AppEditComponent,
         canActivate: [CreateGuard],
         data: {

@@ -28,7 +28,7 @@ export class TaskFactoryService {
 
         const task           = new TaskModel();
         const exectuion      = this.createModel(new ExecutionModel()     , data || {});
-        const identification = this.createModel(new IdentificationModel(), data || {});
+        const identification = this.createIdentificationModel(data);
         const trigger        = this.createTriggerModel(data);
 
         task.id             = data ? data.id : null;
@@ -37,14 +37,6 @@ export class TaskFactoryService {
         task.trigger        = trigger as TriggerModel;
 
         return task;
-    }
-
-    /**
-     *
-     *
-     * @memberof TaskService
-     */
-    public updateTask() {
     }
 
     /**
@@ -117,6 +109,20 @@ export class TaskFactoryService {
      */
     public createTriggerModel(data): TriggerModel {
         const model = new TriggerModel();
+        return model;
+    }
+
+    /**
+     * create trigger model
+     *
+     * @param {*} data
+     * @returns {TriggerModel}
+     * @memberof TaskFactoryService
+     */
+    public createIdentificationModel(data: ITask): IdentificationModel {
+        const model = new IdentificationModel();
+        model.app   = data && data.app ? data.app.id : null;
+        model.name  = data ? data.name : null;
         return model;
     }
 

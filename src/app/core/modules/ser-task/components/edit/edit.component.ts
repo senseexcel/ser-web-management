@@ -132,13 +132,14 @@ export class EditComponent implements OnInit {
                         source$ = this.initExistingTask();
                     }
 
-                    if (data.isApp) {
+                    if (data.isApp && data.action === 'create') {
                         source$ = source$.pipe(
                             switchMap(() => this.activeRoute.parent.params),
                             switchMap((params: Params) => {
                                 return this.appApiService.fetchApp(params.id);
                             }),
                             tap((app: IQrsApp) => {
+                                console.log(app);
                                 this.taskFormModel.task.identification.app = app.id;
                             })
                         );

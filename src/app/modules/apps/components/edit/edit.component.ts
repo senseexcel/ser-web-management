@@ -7,7 +7,7 @@ import { ReportService } from '@core/modules/ser-report/services/report.service'
 import { IQlikApp } from '@apps/api/app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
 import { Subject, from, of } from 'rxjs';
-import { switchMap, map, filter, catchError } from 'rxjs/operators';
+import { switchMap, map, filter, catchError, takeUntil } from 'rxjs/operators';
 import { ISerFormResponse, ISerReportFormGroup } from '@apps/api/ser-form.response.interface';
 import { BreadcrumbService } from '@breadcrumb/provider/breadcrumb.service';
 import { IBreadCrumb } from '@breadcrumb/api/breadcrumb.interface';
@@ -127,15 +127,13 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
         const params = this.activeRoute.snapshot.params;
         const app$ = this.appManager.loadApps();
-        let serApp$;
 
-        if (params.hasOwnProperty('id')) {
-            serApp$ = this.initExistingApp(params.id);
-        } else {
-            serApp$ = this.initNewApp(params.name);
-        }
+        const serApp$ = this.initExistingApp(params.id);
 
-        app$.pipe(switchMap(() => serApp$))
+        app$.pipe(
+            switchMap(() => serApp$),
+            takeUntil(this.isDestroyed$)
+        )
         .subscribe((tasks: ITask[]) => {
             this.associatedItems = [{
                 label: 'Tasks',
@@ -184,7 +182,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
                     message = `App was successfully saved.`;
                     this.modalService.openMessageModal(title, message)
                         .onClose.subscribe(() => {
-                            // wenn das ne neue App ist müssste er nun zu edit gehen
                             this.location.back();
                         });
                 } else {
@@ -263,7 +260,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
                             return;
                         }
 
-                        // @todo quick and dirty make it better
                         response.data.forEach((data: ISerReportFormGroup) => {
                             const group = data.group;
                             const path = data.path.length !== 0 ? data.path.split('/') : [];
@@ -277,26 +273,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
     }
 
     /**
-    * initialize new app
-    *
-    * @private
-    * @memberof AppEditComponent
-    */
-    private async initNewApp(name: string): Promise<ITask[]> {
-
-        const app = await this.appManager.createApp(name);
-        this.app = app;
-        this.formService.loadModel(app);
-
-        this.apps = [{
-            qDocName: this.app.title,
-            qDocId: this.app.appId
-        }];
-
-        return [];
-    }
-
-    /**
     * initialize existing app
     *
     * @private
@@ -304,13 +280,10 @@ export class AppEditComponent implements OnInit, OnDestroy {
     */
     private initExistingApp(qDocId: string) {
 
-        return this.appManager.loadSerApps()
+        return this.appManager.fetchApp(qDocId)
             .pipe(
-                switchMap((apps: IQlikApp[]) => {
-                    return from(apps);
-                }),
-                filter(app => app.qDocId === qDocId),
                 switchMap((app: IQlikApp) => {
+                    console.log(app);
                     this.appManager.selectApps([app]);
                     return this.appManager.openApp(app);
                 }),
