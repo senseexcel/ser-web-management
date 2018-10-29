@@ -4,6 +4,7 @@ import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface
 import { FormService } from '@core/modules/form-helper';
 import { TaskFormModel } from '@core/modules/ser-task/model/task-form.model';
 import { Observable } from 'rxjs';
+import { IQlikApp } from '@apps/api/app.interface';
 
 @Component({
     selector: 'app-task-form-identification',
@@ -18,11 +19,11 @@ export class FormIdentificationComponent implements OnInit {
      * @type {IQrsApp[]}
      * @memberof FormIdentificationComponent
      */
-    public apps: IQrsApp[];
+    public apps: IQlikApp[];
 
     public identificationForm: FormGroup;
 
-    private app: IQrsApp;
+    private app: IQlikApp;
 
     private formBuilder: FormBuilder;
 
@@ -97,12 +98,12 @@ export class FormIdentificationComponent implements OnInit {
             const formData = this.identificationForm.getRawValue();
 
             /** find selected app */
-            const selectedApp = this.formModel.apps.find((app: IQrsApp) => {
-                return app.id === formData.app;
+            const selectedApp = this.formModel.apps.find((app: IQlikApp) => {
+                return app.qDocId === formData.app;
             });
 
             /** write data to model */
-            this.formModel.task.app = selectedApp || null;
+            this.formModel.task.app = selectedApp.source;
             this.formModel.task.identification.app = formData.app;
             this.formModel.task.identification.identificationName = formData.name;
 

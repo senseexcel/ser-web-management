@@ -15,7 +15,6 @@ import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.servi
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
 import { AppData } from '@core/model/app-data';
-import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 
 @Injectable()
 export class SerAppManagerService {
@@ -124,7 +123,6 @@ export class SerAppManagerService {
         }
 
         this.isLoadingApps = true;
-
         // load apps
         return this.serAppService.fetchApps()
             .pipe(
@@ -143,6 +141,7 @@ export class SerAppManagerService {
             .pipe(
                 map((app: IQrsApp) => {
                     const qApp: IQlikApp = {
+                        source: app,
                         qDocId: app.id,
                         qDocName: app.name,
                         qTitle: app.name
@@ -175,6 +174,7 @@ export class SerAppManagerService {
                 map((apps: IQrsApp[]): IQlikApp[] => {
                     return apps.map((app: IQrsApp): IQlikApp => {
                         const qApp: IQlikApp = {
+                            source: app,
                             qDocId: app.id,
                             qDocName: app.name,
                             qTitle: app.name

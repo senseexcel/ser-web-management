@@ -171,6 +171,28 @@ export class SerTaskService {
     }
 
     /**
+     * fetch event by id
+     *
+     * @param {string} eventId
+     * @returns {Observable<any>}
+     * @memberof SerTaskService
+     */
+    public fetchEvent(eventId: string): Observable<any> {
+
+        const url = '/qrs/event/full';
+        const propFilter = this.filterService.createFilter('event.id', eventId);
+
+        return this.httpClient.get(url,
+            {
+                withCredentials: true,
+                params: {
+                    filter: this.filterService.createFilterQueryString(propFilter)
+                }
+            }
+        );
+    }
+
+    /**
      * create a new task
      */
     public createTask(taskDefinition: IQrsTask): Observable<any> {

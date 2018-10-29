@@ -47,8 +47,8 @@ export class TemplateComponent implements OnInit {
         });
     }
 
-    public setOutput(fileType: string) {
-        const name = `${this.currentApp.title}.${fileType}`;
+    public setOutput(event) {
+        const name = `${this.currentApp.title}.${event.value}`;
         this.templateForm.controls.output.setValue(name);
     }
 

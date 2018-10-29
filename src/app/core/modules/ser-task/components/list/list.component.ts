@@ -223,7 +223,10 @@ export class ListComponent implements OnDestroy, OnInit {
             }),
         )
         .subscribe((tasks) => {
-            this.dialog.openMessageModal('Tasks Synchronized', `${tasks.length} Task(s) where synchronized.`);
+            if (tasks) {
+                this.dialog.openMessageModal('Tasks Synchronized', `${tasks.length} Task(s) where synchronized.`);
+                this.reloadList();
+            }
         });
     }
 
@@ -235,7 +238,6 @@ export class ListComponent implements OnDestroy, OnInit {
      * @memberof TasksComponent
      */
     private fetchTasks() {
-
         this.route.params.pipe(
             switchMap((params: Params) => {
                 const appId = params.id || null;

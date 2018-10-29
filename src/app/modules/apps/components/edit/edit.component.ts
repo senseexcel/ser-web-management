@@ -283,7 +283,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
         return this.appManager.fetchApp(qDocId)
             .pipe(
                 switchMap((app: IQlikApp) => {
-                    console.log(app);
                     this.appManager.selectApps([app]);
                     return this.appManager.openApp(app);
                 }),

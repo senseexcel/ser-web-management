@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 import { AppData } from '@core/model/app-data';
 import { ITag } from '@core/api/tag.interface';
 import { IDomainUser } from 'ser.api';
+import { ISessionUser } from '@core/api/session-user.interface';
 
 @Injectable()
 export class BootstrapService implements IBootstrap {
@@ -63,20 +64,12 @@ export class BootstrapService implements IBootstrap {
 
     private fetchLoggedInUser(): Observable<any> {
 
-        const url = '/qrs/user';
-        const userFilter = this.filterService.createFilter(
-            'userDirectory',
-            `'${window.location.hostname}'`
-        );
+        const url = '/qps/user';
 
-        return this.http.get(url, {
-            params: {
-                filter: this.filterService.createFilterQueryString(userFilter)
-            }
-        })
+        return this.http.get(url)
         .pipe(
-            map( (user: IDomainUser[]) => {
-                this.appData.user = user[0];
+            map( (user: ISessionUser) => {
+                this.appData.user = user;
             })
         );
     }

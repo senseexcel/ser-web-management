@@ -14,6 +14,7 @@ import { IQlikApp } from '@apps/api/app.interface';
 import { AppData } from '@core/model/app-data';
 import { ModalService } from '@core/modules/modal/services/modal.service';
 import { IDataNode } from '@core/api/model.interface';
+import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
 
 @Component({
     selector: 'app-task-edit',
@@ -88,6 +89,7 @@ export class EditComponent implements OnInit {
      */
     constructor(
         @Inject('AppData') appData: AppData,
+        private appManager: SerAppManagerService,
         activatedRoute: ActivatedRoute,
         appApiService: SerAppService,
         formHelperService: FormService<TaskFormModel, any>,
@@ -116,9 +118,9 @@ export class EditComponent implements OnInit {
     ngOnInit() {
 
         this.properties = [
-            { label: 'identification' },
-            { label: 'execution' },
-            { label: 'trigger' },
+            { label: 'Identification' },
+            { label: 'Execution' },
+            { label: 'Trigger' },
         ];
 
         this.activeRoute.data
@@ -139,7 +141,7 @@ export class EditComponent implements OnInit {
                                 return this.appApiService.fetchApp(params.id);
                             }),
                             tap((app: IQrsApp) => {
-                                console.log(app);
+                                this.taskFormModel.task.app = app;
                                 this.taskFormModel.task.identification.app = app.id;
                             })
                         );
@@ -256,9 +258,9 @@ export class EditComponent implements OnInit {
                     this.taskFormModel.isNew = false;
                     this.taskFormModel.task  = this.taskFactoryService.buildTask(task);
 
-                    return this.appApiService.fetchSerApps();
+                    return this.appManager.loadSerApps();
                 }),
-                map((apps: IQrsApp[]) => {
+                map((apps: IQlikApp[]) => {
                     this.taskFormModel.apps = apps;
                 })
             );
@@ -278,9 +280,9 @@ export class EditComponent implements OnInit {
             name: 'New Task',
         }];
 
-        return this.appApiService.fetchSerApps()
+        return this.appManager.loadSerApps()
             .pipe(
-                map((apps: IQrsApp[]) => {
+                map((apps: IQlikApp[]) => {
                     this.taskFormModel.apps = apps;
                     this.taskFormModel.isNew = true;
                     this.taskFormModel.task = this.taskFactoryService.buildTask();

@@ -148,10 +148,12 @@ export class DashboardComponent implements OnInit {
         .map((item: IPage): IPageInformation => {
             let title: string;
             switch (item.name) {
-                case 'Reports'     : title = `${item.name} (${counts[1]})`; break;
-                case 'Report Tasks': title = `${item.name} (${counts[0]})`; break;
+                case 'Reporting Apps' : title = `${item.name} (${counts[1]})`; break;
+                case 'Reporting Tasks': title = `${item.name} (${counts[0]})`; break;
                 default            : title = item.name;
             }
+
+            console.dir(title);
             return { ...item, title };
         });
     }

@@ -26,7 +26,7 @@
             </app-drop-down>
         -->
 
-        <app-drop-down [hostClass]="'top-bar--menu'" [label]="loggedInUser.userId" (show)="showMenuOverlay($event)">
+        <app-drop-down [hostClass]="'top-bar--menu'" [label]="loggedInUser.userName" (show)="showMenuOverlay($event)">
             <app-menu [menuItems]="userMenu"></app-menu>
         </app-drop-down>
     </div>

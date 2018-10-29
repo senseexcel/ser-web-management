@@ -3,7 +3,7 @@ import { PageService } from '../../services';
 import { IMenuItem } from '@core/modules/menu/api/menu-item.interface';
 import { DropDownOverlay } from '@core/modules/drop-down/model/drop-down-overlay';
 import { AppData } from '@core/model/app-data';
-import { IDomainUser } from 'ser.api';
+import { ISessionUser } from '@core/api/session-user.interface';
 
 @Component({
     selector: 'app-top-bar',
@@ -37,7 +37,7 @@ export class TopBarComponent implements OnInit {
      */
     public userMenu: IMenuItem[];
 
-    public loggedInUser: IDomainUser;
+    public loggedInUser: ISessionUser;
 
     /**
      * holds the current drop down overlay for an
@@ -118,8 +118,9 @@ export class TopBarComponent implements OnInit {
     private createUserMenu(): IMenuItem[] {
         return [{
             name: 'Logout',
-            disabled: true,
-            show: true
+            disabled: false,
+            show: true,
+            route: 'user/logout'
         }];
     }
 }

@@ -1,21 +1,34 @@
 <!-- disabled menu item-->
 <ng-template #disabledMenuItem let-item="item">
-    <span class="lui-list--text disabled">
-        <i *ngIf="item.icon" class="ser-icon ser-icon--{{item.icon}}"></i>
-        <span>
-            {{item.name}}
-        </span> 
-    </span>
+<span class="lui-list--text disabled">
+    <i *ngIf="item.icon" class="ser-icon ser-icon--{{item.icon}}"></i>
+    <span>
+        {{item.name}}
+    </span> 
+</span>
+</ng-template>
+
+<ng-template #routerLink let-item="item">
+<a routerLink="/{{item.route}}" routerLinkActive="router-link-active">
+    {{item.name}}
+</a> 
+</ng-template>
+
+<ng-template #uriLink let-item="item">
+<a href="{{item.uri}}">
+    {{item.name}}
+</a> 
 </ng-template>
 
 <!-- enabled menu item-->
 <ng-template #enabledMenuItem let-item="item">
-    <span class="lui-list--text">
-        <i *ngIf="item.icon" class="ser-icon ser-icon--{{item.icon}}"></i>
-        <a routerLink="/{{item.route}}" routerLinkActive="router-link-active">
-            {{item.name}}
-        </a> 
-    </span>
+<span class="lui-list--text">
+    <i *ngIf="item.icon" class="ser-icon ser-icon--{{item.icon}}"></i>
+    <ng-container 
+        [ngTemplateOutlet]="item.route ? routerLink : uriLink"
+        [ngTemplateOutletContext]="{item:item}">
+    </ng-container>
+</span>
 </ng-template>
 
 <!-- menu group item -->
@@ -35,7 +48,7 @@
         [ngClass]="{'lui-list--header lui-list--group': item.children && item.children.length, 'disabled': item.disabled}">
 
         <ng-container
-            [ngTemplateOutlet]="item.disabled || !item.route ? disabledMenuItem : enabledMenuItem"
+            [ngTemplateOutlet]="item.disabled || (!item.route && !item.uri) ? disabledMenuItem : enabledMenuItem"
             [ngTemplateOutletContext]="{item:item}"
         ></ng-container>
 

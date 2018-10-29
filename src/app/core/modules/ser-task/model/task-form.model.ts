@@ -1,9 +1,9 @@
-import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
 import { TaskModel } from './task.model';
+import { IQlikApp } from '@apps/api/app.interface';
 
 export class TaskFormModel {
 
-    private taskApps: IQrsApp[];
+    private taskApps: IQlikApp[];
 
     private taskIsNew: boolean;
 
@@ -15,7 +15,7 @@ export class TaskFormModel {
      * @type {IQrsApp[]}
      * @memberof TaskFormModel
      */
-    public get apps(): IQrsApp[] {
+    public get apps(): IQlikApp[] {
         return this.taskApps;
     }
 
@@ -24,7 +24,7 @@ export class TaskFormModel {
      *
      * @memberof TaskFormModel
      */
-    public set apps(apps: IQrsApp[]) {
+    public set apps(apps: IQlikApp[]) {
         this.taskApps = apps;
     }
 
