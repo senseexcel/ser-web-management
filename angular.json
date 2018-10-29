@@ -15,15 +15,19 @@
       },
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-angular:browser",
+          "builder": "@angular-builders/custom-webpack:browser",
           "options": {
+            "customWebpackConfig": {
+              "path": "./bin/extra-webpack.config.js"
+            },
+            "baseHref": "/extensions/ser-web-management/",
             "outputPath": "dist/serWebManagement",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
-              "src/favicon.ico",
+              "src/assets/favicon.ico",
               "src/assets"
             ],
             "styles": [
@@ -55,9 +59,10 @@
           }
         },
         "serve": {
-          "builder": "@angular-devkit/build-angular:dev-server",
+        "builder": "@angular-builders/dev-server:generic",
           "options": {
-            "browserTarget": "serWebManagement:build"
+            "browserTarget": "serWebManagement:build",
+            "baseHref": "/extensions/ser-web-management/"
           },
           "configurations": {
             "production": {

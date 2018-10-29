@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
+import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
+import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 
 
 @Component({
@@ -16,7 +18,11 @@ export class AppNewComponent  implements OnInit {
   private route: ActivatedRoute;
   private router: Router;
 
-  constructor(formBuilder: FormBuilder, router: Router) {
+  constructor(
+    private appManager: SerAppManagerService,
+    formBuilder: FormBuilder,
+    router: Router
+  ) {
     this.formBuilder = formBuilder;
     this.router = router;
   }
@@ -27,7 +33,11 @@ export class AppNewComponent  implements OnInit {
 
   public apply() {
     if (this.formNameControl.valid) {
-      this.router.navigate([`apps/new/${this.formNameControl.value}`]);
+      const name = this.formNameControl.value;
+      this.appManager.createApp(name)
+        .then((app: ISerApp) => {
+          this.router.navigate([`apps/new/${app.appId}`]);
+        });
     }
   }
 

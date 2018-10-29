@@ -1,0 +1,10 @@
+<h3 class="header header-secondary">Trigger</h3>
+<ng-container *ngIf="triggerForm">
+    <div [formGroup]="triggerForm">
+        <!-- task name -->
+        <mat-form-field class="form-control">
+            <input matInput formControlName="hour" placeholder="Task Exceution Time">
+        </mat-form-field>
+        <span>Daily Time task will triggered add number between 0 and 23</span>
+    </div>
+</ng-container>

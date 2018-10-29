@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ISerGeneral, ISerTemplate, ISerConnection, IMailServerSettings, IMailSettings } from 'ser.api';
+import { ISerGeneral, ISerTemplate, ISerConnection, IMailServerSettings, IMailSettings, ISerSenseSelection } from 'ser.api';
 import {
     DeliveryModel,
     EmailModel,
@@ -13,6 +13,7 @@ import {
 } from '../model';
 import { ISerDelivery } from '../api/ser-delivery.interface';
 import { ISerReport } from '../api/ser-report.interface';
+import { SelectionModel } from '@core/modules/ser-report/model/selection.model';
 
 @Injectable()
 export class ReportService {
@@ -55,9 +56,10 @@ export class ReportService {
             model = model[modelName];
         });
 
+        // template is a bit specific since we have an array of selections and not one selection
+
         /** set fields on model */
         Object.keys(model.raw).forEach( (property) => {
-
             if ( ! updateData[property] ) {
                 return;
             }
@@ -96,7 +98,7 @@ export class ReportService {
     }
 
     /**
-     *
+     * create template model
      *
      * @private
      * @param {ISerTemplate} data
@@ -104,8 +106,18 @@ export class ReportService {
      * @memberof ReportService
      */
     private createTemplateData(data: ISerTemplate): ISerTemplate  {
-        const model = new TemplateModel();
-        return this.createModel<TemplateModel>(model, data);
+
+        const templateModel  = this.createModel<TemplateModel>(new TemplateModel(), data);
+        const selections: SelectionModel[] = [];
+
+        if (data && data.selections) {
+            data.selections.forEach((selection: ISerSenseSelection) => {
+                selections.push(this.createModel<SelectionModel>(new SelectionModel(), selection));
+            });
+        }
+
+        templateModel.selections = selections;
+        return templateModel;
     }
 
     /**

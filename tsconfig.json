@@ -20,11 +20,12 @@
       "dom"
     ],
     "paths": {
-      "@apps/*": ["src/app/modules/apps/*"],
-      "@breadcrumb/*": ["src/app/modules/breadcrumb/*"],
-      "@core/*": ["src/app/core/*"],
-      "@dashboard/*": ["src/app/modules/dashboard/*"],
-      "@node_modules/*": ["node_modules/*"],
+        "@api/*": ["src/app/api/*"],
+        "@apps/*": ["src/app/modules/apps/*"],
+        "@breadcrumb/*": ["src/app/modules/breadcrumb/*"],
+        "@core/*": ["src/app/core/*"],
+        "@dashboard/*": ["src/app/modules/dashboard/*"],
+        "@node_modules/*": ["node_modules/*"],
     }
   }
 }

@@ -1,0 +1,169 @@
+/** QMC PAGE GENERAL */
+.qmc-page {
+
+    display: flex;
+    height: 100%;
+    width: 100%;
+
+    .header {
+        margin: 0;
+        font-family: "QlikView Sans";
+        font-weight: bold;
+    }
+}
+
+.qmc-page--sidebar,
+.qmc-page--content {
+    header: {
+        font-size: 14px;
+        padding: 12px 0;
+    }
+}
+
+/** QMC PAGE SIDEBAR */
+.qmc-page--sidebar {
+
+    color: #FFF;
+    background: #595959;
+    flex: 0 0 200px;
+
+    &.sidebar-right {
+        padding-top: 40px;
+        align-self: stretch;
+    }
+
+    &.sidebar-left {
+        align-self: flex-start;
+        margin: 0 .4rem 0 0;
+
+        .header {
+            padding: 9px 0;
+        }
+
+        .lui-list li{
+            padding: 5px 0 5px 20px;
+            background: #737373;
+            border-top: 1px solid #333;
+        }
+    }
+
+    .sidebar-content {
+        padding: 0 1rem;
+    }
+
+    .header {
+        box-sizing: border-box;
+
+        a {
+            display: block;
+            padding: 0 0 0 5px;
+        }
+    }
+}
+
+/* QMC PAGE CONTENT */
+.qmc-page--content {
+
+    color: #FFF;
+    background: #595959;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    > .header {
+        padding: 11px 1rem;
+        border-bottom: 4px solid #60BF9F;
+    }
+}
+
+.qmc-page--content-body {
+    overflow-y: auto;
+    background: #FFF;
+    color: #000;
+    padding: 0 1rem;
+    height: 100%;
+}
+
+.qmc-page--content-footer {
+    min-height: 37px;
+    padding: 0 2px 11px 10px;
+    background: #8C8C8C;
+}
+
+/** qmc edit page */
+.qmc-page.qmc-page--edit {
+
+    .qmc-page--sidebar {
+
+        &.sidebar-left {
+            flex: 0 0 20%;
+
+            .header {
+                padding: 11px 0 11px 5px;
+                background: #595959;
+                font-size: 1.2;
+
+                i {
+                    margin: 0 .5rem 0 .2rem;
+                    font-size: 1rem;
+                }
+            }
+        }
+
+        &.sidebar-right {
+            flex: 0 0 19%;
+            background: #595959;
+            padding: 4rem 0 0; 
+            margin: 0;
+
+            .header {
+                font-weight: 600;
+            }
+
+            .header, 
+            .lui-item {
+                padding: 0 0 0 1rem;
+            }
+
+            .header {
+                margin-bottom: .5rem;
+            }
+
+            .lui-item {
+                line-height: 2rem;
+                cursor: pointer;
+
+                &:hover {
+                    background: darken($color: #FFF, $amount: 20);
+                    color: #000;
+                }
+            }
+
+            .lui-item.active {
+                background: #FFF;
+                color: #000;
+            }
+        }
+    }
+
+    .qmc-page--content {
+        font-size: 13px;
+    }
+
+    .qmc-page--content-body {
+        padding: 10px 40px 10px 20px;
+    }
+
+    .edit-group {
+        display: block;
+        padding: 0 0 13px;
+        margin: 0 0 13px;
+
+        .header {
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+    }
+
+}

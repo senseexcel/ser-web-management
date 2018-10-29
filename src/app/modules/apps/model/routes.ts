@@ -1,14 +1,16 @@
-import { Routes, RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
 import { AppListComponent, AppEditComponent, AppsComponent, AppNewComponent  } from '../components';
 import { EditGuard } from '../guards/edit.guard';
 import { CreateGuard  } from '../guards/create.guard';
 import { ReportPreviewComponent } from '@apps/components/preview/preview.component';
+import { ListComponent, EditComponent } from '@core/modules/ser-task/components';
+import { TasksComponent } from '@apps/components/tasks/task.component';
 
 export const AppRoutes: Routes = [{
     path: 'apps',
     component: AppsComponent,
     data: {
-        breadcrumb: 'Applications'
+        breadcrumb: 'Reporting Apps'
     },
     children: [{
         path: '',
@@ -27,6 +29,32 @@ export const AppRoutes: Routes = [{
             data: {
                 breadcrumb: 'Report Preview'
             }
+        }, {
+            path: 'tasks/:id',
+            component: TasksComponent,
+            data: {
+                breadcrumb: 'Tasks',
+            },
+            children: [{
+                path: '',
+                component: ListComponent
+            }, {
+                path: 'edit/:id',
+                component: EditComponent,
+                data: {
+                    breadcrumb: 'Edit Task',
+                    action: 'update',
+                    isApp: true
+                }
+            }, {
+                path: 'new',
+                component: EditComponent,
+                data: {
+                    breadcrumb: 'Create Task',
+                    action: 'create',
+                    isApp: true
+                }
+            }]
         }]
     }, {
         path: 'new',
@@ -36,7 +64,7 @@ export const AppRoutes: Routes = [{
             breadcrumb: 'New App',
         }
     }, {
-        path: 'new/:name',
+        path: 'new/:id',
         component: AppEditComponent,
         canActivate: [CreateGuard],
         data: {
@@ -50,6 +78,32 @@ export const AppRoutes: Routes = [{
             data: {
                 breadcrumb: 'Report Preview'
             }
+        }, {
+            path: 'tasks/:id',
+            component: TasksComponent,
+            data: {
+                breadcrumb: 'Tasks',
+            },
+            children: [{
+                path: '',
+                component: ListComponent
+            }, {
+                path: 'edit/:id',
+                component: EditComponent,
+                data: {
+                    breadcrumb: 'Edit Task',
+                    action: 'update',
+                    isApp: true
+                }
+            }, {
+                path: 'new',
+                component: EditComponent,
+                data: {
+                    breadcrumb: 'Create Task',
+                    action: 'create',
+                    isApp: true
+                }
+            }]
         }]
     }]
 }];

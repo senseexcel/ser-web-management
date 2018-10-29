@@ -1,0 +1,16 @@
+:host {
+    
+    .btn {
+        background-image: linear-gradient(to bottom, #FFFFFF 0%, #D9D9D9 100%);
+        margin: 0 0 0 12px;
+        color: #595959;
+        border: 1px solid #262626;
+        font-weight: bold;
+    }
+
+    .btn:hover {
+        -webkit-box-shadow: inset 0px 0px 0px 1px #262626;
+        -moz-box-shadow: inset 0px 0px 0px 1px #262626;
+        box-shadow: inset 0px 0px 0px 1px #262626;
+    }
+}

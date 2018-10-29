@@ -25,7 +25,7 @@ export class ReportPreviewComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.formService.loadApp()
+        this.formService.editModel()
         .subscribe( (app: ISerApp) => {
             if ( app === null ) {
                 return;

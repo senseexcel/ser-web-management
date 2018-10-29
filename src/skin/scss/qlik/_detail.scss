@@ -1,3 +1,4 @@
+
 .qapp-detail {
 
     display: flex;
@@ -7,7 +8,7 @@
     .qapp-detail--sidebar,
     .qapp-content--sidebar {
         flex: 0 0 20%;
-        padding:0 .4rem;
+        padding:0 .4rem 0 0;
         color: #FFF;
     }
 
@@ -36,7 +37,7 @@
     .qapp-content--sidebar {
         background: #595959;
         padding: 4rem 0 0; 
-        margin: 0 .5rem 0 0;
+        margin: 0;
 
         .header {
             font-weight: 600;

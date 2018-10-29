@@ -1,6 +1,7 @@
 import { ISerApp } from '../api/ser-app.interface';
 import { ISerReport } from '@core/modules/ser-report/api/ser-report.interface';
 import { ISerScriptData } from '@core/modules/ser-script/api/ser-script-data.interface';
+import { ITask } from '@core/modules/ser-engine/api/task.interface';
 
 export class SerApp implements ISerApp {
 
@@ -9,6 +10,8 @@ export class SerApp implements ISerApp {
     private serAppReport: ISerReport;
 
     private serAppScript: ISerScriptData;
+
+    private serAppTasks: ITask[];
 
     private serAppTitle: string;
 
@@ -22,6 +25,10 @@ export class SerApp implements ISerApp {
 
     public set script(script: ISerScriptData) {
         this.serAppScript = script;
+    }
+
+    public set tasks(tasks: ITask[]) {
+        this.serAppTasks = tasks;
     }
 
     public set title(title: string) {
@@ -38,6 +45,10 @@ export class SerApp implements ISerApp {
 
     public get script(): ISerScriptData {
         return this.serAppScript;
+    }
+
+    public get tasks(): ITask[] {
+        return this.serAppTasks;
     }
 
     public get title(): string {

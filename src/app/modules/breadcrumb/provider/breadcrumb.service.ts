@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Event, NavigationEnd, Router, ActivatedRouteSnapshot, UrlSegment } from '@angular/router';
+import { ActivatedRoute, Event, NavigationEnd, Router, ActivatedRouteSnapshot, UrlSegment, Params } from '@angular/router';
 import { filter, distinctUntilChanged, map, takeUntil } from 'rxjs/operators';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { IBreadCrumb } from '@breadcrumb/api/breadcrumb.interface';

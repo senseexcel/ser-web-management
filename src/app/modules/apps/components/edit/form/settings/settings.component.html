@@ -2,7 +2,7 @@
 
     <h3 class="header header-secondary">Settings</h3>
 
-    <mat-tab-group [@.disabled]="true">
+    <mat-tab-group [@.disabled]="true" [dynamicHeight]="true">
         <mat-tab label="General Settings">
             <div [formGroup]="generalForm">
                 <mat-form-field class="form-control">
@@ -16,8 +16,6 @@
                 <mat-form-field class="form-control">
                     <input matInput formControlName="errorRepeatCount" placeholder="Error Repeat Count">
                 </mat-form-field>
-
-                <mat-checkbox formControlName="useSandbox">use Sandbox</mat-checkbox>
 
                 <mat-form-field class="form-control">
                     <input matInput formControlName="taskCount" placeholder="Task Count">

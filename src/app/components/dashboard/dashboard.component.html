@@ -1,0 +1,41 @@
+<!-- page tile wrapper link if page is enabled -->
+<ng-template #pageTile let-page="pageData">
+    <a class="page-tile" (click)="displayPage(page)" *ngIf="!page.disabled" >
+        <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
+    </a>
+    <div class="page-tile disabled" *ngIf="page.disabled">
+        <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
+    </div>
+</ng-template>
+
+<!-- page tile content -->
+<ng-template #pageTileContent let-page="pageData">
+    <span class="page-tile--header">
+        <i *ngIf="page.icon" class="ser-icon ser-icon--{{page.icon}}"></i>
+        <span>{{page.title}}</span>
+    </span>
+    <span class="page-tile--body">
+        {{page.description}}
+    </span>
+</ng-template>
+
+<div class="qmc-page qmc-page--dashboard" [style.display]="isPreview ? 'none': 'flex'">
+    <div class="qmc-page--sidebar sidebar-left menu">
+        <app-menu [menuItems]="mainMenu"></app-menu>
+    </div>
+    
+    <div class="qmc-page--content">
+        <div class="qmc-page--content-body">
+            <div class="page-tile--grid">
+                <ng-container *ngFor="let page of pages"
+                        [ngTemplateOutlet]="pageTile"
+                        [ngTemplateOutletContext]="{pageData: page}">
+                </ng-container>
+            </div>
+        </div>
+
+        <div class="qmc-page--content-footer">
+            Version 1.0
+        </div>
+    </div>
+</div>

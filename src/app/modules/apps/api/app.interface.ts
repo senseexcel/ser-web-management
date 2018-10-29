@@ -1,3 +1,5 @@
+import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
+
 export interface IQlikApp {
 
     qConnctedUsers?: number;
@@ -9,4 +11,6 @@ export interface IQlikApp {
     qFileSize?: number;
 
     qTitle?: string;
+
+    source?: IQrsApp;
 }

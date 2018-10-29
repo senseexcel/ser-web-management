@@ -1,0 +1,135 @@
+.top-bar {
+
+    font-size: 13px;
+    color: #FFF;
+    padding: 0 5px;
+
+    a {
+        color: #FFF;
+    }
+
+    .navbar-brand {
+        margin-right: 0;
+    }
+
+    button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: auto;
+        outline: none;
+        margin: 0;
+        background: transparent;
+        border: 0;
+        line-height: 18px;
+            
+        &:hover {
+            box-shadow: 0px 0px 0px 2px white;
+        }
+
+        .ser-icon {
+            margin-right: 5px;
+        }
+    }
+
+    .btn-group app-drop-down {
+        button {
+            border-radius: 0 8px 8px 0;
+        }
+    }
+}
+
+.top-bar--menu {
+
+    color: #595959;
+    padding-top: 2px;
+
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    min-width: 150px;
+    max-width: 250px;
+    position: relative;
+
+    >.ser-icon.ser-icon--arrow-up {
+        position: relative;
+        align-self: center;
+        font-size: 24px;
+        line-height: 9px;
+        top: -1px;
+        color: #404040;
+        margin: 0;
+    }
+
+    .menu-wrapper {
+        border-radius: 8px;
+        border-style: solid;
+        border-color: #404040;
+        border-width: 10px 1px;
+        -webkit-box-shadow: 0px 7px 10px -3px rgba(0,0,0,0.75);
+        -moz-box-shadow: 0px 7px 10px -3px rgba(0,0,0,0.75);
+        box-shadow: 0px 7px 10px -3px rgba(0,0,0,0.75);
+    }
+
+    ul {
+        background: #FFF;
+        color: #000;
+        background: #FFF;
+        overflow-y: auto;
+        border-width: 0px 1px;
+
+        .disabled {
+            color: lighten($color: #000000, $amount: 40);
+        }
+    }
+
+    .lui-list {
+        border: 1px solid #404040;
+
+        >.lui-list--item {
+            padding: 0 8px;
+        }
+    }
+
+    .lui-list--item {
+        cursor: pointer;
+    }
+
+    .lui-list--header {
+        margin-bottom: 10px;
+        cursor: default;
+
+        &:nth-child(2n) {
+            margin-top: 10px;
+        }
+
+        >.lui-list--text {
+            text-transform: uppercase;
+            margin: 0 0 10px;
+            display: block;
+        }
+    }
+
+    .lui-list--item:not(.lui-list--header) {
+        font-size: 13px;
+        line-height: 36px;
+    }
+
+    &.menu-main {
+
+        .lui-list {
+            padding: 5px 0;
+        }
+
+        .lui-list--item:not(.lui-list--header) {
+            line-height: 24px;
+        }
+    }
+
+    &:not(.menu-main) {
+
+        .lui-list--item:not(.lui-list--header):hover {
+            background: #E6E6E6;
+        }
+    }
+}

@@ -12,11 +12,14 @@
                 </mat-form-field>
             </div>
             <div class="col col-md-3">
-                <div class="btn-group float-md-right">
-                    <button (click)="setOutput('pdf')" class="btn">PDF</button>
-                    <button (click)="setOutput('xls')" class="btn">XLS</button>
-                    <button (click)="setOutput('xlsx')" class="btn">XLSX</button>
-                </div>
+
+                <mat-form-field class="form-control">
+                    <mat-select placeholder="Output Format" (selectionChange)="setOutput($event)">
+                        <mat-option *ngFor="let format of ['csv', 'html', 'pdf', 'svg', 'tiff', 'tsv', 'xlsm', 'xls', 'xlsx']" [value]="format">
+                            {{format}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
         </div>
 

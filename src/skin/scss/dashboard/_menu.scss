@@ -1,0 +1,48 @@
+.qmc-page--dashboard .menu {
+    .lui-list {
+
+        .ser-icon {
+            font-size: 12px;
+            margin: 0px 5px 0 0;
+
+            &:before {
+                margin: 0 0 2px;
+            }
+        }
+
+        .lui-list--item {
+            padding: 0;
+            padding: 0 10px;
+            font-size: 13px;
+            border: none;
+            border-left: solid 4px #60BF91;
+            background: #595959;
+            margin-bottom: 1px;
+        }
+
+        .lui-list--group {
+            padding: 0;
+            background: transparent;
+            border-left: 0;
+
+            &>span {
+                line-height: 34px;
+                text-transform: uppercase;
+                border-left: 4px solid transparent;
+            }
+        }
+
+        .lui-list--item.disabled {
+            color: darken(#FFF, 20);
+        }
+
+        .lui-list--text {
+            padding: 0;
+        }
+
+        .lui-list--text a,
+        .lui-list--text span {
+            line-height: 24px;
+        }
+    }
+}

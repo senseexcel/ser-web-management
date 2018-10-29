@@ -36,7 +36,7 @@ export class TemplateComponent implements OnInit {
         this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
         /** register on app has been loaded */
-        this.formService.loadApp()
+        this.formService.editModel()
         .subscribe ((app: ISerApp) => {
             this.currentApp = app;
 
@@ -47,8 +47,8 @@ export class TemplateComponent implements OnInit {
         });
     }
 
-    public setOutput(fileType: string) {
-        const name = `${this.currentApp.title}.${fileType}`;
+    public setOutput(event) {
+        const name = `${this.currentApp.title}.${event.value}`;
         this.templateForm.controls.output.setValue(name);
     }
 
