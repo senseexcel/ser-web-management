@@ -2,7 +2,7 @@
 
     <h3 class="header header-secondary">Settings</h3>
 
-    <mat-tab-group [@.disabled]="true">
+    <mat-tab-group [@.disabled]="true" [dynamicHeight]="true">
         <mat-tab label="General Settings">
             <div [formGroup]="generalForm">
                 <mat-form-field class="form-control">
