@@ -281,6 +281,7 @@ export class SerAppManagerService {
     private buildApp(app: EngineAPI.IApp, script: string): ISerApp {
 
         const scriptData: ISerScriptData  = this.serScriptService.parse(script);
+
         const reports = this.serScriptService.extractReports(scriptData);
         const report  = this.reportService.createReport(reports[0]);
 

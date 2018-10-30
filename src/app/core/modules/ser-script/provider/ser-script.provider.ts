@@ -3,6 +3,8 @@ import * as hjson from 'hjson';
 
 import { ISerScriptData } from '../api/ser-script-data.interface';
 import { ISerReport } from '@core/modules/ser-report/api/ser-report.interface';
+import { IDataNode } from '@core/api/model.interface';
+import { ISerConfig } from '../api/ser-config.interface';
 
 @Injectable()
 export class SerScriptService {
@@ -29,7 +31,7 @@ export class SerScriptService {
         return {
             after : source.substr(end),
             before: source.substr(0, start),
-            script: hjson.parse(result[1])
+            script: this.sanitizeScript(hjson.parse(result[1]))
         };
     }
 
@@ -65,5 +67,28 @@ export class SerScriptService {
         }
 
         return reports;
+    }
+
+    /**
+     * sanitize script to enable simple mode for scripts
+     * in this case this is not a complete ISerConfig and can contain
+     * only report configuration
+     *
+     * @private
+     * @param {IDataNode} script
+     * @returns {ISerConfig}
+     * @memberof SerScriptService
+     */
+    private sanitizeScript(script: IDataNode): ISerConfig {
+
+        let sanitizedScript = script;
+
+        if (!sanitizedScript.hasOwnProperty('tasks')) {
+            sanitizedScript = {
+                tasks: [{reports: [script]}]
+            };
+        }
+
+        return sanitizedScript as ISerConfig;
     }
 }

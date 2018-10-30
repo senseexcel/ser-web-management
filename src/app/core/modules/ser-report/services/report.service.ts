@@ -176,7 +176,7 @@ export class ReportService {
         const mailModel = new EmailModel();
         const mailServer = new MailServerSettingsModel();
         const email = this.createModel<EmailModel>(mailModel, mailData);
-        const server = this.createModel<MailServerSettingsModel>(mailServer, mailData || {});
+        const server = this.createModel<MailServerSettingsModel>(mailServer, mailData.mailServer || {});
 
         email.mailServer = server;
 
