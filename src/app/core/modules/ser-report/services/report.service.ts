@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ISerGeneral, ISerTemplate, ISerConnection, IMailServerSettings, IMailSettings, ISerSenseSelection } from 'ser.api';
+import { ISerGeneral, ISerTemplate, ISerConnection, IMailSettings, ISerSenseSelection, DistributeMode, IDeliverySettings } from 'ser.api';
 import {
     DeliveryModel,
     EmailModel,
@@ -157,10 +157,18 @@ export class ReportService {
     private createDistributeData(modelData: ISerDelivery): ISerDelivery  {
         const delivery = new DeliveryModel();
         const data     = modelData || {file: null, mail: null, hub: null};
-        delivery.file  = this.createModel<FileModel>(new FileModel(), data.file);
-        delivery.hub   = this.createModel<HubModel>(new HubModel(), data.hub);
+        delivery.file  = this.createDeliveryModel(new FileModel(), data.file);
+        delivery.hub   = this.createDeliveryModel(new HubModel(), data.hub);
         delivery.mail  = this.createMailData(data.mail);
+
         return delivery;
+    }
+
+    private createDeliveryModel(model: IDeliverySettings, data): IDeliverySettings {
+        const createdModel: IDeliverySettings =  this.createModel<IDeliverySettings>(model, data);
+        const v: string = DistributeMode[data.mode.toUpperCase()];
+        createdModel.mode = DistributeMode[v];
+        return createdModel;
     }
 
     /**
