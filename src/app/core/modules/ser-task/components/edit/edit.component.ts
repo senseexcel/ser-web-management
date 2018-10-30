@@ -90,6 +90,7 @@ export class EditComponent implements OnInit {
     constructor(
         @Inject('AppData') appData: AppData,
         private appManager: SerAppManagerService,
+        private router: Router,
         activatedRoute: ActivatedRoute,
         appApiService: SerAppService,
         formHelperService: FormService<TaskFormModel, any>,
@@ -183,7 +184,10 @@ export class EditComponent implements OnInit {
                     message = `Task ${this.taskFormModel.task.identification.name} was successfully saved.`;
                     this.modalService.openMessageModal(title, message)
                         .onClose.subscribe(() => {
-                            this.location.back();
+                            const path = this.activeRoute.parent.routeConfig.path;
+                            this.router.navigate(['edit', task.id], {
+                                relativeTo: this.activeRoute.parent
+                            });
                         });
                 } else {
                     title   = `An error occurred.`;

@@ -126,7 +126,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
         ];
 
         const params = this.activeRoute.snapshot.params;
-        const app$ = this.appManager.loadApps();
+        const app$   = this.appManager.loadApps();
 
         const serApp$ = this.initExistingApp(params.id);
 
@@ -180,10 +180,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 if (app) {
                     title   = `Success`;
                     message = `App was successfully saved.`;
-                    this.modalService.openMessageModal(title, message)
-                        .onClose.subscribe(() => {
-                            this.location.back();
-                        });
+                    this.modalService.openMessageModal(title, message);
                 } else {
                     title   = `An error occurred.`;
                     message = `Application could not saved.`;

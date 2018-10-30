@@ -157,17 +157,30 @@ export class ReportService {
     private createDistributeData(modelData: ISerDelivery): ISerDelivery  {
         const delivery = new DeliveryModel();
         const data     = modelData || {file: null, mail: null, hub: null};
-        delivery.file  = this.createDeliveryModel(new FileModel(), data.file);
-        delivery.hub   = this.createDeliveryModel(new HubModel(), data.hub);
+        delivery.file  = this.createDeliveryModel(new FileModel(), data.file || {});
+        delivery.hub   = this.createDeliveryModel(new HubModel(), data.hub || {});
         delivery.mail  = this.createMailData(data.mail);
 
         return delivery;
     }
 
+    /**
+     * create delivery model and add default mode
+     *
+     * @private
+     * @param {IDeliverySettings} model
+     * @param {*} data
+     * @returns {IDeliverySettings}
+     * @memberof ReportService
+     */
     private createDeliveryModel(model: IDeliverySettings, data): IDeliverySettings {
         const createdModel: IDeliverySettings =  this.createModel<IDeliverySettings>(model, data);
-        const v: string = DistributeMode[data.mode.toUpperCase()];
-        createdModel.mode = DistributeMode[v];
+        /** get default mode for delivery this is string value */
+        const defaultMode: string = DistributeMode[DistributeMode.DELETEALLFIRST];
+        /** get current mode for delivery, sanitize both to be a numeric value */
+        const currentMode: string = data && data.mode ? DistributeMode[data.mode.toUpperCase()] : DistributeMode[defaultMode];
+        /** set mode for model, convert numeric value (0, 1 or 2) into string value again */
+        createdModel.mode = DistributeMode[currentMode];
         return createdModel;
     }
 
