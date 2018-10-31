@@ -127,7 +127,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
         const params = this.activeRoute.snapshot.params;
         const app$   = this.appManager.loadApps();
-
         const serApp$ = this.initExistingApp(params.id);
 
         app$.pipe(
@@ -142,6 +141,14 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 count: tasks.length
             }];
             this.formDataLoaded = true;
+        }, () => {
+            this.modalService.openMessageModal(
+                'Found incompatible Script !',
+                'This app contains an incompatible or more complex Script and could not be edited with this Webmanagement Console.\n\n\
+                If you want to edit this script go to  Qlik Sense App Dataload Editor and edit the script manually.'
+            ).onClose.subscribe(() => {
+                this.router.navigate(['.'], {relativeTo: this.activeRoute.parent});
+            });
         });
 
         this.breadCrumbService.breadcrumbs
@@ -284,11 +291,15 @@ export class AppEditComponent implements OnInit, OnDestroy {
                     return this.appManager.openApp(app);
                 }),
                 switchMap((app: ISerApp) => {
-                    this.app = app;
-                    this.formService.loadModel(app);
-                    this.apps = this.appManager.getSelectedApps();
-                    // load tasks
-                    return this.taskApiService.fetchTasksForApp(app.appId);
+                    if (app.invalid) {
+                        throw new Error('invalid app');
+                    } else {
+                        this.app = app;
+                        this.formService.loadModel(app);
+                        this.apps = this.appManager.getSelectedApps();
+                        // load tasks
+                        return this.taskApiService.fetchTasksForApp(app.appId);
+                    }
                 })
             );
     }

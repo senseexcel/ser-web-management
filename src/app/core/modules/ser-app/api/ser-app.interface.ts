@@ -13,4 +13,6 @@ export interface ISerApp {
     tasks: ITask[];
 
     title: string;
+
+    invalid: boolean;
 }

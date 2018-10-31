@@ -31,8 +31,19 @@ export class SerScriptService {
         return {
             after : source.substr(end),
             before: source.substr(0, start),
-            script: this.sanitizeScript(hjson.parse(result[1]))
+            script: hjson.parse(result[1])
         };
+    }
+
+    /**
+     * throws InvalidSerScriptException
+     */
+    private validateScript () {
+        // script should have tasks is array
+        // script should have reports is array
+        // report comes now, this have to match a valid format
+        // daten die ich durchlaufe müssen genau diese Eigenschaften haben die ich im
+        // interface definiert habe ansonsten  ist es invalide
     }
 
     /**

@@ -14,6 +14,8 @@ import {
 import { ISerDelivery } from '../api/ser-delivery.interface';
 import { ISerReport } from '../api/ser-report.interface';
 import { SelectionModel } from '@core/modules/ser-report/model/selection.model';
+import { InvalidReportException } from '../api/exceptions/invalid-report.exceptio';
+import { IDataNode } from '@core/api/model.interface';
 
 @Injectable()
 export class ReportService {
@@ -28,6 +30,11 @@ export class ReportService {
     public createReport(modelData: ISerReport): ReportModel {
         const data         = modelData || {general: null, distribute: null, connections: null, template: null};
         const report       = new ReportModel();
+
+        if (modelData === undefined || !this.validateModelData(report, data)) {
+            throw new InvalidReportException(`properties for model ${report.constructor.name} are not supported.`);
+        }
+
         report.general     = this.createGeneralData(data.general);
         report.distribute  = this.createDistributeData(data.distribute);
         report.connections = this.createConnectionData(data.connections);
@@ -50,7 +57,7 @@ export class ReportService {
 
         /** get first correct model which is defined by path */
         path.concat([name]).forEach( (modelName: string) => {
-            if ( ! model[modelName] ) {
+            if (!model[modelName] ) {
                 throw new Error('not not find correct model to update.');
             }
             model = model[modelName];
@@ -197,7 +204,7 @@ export class ReportService {
         const mailModel = new EmailModel();
         const mailServer = new MailServerSettingsModel();
         const email = this.createModel<EmailModel>(mailModel, mailData);
-        const server = this.createModel<MailServerSettingsModel>(mailServer, mailData.mailServer || {});
+        const server = this.createModel<MailServerSettingsModel>(mailServer, mailData ? mailData.mailServer : {});
 
         email.mailServer = server;
 
@@ -205,7 +212,29 @@ export class ReportService {
     }
 
     /**
+     * validate model only values which we find in
+     * raw data of model are accepted otherwise it will
+     * be rejected
      *
+     * @private
+     * @param {*} model
+     * @param {*} data
+     * @returns {boolean}
+     * @memberof ReportService
+     */
+    private validateModelData(model, data): boolean {
+        let isValid = true;
+        Object.keys(data).forEach((property) => {
+            if (!(property in model)) {
+                console.log(property, model.constructor.name);
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+
+    /**
+     * create and validate model
      *
      * @private
      * @template T
@@ -214,14 +243,20 @@ export class ReportService {
      * @returns {T}
      * @memberof ReportService
      */
-    private createModel<T>(model, modelData): T {
+    private createModel<T>(model, modelData, writeData = true): T {
 
         const rawData = model.raw;
         const data    = modelData || {};
 
-        Object.keys(rawData).forEach(property => {
-            model[property] = data[property] || undefined;
-        });
+        if (!this.validateModelData(model, data)) {
+            throw new InvalidReportException(`properties for model ${model.constructor.name} are not supported.`);
+        }
+
+        if (writeData) {
+            Object.keys(rawData).forEach(property => {
+                model[property] = data[property] || undefined;
+            });
+        }
         return model;
     }
 }

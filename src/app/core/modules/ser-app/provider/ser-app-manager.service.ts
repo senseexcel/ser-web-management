@@ -15,6 +15,7 @@ import { SerTaskService } from '@core/modules/ser-engine/provider/ser-task.servi
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { IQrsApp } from '@core/modules/ser-engine/api/response/qrs/app.interface';
 import { AppData } from '@core/model/app-data';
+import { InvalidReportException } from '@core/modules/ser-report/api/exceptions/invalid-report.exceptio';
 
 @Injectable()
 export class SerAppManagerService {
@@ -279,18 +280,27 @@ export class SerAppManagerService {
      * @memberof SerAppManagerService
      */
     private buildApp(app: EngineAPI.IApp, script: string): ISerApp {
-
-        const scriptData: ISerScriptData  = this.serScriptService.parse(script);
-
-        const reports = this.serScriptService.extractReports(scriptData);
-        const report  = this.reportService.createReport(reports[0]);
-
         const serApp  = new SerApp();
-        serApp.script = scriptData;
-        serApp.appId  = app.id;
-        serApp.report = report;
+        try {
+            const scriptData: ISerScriptData  = this.serScriptService.parse(script);
+            const reports = this.serScriptService.extractReports(scriptData);
+            const report  = this.reportService.createReport(reports[0]);
 
-        this.openApps.set(serApp, app);
+            serApp.script  = scriptData;
+            serApp.appId   = app.id;
+            serApp.report  = report;
+            serApp.invalid = false;
+
+            this.openApps.set(serApp, app);
+
+        } catch (error) {
+            if (error instanceof InvalidReportException) {
+                serApp.invalid = true;
+                return serApp;
+            } else {
+                throw error;
+            }
+        }
         return serApp;
     }
 }
