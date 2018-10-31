@@ -226,7 +226,6 @@ export class ReportService {
         let isValid = true;
         Object.keys(data).forEach((property) => {
             if (!(property in model)) {
-                console.log(property, model.constructor.name);
                 isValid = false;
             }
         });

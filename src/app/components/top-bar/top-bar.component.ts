@@ -4,6 +4,7 @@ import { IMenuItem } from '@core/modules/menu/api/menu-item.interface';
 import { DropDownOverlay } from '@core/modules/drop-down/model/drop-down-overlay';
 import { AppData } from '@core/model/app-data';
 import { ISessionUser } from '@core/api/session-user.interface';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-top-bar',
@@ -62,6 +63,7 @@ export class TopBarComponent implements OnInit {
 
     constructor(
         @Inject('AppData') appData,
+        private router: Router,
         pageService: PageService,
     ) {
         this.pageService = pageService;
@@ -87,6 +89,10 @@ export class TopBarComponent implements OnInit {
             this.dropDownOverlay.close();
         }
         this.dropDownOverlay = overlay;
+    }
+
+    public navigateStart() {
+        this.router.navigate(['']);
     }
 
     /**
