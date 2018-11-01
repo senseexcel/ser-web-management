@@ -32,8 +32,18 @@
             }
         }
 
+        .lui-list--group:last-child {
+            margin-bottom: 0;
+        }
+
+        .lui-list--group:last-child .lui-list--item:last-child {
+            margin-bottom: 0;
+        }
+
         .lui-list--item.disabled {
-            color: darken(#FFF, 20);
+            color: #979797;
+            background: transparent;
+            border-left: 0;
         }
 
         .lui-list--text {

@@ -2,6 +2,7 @@ $grid-gap: 1rem;
 $colors: (
     text: #595959,
     hover: #F2F2F2,
+    disabled: #E4E4E4,
 );
 
 :host {
@@ -49,7 +50,7 @@ $colors: (
         }
 
         &.disabled {
-            color: lighten( map-get($colors, 'text'), 25);
+            color: map-get($map: $colors, $key: 'disabled');
         }
 
         &:hover:not(.disabled) {
