@@ -87,7 +87,7 @@ export class FormTriggerComponent implements OnInit {
      */
     private createTriggerForm(): FormGroup {
         return this.formBuilder.group({
-            hour: this.formBuilder.control(null)
+            hour: this.formBuilder.control(this.formModel.task.trigger.hour || null)
         });
     }
 

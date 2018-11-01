@@ -15,6 +15,7 @@ import { AppData } from '@core/model/app-data';
 import { ModalService } from '@core/modules/modal/services/modal.service';
 import { IDataNode } from '@core/api/model.interface';
 import { SerAppManagerService } from '@core/modules/ser-app/provider/ser-app-manager.service';
+import { TaskIncomatibleException } from '../../api/exceptions/incompatible.exception';
 
 @Component({
     selector: 'app-task-edit',
@@ -150,10 +151,32 @@ export class EditComponent implements OnInit {
                     return source$;
                 }),
             )
-            .subscribe(() => {
-                this.formHelperService.loadModel(this.taskFormModel);
-                this.formDataLoaded = true;
-            });
+            .subscribe(
+                // success
+                () => {
+                    this.formHelperService.loadModel(this.taskFormModel);
+                    this.formDataLoaded = true;
+                },
+                // error
+                (error) => {
+                    let message = 'An error occured on open the task. Please check logs for detailed informations.';
+                    let title = 'Could not open Task';
+
+                    if (error instanceof TaskIncomatibleException) {
+                        title = 'Task Incompatible';
+                        message = `It seems the task was created or modified by qmc and could not edited with webmanagement app.`;
+                    } else {
+                        console.error(error);
+                    }
+
+                    this.modalService.openMessageModal(title, message)
+                        .onClose.subscribe(() => {
+                            this.router.navigate(['.'], {
+                                relativeTo: this.activeRoute.parent
+                            });
+                        });
+                }
+            );
     }
 
     /**
@@ -249,7 +272,7 @@ export class EditComponent implements OnInit {
      * @returns {Observable<any>}
      * @memberof EditComponent
      */
-    private initExistingTask(): Observable<any> {
+    private initExistingTask(): Observable<TaskFormModel> {
 
         return this.activeRoute.params
             .pipe(
@@ -257,15 +280,18 @@ export class EditComponent implements OnInit {
                     const id = params.id;
                     return this.taskApiService.fetchTask(id);
                 }),
-                mergeMap((task: ITask) => {
+                switchMap((task: ITask) => {
                     this.tasks = [task];
                     this.taskFormModel.isNew = false;
-                    this.taskFormModel.task  = this.taskFactoryService.buildTask(task);
-
+                    return this.taskFactoryService.buildTask(task);
+                }),
+                switchMap((taskModel) => {
+                    this.taskFormModel.task  = taskModel;
                     return this.appManager.loadSerApps();
                 }),
-                map((apps: IQlikApp[]) => {
+                switchMap((apps: IQlikApp[]) => {
                     this.taskFormModel.apps = apps;
+                    return of(this.taskFormModel);
                 })
             );
     }
@@ -286,10 +312,14 @@ export class EditComponent implements OnInit {
 
         return this.appManager.loadSerApps()
             .pipe(
-                map((apps: IQlikApp[]) => {
+                switchMap((apps: IQlikApp[]) => {
                     this.taskFormModel.apps = apps;
                     this.taskFormModel.isNew = true;
-                    this.taskFormModel.task = this.taskFactoryService.buildTask();
+
+                    return this.taskFactoryService.buildTask();
+                }),
+                tap((task) => {
+                    this.taskFormModel.task = task;
                 })
             );
     }
