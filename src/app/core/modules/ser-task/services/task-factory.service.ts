@@ -151,8 +151,6 @@ export class TaskFactoryService {
                     isValid = isValid && events[0].timeZone === 'Europe/Paris';
                     isValid = isValid && events[0].eventType === 0;
 
-                    console.dir(events);
-
                     if (!isValid) {
                         throw new TaskIncomatibleException('task incompatible');
                     }
