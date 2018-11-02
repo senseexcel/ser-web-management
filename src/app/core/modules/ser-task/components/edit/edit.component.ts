@@ -128,6 +128,7 @@ export class EditComponent implements OnInit {
         this.activeRoute.data
             .pipe(
                 switchMap((data: Data) => {
+
                     let source$: Observable<any> = empty();
 
                     if (data.action === 'create') {
@@ -315,7 +316,6 @@ export class EditComponent implements OnInit {
                 switchMap((apps: IQlikApp[]) => {
                     this.taskFormModel.apps = apps;
                     this.taskFormModel.isNew = true;
-
                     return this.taskFactoryService.buildTask();
                 }),
                 tap((task) => {

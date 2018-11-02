@@ -23,7 +23,6 @@ export class SerAppManagerService {
     private loadedApps$: BehaviorSubject<IQlikApp[]> ;
     private loadedSerApps$: BehaviorSubject<IQlikApp[]> ;
 
-    private appData: AppData;
     private loadedApps: IQlikApp[]    = [];
     private loadedSerApps: IQlikApp[] = [];
     private selectedApps: IQlikApp[];
@@ -87,18 +86,20 @@ export class SerAppManagerService {
         const script = await app.getScript();
 
         const serApp = this.buildApp(app, `${script}${defaultScript}`);
-        console.log(serApp);
         const newScript = this.serScriptService.stringify(serApp.script);
 
         if (this.openApps.has(serApp)) {
             const engineApp = this.openApps.get(serApp);
             await engineApp.setScript(newScript);
             await engineApp.doSave();
+            // schließe die Session nun
+            await app.session.close();
         }
 
         serApp.title = name;
+        const appData = await this.fetchApp(serApp.appId).toPromise();
 
-        this.loadedSerApps.push({ qDocName: serApp.title, qDocId: serApp.appId });
+        this.loadedSerApps.push(appData);
         this.loadedApps.push({ qDocName: serApp.title, qDocId: serApp.appId });
 
         this.loadedApps$.next(this.loadedApps);
