@@ -6,6 +6,9 @@ tasks:
   {
     reports:
     [
+      {
+        ///ser report configuration
+      }
     ]
   }
 ]

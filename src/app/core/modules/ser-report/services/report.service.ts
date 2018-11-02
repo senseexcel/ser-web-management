@@ -15,7 +15,6 @@ import { ISerDelivery } from '../api/ser-delivery.interface';
 import { ISerReport } from '../api/ser-report.interface';
 import { SelectionModel } from '@core/modules/ser-report/model/selection.model';
 import { InvalidReportException } from '../api/exceptions/invalid-report.exceptio';
-import { IDataNode } from '@core/api/model.interface';
 
 @Injectable()
 export class ReportService {
@@ -118,6 +117,11 @@ export class ReportService {
         const selections: SelectionModel[] = [];
 
         if (data && data.selections) {
+
+            if (data.selections.length > 1) {
+                throw new InvalidReportException('multiple selections will not supported');
+            }
+
             data.selections.forEach((selection: ISerSenseSelection) => {
                 selections.push(this.createModel<SelectionModel>(new SelectionModel(), selection));
             });

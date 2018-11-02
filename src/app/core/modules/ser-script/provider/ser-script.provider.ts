@@ -36,17 +36,6 @@ export class SerScriptService {
     }
 
     /**
-     * throws InvalidSerScriptException
-     */
-    private validateScript () {
-        // script should have tasks is array
-        // script should have reports is array
-        // report comes now, this have to match a valid format
-        // daten die ich durchlaufe müssen genau diese Eigenschaften haben die ich im
-        // interface definiert habe ansonsten  ist es invalide
-    }
-
-    /**
      * return complete app script as string
      *
      * @param {ISerScriptData} script
@@ -78,28 +67,5 @@ export class SerScriptService {
         }
 
         return reports;
-    }
-
-    /**
-     * sanitize script to enable simple mode for scripts
-     * in this case this is not a complete ISerConfig and can contain
-     * only report configuration
-     *
-     * @private
-     * @param {IDataNode} script
-     * @returns {ISerConfig}
-     * @memberof SerScriptService
-     */
-    private sanitizeScript(script: IDataNode): ISerConfig {
-
-        let sanitizedScript = script;
-
-        if (!sanitizedScript.hasOwnProperty('tasks')) {
-            sanitizedScript = {
-                tasks: [{reports: [script]}]
-            };
-        }
-
-        return sanitizedScript as ISerConfig;
     }
 }

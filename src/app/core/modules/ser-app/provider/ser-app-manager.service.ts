@@ -87,6 +87,7 @@ export class SerAppManagerService {
         const script = await app.getScript();
 
         const serApp = this.buildApp(app, `${script}${defaultScript}`);
+        console.log(serApp);
         const newScript = this.serScriptService.stringify(serApp.script);
 
         if (this.openApps.has(serApp)) {
