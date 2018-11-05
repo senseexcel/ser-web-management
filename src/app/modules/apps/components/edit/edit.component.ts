@@ -6,7 +6,7 @@ import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { ReportService } from '@core/modules/ser-report/services/report.service';
 import { IQlikApp } from '@apps/api/app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
-import { Subject, from, of } from 'rxjs';
+import { Subject, from, of, pipe } from 'rxjs';
 import { switchMap, map, filter, catchError, takeUntil } from 'rxjs/operators';
 import { ISerFormResponse, ISerReportFormGroup } from '@apps/api/ser-form.response.interface';
 import { BreadcrumbService } from '@breadcrumb/provider/breadcrumb.service';
@@ -152,6 +152,9 @@ export class AppEditComponent implements OnInit, OnDestroy {
         });
 
         this.breadCrumbService.breadcrumbs
+            .pipe(
+                takeUntil(this.isDestroyed$)
+            )
             .subscribe((breadcrumbs: IBreadCrumb[]) => {
                 const breadcrumb = breadcrumbs.slice(-1)[0];
                 if (breadcrumb.data.page === 'detail') {

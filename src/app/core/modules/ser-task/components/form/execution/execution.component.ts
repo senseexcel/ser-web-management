@@ -12,7 +12,7 @@ import { TaskFormModel } from '@core/modules/ser-task/model/task-form.model';
     templateUrl: 'execution.component.html'
 })
 
-export class FormExcecutionComponent implements OnDestroy, OnInit {
+export class FormExecutionComponent implements OnDestroy, OnInit {
 
     /**
      * execution form group definition

@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { SerAppService } from '@core/modules/ser-engine/provider/ser-app.provider';
 import { BehaviorSubject, Observable, concat, from, empty, of } from 'rxjs';
-import { switchMap, map, filter, concatAll, mergeMap, concatMap, tap, catchError, bufferCount } from 'rxjs/operators';
+import { switchMap, map, filter, concatAll, mergeMap, concatMap, tap, catchError, bufferCount, takeUntil } from 'rxjs/operators';
 // @todo move interface to core
 import { IQlikApp } from '@apps/api/app.interface';
 import { SerApp } from '@core/modules/ser-app/model/app.model';
@@ -43,7 +43,6 @@ export class SerAppManagerService {
         reportService: ReportService,
         taskService: SerTaskService
     ) {
-        this.appData = appData;
         this.serAppService    = serAppService;
         this.serScriptService = scriptService;
         this.reportService    = reportService;
@@ -92,8 +91,6 @@ export class SerAppManagerService {
             const engineApp = this.openApps.get(serApp);
             await engineApp.setScript(newScript);
             await engineApp.doSave();
-            // schließe die Session nun
-            await app.session.close();
         }
 
         serApp.title = name;
