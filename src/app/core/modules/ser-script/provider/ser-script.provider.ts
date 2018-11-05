@@ -3,6 +3,8 @@ import * as hjson from 'hjson';
 
 import { ISerScriptData } from '../api/ser-script-data.interface';
 import { ISerReport } from '@core/modules/ser-report/api/ser-report.interface';
+import { IDataNode } from '@core/api/model.interface';
+import { ISerConfig } from '../api/ser-config.interface';
 
 @Injectable()
 export class SerScriptService {

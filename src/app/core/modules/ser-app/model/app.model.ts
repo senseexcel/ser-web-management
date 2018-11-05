@@ -15,8 +15,14 @@ export class SerApp implements ISerApp {
 
     private serAppTitle: string;
 
+    private serAppInvalid: boolean;
+
     public set appId(appId: string) {
         this.serAppId = appId;
+    }
+
+    public set invalid(isInvalid: boolean) {
+        this.serAppInvalid = isInvalid;
     }
 
     public set report(report: ISerReport) {
@@ -37,6 +43,10 @@ export class SerApp implements ISerApp {
 
     public get appId(): string {
         return this.serAppId;
+    }
+
+    public get invalid(): boolean {
+        return this.serAppInvalid;
     }
 
     public get report(): ISerReport {

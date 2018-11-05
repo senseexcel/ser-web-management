@@ -153,7 +153,6 @@ export class DashboardComponent implements OnInit {
                 default            : title = item.name;
             }
 
-            console.dir(title);
             return { ...item, title };
         });
     }

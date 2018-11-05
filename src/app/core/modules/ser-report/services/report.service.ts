@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ISerGeneral, ISerTemplate, ISerConnection, IMailServerSettings, IMailSettings, ISerSenseSelection } from 'ser.api';
+import { ISerGeneral, ISerTemplate, ISerConnection, IMailSettings, ISerSenseSelection, DistributeMode, IDeliverySettings } from 'ser.api';
 import {
     DeliveryModel,
     EmailModel,
@@ -14,6 +14,7 @@ import {
 import { ISerDelivery } from '../api/ser-delivery.interface';
 import { ISerReport } from '../api/ser-report.interface';
 import { SelectionModel } from '@core/modules/ser-report/model/selection.model';
+import { InvalidReportException } from '../api/exceptions/invalid-report.exceptio';
 
 @Injectable()
 export class ReportService {
@@ -28,6 +29,11 @@ export class ReportService {
     public createReport(modelData: ISerReport): ReportModel {
         const data         = modelData || {general: null, distribute: null, connections: null, template: null};
         const report       = new ReportModel();
+
+        if (modelData === undefined || !this.validateModelData(report, data)) {
+            throw new InvalidReportException(`properties for model ${report.constructor.name} are not supported.`);
+        }
+
         report.general     = this.createGeneralData(data.general);
         report.distribute  = this.createDistributeData(data.distribute);
         report.connections = this.createConnectionData(data.connections);
@@ -50,7 +56,7 @@ export class ReportService {
 
         /** get first correct model which is defined by path */
         path.concat([name]).forEach( (modelName: string) => {
-            if ( ! model[modelName] ) {
+            if (!model[modelName] ) {
                 throw new Error('not not find correct model to update.');
             }
             model = model[modelName];
@@ -111,6 +117,11 @@ export class ReportService {
         const selections: SelectionModel[] = [];
 
         if (data && data.selections) {
+
+            if (data.selections.length > 1) {
+                throw new InvalidReportException('multiple selections will not supported');
+            }
+
             data.selections.forEach((selection: ISerSenseSelection) => {
                 selections.push(this.createModel<SelectionModel>(new SelectionModel(), selection));
             });
@@ -157,10 +168,31 @@ export class ReportService {
     private createDistributeData(modelData: ISerDelivery): ISerDelivery  {
         const delivery = new DeliveryModel();
         const data     = modelData || {file: null, mail: null, hub: null};
-        delivery.file  = this.createModel<FileModel>(new FileModel(), data.file);
-        delivery.hub   = this.createModel<HubModel>(new HubModel(), data.hub);
+        delivery.file  = this.createDeliveryModel(new FileModel(), data.file || {});
+        delivery.hub   = this.createDeliveryModel(new HubModel(), data.hub || {});
         delivery.mail  = this.createMailData(data.mail);
+
         return delivery;
+    }
+
+    /**
+     * create delivery model and add default mode
+     *
+     * @private
+     * @param {IDeliverySettings} model
+     * @param {*} data
+     * @returns {IDeliverySettings}
+     * @memberof ReportService
+     */
+    private createDeliveryModel(model: IDeliverySettings, data): IDeliverySettings {
+        const createdModel: IDeliverySettings =  this.createModel<IDeliverySettings>(model, data);
+        /** get default mode for delivery this is string value */
+        const defaultMode: string = DistributeMode[DistributeMode.DELETEALLFIRST];
+        /** get current mode for delivery, sanitize both to be a numeric value */
+        const currentMode: string = data && data.mode ? DistributeMode[data.mode.toUpperCase()] : DistributeMode[defaultMode];
+        /** set mode for model, convert numeric value (0, 1 or 2) into string value again */
+        createdModel.mode = DistributeMode[currentMode];
+        return createdModel;
     }
 
     /**
@@ -176,7 +208,7 @@ export class ReportService {
         const mailModel = new EmailModel();
         const mailServer = new MailServerSettingsModel();
         const email = this.createModel<EmailModel>(mailModel, mailData);
-        const server = this.createModel<MailServerSettingsModel>(mailServer, mailData || {});
+        const server = this.createModel<MailServerSettingsModel>(mailServer, mailData ? mailData.mailServer : {});
 
         email.mailServer = server;
 
@@ -184,7 +216,28 @@ export class ReportService {
     }
 
     /**
+     * validate model only values which we find in
+     * raw data of model are accepted otherwise it will
+     * be rejected
      *
+     * @private
+     * @param {*} model
+     * @param {*} data
+     * @returns {boolean}
+     * @memberof ReportService
+     */
+    private validateModelData(model, data): boolean {
+        let isValid = true;
+        Object.keys(data).forEach((property) => {
+            if (!(property in model)) {
+                isValid = false;
+            }
+        });
+        return isValid;
+    }
+
+    /**
+     * create and validate model
      *
      * @private
      * @template T
@@ -193,14 +246,20 @@ export class ReportService {
      * @returns {T}
      * @memberof ReportService
      */
-    private createModel<T>(model, modelData): T {
+    private createModel<T>(model, modelData, writeData = true): T {
 
         const rawData = model.raw;
         const data    = modelData || {};
 
-        Object.keys(rawData).forEach(property => {
-            model[property] = data[property] || undefined;
-        });
+        if (!this.validateModelData(model, data)) {
+            throw new InvalidReportException(`properties for model ${model.constructor.name} are not supported.`);
+        }
+
+        if (writeData) {
+            Object.keys(rawData).forEach(property => {
+                model[property] = data[property] || undefined;
+            });
+        }
         return model;
     }
 }

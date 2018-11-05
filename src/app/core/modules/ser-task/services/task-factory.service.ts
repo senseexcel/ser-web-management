@@ -3,18 +3,31 @@ import { TaskModel } from '@core/modules/ser-task/model/task.model';
 import { IModel, IDataNode } from '@core/api/model.interface';
 import { ExecutionModel } from '@core/modules/ser-task/model/execution.model';
 import { IdentificationModel } from '@core/modules/ser-task/model/indetification.model';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of, forkJoin } from 'rxjs';
 import { ITask } from '@core/modules/ser-engine/api/task.interface';
 import { IQlikApp } from '@apps/api/app.interface';
 import { ISchemaEvent } from '../../ser-engine/api/schema-event.interface';
 import { TriggerModel } from '../model/trigger.model';
+import { HttpClient } from '@angular/common/http';
+import { map, mergeMap } from 'rxjs/operators';
+import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
+import { TaskIncomatibleException } from '../api/exceptions/incompatible.exception';
 
 @Injectable()
 export class TaskFactoryService {
 
     public selectedTasks: BehaviorSubject<ITask[]>;
 
-    public selectTasks(tasks: ITask[]) {
+    private http: HttpClient;
+
+    private filterService: SerFilterService;
+
+    public constructor(
+        http: HttpClient,
+        filterService: SerFilterService
+    ) {
+        this.http = http;
+        this.filterService = filterService;
     }
 
     /**
@@ -24,19 +37,30 @@ export class TaskFactoryService {
      * @returns {TaskModel}
      * @memberof TaskService
      */
-    public buildTask(data?: ITask): TaskModel {
+    public buildTask(data?: ITask): Observable<TaskModel> {
 
-        const task           = new TaskModel();
-        const exectuion      = this.createModel(new ExecutionModel()     , data || {});
-        const identification = this.createIdentificationModel(data);
-        const trigger        = this.createTriggerModel(data);
+        return of(new TaskModel())
+            .pipe(
+                mergeMap((task: TaskModel): Observable<TaskModel> => {
 
-        task.id             = data ? data.id : null;
-        task.execution      = exectuion as ExecutionModel;
-        task.identification = identification as IdentificationModel;
-        task.trigger        = trigger as TriggerModel;
+                    return forkJoin([
+                        this.createModel(new ExecutionModel(), data || {}),
+                        this.createIdentificationModel(data),
+                        this.createTriggerModel(data ? data.id : null),
+                    ])
+                    .pipe(
+                        map((models) => {
+                            const [exectuion, identification, trigger] = models;
+                            task.id             = data ? data.id : null;
+                            task.execution      = exectuion as ExecutionModel;
+                            task.identification = identification as IdentificationModel;
+                            task.trigger        = trigger as TriggerModel;
 
-        return task;
+                            return task;
+                        })
+                    );
+                })
+            );
     }
 
     /**
@@ -107,9 +131,39 @@ export class TaskFactoryService {
      * @returns {TriggerModel}
      * @memberof TaskFactoryService
      */
-    public createTriggerModel(data): TriggerModel {
+    public createTriggerModel(taskId: string): Observable<TriggerModel> {
         const model = new TriggerModel();
-        return model;
+
+        if (taskId) {
+            const filter = this.filterService.createFilter('reloadTask.id', taskId);
+            return this.http.get('/qrs/event/full', {
+                params: {
+                    filter: this.filterService.createFilterQueryString(filter)
+                }
+            }).pipe(
+                map((events: any[]) => {
+
+                    // validate event
+                    let isValid = true;
+                    isValid = isValid && events.length === 1;
+                    isValid = isValid && events[0].incrementDescription === '0 0 1 0';
+                    isValid = isValid && events[0].incrementOption === 1;
+                    isValid = isValid && events[0].timeZone === 'Europe/Paris';
+                    isValid = isValid && events[0].eventType === 0;
+
+                    if (!isValid) {
+                        throw new TaskIncomatibleException('task incompatible');
+                    }
+
+                    const startDate = new Date(events[0].startDate);
+                    const timezoneOffset = startDate.getTimezoneOffset() / 60;
+                    model.hour = startDate.getHours() - timezoneOffset;
+                    return model;
+                })
+            );
+        }
+
+        return of(model);
     }
 
     /**
@@ -119,11 +173,11 @@ export class TaskFactoryService {
      * @returns {TriggerModel}
      * @memberof TaskFactoryService
      */
-    public createIdentificationModel(data: ITask): IdentificationModel {
+    public createIdentificationModel(data: ITask): Observable<IdentificationModel> {
         const model = new IdentificationModel();
         model.app   = data && data.app ? data.app.id : null;
         model.name  = data ? data.name : null;
-        return model;
+        return of(model);
     }
 
     /**
@@ -136,13 +190,13 @@ export class TaskFactoryService {
      * @returns {T}
      * @memberof ReportService
      */
-    private createModel(model: IModel, modelData: IDataNode): IModel {
+    private createModel(model: IModel, modelData: IDataNode): Observable<IModel> {
         const rawData = model.raw;
         const data    = modelData || {};
 
         Object.keys(rawData).forEach(property => {
             model[property] = data[property] === 'undefined' ? null : data[property];
         });
-        return model;
+        return of(model);
     }
 }
