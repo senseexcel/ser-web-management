@@ -10,6 +10,7 @@ import { OverlayDialogComponent } from '../components/dialog/dialog.component';
 import { OverlayMessageComponent } from '../components/message/message.component';
 import { DialogFooterComponent } from '../components/dialog/dialog-footer.component';
 import { MessageFooterComponent } from '../components/message/message-footer.component';
+import { IControl, IControlConstructor } from '../api/control.interface';
 
 @Injectable()
 export class ModalService {
@@ -32,13 +33,14 @@ export class ModalService {
      * @param {*} body
      * @memberof ModalService
      */
-    public open<T>(data: IModalData<T>, configuration: IOverlayConfig = {}): ModalControl {
+    public open<T>(data: IModalData<T>, configuration: IOverlayConfig = {}): IControl {
 
         const overlayRef = this.createOverlay(configuration);
-        const control    = new ModalControl(overlayRef);
+
+        const control: IControl = new (data.control || ModalControl)(overlayRef);
 
         /** create injection tokens */
-        const tokens     = this.createInjectionTokens(data, control);
+        const tokens     = this.createInjectionTokens(data, control as IControl);
         const injector   = this.createInjector(tokens);
 
         const overlayPortal = new ComponentPortal(ModalComponent, null, injector);
@@ -177,7 +179,7 @@ export class ModalService {
      * @returns {WeakMap<InjectionToken<any>, any>}
      * @memberof ModalService
      */
-    private createInjectionTokens(data: IModalData<any>, control: ModalControl): WeakMap<InjectionToken<any>, any> {
+    private createInjectionTokens(data: IModalData<any>, control: IControl): WeakMap<InjectionToken<any>, any> {
         const tokens = new WeakMap();
         tokens.set(MODAL_OVERLAY_DATA, data);
         tokens.set(MODAL_OVERLAY_CTRL, control);

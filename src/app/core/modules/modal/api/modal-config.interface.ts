@@ -1,5 +1,6 @@
-import { OverlayDialogComponent } from '../components/dialog/dialog.component';
 import { ComponentType } from '@angular/cdk/portal';
+import { ModalControl } from '../services/modal-control';
+import { IControlConstructor } from './control.interface';
 
 export interface IModalData<T> {
 
@@ -8,6 +9,8 @@ export interface IModalData<T> {
     bodyComponent: ComponentType<T>;
 
     footerComponent?: ComponentType<any>;
+
+    control?: IControlConstructor;
 }
 
 export interface IModalDialogData {

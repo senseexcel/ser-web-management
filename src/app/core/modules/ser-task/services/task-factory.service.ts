@@ -12,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, mergeMap } from 'rxjs/operators';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 import { TaskIncomatibleException } from '../api/exceptions/incompatible.exception';
+import * as MomentTimezone from 'moment-timezone';
 
 @Injectable()
 export class TaskFactoryService {
@@ -22,12 +23,15 @@ export class TaskFactoryService {
 
     private filterService: SerFilterService;
 
+    private date: MomentTimezone.Moment;
+
     public constructor(
         http: HttpClient,
         filterService: SerFilterService
     ) {
         this.http = http;
         this.filterService = filterService;
+        this.date = MomentTimezone.tz('Europe/Paris');
     }
 
     /**
@@ -91,19 +95,19 @@ export class TaskFactoryService {
 
     public createSchemaEvent(startTime: number, task?: ITask): ISchemaEvent {
 
-        const start = new Date();
-        const end   = new Date('31 December 9999 00:00 UTC');
+        const start = MomentTimezone.tz('Europe/Paris');
+        const end = MomentTimezone.tz('9999-12-31', 'Europe/Paris');
 
         if (startTime) {
-            start.setHours(startTime || 2);
-            start.setMinutes(0);
-            start.setSeconds(0);
-            start.setMilliseconds(0);
+            start.hour(Number(startTime) + start.utcOffset() / 60 || 12);
+            start.minute(0);
+            start.second(0);
+            start.millisecond(0);
         }
 
         const eventData: ISchemaEvent = {
             enabled: true,
-            expirationDate: end.toISOString(),
+            expirationDate: end.toISOString(true),
             startDate: start.toISOString(),
             eventType: 0,
             name: 'ser daily schema',
@@ -155,9 +159,8 @@ export class TaskFactoryService {
                         throw new TaskIncomatibleException('task incompatible');
                     }
 
-                    const startDate = new Date(events[0].startDate);
-                    const timezoneOffset = startDate.getTimezoneOffset() / 60;
-                    model.hour = startDate.getHours() - timezoneOffset;
+                    const startDate = MomentTimezone.tz(events[0].startDate, 'Europe/Paris');
+                    model.hour = startDate.hour();
                     return model;
                 })
             );

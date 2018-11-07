@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MODAL_DIALOG_DATA, MODAL_OVERLAY_CTRL } from '../../api/modal-content.injector';
+import { MODAL_DIALOG_DATA } from '../../api/modal-content.injector';
 import { IModalDialogData } from '../../api/modal-config.interface';
 
 @Component({

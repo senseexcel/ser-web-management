@@ -18,6 +18,7 @@ import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { CoreModule } from '@core/core.module';
 import { CommonModule } from '@angular/common';
 import { UserModule } from '@core/modules/user/user.module';
+import { LicenseModule } from './modules/ser-license/license.module';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { UserModule } from '@core/modules/user/user.module';
     CommonModule,
     CoreModule,
     DropDownModule,
+    LicenseModule,
     MenuModule,
     SerEngineModule,
     UserModule

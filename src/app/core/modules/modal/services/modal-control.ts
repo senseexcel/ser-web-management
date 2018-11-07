@@ -1,9 +1,10 @@
 import { OverlayRef } from '@angular/cdk/overlay';
 import { Subject } from 'rxjs';
+import { IControl } from '../api/control.interface';
 
-export class ModalControl {
+export class ModalControl implements IControl {
 
-    public readonly onClose: Subject<boolean> = new Subject();
+    private onClose$: Subject<boolean> = new Subject();
 
     private overlayRef: OverlayRef;
 
@@ -13,7 +14,11 @@ export class ModalControl {
 
     public close() {
         this.overlayRef.dispose();
-        this.onClose.next(true);
+        this.onClose$.next(true);
+    }
+
+    public get onClose(): Subject<boolean> {
+        return this.onClose$;
     }
 }
 
