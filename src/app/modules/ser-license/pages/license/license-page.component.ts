@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ContentLibNotExistsException, InvalidQlikLicenseException } from '../../api/exceptions';
+import {
+    ContentLibNotExistsException,
+    QlikLicenseNoAccessException,
+    QlikLicenseInvalidException
+} from '../../api/exceptions';
 import { ModalService } from '@core/modules/modal/services/modal.service';
 import { forkJoin } from 'rxjs';
 import { ContentLibService, LicenseService } from '../../services';
@@ -76,7 +80,7 @@ export class LicensePageComponent implements OnInit {
     ngOnInit() {
 
         forkJoin([
-            this.contentLib.fetchContentLibrary(),
+            this.license.fetchLicenseFile(),
             this.license.fetchQlikSerialNumber()
         ])
         .subscribe(
@@ -115,9 +119,14 @@ export class LicensePageComponent implements OnInit {
                 message = 'ContentLibrary senseexcel could not found.';
                 break;
 
-            case InvalidQlikLicenseException:
+            case QlikLicenseInvalidException:
                 title = 'Error: Qlik License';
                 message = 'Qlik License could not read or is invalid. Pleas contact your Administrator.';
+                break;
+
+            case QlikLicenseNoAccessException:
+                title = 'Error: No Access';
+                message = 'Could not access QLik License, which is mandatory to fetch SER License.';
                 break;
 
             default:

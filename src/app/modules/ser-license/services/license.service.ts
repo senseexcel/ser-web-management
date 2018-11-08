@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { map, switchMap } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of, fromEvent } from 'rxjs';
+import { HttpClient, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { map, switchMap, tap, catchError } from 'rxjs/operators';
 import { IQlikLicenseResponse } from '../api/response/qlik-license.interface';
-import { InvalidQlikLicenseException } from '../api/exceptions';
+import { QlikLicenseNoAccessException, QlikLicenseInvalidException } from '../api/exceptions';
+import { ContentLibService } from './contentlib.service';
+import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 
 @Injectable()
 export class LicenseService {
+
+    private contentLib: ContentLibService;
 
     /**
      * angular http client
@@ -35,8 +39,10 @@ export class LicenseService {
     private qlikSerialIsFetched = false;
 
     constructor(
+        contentLib: ContentLibService,
         http: HttpClient
     ) {
+        this.contentLib = contentLib;
         this.http = http;
         this.qlikSerialNumber$ = new BehaviorSubject('');
     }
@@ -47,6 +53,8 @@ export class LicenseService {
     /**
      * get current qlik license
      *
+     * @throws {QlikLicenseInvalidException}
+     * @throws {QlikLicenseNoAccessException}
      * @returns {Observable<any>}
      * @memberof LicenseService
      */
@@ -55,10 +63,16 @@ export class LicenseService {
         if (!this.qlikSerialIsFetched) {
             return this.http.get('/qrs/license')
                 .pipe(
+                    catchError((response: HttpErrorResponse) => {
+                        if (response.status === 403) {
+                            throw new QlikLicenseNoAccessException('No access qlik license.');
+                        }
+                        throw response;
+                    }),
                     map((response: IQlikLicenseResponse) => {
 
                         if (!response || response.isInvalid) {
-                            throw new InvalidQlikLicenseException('Qlik License invalid or could not read');
+                            throw new QlikLicenseInvalidException('No License found or invalid.');
                         }
 
                         /** serial number */
@@ -102,6 +116,48 @@ export class LicenseService {
                 );
             })
         );
+    }
+
+    /**
+     * fetch license file
+     *
+     * @returns {Observable<string>}
+     * @memberof LicenseService
+     */
+    public fetchLicenseFile(): Observable<string> {
+
+        return this.contentLib.fetchContentLibrary().pipe(
+            switchMap((library: IContentLibResponse) => {
+
+                const files = library.references.filter((file: IContentLibFileReference) => {
+                    const p: RegExp = new RegExp('senseexcel/license.txt$');
+                    if (file.logicalPath.match(p)) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                const licenseFile = files[0];
+                console.log(files);
+
+                if (!licenseFile) {
+                    return this.contentLib.createFile('license.txt', this.createLicenseFile());
+                } else {
+                    // load file
+                    return this.contentLib.readFile(licenseFile);
+                }
+            })
+        );
+    }
+
+    /**
+     * create license file
+     *
+     * @returns {FileReader}
+     * @memberof LicenseService
+     */
+    private createLicenseFile(): Blob {
+        return new Blob([''], {type: 'text/plain'});
     }
 
     /**
