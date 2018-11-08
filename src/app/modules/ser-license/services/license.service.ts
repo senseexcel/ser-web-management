@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, BehaviorSubject, of, fromEvent } from 'rxjs';
 import { HttpClient, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { map, switchMap, tap, catchError } from 'rxjs/operators';
+import { map, switchMap, tap, catchError, mergeMap, concatMap, retryWhen, switchMapTo } from 'rxjs/operators';
 import { IQlikLicenseResponse } from '../api/response/qlik-license.interface';
-import { QlikLicenseNoAccessException, QlikLicenseInvalidException } from '../api/exceptions';
+import { QlikLicenseNoAccessException, QlikLicenseInvalidException, SerLicenseNotFoundException } from '../api/exceptions';
 import { ContentLibService } from './contentlib.service';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 
@@ -38,13 +38,32 @@ export class LicenseService {
      */
     private qlikSerialIsFetched = false;
 
+    /**
+     * cache for sense excel reporting license
+     *
+     * @private
+     * @type {BehaviorSubject<string>}
+     * @memberof LicenseService
+     */
+    private serLicense$: BehaviorSubject<string>;
+
+    /**
+     * flag ser license has allready fetched
+     *
+     * @private
+     * @memberof LicenseService
+     */
+    private isSerLicenseFetched = false;
+
     constructor(
         contentLib: ContentLibService,
         http: HttpClient
     ) {
         this.contentLib = contentLib;
         this.http = http;
+
         this.qlikSerialNumber$ = new BehaviorSubject('');
+        this.serLicense$       = new BehaviorSubject('');
     }
 
     public validateLicense() {
@@ -121,14 +140,16 @@ export class LicenseService {
     /**
      * fetch license file
      *
+     * @throws SerLicenseNotFoundException
      * @returns {Observable<string>}
      * @memberof LicenseService
      */
-    public fetchLicenseFile(): Observable<string> {
+    public fetchLicenseFile(): Observable<IContentLibFileReference> {
 
         return this.contentLib.fetchContentLibrary().pipe(
-            switchMap((library: IContentLibResponse) => {
+            map((library: IContentLibResponse) => {
 
+                /** filter all files for license.txt file */
                 const files = library.references.filter((file: IContentLibFileReference) => {
                     const p: RegExp = new RegExp('senseexcel/license.txt$');
                     if (file.logicalPath.match(p)) {
@@ -137,17 +158,55 @@ export class LicenseService {
                     return false;
                 });
 
-                const licenseFile = files[0];
-                console.log(files);
-
-                if (!licenseFile) {
-                    return this.contentLib.createFile('license.txt', this.createLicenseFile());
-                } else {
-                    // load file
-                    return this.contentLib.readFile(licenseFile);
+                if (!files.length) {
+                    throw new SerLicenseNotFoundException();
                 }
+
+                return files[0];
             })
         );
+    }
+
+    /**
+     * fetch  sense excel reporting license content
+     *
+     * @returns {Observable<string>}
+     * @memberof LicenseService
+     */
+    public fetchLicenseData(): Observable<string> {
+
+        let licenseData$: Observable<string>;
+        let retryAttempts = 0;
+
+        if (this.isSerLicenseFetched) {
+            licenseData$ = this.serLicense$;
+        } else {
+            licenseData$ = this.fetchLicenseFile()
+            .pipe(
+                /** retry to create file if no license.txt exists, for max 1 time */
+                retryWhen((errors) => {
+                    const createFile$ = this.contentLib.createFile('license.txt', this.createLicenseFile());
+                    return errors.pipe(
+                        switchMap((error) => {
+                            if (error instanceof SerLicenseNotFoundException && retryAttempts < 1) {
+                                retryAttempts += 1;
+                                return createFile$;
+                            }
+                            throw error;
+                        }),
+                    );
+                }),
+                switchMap((file: IContentLibFileReference) => {
+                    return this.contentLib.readFile(file);
+                }),
+                tap((content) => {
+                    this.serLicense$.next(content);
+                    this.isSerLicenseFetched = true;
+                })
+            );
+        }
+
+        return licenseData$;
     }
 
     /**
@@ -157,7 +216,7 @@ export class LicenseService {
      * @memberof LicenseService
      */
     private createLicenseFile(): Blob {
-        return new Blob([''], {type: 'text/plain'});
+        return new Blob(['ich bin komplett anderer inhalt und habe viel mehr in mir als du denkst'], {type: 'text/plain'});
     }
 
     /**

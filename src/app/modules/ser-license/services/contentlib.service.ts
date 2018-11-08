@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpRequest } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 import { ContentLibNotExistsException } from '../api/exceptions';
 import { Observable, of, fromEvent } from 'rxjs';
+import { pipe } from '@angular/core/src/render3/pipe';
 
 @Injectable()
 export class ContentLibService {
@@ -52,7 +53,7 @@ export class ContentLibService {
      * @param {Blob} content
      * @memberof ContentLibService
      */
-    public createFile(fileName: string, content: Blob): Observable<any> {
+    public createFile(fileName: string, content: Blob): Observable<string> {
 
         return this.createFileFormData(fileName, content)
             .pipe(
@@ -63,11 +64,8 @@ export class ContentLibService {
                         .set('externalpath', fileName)
                         .set('overwrite', 'false');
 
-                    const request = new HttpRequest('POST', url, formData, {
-                        params
-                    });
-
-                    return this.http.request(request);
+                    return this.http.post(url, formData, {params})
+                        .pipe(map(created => String(created)));
                 })
             );
     }
@@ -79,7 +77,22 @@ export class ContentLibService {
      * @memberof ContentLibService
      */
     public readFile(file: IContentLibFileReference): Observable<string> {
-        return of('my license');
+
+        return this.http.get(file.logicalPath, {
+            responseType: 'blob'
+        }).pipe(
+            switchMap((content: Blob) => {
+                return Observable.create((obs) => {
+                    const fileReader = new FileReader();
+                    fileReader.readAsText(content);
+
+                    fileReader.onabort   = err  => obs.error(err);
+                    fileReader.onerror   = err  => obs.error(err);
+                    fileReader.onload    = () => obs.next(fileReader.result);
+                    fileReader.onloadend = () => obs.complete();
+                });
+            })
+        );
     }
 
     /**
@@ -107,7 +120,7 @@ export class ContentLibService {
             reader.onabort   = err => obs.error(err);
             reader.onload    = ()  => obs.next(reader.result);
             reader.onloadend = ()  => obs.complete();
-            return reader.readAsDataURL(data);
+            return reader.readAsText(data);
         });
 
         /** after blob content has been loaded add to form data object */

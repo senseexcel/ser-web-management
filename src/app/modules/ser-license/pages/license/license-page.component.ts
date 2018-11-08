@@ -80,12 +80,12 @@ export class LicensePageComponent implements OnInit {
     ngOnInit() {
 
         forkJoin([
-            this.license.fetchLicenseFile(),
+            this.license.fetchLicenseData(),
             this.license.fetchQlikSerialNumber()
         ])
         .subscribe(
             // done
-            () => {
+            (data) => {
                 this.isInstallationInvalid = false;
             },
             // on error
@@ -113,22 +113,18 @@ export class LicensePageComponent implements OnInit {
         let title: string;
 
         switch (error.constructor) {
-
             case ContentLibNotExistsException:
                 title = 'No ContentLibrary found';
                 message = 'ContentLibrary senseexcel could not found.';
                 break;
-
             case QlikLicenseInvalidException:
                 title = 'Error: Qlik License';
                 message = 'Qlik License could not read or is invalid. Pleas contact your Administrator.';
                 break;
-
             case QlikLicenseNoAccessException:
                 title = 'Error: No Access';
                 message = 'Could not access QLik License, which is mandatory to fetch SER License.';
                 break;
-
             default:
                 title = 'An Error occured !';
                 message = 'An unexpected error occured, please contact your System Adminstrator for more Informations.';
