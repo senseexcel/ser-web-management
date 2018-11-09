@@ -5,8 +5,8 @@ import {
     QlikLicenseInvalidException
 } from '../../api/exceptions';
 import { ModalService } from '@core/modules/modal/services/modal.service';
-import { forkJoin } from 'rxjs';
-import { ContentLibService, LicenseService } from '../../services';
+import { License, LicenseValidator } from '../../services';
+import { ILicenseValidationResult } from '../../api/validation-result.interface';
 
 @Component({
     selector: 'app-license',
@@ -27,22 +27,15 @@ export class LicensePageComponent implements OnInit {
     public isInstallationInvalid: boolean;
 
     /**
-     * content library service to validate current installation is valid
-     *
-     * @private
-     * @type {ContentLibService}
-     * @memberof LicensePageComponent
-     */
-    private contentLib: ContentLibService;
-
-    /**
      * license service
      *
      * @private
      * @type {LicenseService}
      * @memberof LicensePageComponent
      */
-    private license: LicenseService;
+    private license: License;
+
+    private licenseValidator: LicenseValidator;
 
     /**
      * modal service to display messages in dialog
@@ -61,12 +54,12 @@ export class LicensePageComponent implements OnInit {
      * @memberof LicensePageComponent
      */
     constructor(
-        contentLib: ContentLibService,
-        license: LicenseService,
+        license: License,
+        licenseValidator: LicenseValidator,
         modal: ModalService
     ) {
-        this.contentLib = contentLib;
         this.license = license;
+        this.licenseValidator = licenseValidator;
         this.modal = modal;
 
         this.isInstallationInvalid = false;
@@ -79,57 +72,25 @@ export class LicensePageComponent implements OnInit {
      */
     ngOnInit() {
 
-        forkJoin([
-            this.license.fetchLicenseData(),
-            this.license.fetchQlikSerialNumber()
-        ])
-        .subscribe(
-            // done
-            (data) => {
-                this.isInstallationInvalid = false;
-            },
-            // on error
-            (error) => {
-                this.handleError(error);
-                this.isInstallationInvalid = true;
-            },
-            // complete
-            () => {
-                this.isLoaded = true;
-            }
-        );
+        this.licenseValidator.validateLicenseInstallation()
+            .subscribe((validationResult: ILicenseValidationResult) => {
+
+                if (!validationResult.isValid) {
+                    this.showInvalidInstallationMessage(validationResult);
+                }
+            });
     }
 
     /**
-     * handle errors
+     * displays modal message if installation is not valid
      *
      * @private
-     * @param {*} error
+     * @param {ILicenseValidationResult} validation
      * @memberof LicensePageComponent
      */
-    private handleError(error) {
-
-        let message: string;
-        let title: string;
-
-        switch (error.constructor) {
-            case ContentLibNotExistsException:
-                title = 'No ContentLibrary found';
-                message = 'ContentLibrary senseexcel could not found.';
-                break;
-            case QlikLicenseInvalidException:
-                title = 'Error: Qlik License';
-                message = 'Qlik License could not read or is invalid. Pleas contact your Administrator.';
-                break;
-            case QlikLicenseNoAccessException:
-                title = 'Error: No Access';
-                message = 'Could not access QLik License, which is mandatory to fetch SER License.';
-                break;
-            default:
-                title = 'An Error occured !';
-                message = 'An unexpected error occured, please contact your System Adminstrator for more Informations.';
-                console.error(error.message);
-        }
+    private showInvalidInstallationMessage(validation: ILicenseValidationResult) {
+        const title   = 'Invalid Instaalation';
+        const message = validation.errors.join('\n');
 
         this.modal.openMessageModal(title, message);
     }

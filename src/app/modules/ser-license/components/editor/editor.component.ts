@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { LicenseService } from '../../services';
+import { License } from '../../services';
 
 @Component({
     selector: 'app-license-editor',
@@ -13,12 +13,12 @@ export class EditorComponent implements OnInit {
     @ViewChild('input')
     private input: ElementRef;
 
-    private licenseService: LicenseService;
+    private license: License;
 
     constructor(
-        licenseService: LicenseService
+        license: License
     ) {
-        this.licenseService = licenseService;
+        this.license = license;
     }
 
     ngOnInit() {

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpRequest, HttpResponse } from '@angular/common/http';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 import { ContentLibNotExistsException } from '../api/exceptions';
-import { Observable, of, fromEvent } from 'rxjs';
-import { pipe } from '@angular/core/src/render3/pipe';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class ContentLibService {

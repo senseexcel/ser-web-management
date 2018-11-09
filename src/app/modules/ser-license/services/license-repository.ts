@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of, fromEvent } from 'rxjs';
-import { HttpClient, HttpParams, HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { map, switchMap, tap, catchError, mergeMap, concatMap, retryWhen, switchMapTo } from 'rxjs/operators';
+import { Observable, BehaviorSubject, of } from 'rxjs';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { map, switchMap, tap, catchError, retryWhen } from 'rxjs/operators';
 import { IQlikLicenseResponse } from '../api/response/qlik-license.interface';
 import { QlikLicenseNoAccessException, QlikLicenseInvalidException, SerLicenseNotFoundException } from '../api/exceptions';
 import { ContentLibService } from './contentlib.service';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 
 @Injectable()
-export class LicenseService {
+export class LicenseRepository {
 
     private contentLib: ContentLibService;
 
@@ -66,9 +66,6 @@ export class LicenseService {
         this.serLicense$       = new BehaviorSubject('');
     }
 
-    public validateLicense() {
-    }
-
     /**
      * get current qlik license
      *
@@ -109,7 +106,7 @@ export class LicenseService {
     }
 
     /**
-     * fetch sense excel reporting license file
+     * fetch sense excel reporting license from remote server
      *
      * @returns {Observable<string>}
      * @memberof LicenseService
@@ -126,8 +123,11 @@ export class LicenseService {
                     .set('serial', qlikSerial)
                     .set('chk', String(checkSum));
 
+                // const url = `https://support.qlik2go.net/lefupdate/update_lef.asp?${params.toString()}`;
+                const url = `http://localhost:3000?${params.toString()}`;
+
                 /** fetch license for qlik sense excel reporting  */
-                return this.http.get('https://support.qlik2go.net/lefupdate/update_lef.asp', { params })
+                return this.http.jsonp(url, 'licenseResponse')
                 .pipe(
                     map((response: string) => {
                         return response;
@@ -173,7 +173,7 @@ export class LicenseService {
      * @returns {Observable<string>}
      * @memberof LicenseService
      */
-    public fetchLicenseData(): Observable<string> {
+    public readLicense(): Observable<string> {
 
         let licenseData$: Observable<string>;
         let retryAttempts = 0;
@@ -216,7 +216,7 @@ export class LicenseService {
      * @memberof LicenseService
      */
     private createLicenseFile(): Blob {
-        return new Blob(['ich bin komplett anderer inhalt und habe viel mehr in mir als du denkst'], {type: 'text/plain'});
+        return new Blob([''], {type: 'text/plain'});
     }
 
     /**

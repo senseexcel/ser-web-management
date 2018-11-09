@@ -3,9 +3,12 @@ import { LicenseRoutingModule } from './license-routing.module';
 import { pages } from './pages';
 import { components } from './components';
 import { services } from './services';
+import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 
 @NgModule({
     imports: [
+        HttpClientModule,
+        HttpClientJsonpModule,
         LicenseRoutingModule,
     ],
     declarations: [
