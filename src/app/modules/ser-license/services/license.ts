@@ -1,19 +1,30 @@
 import { Injectable } from '@angular/core';
 import { LicenseModel } from '../model/license.model';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import { LicenseRepository } from './license-repository';
+import { catchError, switchMap, map, tap } from 'rxjs/operators';
+import { LicenseReader } from './license-reader';
 
 @Injectable()
 export class License {
 
-    private licenseModel: LicenseModel;
+    public update$: Subject<LicenseModel>;
+
+    public license$: BehaviorSubject<LicenseModel>;
+
+    private reader: LicenseReader;
 
     private repository: LicenseRepository;
 
     constructor(
-        repository: LicenseRepository
+        reader: LicenseReader,
+        repository: LicenseRepository,
     ) {
-        this.repository = repository;
+        this.reader          = reader;
+        this.repository      = repository;
+        this.license$         = new BehaviorSubject(new LicenseModel());
+
+        this.update$ = new Subject();
     }
 
     /**
@@ -21,13 +32,28 @@ export class License {
      *
      * @memberof License
      */
-    public loadLicense(): Observable<any> {
-        // licenseRepository
+    public loadLicense(): Observable<LicenseModel> {
 
-        return of('');
+        return this.repository.readLicense().pipe(
+            switchMap((licenseContent: string): Observable<LicenseModel> => {
+                const license = this.reader.read(licenseContent);
+                this.license$.next(license);
+                return this.license$;
+            }),
+            catchError(() => {
+                return of(new LicenseModel());
+            })
+        );
     }
 
     public updateLicense(content: string) {
-        // notify observer license has been updated
+        // license has been updated
+        // upload license
+        // after that read license
+    }
+
+    public saveLicense(license: LicenseModel) {
+        // call writer to create license raw data
+        // send raw data to save it
     }
 }

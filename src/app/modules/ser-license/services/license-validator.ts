@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, forkJoin, concat, from } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { ContentLibService } from './contentlib.service';
 import { LicenseRepository } from './license-repository';
-import { map, catchError, concatAll, tap, switchMap, mergeMap, concatMap, reduce } from 'rxjs/operators';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { ContentLibNotExistsException, QlikLicenseNoAccessException, QlikLicenseInvalidException } from '../api/exceptions';
 import { ILicenseValidationResult } from '../api/validation-result.interface';
+import { LicenseInstallationInvalidException } from '../api/exceptions/license-installation-invalid.exception';
 
 @Injectable()
 export class LicenseValidator {
@@ -22,7 +23,9 @@ export class LicenseValidator {
     }
 
     /**
-     * should return more specific errors
+     * validate installation is completed for licenses
+     * it is valid if we have an valid qlik licens and can access it
+     * and if cotentlibrary senseexcel exists
      *
      * @returns {Observable<boolean>}
      * @memberof Validator
@@ -49,6 +52,26 @@ export class LicenseValidator {
 
     /**
      *
+     * @throws {LicenseInstallationInvalidException}
+     * @returns {Observable<void>}
+     * @memberof LicenseValidator
+     */
+    public isValidateLicenseInstallation(): Observable<void> {
+
+        return this.validateLicenseInstallation()
+            .pipe(
+                map((validation: ILicenseValidationResult) => {
+                    if (!validation.isValid) {
+                        const exception = new LicenseInstallationInvalidException('invalid installation');
+                        exception.errors = validation.errors;
+                        throw exception;
+                    }
+                })
+            );
+    }
+
+    /**
+     * validates content library exists
      *
      * @returns {Observable<LicenseValidationResult>}
      * @memberof LicenseValidator
@@ -76,7 +99,7 @@ export class LicenseValidator {
     }
 
     /**
-     *
+     * validate qlik license is valid, have access rights
      *
      * @returns {Observable<LicenseValidationResult>}
      * @memberof LicenseValidator
@@ -105,5 +128,15 @@ export class LicenseValidator {
                 )
             )
         );
+    }
+
+    /**
+     * check validity of license
+     *
+     * @returns {Observable<ILicenseValidationResult>}
+     * @memberof LicenseValidator
+     */
+    public validateLicense(): Observable<ILicenseValidationResult> {
+        throw new Error('@todo implement');
     }
 }

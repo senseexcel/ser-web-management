@@ -1,7 +1,7 @@
-<div class="license-editor">
+<div class="license-editor" *ngIf="isReady">
 
-    <div class="textbox" contenteditable="true" #input>
-        {{content}}
+    <div class="textbox">
+        <textarea [formControl]="input"></textarea>
     </div>
     <div class="actions">
         <button class="btn" (click)="clearContent()" >Clear</button>

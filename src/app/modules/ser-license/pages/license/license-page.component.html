@@ -1,19 +1,38 @@
+<ng-template #licenseTemplate>
+    <div class="qmc-page--content-body">
+        <app-license-info></app-license-info>
+        <app-license-editor></app-license-editor>
+        <app-license-user></app-license-user>
+    </div>
+
+    <div class="qmc-page--content-footer">
+        <button class="btn btn-primary">
+            apply
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #errorTemplate>
+    <div class="qmc-page--content-body">
+        <app-license-error></app-license-error>
+    </div>
+
+    <div class="qmc-page--content-footer">
+        <button class="btn btn-primary">
+            reload
+        </button>
+    </div>
+</ng-template>
+
 <div class="qmc-page">
 
     <div class="header qmc-page--content-header">
         <h1>License Management</h1>
     </div>
 
-    <div class="qmc-page--content">
-        <div class="qmc-page--content-body">
-            <app-license-info></app-license-info>
-            <app-license-editor></app-license-editor>
-        </div>
-
-        <div class="qmc-page--content-footer">
-            <button class="btn btn-primary">
-                apply
-            </button>
-        </div>
+    <div class="qmc-page--content" *ngIf="ready">
+        <h1>hello world</h1>
+        <ng-container *ngTemplateOutlet="isInstallationInvalid?errorTemplate:licenseTemplate">
+        </ng-container>
     </div>
 </div>

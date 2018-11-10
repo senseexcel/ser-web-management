@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { License } from '../../services';
+import { LicenseModel } from '../../model/license.model';
 
 @Component({
     selector: 'app-license-info',
@@ -6,7 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 
 export class InfoComponent implements OnInit {
-    constructor() { }
 
-    ngOnInit() { }
+    private license: License;
+
+    constructor(
+        license: License
+    ) {
+        this.license = license;
+    }
+
+    ngOnInit() {
+        this.license.license$.subscribe((license: LicenseModel) => {
+        });
+    }
 }

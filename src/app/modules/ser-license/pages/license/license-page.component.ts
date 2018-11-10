@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import {
-    ContentLibNotExistsException,
-    QlikLicenseNoAccessException,
-    QlikLicenseInvalidException
-} from '../../api/exceptions';
 import { ModalService } from '@core/modules/modal/services/modal.service';
-import { License, LicenseValidator } from '../../services';
-import { ILicenseValidationResult } from '../../api/validation-result.interface';
+import { LicenseValidator, License } from '../../services';
+import { LicenseModel } from '../../model/license.model';
+import { switchMap, finalize, catchError } from 'rxjs/operators';
+import { LicenseInstallationInvalidException } from '../../api/exceptions/license-installation-invalid.exception';
 
 @Component({
     selector: 'app-license',
@@ -22,17 +19,14 @@ export class LicensePageComponent implements OnInit {
      * @type {boolean}
      * @memberof LicensePageComponent
      */
-    public isLoaded: boolean;
+    public ready: boolean;
+
+    public licenseModel: LicenseModel;
 
     public isInstallationInvalid: boolean;
 
-    /**
-     * license service
-     *
-     * @private
-     * @type {LicenseService}
-     * @memberof LicensePageComponent
-     */
+    public errors: string[];
+
     private license: License;
 
     private licenseValidator: LicenseValidator;
@@ -56,13 +50,10 @@ export class LicensePageComponent implements OnInit {
     constructor(
         license: License,
         licenseValidator: LicenseValidator,
-        modal: ModalService
     ) {
-        this.license = license;
         this.licenseValidator = licenseValidator;
-        this.modal = modal;
-
         this.isInstallationInvalid = false;
+        this.license = license;
     }
 
     /**
@@ -72,26 +63,25 @@ export class LicensePageComponent implements OnInit {
      */
     ngOnInit() {
 
-        this.licenseValidator.validateLicenseInstallation()
-            .subscribe((validationResult: ILicenseValidationResult) => {
+        this.ready = false;
 
-                if (!validationResult.isValid) {
-                    this.showInvalidInstallationMessage(validationResult);
+        this.licenseValidator.isValidateLicenseInstallation()
+            .pipe(
+                switchMap(() => this.license.loadLicense()),
+                finalize(() => this.ready = true)
+            )
+            .subscribe(
+                /** installation is valid and license has been loaded */
+                (license: LicenseModel) => this.licenseModel = license,
+                /** installation not valid or error occured*/
+                (error) => {
+                    this.isInstallationInvalid = true;
+                    if (error instanceof LicenseInstallationInvalidException) {
+                        this.errors = error.errors;
+                    } else {
+                        console.error(error);
+                    }
                 }
-            });
-    }
-
-    /**
-     * displays modal message if installation is not valid
-     *
-     * @private
-     * @param {ILicenseValidationResult} validation
-     * @memberof LicensePageComponent
-     */
-    private showInvalidInstallationMessage(validation: ILicenseValidationResult) {
-        const title   = 'Invalid Instaalation';
-        const message = validation.errors.join('\n');
-
-        this.modal.openMessageModal(title, message);
+            );
     }
 }

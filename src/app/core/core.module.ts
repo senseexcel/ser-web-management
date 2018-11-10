@@ -3,12 +3,12 @@ import { MouseDblClickDirective } from '@core/directives/double-click.directive'
 import { IBootstrap } from './api/bootstrap.interface';
 import { BootstrapService } from './services/bootstrap.service';
 import { AppData } from './model/app-data';
-import { ModalModule } from './modules/modal/modal.module';
+import { Nl2Br } from './pipes/nl2br.pipe';
 
 @NgModule({
-    imports: [ModalModule],
-    exports: [MouseDblClickDirective],
-    declarations: [MouseDblClickDirective],
+    imports: [],
+    exports: [MouseDblClickDirective, Nl2Br],
+    declarations: [MouseDblClickDirective, Nl2Br],
     providers: [ BootstrapService, {
         provide: 'AppData',
         useClass: AppData

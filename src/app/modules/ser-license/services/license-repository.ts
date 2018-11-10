@@ -216,7 +216,8 @@ export class LicenseRepository {
      * @memberof LicenseService
      */
     private createLicenseFile(): Blob {
-        return new Blob([''], {type: 'text/plain'});
+        // tslint:disable-next-line:max-line-length
+        return new Blob([`3709650932152176 SUBSCRIPTION;YES;2018-08-27;2019-08-31 EXCEL_REPORTING;SMB;;2019-08-31 EXCEL_NAMED;16;;2019-08-31 BYLY-MFDG-2JNS-N35S-3XK6 EXCEL_NAME;AUSTROTHERM\\ata-rot EXCEL_NAME;AUSTROTHERM\\ATA-PMU EXCEL_NAME;AUSTROTHERM\\QLIK_ADMIN EXCEL_NAME;AUSTROTHERM\\SV_QLIK`], {type: 'text/plain'});
     }
 
     /**
