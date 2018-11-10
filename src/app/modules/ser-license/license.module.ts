@@ -5,7 +5,6 @@ import { components } from './components';
 import { services } from './services';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { CoreModule } from '@core/core.module';
-import { ModalModule } from '@core/modules/modal/modal.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -16,8 +15,7 @@ import { CommonModule } from '@angular/common';
         HttpClientJsonpModule,
         LicenseRoutingModule,
         ReactiveFormsModule,
-        CoreModule,
-        ModalModule
+        CoreModule
     ],
     declarations: [
         ...components,

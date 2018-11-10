@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ModalService } from '@core/modules/modal/services/modal.service';
 import { LicenseValidator, License } from '../../services';
 import { LicenseModel } from '../../model/license.model';
 import { switchMap, finalize, catchError, takeUntil, tap } from 'rxjs/operators';
@@ -35,19 +34,9 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     private licenseValidator: LicenseValidator;
 
     /**
-     * modal service to display messages in dialog
-     *
-     * @private
-     * @type {ModalService}
-     * @memberof LicensePageComponent
-     */
-    private modal: ModalService;
-
-    /**
      * Creates an instance of LicensePageComponent.
      *
      * @param {ContentLibService} contentLib
-     * @param {ModalService} modal
      * @memberof LicensePageComponent
      */
     constructor(
@@ -62,14 +51,32 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     }
 
     /**
-     *
+     * on initialize component first check sense excel reporting
+     * has been installed correctly and then load current license data
+     * or display error page
      *
      * @memberof LicensePageComponent
      */
     ngOnInit() {
+        this.loadPage();
+    }
+
+    ngOnDestroy() {
+        this.isDestroyed$.next(true);
+        this.isDestroyed$.complete();
+    }
+
+    public reload() {
+        this.loadPage();
+    }
+
+    private loadPage() {
+
         this.ready = false;
+
         this.licenseValidator.isValidateLicenseInstallation()
             .pipe(
+                tap(() => this.isInstallationInvalid = false),
                 switchMap(() => this.license.loadLicense()),
                 finalize(() => this.ready = true),
                 takeUntil(this.isDestroyed$)
@@ -87,10 +94,5 @@ export class LicensePageComponent implements OnDestroy, OnInit {
                     }
                 }
             );
-    }
-
-    ngOnDestroy() {
-        this.isDestroyed$.next(true);
-        this.isDestroyed$.complete();
     }
 }

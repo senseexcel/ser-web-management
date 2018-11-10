@@ -19,6 +19,7 @@ import { CoreModule } from '@core/core.module';
 import { CommonModule } from '@angular/common';
 import { UserModule } from '@core/modules/user/user.module';
 import { LicenseModule } from './modules/ser-license/license.module';
+import { ModalModule } from '@core/modules/modal/modal.module';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { LicenseModule } from './modules/ser-license/license.module';
     DropDownModule,
     LicenseModule,
     MenuModule,
+    ModalModule,
     SerEngineModule,
     UserModule
   ],
