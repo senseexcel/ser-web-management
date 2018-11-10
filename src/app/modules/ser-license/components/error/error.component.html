@@ -1,1 +1,20 @@
-<h1>license installation has error</h1>
+<div class="panel">
+    <div class="panel-header">
+        <span>
+            Sense-Excel-Reporting installation invalid!
+        </span>
+    </div>
+    <div class="panel-body">
+        <div class="messages">
+            <i class="icon ser-icon ser-icon--warning"></i>
+            <ul class="lui-list">
+                <li class="lui--item" *ngFor="let error of errors">
+                    {{error}}
+                </li> 
+            </ul>
+        </div>
+        <div class="notification">
+            Please contact your system adminstrator or qlik consultant.
+        </div>
+    </div>
+</div>

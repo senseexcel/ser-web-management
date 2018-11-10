@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ModalService } from '@core/modules/modal/services/modal.service';
 import { LicenseValidator, License } from '../../services';
 import { LicenseModel } from '../../model/license.model';
-import { switchMap, finalize, catchError } from 'rxjs/operators';
+import { switchMap, finalize, catchError, takeUntil, tap } from 'rxjs/operators';
 import { LicenseInstallationInvalidException } from '../../api/exceptions/license-installation-invalid.exception';
+import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-license',
@@ -11,7 +12,7 @@ import { LicenseInstallationInvalidException } from '../../api/exceptions/licens
     templateUrl: 'license-page.component.html'
 })
 
-export class LicensePageComponent implements OnInit {
+export class LicensePageComponent implements OnDestroy, OnInit {
 
     /**
      *
@@ -26,6 +27,8 @@ export class LicensePageComponent implements OnInit {
     public isInstallationInvalid: boolean;
 
     public errors: string[];
+
+    private isDestroyed$: Subject<boolean>;
 
     private license: License;
 
@@ -54,6 +57,8 @@ export class LicensePageComponent implements OnInit {
         this.licenseValidator = licenseValidator;
         this.isInstallationInvalid = false;
         this.license = license;
+
+        this.isDestroyed$ = new Subject();
     }
 
     /**
@@ -62,13 +67,12 @@ export class LicensePageComponent implements OnInit {
      * @memberof LicensePageComponent
      */
     ngOnInit() {
-
         this.ready = false;
-
         this.licenseValidator.isValidateLicenseInstallation()
             .pipe(
                 switchMap(() => this.license.loadLicense()),
-                finalize(() => this.ready = true)
+                finalize(() => this.ready = true),
+                takeUntil(this.isDestroyed$)
             )
             .subscribe(
                 /** installation is valid and license has been loaded */
@@ -83,5 +87,10 @@ export class LicensePageComponent implements OnInit {
                     }
                 }
             );
+    }
+
+    ngOnDestroy() {
+        this.isDestroyed$.next(true);
+        this.isDestroyed$.complete();
     }
 }

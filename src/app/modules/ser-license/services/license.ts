@@ -35,10 +35,10 @@ export class License {
     public loadLicense(): Observable<LicenseModel> {
 
         return this.repository.readLicense().pipe(
-            switchMap((licenseContent: string): Observable<LicenseModel> => {
+            map((licenseContent: string): LicenseModel => {
                 const license = this.reader.read(licenseContent);
                 this.license$.next(license);
-                return this.license$;
+                return license;
             }),
             catchError(() => {
                 return of(new LicenseModel());

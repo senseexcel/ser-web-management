@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
     selector: 'app-license-error',
+    styleUrls: ['error.component.scss'],
     templateUrl: 'error.component.html'
 })
 
-export class ErrorComponent implements OnInit {
+export class ErrorComponent {
 
-    constructor() { }
-
-    ngOnInit() { }
+    @Input()
+    public errors: string[];
 }

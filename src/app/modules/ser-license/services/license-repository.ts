@@ -76,33 +76,29 @@ export class LicenseRepository {
      */
     public fetchQlikSerialNumber(): Observable<string> {
 
-        if (!this.qlikSerialIsFetched) {
-            return this.http.get('/qrs/license')
-                .pipe(
-                    catchError((response: HttpErrorResponse) => {
-                        if (response.status === 403) {
-                            throw new QlikLicenseNoAccessException('No access qlik license.');
-                        }
-                        throw response;
-                    }),
-                    map((response: IQlikLicenseResponse) => {
+        return this.http.get('/qrs/license')
+            .pipe(
+                catchError((response: HttpErrorResponse) => {
+                    if (response.status === 403) {
+                        throw new QlikLicenseNoAccessException('No access qlik license.');
+                    }
+                    throw response;
+                }),
+                map((response: IQlikLicenseResponse) => {
 
-                        if (!response || response.isInvalid) {
-                            throw new QlikLicenseInvalidException('No License found or invalid.');
-                        }
+                    if (!response || response.isInvalid) {
+                        throw new QlikLicenseInvalidException('No License found or invalid.');
+                    }
 
-                        /** serial number */
-                        const serial = response.serial;
-                        /** set flag serial has been fetched */
-                        this.qlikSerialIsFetched = true;
-                        // write value into cache so we dont need to fetch again
-                        this.qlikSerialNumber$.next(serial);
-                        return serial;
-                    })
-                );
-        }
-
-        return this.qlikSerialNumber$;
+                    /** serial number */
+                    const serial = response.serial;
+                    /** set flag serial has been fetched */
+                    this.qlikSerialIsFetched = true;
+                    // write value into cache so we dont need to fetch again
+                    this.qlikSerialNumber$.next(serial);
+                    return serial;
+                })
+            );
     }
 
     /**
