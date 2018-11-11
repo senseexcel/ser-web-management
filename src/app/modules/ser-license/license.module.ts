@@ -8,16 +8,18 @@ import { CoreModule } from '@core/core.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material';
+import { ModalModule } from '@core/modules/modal/modal.module';
 
 @NgModule({
     imports: [
         CommonModule,
+        CoreModule,
         HttpClientModule,
         HttpClientJsonpModule,
         LicenseRoutingModule,
-        ReactiveFormsModule,
         MatTableModule,
-        CoreModule
+        ModalModule,
+        ReactiveFormsModule,
     ],
     declarations: [
         ...components,

@@ -52,7 +52,7 @@ export class ContentLibService {
      * @param {Blob} content
      * @memberof ContentLibService
      */
-    public createFile(fileName: string, content: Blob): Observable<string> {
+    public uploadFile(fileName: string, content: Blob, overwrite = false): Observable<string> {
 
         return this.createFileFormData(fileName, content)
             .pipe(
@@ -61,7 +61,7 @@ export class ContentLibService {
                     const url = '/qrs/contentLibrary/senseexcel/uploadfile';
                     const params = new HttpParams()
                         .set('externalpath', fileName)
-                        .set('overwrite', 'false');
+                        .set('overwrite', String(overwrite));
 
                     return this.http.post(url, formData, {params})
                         .pipe(map(created => String(created)));
@@ -93,14 +93,6 @@ export class ContentLibService {
             })
         );
     }
-
-    /**
-     *
-     *
-     * @param {IContentLibFileReference} file
-     * @memberof ContentLibService
-     */
-    public updateFile(file: IContentLibFileReference, data: Blob) {}
 
     /**
      * create form data which could uploaded with post

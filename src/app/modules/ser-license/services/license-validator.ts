@@ -156,8 +156,7 @@ export class LicenseValidator {
                     }
 
                     return { isValid, errors };
-                }),
-                finalize(() => console.log('it will finalize even if this comes from cache'))
+                })
             );
     }
 }

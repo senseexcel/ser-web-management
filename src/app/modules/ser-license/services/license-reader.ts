@@ -12,11 +12,11 @@ export class LicenseReader {
      * @returns
      * @memberof LicenseReader
      */
-    public read(data: string, delimeter = ' '): LicenseModel {
-        const model: LicenseModel = new LicenseModel();
-        const parsed = this.parseLicenseData(data.split(delimeter));
+    public read(data: string, license?: LicenseModel): LicenseModel {
+        const model: LicenseModel = license || new LicenseModel();
+        const parsed = this.parseLicenseData(data.split(' '));
 
-        model.raw   = data.split(delimeter).join('\n');
+        model.raw   = data.split(' ').join('\n');
         model.key   = parsed.licenseData[0];
         model.users = this.readUsers(parsed.userData);
         return model;

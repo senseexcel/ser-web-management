@@ -151,7 +151,7 @@ export class LicenseRepository {
             .pipe(
                 /** retry to create file if no license.txt exists, for max 1 time */
                 retryWhen((errors) => {
-                    const createFile$ = this.contentLib.createFile('license.txt', this.createLicenseFile());
+                    const createFile$ = this.contentLib.uploadFile('license.txt', this.createLicenseFile());
                     return errors.pipe(
                         switchMap((error) => {
                             retryAttempts += 1;
@@ -168,14 +168,25 @@ export class LicenseRepository {
     }
 
     /**
+     * create new file and upload
+     *
+     * @param {*} data
+     * @returns {Observable<string>}
+     * @memberof LicenseRepository
+     */
+    public writeLicense(data): Observable<string> {
+        const file = this.createLicenseFile(data);
+        return this.contentLib.uploadFile('license.txt', file, true);
+    }
+
+    /**
      * create license file
      *
      * @returns {FileReader}
      * @memberof LicenseService
      */
-    private createLicenseFile(): Blob {
-        // tslint:disable-next-line:max-line-length
-        return new Blob([], {type: 'text/plain'});
+    private createLicenseFile(content = ''): Blob {
+        return new Blob([content], {type: 'text/plain'});
     }
 
     /**

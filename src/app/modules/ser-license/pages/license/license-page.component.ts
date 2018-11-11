@@ -66,11 +66,32 @@ export class LicensePageComponent implements OnDestroy, OnInit {
         this.isDestroyed$.complete();
     }
 
+    /**
+     * reload page
+     *
+     * @memberof LicensePageComponent
+     */
     public reload() {
         this.isDestroyed$.next(true);
         this.loadPage();
     }
 
+    /**
+     * save license data and upload to server
+     *
+     * @memberof LicensePageComponent
+     */
+    public saveLicense() {
+        this.license.saveLicense()
+            .subscribe();
+    }
+
+    /**
+     * load page
+     *
+     * @private
+     * @memberof LicensePageComponent
+     */
     private loadPage() {
         this.ready = false;
         this.licenseValidator.isValidateLicenseInstallation()
