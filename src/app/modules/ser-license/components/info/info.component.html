@@ -1,3 +1,13 @@
-<div class="ser-license--info">
-    License Key: 1232139821309812930
+<div class="ser-license--info" *ngIf="ready">
+
+    <div class="head">
+        License Information
+    </div>
+
+    <div class="body">
+        <div class="key">SER License Key: {{licenseModel.key}}</div>
+        <div class="status" [ngClass]="{'not-valid': !isValid}">
+            {{licenseStatus}}
+        </div>
+    </div>
 </div>

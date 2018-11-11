@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of, forkJoin, from, empty } from 'rxjs';
 import { ContentLibService } from './contentlib.service';
 import { LicenseRepository } from './license-repository';
-import { map, catchError, mergeMap } from 'rxjs/operators';
+import { map, catchError, mergeMap, switchMap, finalize, tap, mapTo, switchMapTo } from 'rxjs/operators';
 import { ContentLibNotExistsException, QlikLicenseNoAccessException, QlikLicenseInvalidException } from '../api/exceptions';
 import { ILicenseValidationResult } from '../api/validation-result.interface';
 import { LicenseInstallationInvalidException } from '../api/exceptions/license-installation-invalid.exception';
@@ -131,12 +131,33 @@ export class LicenseValidator {
     }
 
     /**
-     * check validity of license
+     * validate license key
      *
      * @returns {Observable<ILicenseValidationResult>}
      * @memberof LicenseValidator
      */
-    public validateLicense(): Observable<ILicenseValidationResult> {
-        throw new Error('@todo implement');
+    public validateLicenseKey(licenseKey: string): Observable<ILicenseValidationResult> {
+
+        let qlikLicense$;
+
+        if (!this.licenseRepository.qlikSerial) {
+            qlikLicense$ = this.licenseRepository.fetchQlikSerialNumber();
+        } else {
+            qlikLicense$ = of(this.licenseRepository.qlikSerial);
+        }
+
+        return qlikLicense$.pipe(
+                map((qlikSerial) => {
+                    const isValid = qlikSerial === licenseKey;
+                    const errors  = [];
+
+                    if (!isValid) {
+                        errors.push('Sense Excel Reporting License not matching Qlik Serial.');
+                    }
+
+                    return { isValid, errors };
+                }),
+                finalize(() => console.log('it will finalize even if this comes from cache'))
+            );
     }
 }

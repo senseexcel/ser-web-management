@@ -27,7 +27,7 @@ export class EditorComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.license.license$.subscribe((license: LicenseModel) => {
+        this.license.onload$.subscribe((license: LicenseModel) => {
             this.createTextArea(license.raw);
             this.isReady = true;
         });

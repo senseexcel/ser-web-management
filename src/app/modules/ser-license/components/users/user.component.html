@@ -1,1 +1,23 @@
-<h1>user component works</h1>
+<div class="license-users">
+
+    <div class="header">License Users</div>
+
+    <table class="table" *ngIf="ready" mat-table [dataSource]="model.users">
+        <!-- Position Column -->
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>User Domain</th>
+            <td mat-cell *matCellDef="let user"> {{user.id}} </td>
+        </ng-container>
+        <!-- Weight Column -->
+        <ng-container matColumnDef="from">
+            <th mat-header-cell *matHeaderCellDef>Activated From</th>
+            <td mat-cell *matCellDef="let user"> {{user.from}} </td>
+        </ng-container>
+        <ng-container matColumnDef="to">
+            <th mat-header-cell *matHeaderCellDef>Activated Until</th>
+            <td mat-cell *matCellDef="let user"> {{user.to}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="tableHeaderFields"></tr>
+        <tr mat-row *matRowDef="let row; columns: tableHeaderFields;">
+    </table>
+</div>

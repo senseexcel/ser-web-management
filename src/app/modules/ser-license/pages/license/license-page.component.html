@@ -26,11 +26,23 @@
     </div>
 </ng-template>
 
+<!-- @todo rework template to handle reloading and only refresh current contents -->
 <div class="qmc-page">
     <div class="qmc-page--content">
+
         <ng-container *ngIf="ready">
             <ng-container *ngTemplateOutlet="isInstallationInvalid?errorTemplate:licenseTemplate">
             </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="!ready">
+            <div class="qmc-page--content-body">
+            </div>
+            <div class="qmc-page--content-footer">
+                <button class="btn btn-primary">
+                    reload
+                </button>
+            </div>
         </ng-container>
     </div>
 </div>

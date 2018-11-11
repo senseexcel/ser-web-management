@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { map, switchMap, tap, catchError, retryWhen } from 'rxjs/operators';
 import { IQlikLicenseResponse } from '../api/response/qlik-license.interface';
@@ -9,6 +9,15 @@ import { IContentLibResponse, IContentLibFileReference } from '../api/response/c
 
 @Injectable()
 export class LicenseRepository {
+
+    /**
+     * cache for qlik serial number
+     *
+     * @private
+     * @type {BehaviorSubject<string>}
+     * @memberof LicenseService
+     */
+    private qlikSerialNumber: string;
 
     private contentLib: ContentLibService;
 
@@ -21,49 +30,16 @@ export class LicenseRepository {
      */
     private http: HttpClient;
 
-    /**
-     * cache for qlik serial number
-     *
-     * @private
-     * @type {BehaviorSubject<string>}
-     * @memberof LicenseService
-     */
-    private qlikSerialNumber$: BehaviorSubject<string>;
-
-    /**
-     * flag qlik license serial allready fetched
-     *
-     * @private
-     * @memberof LicenseService
-     */
-    private qlikSerialIsFetched = false;
-
-    /**
-     * cache for sense excel reporting license
-     *
-     * @private
-     * @type {BehaviorSubject<string>}
-     * @memberof LicenseService
-     */
-    private serLicense$: BehaviorSubject<string>;
-
-    /**
-     * flag ser license has allready fetched
-     *
-     * @private
-     * @memberof LicenseService
-     */
-    private isSerLicenseFetched = false;
-
     constructor(
         contentLib: ContentLibService,
         http: HttpClient
     ) {
         this.contentLib = contentLib;
         this.http = http;
+    }
 
-        this.qlikSerialNumber$ = new BehaviorSubject('');
-        this.serLicense$       = new BehaviorSubject('');
+    public get qlikSerial() {
+        return this.qlikSerialNumber;
     }
 
     /**
@@ -91,11 +67,9 @@ export class LicenseRepository {
                     }
 
                     /** serial number */
-                    const serial = response.serial;
-                    /** set flag serial has been fetched */
-                    this.qlikSerialIsFetched = true;
+                    const serial = response.serial || '';
                     // write value into cache so we dont need to fetch again
-                    this.qlikSerialNumber$.next(serial);
+                    this.qlikSerialNumber = serial;
                     return serial;
                 })
             );
@@ -171,38 +145,26 @@ export class LicenseRepository {
      */
     public readLicense(): Observable<string> {
 
-        let licenseData$: Observable<string>;
         let retryAttempts = 0;
 
-        if (this.isSerLicenseFetched) {
-            licenseData$ = this.serLicense$;
-        } else {
-            licenseData$ = this.fetchLicenseFile()
+        return this.fetchLicenseFile()
             .pipe(
                 /** retry to create file if no license.txt exists, for max 1 time */
                 retryWhen((errors) => {
                     const createFile$ = this.contentLib.createFile('license.txt', this.createLicenseFile());
                     return errors.pipe(
                         switchMap((error) => {
-                            if (error instanceof SerLicenseNotFoundException && retryAttempts < 1) {
-                                retryAttempts += 1;
+                            retryAttempts += 1;
+                            if (error instanceof SerLicenseNotFoundException && retryAttempts === 1) {
                                 return createFile$;
                             }
-                            throw error;
                         }),
                     );
                 }),
                 switchMap((file: IContentLibFileReference) => {
                     return this.contentLib.readFile(file);
-                }),
-                tap((content) => {
-                    this.serLicense$.next(content);
-                    this.isSerLicenseFetched = true;
                 })
             );
-        }
-
-        return licenseData$;
     }
 
     /**
@@ -213,7 +175,7 @@ export class LicenseRepository {
      */
     private createLicenseFile(): Blob {
         // tslint:disable-next-line:max-line-length
-        return new Blob([`3709650932152176 SUBSCRIPTION;YES;2018-08-27;2019-08-31 EXCEL_REPORTING;SMB;;2019-08-31 EXCEL_NAMED;16;;2019-08-31 BYLY-MFDG-2JNS-N35S-3XK6 EXCEL_NAME;AUSTROTHERM\\ata-rot EXCEL_NAME;AUSTROTHERM\\ATA-PMU EXCEL_NAME;AUSTROTHERM\\QLIK_ADMIN EXCEL_NAME;AUSTROTHERM\\SV_QLIK`], {type: 'text/plain'});
+        return new Blob([], {type: 'text/plain'});
     }
 
     /**

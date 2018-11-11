@@ -19,7 +19,7 @@ export class LicenseModel {
     }
 
     public set key(key: string) {
-        this.licenseKey = key;
+        this.licenseKey = key || '';
     }
 
     public set raw(raw: string) {

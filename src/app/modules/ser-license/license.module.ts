@@ -7,6 +7,7 @@ import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { CoreModule } from '@core/core.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MatTableModule } from '@angular/material';
 
 @NgModule({
     imports: [
@@ -15,6 +16,7 @@ import { CommonModule } from '@angular/common';
         HttpClientJsonpModule,
         LicenseRoutingModule,
         ReactiveFormsModule,
+        MatTableModule,
         CoreModule
     ],
     declarations: [

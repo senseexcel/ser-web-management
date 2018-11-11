@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LicenseModel } from '../model/license.model';
+import { ILicenseUser } from '../api/license-user.interface';
 
 @Injectable()
 export class LicenseReader {
@@ -15,8 +16,9 @@ export class LicenseReader {
         const model: LicenseModel = new LicenseModel();
         const parsed = this.parseLicenseData(data.split(delimeter));
 
-        model.raw = data.split(delimeter).join('\n');
-        model.key = parsed.licenseData[0];
+        model.raw   = data.split(delimeter).join('\n');
+        model.key   = parsed.licenseData[0];
+        model.users = this.readUsers(parsed.userData);
         return model;
     }
 
@@ -48,7 +50,23 @@ export class LicenseReader {
         return result;
     }
 
-    private readUsers(content: string[]): any {
-        console.log(content);
+    /**
+     *  read users from license data and convert it to license user
+     *
+     * @private
+     * @param {string[]} users
+     * @returns {*}
+     * @memberof LicenseReader
+     */
+    private readUsers(users: string[]): any {
+        return users.map((user): ILicenseUser => {
+            const data = user.split(';');
+
+            return {
+                id:   data[1],
+                from: data[2] || '--',
+                to:   data[3] || '--'
+            };
+        });
     }
 }

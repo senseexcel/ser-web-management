@@ -67,13 +67,12 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     }
 
     public reload() {
+        this.isDestroyed$.next(true);
         this.loadPage();
     }
 
     private loadPage() {
-
         this.ready = false;
-
         this.licenseValidator.isValidateLicenseInstallation()
             .pipe(
                 tap(() => this.isInstallationInvalid = false),
@@ -83,7 +82,9 @@ export class LicensePageComponent implements OnDestroy, OnInit {
             )
             .subscribe(
                 /** installation is valid and license has been loaded */
-                (license: LicenseModel) => this.licenseModel = license,
+                (license: LicenseModel) => {
+                    this.licenseModel = license;
+                },
                 /** installation not valid or error occured*/
                 (error) => {
                     this.isInstallationInvalid = true;

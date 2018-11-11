@@ -10,7 +10,7 @@ export class License {
 
     public update$: Subject<LicenseModel>;
 
-    public license$: BehaviorSubject<LicenseModel>;
+    public onload$: BehaviorSubject<LicenseModel>;
 
     private reader: LicenseReader;
 
@@ -22,8 +22,8 @@ export class License {
     ) {
         this.reader          = reader;
         this.repository      = repository;
-        this.license$         = new BehaviorSubject(new LicenseModel());
 
+        this.onload$ = new BehaviorSubject(new LicenseModel());
         this.update$ = new Subject();
     }
 
@@ -37,7 +37,7 @@ export class License {
         return this.repository.readLicense().pipe(
             map((licenseContent: string): LicenseModel => {
                 const license = this.reader.read(licenseContent);
-                this.license$.next(license);
+                this.onload$.next(license);
                 return license;
             }),
             catchError(() => {
