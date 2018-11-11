@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { License, LicenseValidator } from '../../services';
 import { LicenseModel } from '../../model/license.model';
 import { mergeMap, takeUntil, map, tap } from 'rxjs/operators';
-import { Subject, of } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-license-info',

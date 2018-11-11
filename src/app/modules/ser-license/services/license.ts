@@ -5,7 +5,6 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { LicenseReader } from './license-reader';
 import { LicenseRepository } from './license-repository';
 import { LicenseWriter } from './license-writer';
-import { HttpErrorResponse } from '@angular/common/http';
 
 @Injectable()
 export class License {

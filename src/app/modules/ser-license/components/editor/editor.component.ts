@@ -1,10 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { License } from '../../services';
 import { LicenseModel } from '../../model/license.model';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { debounceTime, takeUntil, take, catchError } from 'rxjs/operators';
-import { Subject, of } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Subject } from 'rxjs';
 import { ModalService } from '@core/modules/modal/services/modal.service';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LicenseValidator, License } from '../../services';
 import { LicenseModel } from '../../model/license.model';
-import { switchMap, finalize, catchError, takeUntil, tap } from 'rxjs/operators';
+import { switchMap, finalize, takeUntil, tap } from 'rxjs/operators';
 import { LicenseInstallationInvalidException } from '../../api/exceptions/license-installation-invalid.exception';
 import { Subject } from 'rxjs';
 

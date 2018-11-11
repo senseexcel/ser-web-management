@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, forkJoin, from, empty } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { ContentLibService } from './contentlib.service';
 import { LicenseRepository } from './license-repository';
-import { map, catchError, mergeMap, switchMap, finalize, tap, mapTo, switchMapTo } from 'rxjs/operators';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { ContentLibNotExistsException, QlikLicenseNoAccessException, QlikLicenseInvalidException } from '../api/exceptions';
 import { ILicenseValidationResult } from '../api/validation-result.interface';
 import { LicenseInstallationInvalidException } from '../api/exceptions/license-installation-invalid.exception';
