@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { map, switchMap, tap, catchError, retryWhen } from 'rxjs/operators';
 import { IQlikLicenseResponse } from '../api/response/qlik-license.interface';
@@ -52,27 +52,31 @@ export class LicenseRepository {
      */
     public fetchQlikSerialNumber(): Observable<string> {
 
-        return this.http.get('/qrs/license')
-            .pipe(
-                catchError((response: HttpErrorResponse) => {
-                    if (response.status === 403) {
-                        throw new QlikLicenseNoAccessException('No access qlik license.');
-                    }
-                    throw response;
-                }),
-                map((response: IQlikLicenseResponse) => {
+        if (this.qlikSerial) {
+            return of(this.qlikSerial);
+        } else {
+            return this.http.get('/qrs/license')
+                .pipe(
+                    catchError((response: HttpErrorResponse) => {
+                        if (response.status === 403) {
+                            throw new QlikLicenseNoAccessException('No access qlik license.');
+                        }
+                        throw response;
+                    }),
+                    map((response: IQlikLicenseResponse) => {
 
-                    if (!response || response.isInvalid) {
-                        throw new QlikLicenseInvalidException('No License found or invalid.');
-                    }
+                        if (!response || response.isInvalid) {
+                            throw new QlikLicenseInvalidException('No License found or invalid.');
+                        }
 
-                    /** serial number */
-                    const serial = response.serial || '';
-                    // write value into cache so we dont need to fetch again
-                    this.qlikSerialNumber = serial;
-                    return serial;
-                })
-            );
+                        /** serial number */
+                        const serial = response.serial || '';
+                        // write value into cache so we dont need to fetch again
+                        this.qlikSerialNumber = serial;
+                        return serial;
+                    })
+                );
+        }
     }
 
     /**
@@ -100,7 +104,11 @@ export class LicenseRepository {
                 return this.http.jsonp(url, 'licenseResponse')
                 .pipe(
                     map((response: string) => {
-                        return response;
+                        return JSON.parse(response).licences[0];
+                    }),
+                    catchError((error) => {
+                        console.dir(error);
+                        throw error;
                     })
                 );
             })

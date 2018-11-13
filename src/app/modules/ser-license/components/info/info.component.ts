@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { License, LicenseValidator } from '../../services';
+import { License, LicenseValidator, LicenseRepository } from '../../services';
 import { LicenseModel } from '../../model/license.model';
-import { mergeMap, takeUntil, map, tap } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { mergeMap, takeUntil, map, tap, switchMap, concatMap } from 'rxjs/operators';
+import { Subject, concat, empty, forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-license-info',
@@ -28,6 +28,8 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     public licenseModel: LicenseModel;
 
+    public qlikLicense: string;
+
     /**
      * current license status valid or invalid
      *
@@ -46,6 +48,15 @@ export class InfoComponent implements OnDestroy, OnInit {
      * @memberof InfoComponent
      */
     private license: License;
+
+    /**
+     * license repository
+     *
+     * @private
+     * @type {LicenseRepository}
+     * @memberof InfoComponent
+     */
+    private repository: LicenseRepository;
 
     /**
      * license validator service
@@ -68,11 +79,13 @@ export class InfoComponent implements OnDestroy, OnInit {
 
     constructor(
         license: License,
+        repository: LicenseRepository,
         validator: LicenseValidator
     ) {
         this.isDestroyed$ = new Subject();
-        this.license   = license;
-        this.validator = validator;
+        this.license      = license;
+        this.repository   = repository;
+        this.validator    = validator;
     }
 
     /**
@@ -105,12 +118,18 @@ export class InfoComponent implements OnDestroy, OnInit {
 
        this.license.onload$.pipe(
             mergeMap((license: LicenseModel) => {
-                return this.validator.validateLicenseKey(license.key)
-                    .pipe(map( validationResult => {
-                        return {
-                            license, valid: validationResult.isValid
-                        };
-                    }));
+                return forkJoin([
+                    this.validator.validateLicenseKey(license.key),
+                    this.repository.fetchQlikSerialNumber()
+                ]).pipe(
+                        map(([validationResult, serial]) => {
+                            return {
+                                license,
+                                qlikSerial: serial,
+                                valid: validationResult.isValid
+                            };
+                        }),
+                    );
             }),
             takeUntil(this.isDestroyed$)
         )
@@ -118,6 +137,7 @@ export class InfoComponent implements OnDestroy, OnInit {
             this.isValid       = result.valid;
             this.licenseModel  = result.license;
             this.licenseStatus = this.isValid ? 'valid' : 'invalid';
+            this.qlikLicense   = result.qlikSerial;
             this.ready         = true;
         });
     }
