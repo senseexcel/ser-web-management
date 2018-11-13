@@ -6,7 +6,7 @@ import { Subject, of } from 'rxjs';
 import { ValidationStep, ILicenseValidationResult } from '../../api/validation-result.interface';
 
 @Component({
-    selector: 'app-license',
+    selector: 'app-license-page',
     styleUrls: ['./license-page.component.scss'],
     templateUrl: 'license-page.component.html'
 })
@@ -62,6 +62,13 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     ngOnInit() {
+
+        this.properties = [
+            { label: 'License Information' },
+            { label: 'License Overview' },
+            { label: 'Licensed Users' }
+        ];
+
         this.loadPage();
     }
 

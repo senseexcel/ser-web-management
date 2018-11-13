@@ -18,8 +18,26 @@ export class LicenseReader {
 
         model.raw   = data.split(' ').join('\n');
         model.key   = parsed.licenseData[0];
+        model.text  = parsed.licenseData.join('\n');
         model.users = this.readUsers(parsed.userData);
         return model;
+    }
+
+    /**
+     * copy data from one model to another
+     *
+     * @param {LicenseModel} source
+     * @param {LicenseModel} target
+     * @memberof LicenseReader
+     */
+    public copy(source: LicenseModel, target: LicenseModel): LicenseModel {
+
+        target.raw   = source.raw;
+        target.key   = source.key;
+        target.text  = source.text;
+        target.users = [...source.users];
+
+        return target;
     }
 
     /**
@@ -39,9 +57,11 @@ export class LicenseReader {
 
         /** loop content array until we find signature line and split */
         for (const [index, line] of Array.from(lines.entries())) {
+
+            result.licenseData.push(line);
+
             /** signature match */
             if (line.match(/^([A-Z,0-9]{4}(?=-)-){4}[A-Z,0-9]{4}$/)) {
-                result.licenseData = lines.slice(0, index + 1);
                 result.userData    = lines.slice(index + 1);
                 break;
             }

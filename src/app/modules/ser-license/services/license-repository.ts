@@ -101,14 +101,10 @@ export class LicenseRepository {
                 const url = `http://localhost:3000?${params.toString()}`;
 
                 /** fetch license for qlik sense excel reporting  */
-                return this.http.jsonp(url, 'licenseResponse')
+                return this.http.jsonp(url, 'callback')
                 .pipe(
                     map((response: string) => {
                         return JSON.parse(response).licences[0];
-                    }),
-                    catchError((error) => {
-                        console.dir(error);
-                        throw error;
                     })
                 );
             })

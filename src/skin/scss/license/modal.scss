@@ -1,0 +1,18 @@
+.ser-overlay--modal.license-modal--insert {
+
+    .ser-modal--body {
+        padding: 0;
+    }
+
+    textarea {
+        vertical-align: top;
+        width: 100%;
+        resize: none;
+        outline: none;
+        padding: 5px 10px;
+    }
+
+    button {
+        margin-top: 0;
+    }
+}

@@ -1,0 +1,19 @@
+<ng-container *ngIf="isReady">
+    <div class="header">License Overview</div>
+
+    <div class="logo">
+        <img src="./assets/ser-logo.svg" type="image/svg+xml" />
+    </div>
+
+    <div class="license-view">
+
+        <div class="license-view--content" [innerHtml]="licenseData|nl2br">
+            <ng-container *ngIf="licenseData === ''"> no license</ng-container>
+        </div>
+
+        <div class="btn-toolbar flex-row-reverse insert-overlay--footer">
+            <button class="btn" (click)="insertLicense()" >Insert License</button>
+            <button type="button" class="btn btn-secondary" (click)="loadFromServer()">Load From Server</button>
+        </div>
+    </div>
+</ng-container>

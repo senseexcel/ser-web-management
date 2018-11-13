@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ComponentFactoryResolver, ViewChild, ViewContainerRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, Inject, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
 import { MODAL_OVERLAY_CTRL, MODAL_OVERLAY_DATA } from '../api/modal-content.injector';
 import { ModalControl } from '../services/modal-control';
 import { IModalData } from '../api/modal-config.interface';
@@ -8,7 +8,7 @@ import { IModalData } from '../api/modal-config.interface';
     templateUrl: 'modal.component.html',
     styleUrls: ['./modal.component.scss']
 })
-export class ModalComponent implements OnInit, OnDestroy {
+export class ModalComponent implements OnInit {
 
     @ViewChild('body', {read: ViewContainerRef})
     private bodyViewContainer: ViewContainerRef;
@@ -82,13 +82,5 @@ export class ModalComponent implements OnInit, OnDestroy {
      */
     closeModal() {
         this.modalOverlayCtrl.close();
-    }
-
-    /**
-     * component gets destroyed
-     *
-     * @memberof ModalComponent
-     */
-    ngOnDestroy() {
     }
 }

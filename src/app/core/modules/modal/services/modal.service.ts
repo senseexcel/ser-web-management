@@ -10,7 +10,7 @@ import { OverlayDialogComponent } from '../components/dialog/dialog.component';
 import { OverlayMessageComponent } from '../components/message/message.component';
 import { DialogFooterComponent } from '../components/dialog/dialog-footer.component';
 import { MessageFooterComponent } from '../components/message/message-footer.component';
-import { IControl, IControlConstructor } from '../api/control.interface';
+import { IControl } from '../api/control.interface';
 
 @Injectable()
 export class ModalService {
@@ -138,16 +138,18 @@ export class ModalService {
      * @returns {OverlayConfig}
      * @memberof ModalService
      */
-    private createOverlayConfig(config): OverlayConfig {
+    private createOverlayConfig(config: IOverlayConfig): OverlayConfig {
 
         const positionStrategy = this.overlay.position()
             .global()
             .centerVertically()
             .centerHorizontally();
 
+        const mergedConfig      = {...DEFAULT_OVERLAY_CONFIGURATION, ...config};
+        mergedConfig.panelClass = [...DEFAULT_OVERLAY_CONFIGURATION.panelClass, ...config.panelClass];
+
         const overlayConfig: OverlayConfig = {
-            ...DEFAULT_OVERLAY_CONFIGURATION,
-            ...config,
+            ...mergedConfig,
             ...{
                 positionStrategy,
                 scrollStrategy: this.overlay.scrollStrategies.block(),

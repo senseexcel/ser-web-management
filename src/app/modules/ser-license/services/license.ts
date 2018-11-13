@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LicenseModel } from '../model/license.model';
 import { Observable, of, BehaviorSubject } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import {  map } from 'rxjs/operators';
 import { LicenseReader } from './license-reader';
 import { LicenseRepository } from './license-repository';
 import { LicenseWriter } from './license-writer';
@@ -90,8 +90,7 @@ export class License {
     public fetchLicense(): Observable<LicenseModel> {
         return this.repository.fetchSenseExcelReportingLicense()
             .pipe(
-                map((licenseContent: string) => this.reader.read(licenseContent, this.model)),
-                tap((license: LicenseModel)  => this.onload$.next(license))
+                map((licenseContent: string) => this.updateLicense(licenseContent))
             );
     }
 
@@ -101,9 +100,16 @@ export class License {
      * @param {string} content
      * @memberof License
      */
-    public updateLicense(content: string) {
-        this.onload$.next(
-            this.reader.read(content.replace(/\n/g, ' '), this.model));
+    public updateLicense(content: string | LicenseModel): LicenseModel {
+
+        let license;
+        if (content instanceof LicenseModel) {
+            license = this.reader.copy(content, this.model);
+        } else {
+            license = this.reader.read(content.replace(/\n/g, ' '), this.model);
+        }
+        this.onload$.next(license);
+        return this.model;
     }
 
     /**

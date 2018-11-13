@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { LicenseRoutingModule } from './license-routing.module';
 import { pages } from './pages';
-import { components } from './components';
+import { components, InsertOverlayComponent, InsertOverlayFooterComponent } from './components';
 import { services } from './services';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { CoreModule } from '@core/core.module';
@@ -26,7 +26,9 @@ import { ModalModule } from '@core/modules/modal/modal.module';
         ...pages
     ],
     entryComponents: [
-        ...pages
+        ...pages,
+        InsertOverlayComponent,
+        InsertOverlayFooterComponent
     ],
     exports: [],
     providers: [...services],

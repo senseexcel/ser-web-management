@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of, forkJoin, concat, from } from 'rxjs';
 import { ContentLibService } from './contentlib.service';
 import { LicenseRepository } from './license-repository';
-import { map, catchError, mergeMap } from 'rxjs/operators';
+import { map, catchError, mergeMap, concatAll, tap } from 'rxjs/operators';
     import {
         ContentLibNotExistsException,
         QlikLicenseNoAccessException,
         QlikLicenseInvalidException,
 } from '../api/exceptions';
 import { ILicenseValidationResult, ValidationStep } from '../api/validation-result.interface';
+import { LicenseModel } from '../model/license.model';
+import { LicenseReader } from './license-reader';
 
 @Injectable()
 export class LicenseValidator {
@@ -16,6 +18,8 @@ export class LicenseValidator {
     private contentlib: ContentLibService;
 
     private licenseRepository: LicenseRepository;
+
+    private reader: LicenseReader;
 
     public constructor(
         contentlib: ContentLibService,
@@ -179,6 +183,22 @@ export class LicenseValidator {
 
                     return { isValid, errors };
                 })
+            );
+    }
+
+    /**
+     * validate full license
+     *
+     * @param {LicenseModel} license
+     * @returns {Observable<ILicenseValidationResult>}
+     * @memberof LicenseValidator
+     */
+    public validateLicense(license: LicenseModel): Observable<ILicenseValidationResult> {
+        console.dir(license);
+        return from([this.validateLicenseKey(license.key)])
+            .pipe(
+                concatAll(),
+                tap((r) => console.log(r) )
             );
     }
 }
