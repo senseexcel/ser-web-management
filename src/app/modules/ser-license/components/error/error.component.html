@@ -6,23 +6,23 @@
     {{step.key}}
 </ng-template>
 
-<div class="panel">
-    <div class="panel-header">
-        <span>
-            Sense-Excel-Reporting installation invalid!
-        </span>
-    </div>
-    <div class="panel-body">
-        <ul class="lui-list">
-            <li class="lui--item" *ngFor="let step of progress | keyvalue:sortIsValid">
-                <ng-container 
-                    [ngTemplateOutlet]="progressStep"
-                    [ngTemplateOutletContext]="{step: step}"
-                ></ng-container>
-            </li> 
-        </ul>
-        <div class="notification">
-            Please contact your system adminstrator or qlik consultant.
-        </div>
+<div class="header">
+    installation invalid
+</div>
+<div class="body">
+    <ul class="lui-list">
+        <li class="lui--item" *ngFor="let step of progress | keyvalue:sortIsValid" 
+            [ngClass]="{
+                'valid': step.value.isValid,
+                'invalid': !step.value.isValid
+            }">
+            <ng-container 
+                [ngTemplateOutlet]="progressStep"
+                [ngTemplateOutletContext]="{step: step}"
+            ></ng-container>
+        </li> 
+    </ul>
+    <div class="notification">
+        Please contact your system adminstrator or qlik consultant.
     </div>
 </div>

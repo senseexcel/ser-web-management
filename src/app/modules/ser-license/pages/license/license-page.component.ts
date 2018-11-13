@@ -27,6 +27,10 @@ export class LicensePageComponent implements OnDestroy, OnInit {
 
     public installationProgress: Map<ValidationStep, ILicenseValidationResult>;
 
+    public properties: any[];
+
+    public selectedProperty: any;
+
     private isDestroyed$: Subject<boolean>;
 
     private license: License;
@@ -96,10 +100,13 @@ export class LicensePageComponent implements OnDestroy, OnInit {
         this.ready = false;
         this.licenseValidator.isValidLicenseInstallation()
             .pipe(
+                tap((result) => {
+                    this.isInstallationInvalid = !result.isValid;
+                    this.installationProgress  = result.data;
+                }),
                 mergeMap((result) => {
                     if (!result.isValid) {
-                        this.isInstallationInvalid = true;
-                        this.installationProgress = result.data;
+                        this.properties = [{label: 'Installation'}];
                         return of(null);
                     }
                     return this.license.loadLicense();
@@ -109,6 +116,7 @@ export class LicensePageComponent implements OnDestroy, OnInit {
             )
             .subscribe((license: LicenseModel) => {
                 this.licenseModel = license;
+                this.selectedProperty = this.properties[0];
             });
     }
 }

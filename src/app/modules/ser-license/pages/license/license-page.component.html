@@ -68,5 +68,18 @@
         </ng-container>
     </div>
 
-    <div class="qmc-page--sidebar sidebar-right"></div>
+    <div class="qmc-page--sidebar sidebar-right">
+            <div class="header">
+                Properties
+            </div>
+
+            <ul class="lui-list">
+                <li class="lui-item" 
+                    (click)="showForm(property)"
+                    *ngFor="let property of properties"
+                    [ngClass]="{'active': property == selectedProperty}" >
+                    {{property.label}}
+                </li>
+            </ul>
+    </div>
 </div>
