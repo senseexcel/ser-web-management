@@ -59,8 +59,8 @@ export class LicenseValidator {
         return this.validateLicenseInstallation()
             .pipe(
                 map((validation) => {
-                    const isValid = Array.from(validation.values()).some((result) => {
-                        return result.isValid !== false;
+                    const isValid = !Array.from(validation.values()).some((result) => {
+                        return result.isValid === false;
                     });
 
                     return {
