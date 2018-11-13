@@ -27,7 +27,7 @@ export class LicensePageComponent implements OnDestroy, OnInit {
 
     public installationProgress: Map<ValidationStep, ILicenseValidationResult>;
 
-    public properties: any[];
+    public properties: any[] = [];
 
     public selectedProperty: any;
 
@@ -116,7 +116,7 @@ export class LicensePageComponent implements OnDestroy, OnInit {
             )
             .subscribe((license: LicenseModel) => {
                 this.licenseModel = license;
-                this.selectedProperty = this.properties[0];
+                this.selectedProperty = this.properties[0] || '';
             });
     }
 }
