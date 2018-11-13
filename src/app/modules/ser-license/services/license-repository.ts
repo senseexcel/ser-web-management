@@ -118,7 +118,6 @@ export class LicenseRepository {
 
         return this.contentLib.fetchContentLibrary().pipe(
             map((library: IContentLibResponse) => {
-
                 /** filter all files for license.txt file */
                 const files = library.references.filter((file: IContentLibFileReference) => {
                     const p: RegExp = new RegExp('senseexcel/license.txt$');
@@ -158,6 +157,8 @@ export class LicenseRepository {
                             if (error instanceof SerLicenseNotFoundException && retryAttempts === 1) {
                                 return createFile$;
                             }
+
+                            throw error;
                         }),
                     );
                 }),

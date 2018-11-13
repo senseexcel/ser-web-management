@@ -1,3 +1,11 @@
+<ng-template #progressStep let-step="step">
+    <i class="ser-icon" [ngClass]="{
+        'ser-icon--warning': !step.value.isValid,
+        'ser-icon--check': step.value.isValid
+    }"></i>
+    {{step.key}}
+</ng-template>
+
 <div class="panel">
     <div class="panel-header">
         <span>
@@ -5,14 +13,14 @@
         </span>
     </div>
     <div class="panel-body">
-        <div class="messages">
-            <i class="icon ser-icon ser-icon--warning"></i>
-            <ul class="lui-list">
-                <li class="lui--item" *ngFor="let error of errors">
-                    {{error}}
-                </li> 
-            </ul>
-        </div>
+        <ul class="lui-list">
+            <li class="lui--item" *ngFor="let step of progress | keyvalue:sortIsValid">
+                <ng-container 
+                    [ngTemplateOutlet]="progressStep"
+                    [ngTemplateOutletContext]="{step: step}"
+                ></ng-container>
+            </li> 
+        </ul>
         <div class="notification">
             Please contact your system adminstrator or qlik consultant.
         </div>

@@ -77,9 +77,6 @@ export class License {
                 const license = this.reader.read(licenseContent, this.model);
                 this.onload$.next(license);
                 return license;
-            }),
-            catchError(() => {
-                return of(new LicenseModel());
             })
         );
     }

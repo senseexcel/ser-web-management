@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LicenseValidator, License } from '../../services';
 import { LicenseModel } from '../../model/license.model';
-import { switchMap, finalize, takeUntil, tap } from 'rxjs/operators';
-import { LicenseInstallationInvalidException } from '../../api/exceptions/license-installation-invalid.exception';
-import { Subject } from 'rxjs';
+import { finalize, takeUntil, tap, mergeMap } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { ValidationStep, ILicenseValidationResult } from '../../api/validation-result.interface';
 
 @Component({
     selector: 'app-license',
@@ -25,7 +25,7 @@ export class LicensePageComponent implements OnDestroy, OnInit {
 
     public isInstallationInvalid: boolean;
 
-    public errors: string[];
+    public installationProgress: Map<ValidationStep, ILicenseValidationResult>;
 
     private isDestroyed$: Subject<boolean>;
 
@@ -94,27 +94,21 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      */
     private loadPage() {
         this.ready = false;
-        this.licenseValidator.isValidateLicenseInstallation()
+        this.licenseValidator.isValidLicenseInstallation()
             .pipe(
-                tap(() => this.isInstallationInvalid = false),
-                switchMap(() => this.license.loadLicense()),
+                mergeMap((result) => {
+                    if (!result.isValid) {
+                        this.isInstallationInvalid = true;
+                        this.installationProgress = result.data;
+                        return of(null);
+                    }
+                    return this.license.loadLicense();
+                }),
                 finalize(() => this.ready = true),
                 takeUntil(this.isDestroyed$)
             )
-            .subscribe(
-                /** installation is valid and license has been loaded */
-                (license: LicenseModel) => {
-                    this.licenseModel = license;
-                },
-                /** installation not valid or error occured*/
-                (error) => {
-                    this.isInstallationInvalid = true;
-                    if (error instanceof LicenseInstallationInvalidException) {
-                        this.errors = error.errors;
-                    } else {
-                        console.error(error);
-                    }
-                }
-            );
+            .subscribe((license: LicenseModel) => {
+                this.licenseModel = license;
+            });
     }
 }

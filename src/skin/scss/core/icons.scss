@@ -54,3 +54,7 @@
 .ser-icon--warning {
     &:before { content: "\0E8"; }
 }
+
+.ser-icon--check {
+    &:before { content: "\06D"; }
+}

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, catchError } from 'rxjs/operators';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 import { ContentLibNotExistsException } from '../api/exceptions';
 import { Observable } from 'rxjs';
@@ -41,7 +41,7 @@ export class ContentLibService {
                         throw new ContentLibNotExistsException(`Content Library ${name} not found.`);
                     }
                     return response[0];
-                })
+                }),
             );
     }
 
