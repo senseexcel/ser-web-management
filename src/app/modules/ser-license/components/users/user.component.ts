@@ -3,10 +3,11 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatDatepickerInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { Moment } from 'moment';
 import { Subject, of } from 'rxjs';
-import { map, switchMap, debounceTime, takeUntil } from 'rxjs/operators';
+import { map, switchMap, debounceTime, takeUntil, tap } from 'rxjs/operators';
 import { ILicenseUser } from '../../api/license-user.interface';
 import { LicenseModel } from '../../model/license.model';
 import { License, UserRepository } from '../../services';
+import { MOMENT_DATE_FORMAT } from '../../api/ser-date-formats';
 
 interface ITableUser extends ILicenseUser {
     edit: boolean;
@@ -112,11 +113,14 @@ export class UserComponent implements OnDestroy, OnInit {
         });
 
         this.suggest$.pipe(
+            // trigger after 300ms unless something changed
             debounceTime(300),
+            // add inserted value as id for edit user
+            tap((val) => this.currentEditUser.id = val),
+            // if more then 3 chars entered fetch qrs users
             switchMap((val) => val.length < 3 ? of([]) : this.repository.fetchQrsUsers(val)),
             takeUntil(this.isDestroyed$)
         ).subscribe((result) => {
-            console.log(result);
             this.userSuggestions = result;
         });
     }
@@ -150,12 +154,14 @@ export class UserComponent implements OnDestroy, OnInit {
     }
 
     /**
-     * date inserted
+     * ends user edit mode
      *
-     * @param {MatDatepickerInputEvent<Moment>} event
      * @memberof UserComponent
      */
-    public onDateInput(event: MatDatepickerInputEvent<Moment>) {
+    public finishEditUser() {
+        this.currentEditUser.edit = false;
+        this.currentEditUser = null;
+        this.selection.clear();
     }
 
     /**
@@ -164,7 +170,8 @@ export class UserComponent implements OnDestroy, OnInit {
      * @param {MatDatepickerInputEvent<Moment>} event
      * @memberof UserComponent
      */
-    public onDateChange(event: MatDatepickerInputEvent<Moment>) {
+    public onDateChange(event: MatDatepickerInputEvent<Moment>, key: string) {
+        this.currentEditUser[key] = event.value.format(MOMENT_DATE_FORMAT);
     }
 
     /**
@@ -178,7 +185,13 @@ export class UserComponent implements OnDestroy, OnInit {
         this.suggest$.next(insertVal);
     }
 
+    /**
+     * if user is selected set to user model
+     *
+     * @param {MatAutocompleteSelectedEvent} selected
+     * @memberof UserComponent
+     */
     public onUserSelected(selected: MatAutocompleteSelectedEvent) {
-        console.log(selected.option.value);
+        this.currentEditUser.id = selected.option.value;
     }
 }
