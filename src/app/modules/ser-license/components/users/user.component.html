@@ -8,14 +8,25 @@
 
         <!-- datepicker component -->
         <mat-form-field *ngSwitchCase="'datepicker'">
-            <input matInput [matDatepicker]="picker" readonly="readonly" (dateChange)="onDateChange($event, key)" >
+            <input
+                matInput
+                [matDatepicker]="picker"
+                readonly="readonly"
+                (dateChange)="onDateChange($event, key)"
+                [value]="text"
+            >
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
 
         <!-- auto complete component -->
         <mat-form-field *ngSwitchDefault>
-            <input type="text" matInput [matAutocomplete]="userAutoComplete" (input)="onUserInputChange($event.target.value)">
+            <input 
+                type="text" matInput 
+                [matAutocomplete]="userAutoComplete"
+                (input)="onUserInputChange($event.target.value)"
+                [value]="text"
+            >
         </mat-form-field>
 
         <mat-autocomplete #userAutoComplete="matAutocomplete" (optionSelected)="onUserSelected($event)" >
@@ -35,7 +46,7 @@
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>User Domain</th>
             <td mat-cell *matCellDef="let user">
-                <ng-template [ngTemplateOutlet]="user.edit?editCol:viewCol" [ngTemplateOutletContext]="{text: user.id, type:'autocomplete'}"></ng-template>
+                <ng-template [ngTemplateOutlet]="user.edit?editCol:viewCol" [ngTemplateOutletContext]="{text: user.user.id, type:'autocomplete'}"></ng-template>
             </td>
         </ng-container>
 
@@ -43,7 +54,7 @@
         <ng-container matColumnDef="from">
             <th mat-header-cell *matHeaderCellDef>Activated From</th>
             <td mat-cell *matCellDef="let user">
-                <ng-template [ngTemplateOutlet]="user.edit?editCol:viewCol" [ngTemplateOutletContext]="{text: user.from, type:'datepicker', key: 'from'}"></ng-template>
+                <ng-template [ngTemplateOutlet]="user.edit?editCol:viewCol" [ngTemplateOutletContext]="{text: user.user.from, type:'datepicker', key: 'from'}"></ng-template>
             </td>
         </ng-container>
 
@@ -51,7 +62,7 @@
         <ng-container matColumnDef="to">
             <th mat-header-cell *matHeaderCellDef>Activated Until</th>
             <td mat-cell *matCellDef="let user">
-                <ng-template [ngTemplateOutlet]="user.edit?editCol:viewCol" [ngTemplateOutletContext]="{text: user.to, type:'datepicker', key: 'to'}"></ng-template>
+                <ng-template [ngTemplateOutlet]="user.edit?editCol:viewCol" [ngTemplateOutletContext]="{text: user.user.to, type:'datepicker', key: 'to'}"></ng-template>
             </td>
         </ng-container>
 

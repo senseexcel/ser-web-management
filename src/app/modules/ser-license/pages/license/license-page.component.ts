@@ -62,13 +62,11 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     ngOnInit() {
-
         this.properties = [
             { label: 'License Information' },
             { label: 'License Overview' },
             { label: 'Licensed Users' }
         ];
-
         this.loadPage();
     }
 

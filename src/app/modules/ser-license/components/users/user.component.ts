@@ -9,8 +9,10 @@ import { LicenseModel } from '../../model/license.model';
 import { License, UserRepository } from '../../services';
 import { MOMENT_DATE_FORMAT } from '../../api/ser-date-formats';
 
-interface ITableUser extends ILicenseUser {
+interface ITableUser {
     edit: boolean;
+
+    user: ILicenseUser;
 }
 
 @Component({
@@ -36,11 +38,7 @@ export class UserComponent implements OnDestroy, OnInit {
      *
      * @memberof UserComponent
      */
-    public tableHeaderFields = [
-        'id',
-        'from',
-        'to'
-    ];
+    public tableHeaderFields = ['id', 'from', 'to'];
 
     /**
      * all users fetched from license
@@ -50,6 +48,12 @@ export class UserComponent implements OnDestroy, OnInit {
      */
     public users: ITableUser[];
 
+    /**
+     * values for auto suggest
+     *
+     * @type {any[]}
+     * @memberof UserComponent
+     */
     public userSuggestions: any[];
 
     private isDestroyed$: Subject<boolean>;
@@ -102,7 +106,10 @@ export class UserComponent implements OnDestroy, OnInit {
         this.license.onload$.pipe(
             map((model: LicenseModel): ITableUser[] => {
                 return model.users.map((user: ILicenseUser): ITableUser => {
-                    return {...user, edit: false};
+                    return {
+                        edit: false,
+                        user
+                    };
                 });
             }),
             takeUntil(this.isDestroyed$)
@@ -115,10 +122,9 @@ export class UserComponent implements OnDestroy, OnInit {
         this.suggest$.pipe(
             // trigger after 300ms unless something changed
             debounceTime(300),
-            // add inserted value as id for edit user
-            tap((val) => this.currentEditUser.id = val),
             // if more then 3 chars entered fetch qrs users
             switchMap((val) => val.length < 3 ? of([]) : this.repository.fetchQrsUsers(val)),
+            // ensure we unsubscribe if component is destroyed
             takeUntil(this.isDestroyed$)
         ).subscribe((result) => {
             this.userSuggestions = result;
@@ -171,7 +177,7 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public onDateChange(event: MatDatepickerInputEvent<Moment>, key: string) {
-        this.currentEditUser[key] = event.value.format(MOMENT_DATE_FORMAT);
+        this.currentEditUser.user[key] = event.value.format(MOMENT_DATE_FORMAT);
     }
 
     /**
@@ -182,6 +188,7 @@ export class UserComponent implements OnDestroy, OnInit {
      */
     public onUserInputChange(value: string) {
         const insertVal = value.replace(/(^\s*|\s*$)/, '');
+        this.currentEditUser.user.id = insertVal;
         this.suggest$.next(insertVal);
     }
 
@@ -192,6 +199,6 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public onUserSelected(selected: MatAutocompleteSelectedEvent) {
-        this.currentEditUser.id = selected.option.value;
+        this.currentEditUser.user.id = selected.option.value;
     }
 }
