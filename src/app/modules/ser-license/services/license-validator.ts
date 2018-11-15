@@ -3,11 +3,7 @@ import { Observable, of, forkJoin, concat, from } from 'rxjs';
 import { ContentLibService } from './contentlib.service';
 import { LicenseRepository } from './license-repository';
 import { map, catchError, mergeMap, concatAll, tap } from 'rxjs/operators';
-    import {
-        ContentLibNotExistsException,
-        QlikLicenseNoAccessException,
-        QlikLicenseInvalidException,
-} from '../api/exceptions';
+import { ContentLibNotExistsException, QlikLicenseNoAccessException, QlikLicenseInvalidException } from '../api/exceptions';
 import { ILicenseValidationResult, ValidationStep } from '../api/validation-result.interface';
 import { LicenseModel } from '../model/license.model';
 import { LicenseReader } from './license-reader';

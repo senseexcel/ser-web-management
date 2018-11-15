@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
-import { map, switchMap, catchError } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 import { ContentLibNotExistsException } from '../api/exceptions';
 import { Observable } from 'rxjs';

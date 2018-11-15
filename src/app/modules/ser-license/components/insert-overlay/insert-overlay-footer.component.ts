@@ -2,8 +2,6 @@ import { Component, Inject } from '@angular/core';
 import { MODAL_OVERLAY_CTRL } from '@core/modules/modal/api/modal-content.injector';
 import { InsertOverlayControl } from '../../services/insert-overlay.control';
 import { License, LicenseValidator, LicenseReader } from '../../services';
-import { LicenseModel } from '../../model/license.model';
-import { ILicenseValidationResult } from '../../api/validation-result.interface';
 
 @Component({
     selector: 'app-insert-overlay-footer',
@@ -16,10 +14,6 @@ export class InsertOverlayFooterComponent {
 
     private license: License;
 
-    private validator: LicenseValidator;
-
-    private reader: LicenseReader;
-
     constructor(
         @Inject(MODAL_OVERLAY_CTRL) ctrl: InsertOverlayControl,
         license: License,
@@ -28,8 +22,6 @@ export class InsertOverlayFooterComponent {
     ) {
         this.ctrl      = ctrl;
         this.license   = license;
-        this.reader    = reader;
-        this.validator = validator;
     }
 
     /**
@@ -38,20 +30,6 @@ export class InsertOverlayFooterComponent {
      * @memberof InsertOverlayFooterComponent
      */
     public apply() {
-
-        /**
-         * uncomment so we can only apply this input
-         * after license has been validated
-        const license: LicenseModel = this.reader.read(this.ctrl.content.replace(/\n/g, ' '));
-        this.validator.validateLicense(license)
-            .subscribe((result: ILicenseValidationResult) => {
-                if (result.isValid) {
-                    this.license.updateLicense(license);
-                    this.close();
-                }
-            });
-        */
-
         this.license.updateLicense(this.ctrl.content);
         this.close();
     }

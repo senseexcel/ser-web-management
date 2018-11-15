@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { map, switchMap, tap, catchError, retryWhen, reduce } from 'rxjs/operators';
+import { map, switchMap, catchError, retryWhen } from 'rxjs/operators';
 import { IQlikLicenseResponse } from '../api/response/qlik-license.interface';
 import { QlikLicenseNoAccessException, QlikLicenseInvalidException, SerLicenseNotFoundException } from '../api/exceptions';
 import { ContentLibService } from './contentlib.service';
@@ -98,7 +98,7 @@ export class LicenseRepository {
                 const checkSum = this.calculateCheckSum(qlikSerial);
 
                 /** create params */
-                const params   = new HttpParams()
+                const params = new HttpParams()
                     .set('serial', qlikSerial)
                     .set('chk', String(checkSum));
 

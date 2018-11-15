@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { License, LicenseValidator, LicenseRepository } from '../../services';
 import { LicenseModel } from '../../model/license.model';
-import { mergeMap, takeUntil, map, tap, switchMap, concatMap } from 'rxjs/operators';
-import { Subject, concat, empty, forkJoin } from 'rxjs';
+import { mergeMap, takeUntil, map } from 'rxjs/operators';
+import { Subject, forkJoin } from 'rxjs';
 
 @Component({
     selector: 'app-license-info',

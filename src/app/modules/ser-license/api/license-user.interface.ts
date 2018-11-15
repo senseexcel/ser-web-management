@@ -5,6 +5,4 @@ export interface ILicenseUser {
     from: string;
 
     to: string;
-
-    raw: ILicenseUser;
 }
