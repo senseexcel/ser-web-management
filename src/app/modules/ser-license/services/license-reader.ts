@@ -78,7 +78,7 @@ export class LicenseReader {
      * @returns {*}
      * @memberof LicenseReader
      */
-    private readUsers(users: string[]): any {
+    private readUsers(users: string[]): ILicenseUser[] {
         return users.map((user): ILicenseUser => {
             const data = user.split(';');
 

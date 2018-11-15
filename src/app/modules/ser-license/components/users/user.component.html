@@ -1,23 +1,82 @@
+<ng-template #viewCol let-text="text">
+    {{text}}
+</ng-template>
+
+<!-- template user inline edit column -->
+<ng-template #editCol let-text="text" let-type="type">
+    <ng-container [ngSwitch]="type">
+
+        <!-- datepicker component -->
+        <mat-form-field *ngSwitchCase="'datepicker'">
+            <input matInput [matDatepicker]="picker" readonly="readonly" (dateInput)="onDateInput($event, $value)" (dateChange)="onDateChange($event)" >
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- auto complete component -->
+        <mat-form-field *ngSwitchDefault>
+            <input type="text" matInput [matAutocomplete]="userAutoComplete" (input)="onUserInputChange($event.target.value)">
+        </mat-form-field>
+
+        <mat-autocomplete #userAutoComplete="matAutocomplete" (optionSelected)="onUserSelected($event)" >
+            <mat-option *ngFor="let item of userSuggestions" [value]="item">{{item}}</mat-option>
+        </mat-autocomplete>
+
+    </ng-container>
+</ng-template>
+
 <div class="license-users">
 
     <div class="header">Licensed Users</div>
 
-    <table class="table" *ngIf="ready" mat-table [dataSource]="model.users">
-        <!-- Position Column -->
+    <table class="table" *ngIf="ready" mat-table multiTemplateDataRows [dataSource]="users">
+
+        <!-- user domain / id column -->
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>User Domain</th>
-            <td mat-cell *matCellDef="let user"> {{user.id}} </td>
+            <td mat-cell *matCellDef="let user">
+                <ng-template [ngTemplateOutlet]="user.edit?editCol:viewCol" [ngTemplateOutletContext]="{text: user.id, type:'autocomplete'}"></ng-template>
+            </td>
         </ng-container>
-        <!-- Weight Column -->
+
+        <!-- user activated from date column -->
         <ng-container matColumnDef="from">
             <th mat-header-cell *matHeaderCellDef>Activated From</th>
-            <td mat-cell *matCellDef="let user"> {{user.from}} </td>
+            <td mat-cell *matCellDef="let user">
+                <ng-template [ngTemplateOutlet]="user.edit?editCol:viewCol" [ngTemplateOutletContext]="{text: user.from, type:'datepicker'}"></ng-template>
+            </td>
         </ng-container>
+
+        <!-- user activated to date column -->
         <ng-container matColumnDef="to">
             <th mat-header-cell *matHeaderCellDef>Activated Until</th>
-            <td mat-cell *matCellDef="let user"> {{user.to}} </td>
+            <td mat-cell *matCellDef="let user">
+                <ng-template [ngTemplateOutlet]="user.edit?editCol:viewCol" [ngTemplateOutletContext]="{text: user.to, type:'datepicker'}"></ng-template>
+            </td>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="tableHeaderFields"></tr>
-        <tr mat-row *matRowDef="let row; columns: tableHeaderFields;">
+
+        <!-- user actions column -->
+        <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="3">
+                <button class="btn btn--secondary">save</button>
+            </td>
+        </ng-container>
+
+        <!-- table header row -->
+        <tr mat-header-row *matHeaderRowDef="tableHeaderFields" ></tr>
+
+        <!-- table row for user details or edit fields -->
+        <tr mat-row 
+            *matRowDef="let user; columns: tableHeaderFields;" 
+            appMouseDblClick (dblClick)="editUser(user)" (click)="selectUser(user)"
+            class="user-table--row"
+            [class.edit]="currentEditUser === user">
+        </tr>
+
+        <!-- table for for actions only visible on edit mode -->
+        <tr mat-row 
+            *matRowDef="let row; columns: ['expandedDetail']" 
+            class="user-table--row actions">
+        </tr>
     </table>
 </div>

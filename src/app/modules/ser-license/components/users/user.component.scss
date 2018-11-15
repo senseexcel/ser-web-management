@@ -1,0 +1,16 @@
+:host {
+    
+    .user-table--row {
+
+        &.actions {
+            display: none;
+        }
+    }
+
+    .user-table--row.edit {
+
+        + .user-table--row.actions {
+            display: table-row;
+        }
+    }
+}

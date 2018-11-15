@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { map, switchMap, tap, catchError, retryWhen } from 'rxjs/operators';
+import { map, switchMap, tap, catchError, retryWhen, reduce } from 'rxjs/operators';
 import { IQlikLicenseResponse } from '../api/response/qlik-license.interface';
 import { QlikLicenseNoAccessException, QlikLicenseInvalidException, SerLicenseNotFoundException } from '../api/exceptions';
 import { ContentLibService } from './contentlib.service';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
+import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 
 @Injectable()
 export class LicenseRepository {
@@ -30,11 +31,15 @@ export class LicenseRepository {
      */
     private http: HttpClient;
 
+    private filterService: SerFilterService;
+
     constructor(
         contentLib: ContentLibService,
+        filterService: SerFilterService,
         http: HttpClient
     ) {
         this.contentLib = contentLib;
+        this.filterService = filterService;
         this.http = http;
     }
 
@@ -97,14 +102,17 @@ export class LicenseRepository {
                     .set('serial', qlikSerial)
                     .set('chk', String(checkSum));
 
-                // const url = `https://support.qlik2go.net/lefupdate/update_lef.asp?${params.toString()}`;
                 const url = `http://localhost:3000?${params.toString()}`;
+                // const url = 'https://support.qlik2go.net/lefupdate/update_lef.json?serial=4904350555094570&chk=6157';
 
                 /** fetch license for qlik sense excel reporting  */
                 return this.http.jsonp(url, 'callback')
                 .pipe(
-                    map((response: string) => {
-                        return JSON.parse(response).licences[0];
+                    map((response: string | any) => {
+                        if ( response.constructor === String) {
+                            response = JSON.parse(response);
+                        }
+                        return String(response.licenses[0]);
                     })
                 );
             })

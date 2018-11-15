@@ -1,3 +1,5 @@
+import { ILicenseUser } from '../api/license-user.interface';
+
 export class LicenseModel {
 
     private licenseKey: string;
@@ -6,7 +8,7 @@ export class LicenseModel {
 
     private licenseText: string;
 
-    private licenseUsers: string[];
+    private licenseUsers: ILicenseUser[];
 
     public get key(): string {
         return this.licenseKey;
@@ -20,7 +22,7 @@ export class LicenseModel {
         return this.licenseText;
     }
 
-    public get users(): string[] {
+    public get users(): ILicenseUser[] {
         return this.licenseUsers;
     }
 
@@ -36,7 +38,7 @@ export class LicenseModel {
         this.licenseText = text;
     }
 
-    public set users(users: string[]) {
+    public set users(users: ILicenseUser[]) {
         this.licenseUsers = users;
     }
 }
