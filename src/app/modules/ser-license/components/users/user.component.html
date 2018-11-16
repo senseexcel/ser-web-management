@@ -42,6 +42,12 @@
 
     <table class="table" *ngIf="ready" mat-table multiTemplateDataRows [dataSource]="users">
 
+        <ng-container matColumnDef="column_c">
+            <mat-header-cell *matHeaderCellDef> Column C</mat-header-cell>
+            <mat-cell *matCellDef="let row"> {{row.c}}</mat-cell>
+            <mat-footer-cell *matFooterCellDef> Footer C</mat-footer-cell>
+        </ng-container>
+
         <!-- user domain / id column -->
         <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>User Domain</th>
@@ -74,7 +80,7 @@
         </ng-container>
 
         <!-- table header row -->
-        <tr mat-header-row *matHeaderRowDef="tableHeaderFields" ></tr>
+        <tr mat-header-row *matHeaderRowDef="tableHeaderFields"></tr>
 
         <!-- table row for user details or edit fields -->
         <tr mat-row 

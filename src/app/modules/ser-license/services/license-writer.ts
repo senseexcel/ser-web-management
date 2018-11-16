@@ -47,9 +47,12 @@ export class LicenseWriter {
             return '';
         }
 
-        return users.reduce((data: string[], u: ILicenseUser) => {
-            const combinedUser = Object.values(u).join(';');
-            data.push(`EXCEL_NAME;${combinedUser}`);
+        return users.reduce((data: string[], licenseUser: ILicenseUser) => {
+            /** only add license user if user id is not empty */
+            if (licenseUser.id && licenseUser.id.replace(/(^\s*|\s*$)/g, '') !== '') {
+                const combinedUser = Object.values(licenseUser).join(';');
+                data.push(`EXCEL_NAME;${combinedUser}`);
+            }
             return data;
         }, []).join(' ');
     }

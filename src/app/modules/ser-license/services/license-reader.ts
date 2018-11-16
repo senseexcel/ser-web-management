@@ -83,7 +83,7 @@ export class LicenseReader {
             const data = user.split(';');
 
             return {
-                id:   data[1],
+                id:   data[1] || '',
                 from: data[2] || '--',
                 to:   data[3] || '--'
             };
