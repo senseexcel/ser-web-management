@@ -66,6 +66,10 @@ export class LicenseWriter {
      * @memberof LicenseWriter
      */
     private sanitizeLicenseData(data: string): string {
-        return data.replace(/\n/g, ' ');
+        return data
+            /* replace linebreaks by space */
+            .replace(/\n/g, ' ')
+            /* reduce multiple spaces to one this will also remove empty lines which has become a space */
+            .replace(/((\s)\s+)/g, '$2');
     }
 }

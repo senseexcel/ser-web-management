@@ -46,4 +46,4 @@ import { JsonpInterceptorModule } from './jsonp-interceptor.module';
         {provide: MAT_DATE_FORMATS, useValue: SER_DATE_FORMATS},
     ]
 })
-export class LicenseModule { }
+export class LicenseModule {}
