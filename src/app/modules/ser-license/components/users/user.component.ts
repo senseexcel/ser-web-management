@@ -56,6 +56,8 @@ export class UserComponent implements OnDestroy, OnInit {
      */
     public userSuggestions: any[];
 
+    public licensedUserInfo: any;
+
     private isDestroyed$: Subject<boolean>;
 
     /**
@@ -83,6 +85,7 @@ export class UserComponent implements OnDestroy, OnInit {
         this.suggest$     = new Subject();
         this.repository   = repository;
 
+        this.licensedUserInfo = {total: 0, selected: 0, showing: 0};
         this.userSuggestions = [];
     }
 
@@ -105,6 +108,10 @@ export class UserComponent implements OnDestroy, OnInit {
 
         this.license.onload$.pipe(
             map((model: LicenseModel): ITableUser[] => {
+
+                this.licensedUserInfo.total   = model.users.length;
+                this.licensedUserInfo.showing = model.users.length;
+
                 return model.users.map((user: ILicenseUser): ITableUser => {
                     return {
                         edit: false,
@@ -129,6 +136,20 @@ export class UserComponent implements OnDestroy, OnInit {
         ).subscribe((result) => {
             this.userSuggestions = result;
         });
+    }
+
+    /**
+     * add new user
+     *
+     * @memberof UserComponent
+     */
+    public addUser() {
+
+        if (this.currentEditUser) {
+            this.currentEditUser.edit = false;
+        }
+
+        this.license.addUser({id: 'NEW_USER', from: '', to: ''});
     }
 
     /**
@@ -187,7 +208,9 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public onUserInputChange(value: string) {
+
         const insertVal = value.replace(/(^\s*|\s*$)/, '');
+
         this.currentEditUser.user.id = insertVal;
         this.suggest$.next(insertVal);
     }

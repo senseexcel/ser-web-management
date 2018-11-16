@@ -51,4 +51,9 @@
             }
         }
     }
+
+    .user-list--table {
+        max-height: 500px;
+        overflow-y: scroll;
+    }
 }

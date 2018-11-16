@@ -36,10 +36,22 @@
     </ng-container>
 </ng-template>
 
-<div class="license-users">
+<!-- user information row -->
+<div class="user-list--header">
+    <ul class="list-inline mr-auto">
+        <li class="list-inline-item">
+            <i class="ser-icon ser-icon--user"></i>
+            <span>Licensed Users</span>
+        </li>
+        <li class="list-inline-item">Total: {{licensedUserInfo.total}}</li>
+        <li class="list-inline-item">Showing: {{licensedUserInfo.showing}}</li>
+        <li class="list-inline-item">Selected: {{licensedUserInfo.selected}}</li>
+    </ul>
 
-    <div class="header">Licensed Users</div>
+    <button type="button" (click)="addUser()">add</button>
+</div>
 
+<div class="user-list--table">
     <table class="table" *ngIf="ready" mat-table multiTemplateDataRows [dataSource]="users">
 
         <ng-container matColumnDef="column_c">
@@ -80,7 +92,7 @@
         </ng-container>
 
         <!-- table header row -->
-        <tr mat-header-row *matHeaderRowDef="tableHeaderFields"></tr>
+        <tr mat-header-row *matHeaderRowDef="tableHeaderFields; sticky: true"></tr>
 
         <!-- table row for user details or edit fields -->
         <tr mat-row 

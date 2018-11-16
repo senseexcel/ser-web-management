@@ -5,6 +5,7 @@ import {  map } from 'rxjs/operators';
 import { LicenseReader } from './license-reader';
 import { LicenseRepository } from './license-repository';
 import { LicenseWriter } from './license-writer';
+import { ILicenseUser } from '../api/license-user.interface';
 
 @Injectable()
 export class License {
@@ -120,5 +121,16 @@ export class License {
      */
     public saveLicense() {
         return this.writer.write(this.model);
+    }
+
+    /**
+     *
+     *
+     * @param {ILicenseUser} user
+     * @memberof License
+     */
+    public addUser(user: ILicenseUser) {
+        this.model.users.push(user);
+        this.updateLicense(this.model);
     }
 }
