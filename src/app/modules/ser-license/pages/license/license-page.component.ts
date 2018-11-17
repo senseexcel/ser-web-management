@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { LicenseValidator, License } from '../../services';
 import { LicenseModel } from '../../model/license.model';
 import { finalize, takeUntil, tap, mergeMap } from 'rxjs/operators';
@@ -21,20 +21,102 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      */
     public ready: boolean;
 
+    /**
+     * license model
+     *
+     * @type {LicenseModel}
+     * @memberof LicensePageComponent
+     */
     public licenseModel: LicenseModel;
 
+    /**
+     * flag installation is completed
+     *
+     * @type {boolean}
+     * @memberof LicensePageComponent
+     */
     public isInstallationInvalid: boolean;
 
+    /**
+     * map installation process
+     *
+     * @type {Map<ValidationStep, ILicenseValidationResult>}
+     * @memberof LicensePageComponent
+     */
     public installationProgress: Map<ValidationStep, ILicenseValidationResult>;
 
+    /**
+     * page properties which will be shown
+     *
+     * @type {any[]}
+     * @memberof LicensePageComponent
+     */
     public properties: any[] = [];
 
+    /**
+     * selected page part
+     *
+     * @type {*}
+     * @memberof LicensePageComponent
+     */
     public selectedProperty: any;
 
+    /**
+     * page part license overview
+     *
+     * @private
+     * @type {ElementRef}
+     * @memberof LicensePageComponent
+     */
+    @ViewChild('licenseOverview')
+    private overviewContainer: ElementRef;
+
+    /**
+     * page part license information
+     *
+     * @private
+     * @type {ElementRef}
+     * @memberof LicensePageComponent
+     */
+    @ViewChild('licenseInfo')
+    private infoContainer: ElementRef;
+
+    /**
+     * page part licensed users
+     *
+     * @private
+     * @type {ElementRef}
+     * @memberof LicensePageComponent
+     */
+    @ViewChild('licensedUsers')
+    private userContainer: ElementRef;
+
+    /**
+     * subject witch submits true if component gets destroyed
+     * to unsubscribe from observables
+     *
+     * @private
+     * @type {Subject<boolean>}
+     * @memberof LicensePageComponent
+     */
     private isDestroyed$: Subject<boolean>;
 
+    /**
+     * license service
+     *
+     * @private
+     * @type {License}
+     * @memberof LicensePageComponent
+     */
     private license: License;
 
+    /**
+     * license validator service
+     *
+     * @private
+     * @type {LicenseValidator}
+     * @memberof LicensePageComponent
+     */
     private licenseValidator: LicenseValidator;
 
     /**
@@ -63,9 +145,9 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      */
     ngOnInit() {
         this.properties = [
-            { label: 'License Information' },
-            { label: 'License Overview' },
-            { label: 'Licensed Users' }
+            { label: 'License Information', part: 'information' },
+            { label: 'License Overview' , part: 'overview'},
+            { label: 'Licensed Users', part: 'users'}
         ];
         this.loadPage();
     }
@@ -93,6 +175,40 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     public saveLicense() {
         this.license.saveLicense()
             .subscribe();
+    }
+
+    /**
+     * scroll to part of page
+     *
+     * @param {*} selected
+     * @param {string} part
+     * @returns
+     * @memberof LicensePageComponent
+     */
+    public showPagePart(selected, part: string) {
+
+        let scrollToContainer: ElementRef;
+
+        switch (part) {
+            case 'overview':
+                scrollToContainer = this.overviewContainer;
+                break;
+            case 'information':
+                scrollToContainer = this.infoContainer;
+                break;
+            case 'users':
+                scrollToContainer = this.userContainer;
+                break;
+            default:
+                return;
+        }
+
+        scrollToContainer.nativeElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+
+        this.selectedProperty = selected;
     }
 
     /**

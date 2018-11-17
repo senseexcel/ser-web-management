@@ -160,6 +160,7 @@ export class UserComponent implements OnDestroy, OnInit {
         if (this.currentEditUser) {
             this.currentEditUser.edit = false;
         }
+        /** @todo fix me, this will force table to complete rerender */
         this.license.addUser({id: 'NEW_USER', from: '--', to: '--'});
     }
 

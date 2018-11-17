@@ -2,28 +2,28 @@
 <ng-template #licenseTemplate>
     <div class="qmc-page--content-body">
 
-        <div class="license-block">
+        <div class="license-block" #licenseInfo>
             <div class="header qmc-page--content-header">
                 <i class="ser-icon ser-icon--license"></i>
                 <span>License informations</span>
             </div>
-            <app-license-info  #licenseInfo></app-license-info>
+            <app-license-info></app-license-info>
         </div>
 
-        <div class="license-block">
+        <div class="license-block" #licenseOverview>
             <div class="header qmc-page--content-header">
                 <i class="ser-icon ser-icon--license"></i>
                 <span>License Overview</span>
             </div>
-            <app-license-overview #licenseOverview></app-license-overview>
+            <app-license-overview></app-license-overview>
         </div>
 
-        <div class="license-block">
+        <div class="license-block" #licensedUsers>
             <div class="header qmc-page--content-header">
                 <i class="ser-icon ser-icon--license"></i>
                 <span>Licensed Users</span>
             </div>
-            <app-license-user #licenseUsers></app-license-user>
+            <app-license-user></app-license-user>
         </div>
     </div>
 
@@ -96,7 +96,7 @@
 
             <ul class="lui-list">
                 <li class="lui-item" 
-                    (click)="showForm(property)"
+                    (click)="showPagePart(property, property.part)"
                     *ngFor="let property of properties"
                     [ngClass]="{'active': property == selectedProperty}" >
                     {{property.label}}
