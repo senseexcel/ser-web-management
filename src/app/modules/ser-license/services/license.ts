@@ -6,6 +6,7 @@ import { LicenseReader } from './license-reader';
 import { LicenseRepository } from './license-repository';
 import { LicenseWriter } from './license-writer';
 import { ILicenseUser } from '../api/license-user.interface';
+import { LICENSE_PROPERTIES } from '../api/license-data.interface';
 
 @Injectable()
 export class License {
@@ -124,13 +125,40 @@ export class License {
     }
 
     /**
-     *
+     * adds new user to license
      *
      * @param {ILicenseUser} user
      * @memberof License
      */
     public addUser(user: ILicenseUser) {
+
+        if (!user.id || !user.id.replace(/(^\s|\s$)/g, '').length ) {
+            return;
+        }
+
         this.model.users.push(user);
-        this.updateLicense(this.model);
+        this.onload$.next(this.model);
+    }
+
+    /**
+     * adds new user to license
+     *
+     * @param {ILicenseUser} user
+     * @memberof License
+     */
+    public get raw(): string {
+        const text = this.model.text;
+        const raw = this.model.users.reduce((rawData: string, user: ILicenseUser) => {
+            if (!user.id || !user.id.replace(/(^\s|\s$)/g, '').length ) {
+                return rawData;
+            }
+
+            // create new user line for raw
+            const lineData = [].concat([LICENSE_PROPERTIES.USER, ...Object.values(user)]);
+
+            // concat current raw data with user line
+            return `${rawData}\n${lineData.join(';')}`;
+        }, text);
+        return raw;
     }
 }

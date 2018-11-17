@@ -108,7 +108,6 @@ export class UserComponent implements OnDestroy, OnInit {
 
         this.license.onload$.pipe(
             map((model: LicenseModel): ITableUser[] => {
-
                 this.licensedUserInfo.total   = model.users.length;
                 this.licensedUserInfo.showing = model.users.length;
 
@@ -149,6 +148,7 @@ export class UserComponent implements OnDestroy, OnInit {
             this.currentEditUser.edit = false;
         }
 
+        // should be an update not a copy
         this.license.addUser({id: 'NEW_USER', from: '', to: ''});
     }
 
@@ -208,10 +208,10 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public onUserInputChange(value: string) {
-
         const insertVal = value.replace(/(^\s*|\s*$)/, '');
-
         this.currentEditUser.user.id = insertVal;
+        // we need to force update raw data now
+        // force update user
         this.suggest$.next(insertVal);
     }
 

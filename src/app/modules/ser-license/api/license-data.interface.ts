@@ -8,3 +8,7 @@ export interface ILicensData {
 
     users: ILicenseUser[];
 }
+
+export enum LICENSE_PROPERTIES {
+    USER = 'EXCEL_NAME',
+}

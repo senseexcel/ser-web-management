@@ -1,10 +1,10 @@
-import { Component, OnInit, Inject, AfterViewInit } from '@angular/core';
+import { Component, OnInit, Inject, AfterViewInit, OnDestroy } from '@angular/core';
 import { MODAL_OVERLAY_CTRL } from '@core/modules/modal/api/modal-content.injector';
 import { InsertOverlayControl } from '../../services/insert-overlay.control';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, takeUntil, tap } from 'rxjs/operators';
 import { License } from '../../services';
-import { LicenseModel } from '../../model/license.model';
+import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-license-insert-overlay',
@@ -12,7 +12,7 @@ import { LicenseModel } from '../../model/license.model';
     templateUrl: 'insert-overlay.component.html'
 })
 
-export class InsertOverlayComponent implements AfterViewInit, OnInit {
+export class InsertOverlayComponent implements AfterViewInit, OnDestroy, OnInit {
 
     public insertField: FormControl;
 
@@ -24,6 +24,8 @@ export class InsertOverlayComponent implements AfterViewInit, OnInit {
 
     private license: License;
 
+    private isDestroyed$: Subject<boolean>;
+
     constructor(
         @Inject(MODAL_OVERLAY_CTRL) ctrl: InsertOverlayControl,
         formBuilder: FormBuilder,
@@ -32,20 +34,30 @@ export class InsertOverlayComponent implements AfterViewInit, OnInit {
         this.formBuilder = formBuilder;
         this.ctrl = ctrl;
         this.license = license;
+        this.isDestroyed$ = new Subject();
+    }
+
+    ngAfterViewInit() {
+        this.license.onload$
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe(() => {
+                this.ctrl.update(this.license.raw);
+            });
+    }
+
+    ngOnDestroy() {
+        this.isDestroyed$.next(true);
     }
 
     ngOnInit() {
         this.ctrl.content = '';
         this.insertField = this.createInsertField();
 
-        this.ctrl.update$.subscribe((content: string) => {
+        this.ctrl.update$.pipe(
+            takeUntil(this.isDestroyed$)
+        )
+        .subscribe((content: string) => {
             this.insertField.setValue(content, {emitEvent: false});
-        });
-    }
-
-    ngAfterViewInit() {
-        this.license.onload$.subscribe((model: LicenseModel) => {
-            this.ctrl.update(model.raw);
         });
     }
 
