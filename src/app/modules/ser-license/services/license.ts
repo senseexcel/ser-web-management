@@ -141,6 +141,24 @@ export class License {
     }
 
     /**
+     * delete user from model
+     *
+     * @param {ILicenseUser} user
+     * @returns
+     * @memberof License
+     */
+    public deleteUser(user: ILicenseUser) {
+        const index = this.model.users.indexOf(user);
+
+        if (index === -1) {
+            return;
+        }
+
+        this.model.users.splice(index, 1);
+        this.onload$.next(this.model);
+    }
+
+    /**
      * adds new user to license
      *
      * @param {ILicenseUser} user
