@@ -99,7 +99,7 @@ export class UserComponent implements OnDestroy, OnInit {
         this.suggest$     = new Subject();
         this.repository   = repository;
 
-        this.licensedUserInfo = {total: 0, selected: 0, showing: 0};
+        this.licensedUserInfo = {total: 0, showing: 0};
         this.userSuggestions = [];
     }
 
@@ -160,7 +160,7 @@ export class UserComponent implements OnDestroy, OnInit {
         if (this.currentEditUser) {
             this.currentEditUser.edit = false;
         }
-        this.license.addUser({id: 'NEW_USER', from: '', to: ''});
+        this.license.addUser({id: 'NEW_USER', from: '--', to: '--'});
     }
 
     /**

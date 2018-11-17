@@ -38,7 +38,7 @@
 
 <!-- user information row -->
 <div class="user-list--header">
-    <ul class="list-inline mr-auto">
+    <ul class="list-inline">
         <li class="list-inline-item">
             <i class="ser-icon ser-icon--user"></i>
             <span>Licensed Users</span>
@@ -47,8 +47,6 @@
         <li class="list-inline-item">Showing: {{licensedUserInfo.showing}}</li>
         <li class="list-inline-item">Selected: {{selection.selected.length}}</li>
     </ul>
-
-    <button type="button" (click)="addUser()">add</button>
 </div>
 
 <div class="user-list--table">
@@ -111,4 +109,13 @@
             class="user-table--row actions">
         </tr>
     </table>
+
+    <div class="user-list--footer">
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group" role="group" aria-label="First group">
+                <button type="button" (click)="addUser()">Add</button>
+                <button type="button" [disabled]="!selection.selected.length" (click)="deleteUser()">Delete</button>
+            </div>
+        </div>
+    </div>
 </div>

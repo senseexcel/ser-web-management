@@ -1,9 +1,30 @@
 <!-- display license page to edit or show detailed informations -->
 <ng-template #licenseTemplate>
     <div class="qmc-page--content-body">
-        <app-license-info     #licenseInfo></app-license-info>
-        <app-license-overview #licenseOverview></app-license-overview>
-        <app-license-user     #licenseUsers></app-license-user>
+
+        <div class="license-block">
+            <div class="header qmc-page--content-header">
+                <i class="ser-icon ser-icon--license"></i>
+                <span>License informations</span>
+            </div>
+            <app-license-info  #licenseInfo></app-license-info>
+        </div>
+
+        <div class="license-block">
+            <div class="header qmc-page--content-header">
+                <i class="ser-icon ser-icon--license"></i>
+                <span>License Overview</span>
+            </div>
+            <app-license-overview #licenseOverview></app-license-overview>
+        </div>
+
+        <div class="license-block">
+            <div class="header qmc-page--content-header">
+                <i class="ser-icon ser-icon--license"></i>
+                <span>Licensed Users</span>
+            </div>
+            <app-license-user #licenseUsers></app-license-user>
+        </div>
     </div>
 
     <div class="qmc-page--content-footer">
