@@ -3,6 +3,7 @@ import { LicenseRepository } from './license-repository';
 import { LicenseModel } from '../model/license.model';
 import { Observable } from 'rxjs';
 import { ILicenseUser } from '../api/license-user.interface';
+import { LICENSE_PROPERTIES } from '../api/license-data.interface';
 
 @Injectable()
 export class LicenseWriter {
@@ -63,7 +64,7 @@ export class LicenseWriter {
                 const combinedUser = userData.join(';');
 
                 /** push user license line into lines array */
-                data.push(`EXCEL_NAME;${combinedUser}`);
+                data.push(`${LICENSE_PROPERTIES.USER};${combinedUser}`);
             }
             return data;
         }, []).join(' ');

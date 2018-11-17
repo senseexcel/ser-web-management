@@ -45,7 +45,7 @@
         </li>
         <li class="list-inline-item">Total: {{licensedUserInfo.total}}</li>
         <li class="list-inline-item">Showing: {{licensedUserInfo.showing}}</li>
-        <li class="list-inline-item">Selected: {{licensedUserInfo.selected}}</li>
+        <li class="list-inline-item">Selected: {{selection.selected.length}}</li>
     </ul>
 
     <button type="button" (click)="addUser()">add</button>
@@ -99,7 +99,10 @@
             *matRowDef="let user; columns: tableHeaderFields;" 
             appMouseDblClick (dblClick)="editUser(user)" (click)="selectUser(user)"
             class="user-table--row"
-            [class.edit]="currentEditUser === user">
+            [ngClass]="{
+                'selected': selection.isSelected(user),
+                'edit': currentEditUser === user
+            }">
         </tr>
 
         <!-- table for for actions only visible on edit mode -->

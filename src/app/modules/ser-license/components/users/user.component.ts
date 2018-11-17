@@ -34,6 +34,14 @@ export class UserComponent implements OnDestroy, OnInit {
     public ready = false;
 
     /**
+     * selection model
+     *
+     * @type {SelectionModel<ITableUser>}
+     * @memberof UserComponent
+     */
+    public selection: SelectionModel<ITableUser>;
+
+    /**
      * table header fields
      *
      * @memberof UserComponent
@@ -58,6 +66,14 @@ export class UserComponent implements OnDestroy, OnInit {
 
     public licensedUserInfo: any;
 
+    /**
+     * submit true if component will be destroyed to remove
+     * all subscriptions
+     *
+     * @private
+     * @type {Subject<boolean>}
+     * @memberof UserComponent
+     */
     private isDestroyed$: Subject<boolean>;
 
     /**
@@ -69,8 +85,6 @@ export class UserComponent implements OnDestroy, OnInit {
      */
     private license: License;
 
-    private selection: SelectionModel<ITableUser>;
-
     private suggest$: Subject<any>;
 
     private repository: UserRepository;
@@ -81,7 +95,7 @@ export class UserComponent implements OnDestroy, OnInit {
     ) {
         this.isDestroyed$ = new Subject();
         this.license      = license;
-        this.selection    = new SelectionModel(true);
+        this.selection    = new SelectionModel(false);
         this.suggest$     = new Subject();
         this.repository   = repository;
 
@@ -97,7 +111,7 @@ export class UserComponent implements OnDestroy, OnInit {
     ngOnDestroy() {
         this.isDestroyed$.next(true);
 
-        /** just clear all variables to ensure it is not set anymore */
+        /** null variables to ensure it is not set anymore */
         this.license      = null;
         this.selection    = null;
         this.suggest$     = null;
@@ -143,12 +157,9 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public addUser() {
-
         if (this.currentEditUser) {
             this.currentEditUser.edit = false;
         }
-
-        // should be an update not a copy
         this.license.addUser({id: 'NEW_USER', from: '', to: ''});
     }
 
@@ -176,8 +187,6 @@ export class UserComponent implements OnDestroy, OnInit {
 
         this.currentEditUser = user;
         this.currentEditUser.edit = true;
-        this.selection.clear();
-        this.selection.select(user);
     }
 
     /**
@@ -188,7 +197,6 @@ export class UserComponent implements OnDestroy, OnInit {
     public finishEditUser() {
         this.currentEditUser.edit = false;
         this.currentEditUser = null;
-        this.selection.clear();
     }
 
     /**
@@ -210,8 +218,6 @@ export class UserComponent implements OnDestroy, OnInit {
     public onUserInputChange(value: string) {
         const insertVal = value.replace(/(^\s*|\s*$)/, '');
         this.currentEditUser.user.id = insertVal;
-        // we need to force update raw data now
-        // force update user
         this.suggest$.next(insertVal);
     }
 

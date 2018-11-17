@@ -65,27 +65,6 @@
             </span>
         </button>
 
-        <!--
-
-        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="deleteTask()" >
-            <span class="button-label">
-                Delete
-            </span>
-        </button>
-
-        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item" (click)="startTask()">
-            <span class="button-label">
-                Run Task
-            </span>
-        </button>
-
-        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item" (click)="stopTask()">
-            <span class="button-label">
-                Stop Task
-            </span>
-        </button>
-        -->
-
         <button type="button" class="nav-item" [disabled]="isLoading" (click)="reloadList()">
             <span class="button-label">
                 Reload
