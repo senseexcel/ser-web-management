@@ -1,5 +1,7 @@
 <div class="task-list">
 
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+
     <app-list-header>
         <span>
             <i class="ser-icon ser-icon--tasks"></i>
@@ -7,7 +9,7 @@
         </span>
     </app-list-header>
 
-    <table class="table" mat-table [dataSource]="tasks">
+    <table class="table" mat-table [dataSource]="tasks" *ngIf="!isLoading">
 
         <!-- Position Column -->
         <ng-container matColumnDef="id">

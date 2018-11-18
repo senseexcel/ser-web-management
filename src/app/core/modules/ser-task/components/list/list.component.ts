@@ -18,6 +18,8 @@ import { ModalService } from '@core/modules/modal/services/modal.service';
 
 export class ListComponent implements OnDestroy, OnInit {
 
+    public isLoading: boolean;
+
     /**
      * all tasks which are loaded for app
      *
@@ -240,6 +242,7 @@ export class ListComponent implements OnDestroy, OnInit {
     private fetchTasks() {
         this.route.params.pipe(
             switchMap((params: Params) => {
+                this.isLoading = true;
                 const appId = params.id || null;
                 return this.taskManagerService.loadTasks(appId);
             }),
@@ -247,6 +250,7 @@ export class ListComponent implements OnDestroy, OnInit {
         )
         .subscribe( (tasks: ITask[]) => {
             this.tasks = tasks;
+            this.isLoading = false;
             this.listHeaderService.updateData({
                 selected: this.selection.selected.length,
                 showing: this.tasks.length,
