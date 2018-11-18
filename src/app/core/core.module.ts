@@ -4,22 +4,27 @@ import { IBootstrap } from './api/bootstrap.interface';
 import { BootstrapService } from './services/bootstrap.service';
 import { AppData } from './model/app-data';
 import { Nl2Br } from './pipes/nl2br.pipe';
+import { StorageService } from './services/storage.service';
 
 @NgModule({
     imports: [],
     exports: [MouseDblClickDirective, Nl2Br],
     declarations: [MouseDblClickDirective, Nl2Br],
-    providers: [ BootstrapService, {
-        provide: 'AppData',
-        useClass: AppData
-    }, {
-        provide: APP_INITIALIZER,
-        useFactory: (bootstrapService: IBootstrap) => {
-            return () => bootstrapService.bootstrap();
-        },
-        deps: [BootstrapService],
-        multi: true
-    }],
+    providers: [
+        BootstrapService,
+        StorageService,
+        {
+            provide: 'AppData',
+            useClass: AppData
+        }, {
+            provide: APP_INITIALIZER,
+            useFactory: (bootstrapService: IBootstrap) => {
+                return () => bootstrapService.bootstrap();
+            },
+            deps: [BootstrapService],
+            multi: true
+        }
+    ],
 })
 export class CoreModule {
 }

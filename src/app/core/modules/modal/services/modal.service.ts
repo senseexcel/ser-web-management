@@ -2,7 +2,7 @@ import { Injectable, Injector, InjectionToken } from '@angular/core';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { ModalComponent } from '../components/modal.component';
-import { MODAL_OVERLAY_CTRL, MODAL_OVERLAY_DATA, MODAL_DIALOG_DATA } from '../api/modal-content.injector';
+import { MODAL_OVERLAY_CTRL, MODAL_OVERLAY_DATA, MODAL_DIALOG_DATA, MODAL_DIALOG_ENABLE_SWITCH_OFF } from '../api/modal-content.injector';
 import { ModalControl, DialogControl } from './modal-control';
 import { IModalData, IOverlayConfig, IModalDialogData } from '../api/modal-config.interface';
 import { DEFAULT_OVERLAY_CONFIGURATION } from '../api/modal.config';
@@ -89,7 +89,7 @@ export class ModalService {
      * @returns {ModalControl}
      * @memberof ModalService
      */
-    public openMessageModal(title: string, msg: string, configuration: IOverlayConfig = {}): ModalControl {
+    public openMessageModal(title: string, msg: string, configuration: IOverlayConfig = {}, dismisable = false): ModalControl {
 
         // create dialog modal
         const overlayData: IModalData<OverlayMessageComponent> = {
@@ -106,6 +106,7 @@ export class ModalService {
         /** create injection tokens */
         const tokens = this.createInjectionTokens(overlayData, control);
         tokens.set(MODAL_DIALOG_DATA, dialogData);
+        tokens.set(MODAL_DIALOG_ENABLE_SWITCH_OFF, dismisable);
 
         /** create injector and portal component */
         const injector      = this.createInjector(tokens);

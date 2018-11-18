@@ -3,7 +3,7 @@ import { IControlConstructor } from './control.interface';
 
 export interface IModalData<T> {
 
-    bodyComponent: ComponentType<T>;
+    bodyComponent?: ComponentType<T>;
 
     class?: string;
 

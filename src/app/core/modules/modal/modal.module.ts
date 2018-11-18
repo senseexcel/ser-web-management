@@ -7,9 +7,10 @@ import { OverlayMessageComponent } from './components/message/message.component'
 import { DialogFooterComponent } from './components/dialog/dialog-footer.component';
 import { MessageFooterComponent } from './components/message/message-footer.component';
 import { CoreModule } from '@core/core.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
-    imports: [CommonModule, CoreModule],
+    imports: [CommonModule, CoreModule, ReactiveFormsModule],
     entryComponents: [
         DialogFooterComponent,
         MessageFooterComponent,

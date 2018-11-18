@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { MODAL_OVERLAY_CTRL } from '../../api/modal-content.injector';
 import { DialogControl } from '../../services/modal-control';
 
@@ -8,17 +8,15 @@ import { DialogControl } from '../../services/modal-control';
     styleUrls: ['dialog-footer.component.scss']
 })
 
-export class DialogFooterComponent implements OnInit {
+export class DialogFooterComponent {
 
     private dialogCtrl: DialogControl;
 
     constructor(
-        @Inject(MODAL_OVERLAY_CTRL) ctrl: DialogControl
+        @Inject(MODAL_OVERLAY_CTRL) ctrl: DialogControl,
     ) {
         this.dialogCtrl = ctrl;
     }
-
-    ngOnInit() { }
 
     public onConfirm() {
         this.dialogCtrl.confirm();

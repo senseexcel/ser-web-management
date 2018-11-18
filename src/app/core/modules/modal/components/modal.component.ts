@@ -2,6 +2,8 @@ import { Component, OnInit, Inject, ComponentFactoryResolver, ViewChild, ViewCon
 import { MODAL_OVERLAY_CTRL, MODAL_OVERLAY_DATA } from '../api/modal-content.injector';
 import { ModalControl } from '../services/modal-control';
 import { IModalData } from '../api/modal-config.interface';
+import { OverlayMessageComponent } from './message/message.component';
+import { MessageFooterComponent } from './message/message-footer.component';
 
 @Component({
     selector: 'app-ser-modal',
@@ -66,11 +68,13 @@ export class ModalComponent implements OnInit {
      * @memberof ModalComponent
      */
     ngOnInit() {
-        const bodyFactory = this.componentFactoryResolver.resolveComponentFactory(this.modalData.bodyComponent);
+        const bodyFactory = this.componentFactoryResolver.resolveComponentFactory(this.modalData.bodyComponent || OverlayMessageComponent);
         this.bodyViewContainer.createComponent(bodyFactory);
 
         if (this.modalData.footerComponent) {
-            const footerFactory = this.componentFactoryResolver.resolveComponentFactory(this.modalData.footerComponent);
+            const footer = this.modalData.footerComponent || MessageFooterComponent;
+            const footerFactory = this.componentFactoryResolver.resolveComponentFactory(footer);
+
             this.footerViewContainer.createComponent(footerFactory);
         }
     }

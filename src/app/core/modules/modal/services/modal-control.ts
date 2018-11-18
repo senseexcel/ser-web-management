@@ -8,17 +8,27 @@ export class ModalControl implements IControl {
 
     private overlayRef: OverlayRef;
 
+    private modalShowAgain: boolean;
+
     public constructor(overlayRef: OverlayRef) {
         this.overlayRef = overlayRef;
     }
 
     public close() {
         this.overlayRef.dispose();
-        this.onClose$.next(true);
+        this.onClose$.next();
     }
 
     public get onClose(): Subject<boolean> {
         return this.onClose$;
+    }
+
+    public set showAgain(showAgain: boolean) {
+        this.modalShowAgain = showAgain;
+    }
+
+    public get showAgain(): boolean {
+        return this.modalShowAgain;
     }
 }
 

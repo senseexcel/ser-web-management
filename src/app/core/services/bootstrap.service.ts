@@ -6,7 +6,6 @@ import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.s
 import { map } from 'rxjs/operators';
 import { AppData } from '@core/model/app-data';
 import { ITag } from '@core/api/tag.interface';
-import { IDomainUser } from 'ser.api';
 import { ISessionUser } from '@core/api/session-user.interface';
 
 @Injectable()

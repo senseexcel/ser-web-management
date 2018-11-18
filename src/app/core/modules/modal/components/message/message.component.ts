@@ -5,7 +5,8 @@ import { IModalDialogData } from '../../api/modal-config.interface';
 
 @Component({
     selector: 'app-overlay-message',
-    templateUrl: 'message.component.html'
+    templateUrl: 'message.component.html',
+    styleUrls: ['message.component.scss']
 })
 
 export class OverlayMessageComponent {
