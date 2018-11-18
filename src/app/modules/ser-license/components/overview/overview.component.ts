@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { License } from '../../services';
 import { LicenseModel } from '../../model/license.model';
-import { takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { takeUntil, catchError } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
 import { ModalService } from '@core/modules/modal/services/modal.service';
 import { IModalData } from '@core/modules/modal/api/modal-config.interface';
 import { InsertOverlayControl } from '../../services/insert-overlay.control';
 import { InsertOverlayComponent } from '../insert-overlay/insert-overlay.component';
 import { InsertOverlayFooterComponent } from '../insert-overlay/insert-overlay-footer.component';
+import { SerLicenseResponseException } from '../../api/exceptions';
 
 @Component({
     selector: 'app-license-overview',
@@ -76,6 +77,30 @@ export class OverviewComponent implements OnDestroy, OnInit {
     }
 
     public loadFromServer() {
-        this.license.fetchLicense().subscribe();
+        this.license.fetchLicense()
+            .pipe(
+                catchError((error: Error) => {
+                    this.handleResponseError(error);
+                    return of(null);
+                })
+            )
+            .subscribe();
+    }
+
+    private handleResponseError(error: Error) {
+        switch (error.constructor) {
+            case SerLicenseResponseException:
+
+                const responseError = <SerLicenseResponseException>error;
+                const title = 'Error load License';
+                const msg   = `License could not loaded with following Reason: ${responseError.response.error}\n
+                For more Informations please contact your sense excel reporting consultant.
+                `;
+
+                this.modal.openMessageModal(title, msg);
+            break;
+            default:
+                throw error;
+        }
     }
 }

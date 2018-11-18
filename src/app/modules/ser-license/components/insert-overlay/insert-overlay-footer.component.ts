@@ -42,16 +42,4 @@ export class InsertOverlayFooterComponent {
     public close() {
         this.ctrl.close();
     }
-
-    /**
-     * fetch serial from server
-     *
-     * @memberof InsertOverlayFooterComponent
-     */
-    public fetch() {
-        this.license.fetchLicense().subscribe((content) => {
-            this.ctrl.update(content.raw);
-            this.close();
-        });
-    }
 }

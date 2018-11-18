@@ -58,6 +58,11 @@ export class LicenseReader {
         /** loop content array until we find signature line and split */
         for (const [index, line] of Array.from(lines.entries())) {
 
+            // skip empty lines
+            if (line.replace(/(^\s*|\s*$)/, '') === '' ) {
+                continue;
+            }
+
             result.licenseData.push(line);
 
             /** signature match */

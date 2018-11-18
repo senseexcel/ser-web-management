@@ -3,10 +3,16 @@ import { Observable, of } from 'rxjs';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { map, switchMap, catchError, retryWhen } from 'rxjs/operators';
 import { IQlikLicenseResponse } from '../api/response/qlik-license.interface';
-import { QlikLicenseNoAccessException, QlikLicenseInvalidException, SerLicenseNotFoundException } from '../api/exceptions';
+import {
+    QlikLicenseNoAccessException,
+    QlikLicenseInvalidException,
+    SerLicenseNotFoundException,
+    SerLicenseResponseException
+} from '../api/exceptions';
 import { ContentLibService } from './contentlib.service';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
+import { SerLicenseResponse } from '../api/response/ser-license.response';
 
 @Injectable()
 export class LicenseRepository {
@@ -102,18 +108,29 @@ export class LicenseRepository {
                     .set('serial', qlikSerial)
                     .set('chk', String(checkSum));
 
-                const url = `http://localhost:3000?${params.toString()}`;
-                // const url = 'https://support.qlik2go.net/lefupdate/update_lef.json?serial=4904350555094570&chk=6157';
+                // mock server
+                // const url = `http://localhost:3000?${params.toString()}`;
+
+                const url = `https://support.qlik2go.net/lefupdate/update_lef.json?${params.toString()}`;
 
                 /** fetch license for qlik sense excel reporting  */
                 return this.http.jsonp(url, 'callback')
                 .pipe(
-                    map((response: string | any) => {
+                    map((response: string | SerLicenseResponse) => {
+
                         if ( response.constructor === String) {
-                            response = JSON.parse(response);
+                            response = JSON.parse(<string>response);
                         }
-                        return String(response.licenses[0]);
-                    })
+
+                        const data: SerLicenseResponse = <SerLicenseResponse>response;
+                        if (!data.success) {
+                            throw new SerLicenseResponseException({
+                                status: data.status_code,
+                                error: data.status
+                            });
+                        }
+                        return String(data.licenses[0]);
+                    }),
                 );
             })
         );
