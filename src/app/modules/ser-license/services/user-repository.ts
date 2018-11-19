@@ -24,10 +24,6 @@ export class UserRepository {
         };
 
         const filter: string[] = [
-            'userDirectory', FilterOperator.NOT_EQUAL, `'INTERNAL'`,
-            FilterConditionalOperator.AND,
-            'userDirectory', FilterOperator.NOT_EQUAL, `'X-Qlik-AUTH-DIRECTORY'`,
-            FilterConditionalOperator.AND,
             'userId', FilterOperator.SUBSTRING_OF, `'${name}'`
         ];
 
