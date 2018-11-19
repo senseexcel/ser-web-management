@@ -1,9 +1,5 @@
 <ng-container *ngIf="isReady">
 
-    <div class="logo">
-        <img src="./assets/ser-logo.svg" type="image/svg+xml" />
-    </div>
-
     <div class="license-view">
 
         <div class="license-view--content" [innerHtml]="licenseData|nl2br">
@@ -11,7 +7,7 @@
         </div>
 
         <div class="btn-toolbar flex-row-reverse insert-overlay--footer">
-            <button class="btn" (click)="insertLicense()" >Insert License</button>
+            <button class="btn" (click)="insertLicense()" >{{(!this.licenseData.length ? 'Insert' : 'Edit')}} License</button>
             <button type="button" class="btn btn-secondary" (click)="loadFromServer()">Load From Server</button>
         </div>
     </div>
