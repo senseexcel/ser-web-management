@@ -82,13 +82,6 @@
             </td>
         </ng-container>
 
-        <!-- user actions column -->
-        <ng-container matColumnDef="expandedDetail">
-            <td mat-cell *matCellDef="let element" [attr.colspan]="3">
-                <button class="btn btn--secondary" (click)="finishEditUser()">apply</button>
-            </td>
-        </ng-container>
-
         <!-- table header row -->
         <tr mat-header-row *matHeaderRowDef="tableHeaderFields; sticky: true"></tr>
 
@@ -102,19 +95,19 @@
                 'edit': currentEditUser === user
             }">
         </tr>
-
-        <!-- table for for actions only visible on edit mode -->
-        <tr mat-row 
-            *matRowDef="let row; columns: ['expandedDetail']" 
-            class="user-table--row actions">
-        </tr>
     </table>
 
     <div class="user-list--footer">
         <div class="btn-toolbar" role="toolbar">
             <div class="btn-group" role="group" aria-label="First group">
-                <button type="button" (click)="addUser()">Add</button>
-                <button type="button" [disabled]="!selection.selected.length" (click)="deleteUser()">Delete</button>
+                <ng-container *ngIf="mode !== 'edit'">
+                    <button type="button" (click)="addUser()">Add</button>
+                    <button type="button" [disabled]="!selection.selected.length" (click)="deleteUser()">Delete</button>
+                    <button type="button" [disabled]="!selection.selected.length" (click)="editUser(selection.selected[0])">Edit</button>
+                </ng-container>
+                <ng-container *ngIf="mode === 'edit'">
+                    <button type="button" (click)="finishEditUser()">Apply</button>
+                </ng-container>
             </div>
         </div>
     </div>

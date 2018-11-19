@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FilterOperator, FilterConditionalOperator } from '@core/modules/ser-engine/api/filter.interface';
+import { FilterOperator } from '@core/modules/ser-engine/api/filter.interface';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 

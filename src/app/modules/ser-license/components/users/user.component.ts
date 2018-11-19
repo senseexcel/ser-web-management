@@ -33,6 +33,8 @@ export class UserComponent implements OnDestroy, OnInit {
 
     public ready = false;
 
+    public mode = 'list';
+
     /**
      * selection model
      *
@@ -193,6 +195,8 @@ export class UserComponent implements OnDestroy, OnInit {
      */
     public editUser(user: ITableUser) {
 
+        this.mode = 'edit';
+
         if (this.currentEditUser) {
             this.currentEditUser.edit = false;
         }
@@ -207,6 +211,7 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public finishEditUser() {
+        this.mode = 'view';
         this.currentEditUser.edit = false;
         this.currentEditUser = null;
     }
