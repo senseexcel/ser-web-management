@@ -37,7 +37,7 @@ export class UserRepository {
         }).pipe(
             map((response: any) => {
                 return response.rows.reduce((cur, next) => {
-                    return cur.concat(next.join('/'));
+                    return cur.concat(next.join('\\'));
                 }, []);
             })
         );
