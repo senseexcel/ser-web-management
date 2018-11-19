@@ -12,6 +12,8 @@ import { MOMENT_DATE_FORMAT } from '../../api/ser-date-formats';
 interface ITableUser {
     edit: boolean;
 
+    isNew: boolean;
+
     user: ILicenseUser;
 }
 
@@ -118,6 +120,8 @@ export class UserComponent implements OnDestroy, OnInit {
         this.selection    = null;
         this.suggest$     = null;
         this.isDestroyed$ = null;
+        this.users = null;
+        this.userSuggestions = null;
     }
 
     ngOnInit() {
@@ -127,9 +131,23 @@ export class UserComponent implements OnDestroy, OnInit {
                 this.licensedUserInfo.total   = model.users.length;
                 this.licensedUserInfo.showing = model.users.length;
 
+                /**
+                 * @todo improve
+                 * @see  https://github.com/senseexcel/ser-web-management/issues/87
+                 *
+                 * if we allready have the user loaded just change values
+                 * so we can avoid creating a complete new array and rerender full table
+                 * again
+                 *
+                 * to force change detection now use array destruction to create new user array
+                 * like this
+                 *
+                 * const user = [...this.users];
+                 */
                 return model.users.map((user: ILicenseUser): ITableUser => {
                     return {
                         edit: false,
+                        isNew: false,
                         user
                     };
                 });
@@ -137,7 +155,7 @@ export class UserComponent implements OnDestroy, OnInit {
             takeUntil(this.isDestroyed$)
         )
         .subscribe((users: ITableUser[]) => {
-            this.users = users;
+            this.users = [...users];
             this.ready = true;
         });
 
@@ -159,13 +177,33 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public addUser() {
+
         if (this.currentEditUser) {
             this.currentEditUser.edit = false;
         }
-        this.license.addUser({id: 'NEW_USER', from: null, to: null});
+
+        const newUser = {
+            edit: true,
+            isNew: true,
+            user: {
+                id  : '',
+                from: null,
+                to  : null
+            }
+        };
+
+        this.currentEditUser = newUser;
+        this.users = [...this.users, this.currentEditUser];
+        this.mode  = 'edit';
     }
 
+    /**
+     * delete user from table
+     *
+     * @memberof UserComponent
+     */
     public deleteUser() {
+
         if (this.currentEditUser) {
             this.currentEditUser.edit = false;
         }
@@ -211,8 +249,24 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public finishEditUser() {
+
+        const tableUser: ITableUser = this.currentEditUser;
+        tableUser.edit = false;
+
         this.mode = 'view';
-        this.currentEditUser.edit = false;
+
+        if (tableUser.user.id.replace(/(^\s*|\s*$)/g, '') === '' ) {
+            // remove last user from table
+            this.users = this.users.slice(0, -1);
+            return;
+        }
+
+        if (tableUser.isNew) {
+            // we need to add user to model
+            this.license.addUser(this.currentEditUser.user);
+            tableUser.isNew = false;
+        }
+
         this.currentEditUser = null;
     }
 
