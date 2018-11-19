@@ -46,7 +46,9 @@ export class LicenseWriter {
             return '';
         }
 
+        /** reduce users array to string */
         return users.reduce((data: string[], licenseUser: ILicenseUser) => {
+
             /** only add license user if user id is not empty */
             if (licenseUser.id && licenseUser.id.replace(/(^\s*|\s*$)/g, '') !== '') {
 
@@ -54,14 +56,24 @@ export class LicenseWriter {
                 const userid = licenseUser.id
                     .replace(/(^\s*|\s*$)/g, ''); // trim user
 
-                const userData = Object.values(licenseUser);
+                /** convert user values to array */
+                const userData = Object.values(licenseUser)
+                    .filter((value, index, fullData) => {
+                        if (value !== null && value !== undefined) {
+                            return true;
+                        }
+
+                        /* if value is null or undefined, we have to keep it if any value after that is not
+                         * null or undefined
+                         */
+                        return fullData.slice(index + 1).some((val) => val !== null && val !== undefined);
+                    });
+
+                /** replace user id by trimmed user id */
                 userData.splice(0, 1, userid);
 
-                /** combine user with other values */
-                const combinedUser = userData.join(';');
-
                 /** push user license line into lines array */
-                data.push(`${LICENSE_PROPERTIES.USER};${combinedUser}`);
+                data.push(`${LICENSE_PROPERTIES.USER};${userData.join(';')}`);
             }
             return data;
         }, []).join('\r\n');

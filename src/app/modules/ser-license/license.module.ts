@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 // tslint:disable-next-line:max-line-length
-import { MatTableModule, MatDatepickerModule, MatInputModule, MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MatAutocompleteModule } from '@angular/material';
+import { MatTableModule, MatDatepickerModule, MatInputModule, MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE, MatAutocompleteModule, MatLabel, MatFormFieldModule } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { CoreModule } from '@core/core.module';
 import { ModalModule } from '@core/modules/modal/modal.module';

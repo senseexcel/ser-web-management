@@ -172,7 +172,18 @@ export class License {
             }
 
             // create new user line for raw
-            const lineData = [].concat([LICENSE_PROPERTIES.USER, ...Object.values(user)]);
+            const userData = Object.values(user).filter((value, index, fullData) => {
+
+                if (value !== null && value !== undefined) {
+                    return true;
+                }
+
+                return fullData.slice(index + 1).some((val) => {
+                    return val !== null && val !== undefined;
+                });
+            });
+
+            const lineData = [].concat([LICENSE_PROPERTIES.USER, ...userData]);
 
             // concat current raw data with user line
             return `${rawData}\n${lineData.join(';')}`;

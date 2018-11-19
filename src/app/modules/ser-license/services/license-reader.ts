@@ -92,8 +92,8 @@ export class LicenseReader {
 
             return {
                 id:   data[1] || '',
-                from: data[2] || '--',
-                to:   data[3] || '--'
+                from: data[2] || null,
+                to:   data[3] || null
             };
         });
     }

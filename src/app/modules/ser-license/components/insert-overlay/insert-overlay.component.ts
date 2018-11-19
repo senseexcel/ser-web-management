@@ -72,7 +72,7 @@ export class InsertOverlayComponent implements AfterViewInit, OnDestroy, OnInit 
         const control = this.formBuilder.control('');
         control.valueChanges.pipe(debounceTime(400))
             .subscribe((val) => {
-                this.ctrl.content = val.replace(/\n/g, ' ');
+                this.ctrl.content = val;
             });
         return control;
     }

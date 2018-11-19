@@ -105,8 +105,8 @@ export class LicenseRepository {
                     .set('chk', String(checkSum));
 
                 // mock server
-                // const url = `http://localhost:3000?${params.toString()}`;
-                const url = `https://support.qlik2go.net/lefupdate/update_lef.json?${params.toString()}`;
+                const url = `http://localhost:3000?${params.toString()}`;
+                // const url = `https://support.qlik2go.net/lefupdate/update_lef.json?${params.toString()}`;
 
                 /** fetch license for qlik sense excel reporting  */
                 return this.http.jsonp(url, 'callback')
@@ -181,7 +181,6 @@ export class LicenseRepository {
                             if (error instanceof SerLicenseNotFoundException && retryAttempts === 1) {
                                 return createFile$;
                             }
-
                             throw error;
                         }),
                     );

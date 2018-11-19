@@ -160,7 +160,7 @@ export class UserComponent implements OnDestroy, OnInit {
         if (this.currentEditUser) {
             this.currentEditUser.edit = false;
         }
-        this.license.addUser({id: 'NEW_USER', from: '--', to: '--'});
+        this.license.addUser({id: 'NEW_USER', from: null, to: null});
     }
 
     public deleteUser() {
