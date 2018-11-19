@@ -108,7 +108,7 @@ export class License {
         if (content instanceof LicenseModel) {
             license = this.reader.copy(content, this.model);
         } else {
-            license = this.reader.read(content.replace(/\n/g, ' '), this.model);
+            license = this.reader.read(content, this.model);
         }
         this.onload$.next(license);
         return this.model;

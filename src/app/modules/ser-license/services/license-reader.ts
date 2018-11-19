@@ -13,13 +13,15 @@ export class LicenseReader {
      * @memberof LicenseReader
      */
     public read(data: string, license?: LicenseModel): LicenseModel {
-        const model: LicenseModel = license || new LicenseModel();
-        const parsed = this.parseLicenseData(data.split(' '));
 
-        model.raw   = data.split(' ').join('\n');
+        const model: LicenseModel = license || new LicenseModel();
+        const parsed              = this.parseLicenseData(data.split(/\r?\n/));
+
+        model.raw   = data;
         model.key   = parsed.licenseData[0];
-        model.text  = parsed.licenseData.join('\n');
+        model.text  = parsed.licenseData.join('\r\n');
         model.users = this.readUsers(parsed.userData);
+
         return model;
     }
 
@@ -58,20 +60,21 @@ export class LicenseReader {
         /** loop content array until we find signature line and split */
         for (const [index, line] of Array.from(lines.entries())) {
 
+            const trimmedLine = line.replace(/(^\s*|\s*$)/g, '');
+
             // skip empty lines
-            if (line.replace(/(^\s*|\s*$)/, '') === '' ) {
+            if (trimmedLine === '' ) {
                 continue;
             }
 
-            result.licenseData.push(line);
+            result.licenseData.push(trimmedLine);
 
             /** signature match */
-            if (line.match(/^([A-Z,0-9]{4}(?=-)-){4}[A-Z,0-9]{4}$/)) {
-                result.userData    = lines.slice(index + 1);
+            if (trimmedLine.match(/^([A-Z,0-9]{4}(?=-)-){4}[A-Z,0-9]{4}$/)) {
+                result.userData = lines.slice(index + 1);
                 break;
             }
         }
-
         return result;
     }
 

@@ -25,12 +25,10 @@ export class LicenseWriter {
      */
     public write(model: LicenseModel): Observable<string> {
 
-        const text = model.text;
-        const userData = this.writeUser(model.users);
-        const fullLicense = `${text} ${userData}`;
-
-        return this.repository.writeLicense(
-            this.sanitizeLicenseData(fullLicense));
+        const text        = model.text;
+        const userData    = this.writeUser(model.users);
+        const fullLicense = [text, userData].join('\r\n');
+        return this.repository.writeLicense(fullLicense);
     }
 
     /**
@@ -54,8 +52,7 @@ export class LicenseWriter {
 
                 /** sanitize user */
                 const userid = licenseUser.id
-                    .replace(/(^\s*|\s*$)/g, '') // trim user
-                    .replace(/\s/g, '_');        // replace whitespaces with underscores;
+                    .replace(/(^\s*|\s*$)/g, ''); // trim user
 
                 const userData = Object.values(licenseUser);
                 userData.splice(0, 1, userid);
@@ -67,25 +64,6 @@ export class LicenseWriter {
                 data.push(`${LICENSE_PROPERTIES.USER};${combinedUser}`);
             }
             return data;
-        }, []).join(' ');
-    }
-
-    /**
-     * sanitize license data before it would written into file
-     * remove linebreaks, remove empty lines
-     *
-     * @todo remove double whitespaces
-     *
-     * @private
-     * @param {string} data
-     * @returns {string}
-     * @memberof LicenseWriter
-     */
-    private sanitizeLicenseData(data: string): string {
-        return data
-            /* replace linebreaks by space */
-            .replace(/\n/g, ' ')
-            /* reduce multiple spaces to one this will also remove empty lines which has become a space */
-            .replace(/((\s)\s+)/g, '$2');
+        }, []).join('\r\n');
     }
 }

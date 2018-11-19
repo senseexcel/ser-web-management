@@ -37,15 +37,11 @@ export class LicenseRepository {
      */
     private http: HttpClient;
 
-    private filterService: SerFilterService;
-
     constructor(
         contentLib: ContentLibService,
-        filterService: SerFilterService,
         http: HttpClient
     ) {
         this.contentLib = contentLib;
-        this.filterService = filterService;
         this.http = http;
     }
 
@@ -110,7 +106,6 @@ export class LicenseRepository {
 
                 // mock server
                 // const url = `http://localhost:3000?${params.toString()}`;
-
                 const url = `https://support.qlik2go.net/lefupdate/update_lef.json?${params.toString()}`;
 
                 /** fetch license for qlik sense excel reporting  */
