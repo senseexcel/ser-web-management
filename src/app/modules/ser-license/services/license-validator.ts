@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, of, forkJoin, concat, from } from 'rxjs';
+import { Observable, of, forkJoin } from 'rxjs';
 import { ContentLibService } from './contentlib.service';
 import { LicenseRepository } from './license-repository';
-import { map, catchError, mergeMap, concatAll, tap } from 'rxjs/operators';
+import { map, catchError, mergeMap } from 'rxjs/operators';
 import { ContentLibNotExistsException, QlikLicenseNoAccessException, QlikLicenseInvalidException } from '../api/exceptions';
 import { ILicenseValidationResult, ValidationStep } from '../api/validation-result.interface';
 import { LicenseModel } from '../model/license.model';
-import { LicenseReader } from './license-reader';
+import { ILicenseUser } from '../api/license-user.interface';
+import moment = require('moment');
 
 @Injectable()
 export class LicenseValidator {
@@ -14,8 +15,6 @@ export class LicenseValidator {
     private contentlib: ContentLibService;
 
     private licenseRepository: LicenseRepository;
-
-    private reader: LicenseReader;
 
     public constructor(
         contentlib: ContentLibService,
@@ -174,7 +173,7 @@ export class LicenseValidator {
                     const errors  = [];
 
                     if (!isValid) {
-                        errors.push('Sense Excel Reporting License not matching Qlik Serial.');
+                        errors.push('Sense Excel Reporting Serial not equal Qlik Serial.');
                     }
 
                     return { isValid, errors };
@@ -190,11 +189,61 @@ export class LicenseValidator {
      * @memberof LicenseValidator
      */
     public validateLicense(license: LicenseModel): Observable<ILicenseValidationResult> {
-        console.dir(license);
-        return from([this.validateLicenseKey(license.key)])
-            .pipe(
-                concatAll(),
-                tap((r) => console.log(r) )
-            );
+
+        return forkJoin(
+            this.validateLicenseKey(license.key),
+            this.validateUsers(license)
+        ).pipe(
+            map((result: ILicenseValidationResult[]) => {
+                return result.reduce(
+                    (
+                        current: ILicenseValidationResult,
+                        next: ILicenseValidationResult
+                    ): ILicenseValidationResult => {
+                        current.isValid = current.isValid && next.isValid;
+                        current.errors  = current.errors.concat(next.errors);
+                        return current;
+                    },
+                    {isValid: true, errors: []}
+                );
+            })
+        );
+    }
+
+    /**
+     * check users activated are less or equal license user limit
+     * if user limit set to -1 there is no user limit
+     *
+     * @param {LicenseModel} license
+     * @returns {Observable<ILicenseValidationResult>}
+     * @memberof LicenseValidator
+     */
+    public validateUsers(license: LicenseModel): Observable<ILicenseValidationResult> {
+
+        const userValidationResult: ILicenseValidationResult = {
+            isValid: true,
+            errors: []
+        };
+
+        /** if no user limit exists or user limit is not reached it is valid */
+        if (license.userLimit !== -1 && license.userLimit < license.users.length) {
+            const today = moment();
+
+            /** filter for active users */
+            const activeUsers: ILicenseUser[] = license.users.filter((user) => {
+                const {from, to} = user;
+                let isActive = true;
+                isActive = isActive && (!Boolean(from) || today.isSameOrAfter(from));
+                isActive = isActive && (!Boolean(to)   || today.isSameOrBefore(to));
+                return isActive;
+            });
+
+            if (activeUsers.length > license.userLimit) {
+                userValidationResult.isValid = false;
+                userValidationResult.errors  = ['too many users activated'];
+            }
+        }
+
+        return of(userValidationResult);
     }
 }

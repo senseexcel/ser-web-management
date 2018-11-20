@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { License, LicenseValidator, LicenseRepository } from '../../services';
 import { LicenseModel } from '../../model/license.model';
-import { mergeMap, takeUntil, map } from 'rxjs/operators';
-import { Subject, forkJoin } from 'rxjs';
+import { mergeMap, takeUntil, map, switchMap, tap } from 'rxjs/operators';
+import { Subject, forkJoin, of } from 'rxjs';
+import { ILicenseValidationResult } from '../../api/validation-result.interface';
 
 @Component({
     selector: 'app-license-info',
@@ -39,6 +40,8 @@ export class InfoComponent implements OnDestroy, OnInit {
     public licenseStatus: 'valid' | 'invalid';
 
     public ready = false;
+
+    public validationErrors: string[];
 
     /**
      * license service
@@ -86,6 +89,7 @@ export class InfoComponent implements OnDestroy, OnInit {
         this.license      = license;
         this.repository   = repository;
         this.validator    = validator;
+        this.validationErrors = [];
     }
 
     /**
@@ -105,6 +109,17 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     ngOnInit() {
         this.initLicense();
+
+        this.license.update$
+            .pipe(
+                switchMap((license: LicenseModel) => this.validator.validateLicense(license)),
+                takeUntil(this.isDestroyed$)
+            )
+            .subscribe((validationResult: ILicenseValidationResult) => {
+                this.isValid          = validationResult.isValid;
+                this.licenseStatus    = this.isValid ? 'valid' : 'invalid';
+                this.validationErrors = validationResult.errors;
+            });
     }
 
     /**
@@ -116,13 +131,20 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     private initLicense() {
 
+        const qlikSerial$ = this.repository.qlikSerial
+            ? of(this.repository.qlikSerial)
+            : this.repository.fetchQlikSerialNumber();
+
        this.license.onload$.pipe(
             mergeMap((license: LicenseModel) => {
                 return forkJoin([
-                    this.validator.validateLicenseKey(license.key),
-                    this.repository.fetchQlikSerialNumber()
+                    this.validator.validateLicense(license),
+                    qlikSerial$
                 ]).pipe(
                         map(([validationResult, serial]) => {
+
+                            this.validationErrors = validationResult.errors;
+
                             return {
                                 license,
                                 qlikSerial: serial,

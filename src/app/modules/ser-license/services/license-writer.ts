@@ -56,8 +56,8 @@ export class LicenseWriter {
                 const userid = licenseUser.id
                     .replace(/(^\s*|\s*$)/g, ''); // trim user
 
-                /** convert user values to array */
-                const userData = Object.values(licenseUser)
+                const {id, from, to} = licenseUser;
+                const userData = [id, from, to]
                     .filter((value, index, fullData) => {
                         if (value !== null && value !== undefined) {
                             return true;

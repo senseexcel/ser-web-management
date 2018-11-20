@@ -188,7 +188,8 @@ export class UserComponent implements OnDestroy, OnInit {
             user: {
                 id  : '',
                 from: null,
-                to  : null
+                to  : null,
+                isActive: false
             }
         };
 
@@ -265,6 +266,9 @@ export class UserComponent implements OnDestroy, OnInit {
             // we need to add user to model
             this.license.addUser(this.currentEditUser.user);
             tableUser.isNew = false;
+        } else {
+            // nobody triggers an update ...
+            this.license.update();
         }
 
         this.currentEditUser = null;

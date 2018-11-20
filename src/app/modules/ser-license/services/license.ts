@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LicenseModel } from '../model/license.model';
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
 import {  map } from 'rxjs/operators';
 import { LicenseReader } from './license-reader';
 import { LicenseRepository } from './license-repository';
@@ -18,6 +18,8 @@ export class License {
      * @memberof License
      */
     public onload$: BehaviorSubject<LicenseModel>;
+
+    public update$: Subject<LicenseModel>;
 
     /**
      * read data and create/update license model
@@ -65,6 +67,7 @@ export class License {
         this.repository = repository;
         this.model      = new LicenseModel();
         this.onload$    = new BehaviorSubject(this.model);
+        this.update$    = new Subject();
     }
 
     /**
@@ -101,6 +104,10 @@ export class License {
                 }),
                 map((licenseContent: string) => this.updateLicense(licenseContent))
             );
+    }
+
+    public update() {
+        this.update$.next(this.model);
     }
 
     /**
@@ -144,7 +151,7 @@ export class License {
         }
 
         this.model.users.push(user);
-        this.onload$.next(this.model);
+        this.update();
     }
 
     /**
@@ -179,7 +186,8 @@ export class License {
             }
 
             // create new user line for raw
-            const userData = Object.values(user).filter((value, index, fullData) => {
+            const {id, from, to} = user;
+            const userData = [id, from, to].filter((value, index, fullData) => {
 
                 if (value !== null && value !== undefined) {
                     return true;
