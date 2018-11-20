@@ -9,6 +9,7 @@ import { InsertOverlayControl } from '../../services/insert-overlay.control';
 import { InsertOverlayComponent } from '../insert-overlay/insert-overlay.component';
 import { InsertOverlayFooterComponent } from '../insert-overlay/insert-overlay-footer.component';
 import { SerLicenseResponseException } from '../../api/exceptions';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-license-overview',
@@ -84,7 +85,22 @@ export class OverviewComponent implements OnDestroy, OnInit {
                     return of(null);
                 })
             )
-            .subscribe();
+            .subscribe(
+                () => {},
+                /**
+                 * for any reason, if no internet connection is available (status: 0) this error will not catched
+                 * with catchError operator from rxjs.
+                 *
+                 * we need to handle this here
+                 */
+                (error) => {
+                    if (error.constructor === HttpErrorResponse && error.status === 0) {
+                        const title = 'Connection Error';
+                        const msg   = `Please check your internet connection.`;
+                        this.modal.openMessageModal(title, msg);
+                    }
+                }
+            );
     }
 
     private handleResponseError(error: Error) {

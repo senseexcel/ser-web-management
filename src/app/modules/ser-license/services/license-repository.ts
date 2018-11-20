@@ -11,7 +11,6 @@ import {
 } from '../api/exceptions';
 import { ContentLibService } from './contentlib.service';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
-import { SerFilterService } from '@core/modules/ser-engine/provider/ser-filter.service';
 import { SerLicenseResponse } from '../api/response/ser-license.response';
 
 @Injectable()
@@ -102,13 +101,18 @@ export class LicenseRepository {
 
                 // mock server
                 const url = `http://localhost:3000?${params.toString()}`;
-                // const url = `https://support.qlik2go.net/lefupdate/update_lef.json?${params.toString()}`;
+                // const url = `https://license.senseexcel.com/lefupdate/update_lef.json?${params.toString()}`;
 
                 /** fetch license for qlik sense excel reporting  */
                 return this.http.jsonp(url, 'callback')
                 .pipe(
+                    catchError((error: HttpErrorResponse) => {
+                        throw new SerLicenseResponseException({
+                            status: 404,
+                            error: 'Could not fetch License from Server'
+                        });
+                    }),
                     map((response: string | SerLicenseResponse) => {
-
                         if ( response.constructor === String) {
                             response = JSON.parse(<string>response);
                         }
