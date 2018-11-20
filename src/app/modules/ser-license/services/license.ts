@@ -92,6 +92,13 @@ export class License {
     public fetchLicense(): Observable<LicenseModel> {
         return this.repository.fetchSenseExcelReportingLicense()
             .pipe(
+                map((content: string[]): string => {
+                    /** filter excel licenses for string EXCEL and save first value in excelLicense */
+                    const [excelLicense] = [...content.filter((license: string) => {
+                        return license.match(/EXCEL_/m);
+                    })];
+                    return excelLicense;
+                }),
                 map((licenseContent: string) => this.updateLicense(licenseContent))
             );
     }

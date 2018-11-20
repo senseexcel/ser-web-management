@@ -87,7 +87,7 @@ export class LicenseRepository {
      * @returns {Observable<string>}
      * @memberof LicenseService
      */
-    public fetchSenseExcelReportingLicense(): Observable<string> {
+    public fetchSenseExcelReportingLicense(): Observable<string[]> {
 
         return this.fetchQlikSerialNumber().pipe(
             switchMap((qlikSerial: string) => {
@@ -99,9 +99,7 @@ export class LicenseRepository {
                     .set('serial', qlikSerial)
                     .set('chk', String(checkSum));
 
-                // mock server
-                const url = `http://localhost:3000?${params.toString()}`;
-                // const url = `https://license.senseexcel.com/lefupdate/update_lef.json?${params.toString()}`;
+                const url = `https://license.senseexcel.com/lefupdate/update_lef.json?${params.toString()}`;
 
                 /** fetch license for qlik sense excel reporting  */
                 return this.http.jsonp(url, 'callback')
@@ -113,6 +111,7 @@ export class LicenseRepository {
                         });
                     }),
                     map((response: string | SerLicenseResponse) => {
+
                         if ( response.constructor === String) {
                             response = JSON.parse(<string>response);
                         }
@@ -124,7 +123,8 @@ export class LicenseRepository {
                                 error: data.status
                             });
                         }
-                        return String(data.licenses[0]);
+
+                        return data.licenses;
                     }),
                 );
             })
