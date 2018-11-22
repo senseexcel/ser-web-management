@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { LicenseModel } from '../model/license.model';
 import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
-import {  map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { LicenseReader } from './license-reader';
 import { LicenseRepository } from './license-repository';
 import { LicenseWriter } from './license-writer';
