@@ -141,17 +141,17 @@ export class InfoComponent implements OnDestroy, OnInit {
                     this.validator.validateLicense(license),
                     qlikSerial$
                 ]).pipe(
-                        map(([validationResult, serial]) => {
+                    map(([validationResult, serial]) => {
 
-                            this.validationErrors = validationResult.errors;
+                        this.validationErrors = validationResult.errors;
 
-                            return {
-                                license,
-                                qlikSerial: serial,
-                                valid: validationResult.isValid
-                            };
-                        }),
-                    );
+                        return {
+                            license,
+                            qlikSerial: serial,
+                            valid: validationResult.isValid
+                        };
+                    }),
+                );
             }),
             takeUntil(this.isDestroyed$)
         )
