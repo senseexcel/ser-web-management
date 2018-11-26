@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { LicenseModel } from '../model/license.model';
 import { ILicenseUser } from '../api/license-user.interface';
-import moment = require('moment');
 
 @Injectable()
 export class LicenseReader {
