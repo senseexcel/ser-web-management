@@ -346,15 +346,10 @@ export class EditComponent implements OnInit {
                 task.id = sourceTask.id;
                 task.modifiedDate = sourceTask.modifiedDate;
 
-                const event = schemaEvent[0] || this.taskFactoryService.createSchemaEvent(12, task);
-                const startDate = new Date();
-
-                startDate.setHours(startTime);
-                startDate.setMinutes(0);
-                startDate.setSeconds(0);
-                startDate.setMilliseconds(0);
-
-                event.startDate = startDate.toISOString();
+                const event = {
+                    ...schemaEvent[0],
+                    ...this.taskFactoryService.createSchemaEvent(startTime, task)
+                };
 
                 return this.taskApiService.updateTask({
                     task,

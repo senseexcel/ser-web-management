@@ -1,3 +1,9 @@
+<ng-container *ngIf="switchOffEnabled">
+<div class="form-group">
+    <input type="checkbox" class="form-check-input" id="show-again" [formControl]="switchOffFormControl">
+    <label for="show-again" class="form-check-label">don't show again</label>
+</div>
+</ng-container>
 <div class="btn-toolbar flex-row-reverse">
     <button type="button" class="btn btn-secondary" (click)="onClose()">Ok</button>
 </div>

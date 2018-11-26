@@ -1,4 +1,7 @@
 :host {
+
+    display: flex;
+    justify-content: space-between;
     
     .btn {
         background-image: linear-gradient(to bottom, #FFFFFF 0%, #D9D9D9 100%);
@@ -13,4 +16,40 @@
         -moz-box-shadow: inset 0px 0px 0px 1px #262626;
         box-shadow: inset 0px 0px 0px 1px #262626;
     }
+
+    .form-group {
+        margin: 0;
+    }
+
+    input[type="checkbox"] {
+        display: none;
+
+        + label {
+            display: flex;
+            position: relative;
+            align-items: center;
+            color: #FFF;
+        }
+
+        + label:before {
+            content: '';
+            height: 1rem;
+            width: 1rem;
+            display: inline-block;
+            background: #FFF;
+            border: black;
+            margin: 0 .5rem 0 0;
+        }
+
+        &:checked + label:after {
+            content: 'm';
+            display: inline-block;
+            font-family: "LUI icons";
+            position: absolute;
+            top: .1rem;
+            left: .1rem;
+            color: #595959;
+        }
+    }
+
 }

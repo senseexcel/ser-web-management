@@ -1,0 +1,24 @@
+:host {
+    width: 100%;
+
+    .license-block {
+
+        border-bottom: 1px solid #CCC;
+        margin: 0 0 .8rem;
+
+        &:last-child {
+            margin: 0;
+        }
+
+        .qmc-page--content-header {
+            font-size: 12px;
+            padding: 0 0 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+
+            &:last-child {
+                border: 0;
+            }
+        }
+    }
+}

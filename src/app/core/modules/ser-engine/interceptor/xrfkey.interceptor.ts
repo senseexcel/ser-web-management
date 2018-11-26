@@ -5,19 +5,21 @@ export class XrfkeyInterceptor implements HttpInterceptor {
 
     public intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-        const xrfkey: string = this.buildXrfKey();
+        if (req.url.match(/\/q(?:r|p)s\//) ) {
+            const xrfkey: string = this.buildXrfKey();
+            const request: HttpRequest<any> = req.clone({
+                setHeaders: {
+                    'X-Qlik-xrfkey': xrfkey,
+                },
+                setParams: {
+                    'xrfkey': xrfkey
+                },
+                withCredentials: true
+            });
+            return next.handle(request);
+        }
 
-        const request: HttpRequest<any> = req.clone({
-            setHeaders: {
-                'X-Qlik-xrfkey': xrfkey,
-            },
-            setParams: {
-                'xrfkey': xrfkey
-            },
-            withCredentials: true
-        });
-
-        return next.handle(request);
+        return next.handle(req);
     }
 
     /**

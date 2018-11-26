@@ -1,13 +1,17 @@
-import { OverlayDialogComponent } from '../components/dialog/dialog.component';
 import { ComponentType } from '@angular/cdk/portal';
+import { IControlConstructor } from './control.interface';
 
 export interface IModalData<T> {
 
-    title: string;
+    bodyComponent?: ComponentType<T>;
 
-    bodyComponent: ComponentType<T>;
+    class?: string;
+
+    control?: IControlConstructor;
 
     footerComponent?: ComponentType<any>;
+
+    title: string;
 }
 
 export interface IModalDialogData {
@@ -16,7 +20,7 @@ export interface IModalDialogData {
 
 export interface IOverlayConfig {
 
-    panelClass?: string;
+    panelClass?: string[];
 
     hasBackdrop?: boolean;
 

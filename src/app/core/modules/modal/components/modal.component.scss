@@ -6,6 +6,7 @@
 }
 
 :host {
+
     border-radius: 12px;
     background: #595959;
     border: 2px solid #898b8c;
@@ -22,9 +23,7 @@
             padding-right: 20px;
         }
     }
-
     .ser-modal--body {
-        padding: 20px;
         background: #FFF;
     }
 

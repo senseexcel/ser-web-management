@@ -48,8 +48,7 @@ export class TemplateComponent implements OnInit {
     }
 
     public setOutput(event) {
-        const name = `${this.currentApp.title}.${event.value}`;
-        this.templateForm.controls.output.setValue(name);
+        this.templateForm.controls.outputFormat.setValue(event.value);
     }
 
     /**

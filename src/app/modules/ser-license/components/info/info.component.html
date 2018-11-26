@@ -1,0 +1,17 @@
+<div class="ser-license--info" *ngIf="ready">
+
+    <div class="body">
+        <div class="key">SER License Key: {{licenseModel.key}}</div>
+        <div class="key">Qlik License Key: {{qlikLicense}}</div>
+        <div>
+            <span class="status" [ngClass]="{'not-valid': !isValid}">
+                {{licenseStatus}}
+            </span>
+            <ul class="errors" *ngIf="!isValid">
+                <li *ngFor="let error of validationErrors">
+                    {{error}}
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

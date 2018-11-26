@@ -24,8 +24,10 @@
             "name": "License Management",
             "show": true,
             "description": "The License Enable File (LEF) defines the terms and usage of your license. Access types can be allocated to users. On the Licence usage summary page, you can see the distribution of all access types",
-            "disabled": true,
-            "icon": "license"
+            "disabled": false,
+            "icon": "license",
+            "route": "license"
+
         }] 
     },
     {

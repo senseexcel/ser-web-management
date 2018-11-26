@@ -2,7 +2,7 @@ import { IOverlayConfig } from './modal-config.interface';
 
 export const DEFAULT_OVERLAY_CONFIGURATION: IOverlayConfig = {
 
-    panelClass: 'ser-overlay--modal',
+    panelClass: ['ser-overlay--modal'],
 
     hasBackdrop: true,
 

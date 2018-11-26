@@ -24,7 +24,7 @@ export class ExecutionModel implements IModel {
      * @type {number}
      * @memberof ExecutionModel
      */
-    private executionTimeout: number;
+    private executionTimeout = 1;
 
     /**
      * max retries of a task
@@ -33,7 +33,7 @@ export class ExecutionModel implements IModel {
      * @type {number}
      * @memberof ExecutionModel
      */
-    private executionMaxRetries: number;
+    private executionMaxRetries = 1;
 
     /**
      * return task is enabled

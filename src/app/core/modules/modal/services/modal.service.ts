@@ -2,7 +2,7 @@ import { Injectable, Injector, InjectionToken } from '@angular/core';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { ModalComponent } from '../components/modal.component';
-import { MODAL_OVERLAY_CTRL, MODAL_OVERLAY_DATA, MODAL_DIALOG_DATA } from '../api/modal-content.injector';
+import { MODAL_OVERLAY_CTRL, MODAL_OVERLAY_DATA, MODAL_DIALOG_DATA, MODAL_DIALOG_ENABLE_SWITCH_OFF } from '../api/modal-content.injector';
 import { ModalControl, DialogControl } from './modal-control';
 import { IModalData, IOverlayConfig, IModalDialogData } from '../api/modal-config.interface';
 import { DEFAULT_OVERLAY_CONFIGURATION } from '../api/modal.config';
@@ -10,6 +10,7 @@ import { OverlayDialogComponent } from '../components/dialog/dialog.component';
 import { OverlayMessageComponent } from '../components/message/message.component';
 import { DialogFooterComponent } from '../components/dialog/dialog-footer.component';
 import { MessageFooterComponent } from '../components/message/message-footer.component';
+import { IControl } from '../api/control.interface';
 
 @Injectable()
 export class ModalService {
@@ -32,13 +33,14 @@ export class ModalService {
      * @param {*} body
      * @memberof ModalService
      */
-    public open<T>(data: IModalData<T>, configuration: IOverlayConfig = {}): ModalControl {
+    public open<T>(data: IModalData<T>, configuration: IOverlayConfig = {}): IControl {
 
         const overlayRef = this.createOverlay(configuration);
-        const control    = new ModalControl(overlayRef);
+
+        const control: IControl = new (data.control || ModalControl)(overlayRef);
 
         /** create injection tokens */
-        const tokens     = this.createInjectionTokens(data, control);
+        const tokens     = this.createInjectionTokens(data, control as IControl);
         const injector   = this.createInjector(tokens);
 
         const overlayPortal = new ComponentPortal(ModalComponent, null, injector);
@@ -87,7 +89,7 @@ export class ModalService {
      * @returns {ModalControl}
      * @memberof ModalService
      */
-    public openMessageModal(title: string, msg: string, configuration: IOverlayConfig = {}): ModalControl {
+    public openMessageModal(title: string, msg: string, configuration: IOverlayConfig = {}, dismisable = false): ModalControl {
 
         // create dialog modal
         const overlayData: IModalData<OverlayMessageComponent> = {
@@ -104,6 +106,7 @@ export class ModalService {
         /** create injection tokens */
         const tokens = this.createInjectionTokens(overlayData, control);
         tokens.set(MODAL_DIALOG_DATA, dialogData);
+        tokens.set(MODAL_DIALOG_ENABLE_SWITCH_OFF, dismisable);
 
         /** create injector and portal component */
         const injector      = this.createInjector(tokens);
@@ -136,16 +139,18 @@ export class ModalService {
      * @returns {OverlayConfig}
      * @memberof ModalService
      */
-    private createOverlayConfig(config): OverlayConfig {
+    private createOverlayConfig(config: IOverlayConfig): OverlayConfig {
 
         const positionStrategy = this.overlay.position()
             .global()
             .centerVertically()
             .centerHorizontally();
 
+        const mergedConfig      = {...DEFAULT_OVERLAY_CONFIGURATION, ...config};
+        mergedConfig.panelClass = [...DEFAULT_OVERLAY_CONFIGURATION.panelClass, ...config.panelClass];
+
         const overlayConfig: OverlayConfig = {
-            ...DEFAULT_OVERLAY_CONFIGURATION,
-            ...config,
+            ...mergedConfig,
             ...{
                 positionStrategy,
                 scrollStrategy: this.overlay.scrollStrategies.block(),
@@ -177,7 +182,7 @@ export class ModalService {
      * @returns {WeakMap<InjectionToken<any>, any>}
      * @memberof ModalService
      */
-    private createInjectionTokens(data: IModalData<any>, control: ModalControl): WeakMap<InjectionToken<any>, any> {
+    private createInjectionTokens(data: IModalData<any>, control: IControl): WeakMap<InjectionToken<any>, any> {
         const tokens = new WeakMap();
         tokens.set(MODAL_OVERLAY_DATA, data);
         tokens.set(MODAL_OVERLAY_CTRL, control);
