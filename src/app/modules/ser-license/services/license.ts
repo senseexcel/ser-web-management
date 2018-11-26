@@ -7,6 +7,7 @@ import { LicenseRepository } from './license-repository';
 import { LicenseWriter } from './license-writer';
 import { ILicenseUser } from '../api/license-user.interface';
 import { LICENSE_PROPERTIES } from '../api/license-data.interface';
+import { SerLicenseResponseException } from '../api/exceptions';
 
 @Injectable()
 export class License {
@@ -89,6 +90,7 @@ export class License {
     /**
      * fetch license from remote server
      *
+     * @throws {SerLicenseResponseException}
      * @returns {Observable<LicenseModel>}
      * @memberof License
      */
@@ -100,6 +102,14 @@ export class License {
                     const [excelLicense] = [...content.filter((license: string) => {
                         return license.match(/EXCEL_/m);
                     })];
+
+                    /** no license found throw an exception */
+                    if (!excelLicense.length) {
+                        throw new SerLicenseResponseException({
+                            status: 404,
+                            error: 'No license found'
+                        });
+                    }
                     return excelLicense;
                 }),
                 map((licenseContent: string) => this.updateLicense(licenseContent))
