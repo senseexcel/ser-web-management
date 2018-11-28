@@ -1,8 +1,9 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { pages } from './pages';
 import { LicenseModule } from '../ser-license/license.module';
+import { components } from './components';
 import { MonitoringRoutingModule } from './monitoring-routing.module';
+import { pages } from './pages';
 
 @NgModule({
     imports: [
@@ -11,6 +12,7 @@ import { MonitoringRoutingModule } from './monitoring-routing.module';
         MonitoringRoutingModule
     ],
     declarations: [
+        ...components,
         ...pages
     ],
     entryComponents: [

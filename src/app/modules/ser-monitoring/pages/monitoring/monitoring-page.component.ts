@@ -55,6 +55,11 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
         this.hasError = false;
     }
 
+    /**
+     * on component get initialized
+     *
+     * @memberof MonitoringPageComponent
+     */
     public ngOnInit() {
         this.licenseValidator.validateLicenseExists()
             .pipe(
@@ -68,6 +73,11 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
             });
     }
 
+    /**
+     * on component gets destroyed
+     *
+     * @memberof MonitoringPageComponent
+     */
     public ngOnDestroy() {
         this.isDestroyed$.next(true);
     }
