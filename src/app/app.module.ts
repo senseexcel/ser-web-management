@@ -20,6 +20,7 @@ import { CommonModule } from '@angular/common';
 import { UserModule } from '@core/modules/user/user.module';
 import { LicenseModule } from './modules/ser-license/license.module';
 import { ModalModule } from '@core/modules/modal/modal.module';
+import { MonitoringModule } from './modules/ser-monitoring/monitoring.module';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { ModalModule } from '@core/modules/modal/modal.module';
     LicenseModule,
     MenuModule,
     ModalModule,
+    MonitoringModule,
     SerEngineModule,
     UserModule
   ],

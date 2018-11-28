@@ -36,8 +36,9 @@
             "name": "Monitoring Report Apps",
             "show": true,
             "description": "Monitoring Report Apps",
-            "disabled": true,
-            "icon": "streams"
+            "disabled": false,
+            "icon": "streams",
+            "route": "monitoring"
         }]
     },
     {

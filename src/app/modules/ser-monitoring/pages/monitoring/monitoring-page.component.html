@@ -1,0 +1,52 @@
+<!-- display license page to edit or show detailed informations -->
+<ng-template #monitoringTemplate>
+    <div class="qmc-page--content-body">
+        tables goes here
+    </div>
+
+    <div class="qmc-page--content-footer">
+        actions goes here
+    </div>
+</ng-template>
+
+<!-- if installation is invalid display error page -->
+<ng-template #errorTemplate>
+    <div class="qmc-page--content-body">
+        display error here / no access rights
+    </div>
+</ng-template>
+
+<div class="qmc-page qmc-page--edit" *ngIf="ready">
+
+    <div class="qmc-page--sidebar sidebar-left">
+
+        <div class="header sidebar-content">
+            <a (click)="navigateBack()">
+                <i class="lui-icon lui-icon--arrow-up"></i>
+                <span>Start</span>
+            </a>
+        </div>
+
+        <ul class="lui-list">
+            <li class="lui-item">
+                Monitoring SER Apps
+            </li>
+        </ul>
+    </div>
+
+    <div class="qmc-page--content">
+
+        <div class="header qmc-page--content-header">
+            <i class="ser-icon ser-icon--streams"></i>
+            <span>Monitoring SER Apps</span>
+        </div>
+
+        <ng-container>
+            <ng-container *ngTemplateOutlet="monitoringTemplate">
+            </ng-container>
+        </ng-container>
+    </div>
+
+    <div class="qmc-page--sidebar sidebar-right">
+    </div>
+</div>
