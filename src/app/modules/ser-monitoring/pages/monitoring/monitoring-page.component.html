@@ -14,26 +14,13 @@
     <div class="qmc-page--content-body">
         display error here / no access rights
     </div>
+
+    <div class="qmc-page--content-footer">
+        go to license management
+    </div>
 </ng-template>
 
 <div class="qmc-page qmc-page--edit" *ngIf="ready">
-
-    <div class="qmc-page--sidebar sidebar-left">
-
-        <div class="header sidebar-content">
-            <a (click)="navigateBack()">
-                <i class="lui-icon lui-icon--arrow-up"></i>
-                <span>Start</span>
-            </a>
-        </div>
-
-        <ul class="lui-list">
-            <li class="lui-item">
-                Monitoring SER Apps
-            </li>
-        </ul>
-    </div>
-
     <div class="qmc-page--content">
 
         <div class="header qmc-page--content-header">
@@ -42,11 +29,8 @@
         </div>
 
         <ng-container>
-            <ng-container *ngTemplateOutlet="monitoringTemplate">
+            <ng-container *ngTemplateOutlet="hasError ? errorTemplate : monitoringTemplate">
             </ng-container>
         </ng-container>
-    </div>
-
-    <div class="qmc-page--sidebar sidebar-right">
     </div>
 </div>
