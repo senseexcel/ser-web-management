@@ -1,5 +1,5 @@
 export enum SerCommands {
-    START  = 'SER.STATUS',
-    STATUS = 'SER.START',
+    START  = 'SER.START',
+    STATUS = 'SER.STATUS',
     STOP   = 'SER.STOP',
 }

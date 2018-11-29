@@ -5,13 +5,16 @@ import { LicenseModule } from '../ser-license/license.module';
 import { components } from './components';
 import { MonitoringRoutingModule } from './monitoring-routing.module';
 import { pages } from './pages';
+import { services } from './services';
+import { MatTableModule } from '@angular/material';
 
 @NgModule({
     imports: [
         CommonModule,
         CoreModule,
         LicenseModule,
-        MonitoringRoutingModule
+        MonitoringRoutingModule,
+        MatTableModule
     ],
     declarations: [
         ...components,
@@ -20,9 +23,8 @@ import { pages } from './pages';
     entryComponents: [
         ...pages
     ],
-    exports: [
-    ],
     providers: [
+        ...services
     ]
 })
 export class MonitoringModule {}
