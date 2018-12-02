@@ -47,7 +47,7 @@ export class LicenseValidator {
 
         return forkJoin([
             this.validateContentLibrary(),
-            this.validateQlikLicense()
+            this.validateQlikLicenseInstallation()
         ]).pipe(
             map((res: Map<ValidationStep, ILicenseValidationResult>[]) => {
                 const result: Map<ValidationStep, ILicenseValidationResult> = new Map(
@@ -159,8 +159,34 @@ export class LicenseValidator {
      * @returns {Observable<LicenseValidationResult>}
      * @memberof LicenseValidator
      */
-    public validateQlikLicense(): Observable<Map<ValidationStep, ILicenseValidationResult>> {
+    public validateQlikLicense(): Observable<ILicenseValidationResult> {
 
+        return this.licenseRepository.fetchQlikSerialNumber().pipe(
+            map(() => {
+                return {isValid: true, errors: []};
+            }),
+            catchError((error) => {
+                let errMsg: string;
+                switch (error.constructor) {
+                    case QlikLicenseInvalidException:  errMsg = 'Invalid Qlik License'; break;
+                    case QlikLicenseNoAccessException: errMsg = 'No Access: Qlik License'; break;
+                    default:
+                        throw error;
+                }
+                return of({
+                    isValid: false, errors: [errMsg]
+                });
+            })
+        );
+    }
+
+    /**
+     * @todo refactoring to use validateQlikLicense
+     *
+     * @returns {Observable<Map<ValidationStep, ILicenseValidationResult>>}
+     * @memberof LicenseValidator
+     */
+    public validateQlikLicenseInstallation(): Observable<Map<ValidationStep, ILicenseValidationResult>> {
         const validationResults: Map<ValidationStep, ILicenseValidationResult> = new Map();
         const qlikLicensResult: ILicenseValidationResult = {isValid: true, errors: []};
 
@@ -172,14 +198,13 @@ export class LicenseValidator {
         return of(validationResults).pipe(
             mergeMap((result) => this.licenseRepository.fetchQlikSerialNumber()
                 .pipe(
-                    /** just return validation result will, skipped if fetchQlikSerialNumber throws an error */
                     map(() => result),
                     catchError((error: Error) => {
                         switch (error.constructor) {
 
                             case QlikLicenseInvalidException:
                                 res = validationResults.get(ValidationStep.STEP_QLIK_LICENSE_VALID);
-                                res.errors.push('No Access: Qlik License');
+                                res.errors.push('No Valid: Qlik License');
                                 res.isValid = false;
                                 break;
 

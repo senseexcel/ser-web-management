@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LicenseValidator } from '@app/modules/ser-license/services';
 import { ILicenseValidationResult } from '@app/modules/ser-license/api/validation-result.interface';
-import { finalize, takeUntil } from 'rxjs/operators';
-import { Subject } from 'rxjs';
+import { finalize, takeUntil, catchError, tap } from 'rxjs/operators';
+import { Subject, concat, of } from 'rxjs';
 import { ProcessService } from '../../services';
 
 @Component({
@@ -22,6 +22,8 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
     public ready: boolean;
 
     public isLoading: boolean;
+
+    public errors: string[];
 
     /**
      * determine we have an error for license (not exists, no rights)
@@ -61,25 +63,38 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
         this.hasError = false;
         this.processService = processService;
         this.isLoading = false;
+        this.errors = [];
     }
 
     /**
-     * on component get initialized
+     * validate user can create web socket connection ( is allocated ),
+     * check for an valid qlik license and access rights
+     * check we have a valid ser license
      *
      * @memberof MonitoringPageComponent
      */
     public ngOnInit() {
         this.isLoading = true;
-        this.licenseValidator.validateLicenseExists()
-            .pipe(
-                finalize(() => this.ready = true),
-                takeUntil(this.isDestroyed$)
-            )
-            .subscribe((result: ILicenseValidationResult) => {
+
+        concat(
+            this.processService.validateIsAllocated(),
+            this.licenseValidator.validateQlikLicense(),
+            this.licenseValidator.validateLicenseExists()
+        ).pipe(
+            finalize(() => {
+                this.ready = true;
+                this.isLoading = false;
+            }),
+            takeUntil(this.isDestroyed$)
+        )
+        .subscribe(
+            (result: ILicenseValidationResult) => {
                 if (!result.isValid) {
                     this.hasError = true;
+                    this.errors = [...this.errors, ...result.errors];
                 }
-            });
+            }
+        );
     }
 
     /**

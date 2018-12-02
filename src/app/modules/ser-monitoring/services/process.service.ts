@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { QlikSessionService } from '@core/services';
-import { switchMap, tap, map } from 'rxjs/operators';
+import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { Observable, of, Subject } from 'rxjs';
 import { SerCommands } from '../api/ser-commands.interface';
 import { IProcessListResponse, ResponseStatus } from '../api/process-status-response.interface';
 import { IProcess } from '../api/process.interface';
 import { ProcessStatusException } from '../api';
+import { NotAllocatedException } from '../api/exceptions/not-allocated.exception';
+import { ILicenseValidationResult } from '@app/modules/ser-license/api/validation-result.interface';
 
 @Injectable()
 export class ProcessService {
@@ -108,7 +110,8 @@ export class ProcessService {
                                     startTime: '2018-11-29T10:55:45.8066955+01:00',
                                     appId: '5d514ce0-1cf2-4b37-a687-6b53e6794357',
                                     userId: {
-                                        UserId: 'martinberthold',
+                                        // change user id
+                                        UserId: Math.random().toString(32).substr(2),
                                         UserDirectory: 'AZUREAD'
                                     }
                                 });
@@ -119,6 +122,28 @@ export class ProcessService {
                     return this.mergeProcessesToMap(mockResponse);
                 }),
             );
+    }
+
+    /**
+     * validates user can open a sesssion
+     *
+     * @memberof ProcessService
+     */
+    public validateIsAllocated(): Observable<ILicenseValidationResult> {
+        return this.getSessionApp().pipe(
+            map((): ILicenseValidationResult => {
+                return {
+                    isValid: true,
+                    errors: []
+                };
+            }),
+            catchError(() => {
+                return of({
+                    isValid: false,
+                    errors: ['could not create session']
+                });
+            }),
+        );
     }
 
     /**
@@ -173,7 +198,10 @@ export class ProcessService {
     }
 
     /**
-     * merge loaded / updated processes into map
+     * merge loaded / updated processes into map we want to modify
+     * existing objects if they are allready loaded and not create
+     * every time a new object. This will help the angular renderer
+     * to render only things wo have changed and not all.
      *
      * @private
      * @param {IProcess[]} processes
@@ -186,7 +214,7 @@ export class ProcessService {
                 /**
                  * dont use object spread since this creates a new Object
                  * but we want to modify existing object this can be do better
-                 * with Object.assign
+                 * with Object.assign.
                  */
                 const mergedProcess = Object.assign(this.processMap.get(process.id), process);
                 mergedMap.set(process.id, mergedProcess);
