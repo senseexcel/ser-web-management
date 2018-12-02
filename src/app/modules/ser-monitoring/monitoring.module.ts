@@ -6,15 +6,16 @@ import { components } from './components';
 import { MonitoringRoutingModule } from './monitoring-routing.module';
 import { pages } from './pages';
 import { services } from './services';
-import { MatTableModule } from '@angular/material';
+import { MatTableModule, MatProgressSpinnerModule } from '@angular/material';
 
 @NgModule({
     imports: [
         CommonModule,
         CoreModule,
         LicenseModule,
+        MatProgressSpinnerModule,
         MonitoringRoutingModule,
-        MatTableModule
+        MatTableModule,
     ],
     declarations: [
         ...components,

@@ -1,11 +1,27 @@
 <!-- display license page to edit or show detailed informations -->
 <ng-template #monitoringTemplate>
+
     <div class="qmc-page--content-body">
         <app-monitoring-process-list></app-monitoring-process-list>
     </div>
 
     <div class="qmc-page--content-footer">
-        actions goes here
+        <nav class="navbar navbar-light bg-light">
+            <button class="btn btn-primary" (click)="doRefresh()" >
+                Refresh
+            </button>
+
+            <form class="form-inline">
+                <label>
+                    <input class="form-control" type="checkbox">
+                    Autorefresh
+                </label>
+            </form>
+
+            <button class="btn btn-primary" (click)="stopAll()" >
+                Stop All
+            </button>
+        </nav>
     </div>
 </ng-template>
 
@@ -14,13 +30,10 @@
     <div class="qmc-page--content-body">
         <app-monitoring-error></app-monitoring-error>
     </div>
-
-    <div class="qmc-page--content-footer">
-        go to license management
-    </div>
 </ng-template>
 
-<div class="qmc-page qmc-page--edit" *ngIf="ready">
+
+<div class="qmc-page" *ngIf="ready">
     <div class="qmc-page--content">
 
         <div class="header qmc-page--content-header">

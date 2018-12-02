@@ -3,6 +3,7 @@ import { LicenseValidator } from '@app/modules/ser-license/services';
 import { ILicenseValidationResult } from '@app/modules/ser-license/api/validation-result.interface';
 import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { ProcessService } from '../../services';
 
 @Component({
     selector: 'app-monitoring-page',
@@ -19,6 +20,8 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
      * @memberof MonitoringPageComponent
      */
     public ready: boolean;
+
+    public isLoading: boolean;
 
     /**
      * determine we have an error for license (not exists, no rights)
@@ -37,6 +40,8 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
      */
     private licenseValidator: LicenseValidator;
 
+    private processService: ProcessService;
+
     /**
      * will submit true if component gets destroyed to unsubscribe
      * from observables
@@ -48,11 +53,14 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
     private isDestroyed$: Subject<boolean>;
 
     constructor(
+        processService: ProcessService,
         validator: LicenseValidator
     ) {
         this.licenseValidator = validator;
         this.isDestroyed$ = new Subject();
         this.hasError = false;
+        this.processService = processService;
+        this.isLoading = false;
     }
 
     /**
@@ -61,6 +69,7 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
      * @memberof MonitoringPageComponent
      */
     public ngOnInit() {
+        this.isLoading = true;
         this.licenseValidator.validateLicenseExists()
             .pipe(
                 finalize(() => this.ready = true),
@@ -80,5 +89,26 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
      */
     public ngOnDestroy() {
         this.isDestroyed$.next(true);
+    }
+
+    public doRefresh () {
+        this.isLoading = true;
+        this.processService.refreshProcessList()
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe((data) => {
+                this.isLoading = false;
+            });
+    }
+
+    public stopProcess() {
+        this.isLoading = true;
+        this.processService.stopProcess(null)
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe(() => {
+                this.isLoading = false;
+            });
+    }
+
+    public stopAll() {
     }
 }

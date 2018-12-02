@@ -72,11 +72,17 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      *
      * @memberof TasksComponent
      */
-    ngOnInit() {
-        this.loadProcessList().subscribe((processes) => {
-            this.processes = processes;
-            this.ready     = true;
-        });
+    ngOnInit(): void {
+
+        this.loadProcessList()
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe((processes) => {
+                this.processes = processes;
+                this.ready     = true;
+
+                // register for further events
+                this.registerEvents();
+            });
     }
 
     /**
@@ -89,6 +95,25 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     }
 
     /**
+     * register for process list refresh and process stop event
+     *
+     * @private
+     * @memberof ProcessListComponent
+     */
+    private registerEvents(): void {
+
+        /** process list refreshed */
+        this.processService.processListUpdate$
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe((processes: IProcess[]) => this.updateProcessList(processes));
+
+        /** process stopped */
+        this.processService.processStop$
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe((process: IProcess) => this.removeProcessFromList(process) );
+    }
+
+    /**
      * load process list
      *
      * @private
@@ -96,15 +121,34 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     private loadProcessList(): Observable<IProcess[]> {
-        return this.processService.getProcessList()
-            .pipe(
-                /** @todo remove mock response */
-                map(() => {
-                    // tslint:disable-next-line:max-line-length
-                    const mockResponse = '{"status":0,"tasks":[{"processId":0,"status":0,"id":"3fb43c86-6fd7-4503-a0da-33550d4ccf23","startTime":"2018-11-29T10:55:45.8066955+01:00","appId":"5d514ce0-1cf2-4b37-a687-6b53e6794357","userId":{"UserId":"martinberthold","UserDirectory":"AZUREAD"}}]}';
-                    return JSON.parse(mockResponse).tasks;
-                }),
-                takeUntil(this.isDestroyed$)
-            );
+
+        return this.processService.getProcessList().pipe(
+            takeUntil(this.isDestroyed$)
+        );
+    }
+
+    /**
+     * find process which has been removed and remove from
+     * internal process list
+     *
+     * @private
+     * @param {IProcess} process
+     * @memberof ProcessListComponent
+     */
+    private removeProcessFromList(process: IProcess): void {
+        // @todo implement
+    }
+
+    /**
+     * we get a complete list of new processes, so we should
+     * merge both together to handle table rendering better so only
+     * added or removed elements will be rendered and not complete table
+     *
+     * @private
+     * @param {IProcess[]} processes
+     * @memberof ProcessListComponent
+     */
+    private updateProcessList(processes: IProcess[]): void {
+        this.processes = [...processes];
     }
 }
