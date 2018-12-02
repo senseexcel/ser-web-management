@@ -25,7 +25,7 @@
     <ng-container matColumnDef="stop">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let process">
-            <button>
+            <button (click)="stopProcess(process)">
                 <i class="ser-icon ser-icon--remove"></i>
             </button>
         </td>

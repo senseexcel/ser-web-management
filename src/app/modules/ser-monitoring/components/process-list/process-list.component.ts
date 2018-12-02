@@ -95,6 +95,21 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     }
 
     /**
+     * stop process, this will trigger an update on list
+     * which will handeled on processListUpdate Stream
+     *
+     * @memberof MonitoringPageComponent
+     */
+    public stopProcess(process: IProcess) {
+
+        this.processService.stopProcess(process)
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe(() => {
+                /** @todo implement any usefull action ... */
+            });
+    }
+
+    /**
      * register for process list refresh and process stop event
      *
      * @private
@@ -106,11 +121,6 @@ export class ProcessListComponent implements OnDestroy, OnInit {
         this.processService.processListUpdate$
             .pipe(takeUntil(this.isDestroyed$))
             .subscribe((processes: IProcess[]) => this.updateProcessList(processes));
-
-        /** process stopped */
-        this.processService.processStop$
-            .pipe(takeUntil(this.isDestroyed$))
-            .subscribe((process: IProcess) => this.removeProcessFromList(process) );
     }
 
     /**
@@ -125,18 +135,6 @@ export class ProcessListComponent implements OnDestroy, OnInit {
         return this.processService.getProcessList().pipe(
             takeUntil(this.isDestroyed$)
         );
-    }
-
-    /**
-     * find process which has been removed and remove from
-     * internal process list
-     *
-     * @private
-     * @param {IProcess} process
-     * @memberof ProcessListComponent
-     */
-    private removeProcessFromList(process: IProcess): void {
-        // @todo implement
     }
 
     /**

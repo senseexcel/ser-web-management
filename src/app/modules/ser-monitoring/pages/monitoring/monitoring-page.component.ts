@@ -67,9 +67,11 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
     }
 
     /**
-     * validate user can create web socket connection ( is allocated ),
-     * check for an valid qlik license and access rights
-     * check we have a valid ser license
+     * initialize monitoring page component
+     *
+     * validate first for qlik license
+     * validate for user allocations, needed to create web socket connections
+     * validate an license exists (not for a valid ser license)
      *
      * @memberof MonitoringPageComponent
      */
@@ -77,8 +79,8 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
         this.isLoading = true;
 
         concat(
-            this.processService.validateIsAllocated(),
             this.licenseValidator.validateQlikLicense(),
+            this.processService.validateIsAllocated(),
             this.licenseValidator.validateLicenseExists()
         ).pipe(
             finalize(() => {
@@ -106,24 +108,26 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
         this.isDestroyed$.next(true);
     }
 
+    /**
+     * handle footer action command to reload list
+     *
+     * @memberof MonitoringPageComponent
+     */
     public doRefresh () {
         this.isLoading = true;
         this.processService.refreshProcessList()
-            .pipe(takeUntil(this.isDestroyed$))
-            .subscribe((data) => {
-                this.isLoading = false;
-            });
-    }
-
-    public stopProcess() {
-        this.isLoading = true;
-        this.processService.stopProcess(null)
             .pipe(takeUntil(this.isDestroyed$))
             .subscribe(() => {
                 this.isLoading = false;
             });
     }
 
+    /**
+     * handle footer command stop all processes
+     *
+     * @memberof MonitoringPageComponent
+     */
     public stopAll() {
+        /** @todo implement */
     }
 }

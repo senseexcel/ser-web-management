@@ -174,7 +174,12 @@ export class ProcessService {
                 });
                 return app.evaluate(`${SerCommands.STOP}('${requestData}')`);
             }),
-            tap(() => this.processStop$.next(process)),
+            tap(() => {
+                this.processMap.delete(process.id);
+                this.processListUpdate$.next(
+                    Array.from(this.processMap.values())
+                );
+            }),
             map(() => {
                 return true;
             })
