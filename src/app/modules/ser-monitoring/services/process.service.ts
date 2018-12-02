@@ -6,7 +6,6 @@ import { SerCommands } from '../api/ser-commands.interface';
 import { IProcessListResponse, ResponseStatus } from '../api/process-status-response.interface';
 import { IProcess } from '../api/process.interface';
 import { ProcessStatusException } from '../api';
-import { NotAllocatedException } from '../api/exceptions/not-allocated.exception';
 import { ILicenseValidationResult } from '@app/modules/ser-license/api/validation-result.interface';
 
 @Injectable()
@@ -92,7 +91,9 @@ export class ProcessService {
                     if (result.status === ResponseStatus.FAILURE ) {
                         throw new ProcessStatusException('Could not fetch processes.');
                     }
-                    /** @todo uncomment line but since we get allways an empty result this will clear */
+                    /** @todo uncomment line but since we get allways an empty result this
+                     * will not be very helpfull for development
+                     */
                     // return this.mergeProcessesToMap(result.tasks);
                     return result.tasks;
                 }),

@@ -1,7 +1,38 @@
+@import "~src/skin/scss/components/button";
+
 :host {
     width: 100%;
 
     .qmc-page--content-body {
         padding: 0;
+    }
+
+    .qmc-page--content-footer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 11px 2px 11px 10px;
+
+        > * {
+            margin: 0 12px 0 0;
+        }
+
+        &>:last-child() {
+            margin: 0;
+        }
+
+        .form-inline {
+
+            input[type="checkbox"] {
+                margin-right: 10px;
+            }
+
+            label {
+                @extend button;
+                margin:0;
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+        }
     }
 }

@@ -6,22 +6,20 @@
     </div>
 
     <div class="qmc-page--content-footer">
-        <nav class="navbar navbar-light bg-light">
-            <button class="btn btn-primary" (click)="doRefresh()" >
-                Refresh
-            </button>
+        <button class="btn btn-primary" (click)="doRefresh()" >
+            Refresh
+        </button>
 
-            <form class="form-inline">
-                <label>
-                    <input class="form-control" type="checkbox">
-                    Autorefresh
-                </label>
-            </form>
+        <form class="form-inline">
+            <label>
+                <input class="form-control" type="checkbox">
+                Autorefresh
+            </label>
+        </form>
 
-            <button class="btn btn-primary" (click)="stopAll()" >
-                Stop All
-            </button>
-        </nav>
+        <button class="btn btn-primary" (click)="stopAll()" >
+            Stop All
+        </button>
     </div>
 </ng-template>
 
