@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ProcessService } from '../../services';
 import { takeUntil, map } from 'rxjs/operators';
 import { IProcess } from '../../api';

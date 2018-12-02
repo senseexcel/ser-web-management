@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LicenseValidator } from '@app/modules/ser-license/services';
 import { ILicenseValidationResult } from '@app/modules/ser-license/api/validation-result.interface';
-import { finalize, takeUntil, switchMap, concatMap, concat, reduce, tap, catchError } from 'rxjs/operators';
-import { Subject, interval, empty, of, merge, from, forkJoin } from 'rxjs';
+import { finalize, takeUntil, switchMap, concatMap, reduce, tap } from 'rxjs/operators';
+import { Subject, interval, empty, merge } from 'rxjs';
 import { ProcessService } from '../../services';
 import { FormBuilder, FormControl } from '@angular/forms';
 
