@@ -25,6 +25,7 @@
 
 <!-- if installation is invalid display error page -->
 <ng-template #errorTemplate>
+
     <div class="qmc-page--content-body">
         <app-monitoring-error></app-monitoring-error>
     </div>
@@ -36,6 +37,7 @@
         <div class="header qmc-page--content-header">
             <i class="ser-icon ser-icon--streams"></i>
             <span>Monitoring SER Apps</span>
+            <app-process-overview *ngIf="!hasError"></app-process-overview>
         </div>
 
         <ng-container>

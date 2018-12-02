@@ -74,14 +74,14 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     ngOnInit(): void {
 
-        this.loadProcessList()
+        this.processService.processList$
             .pipe(takeUntil(this.isDestroyed$))
             .subscribe((processes) => {
                 this.processes = processes;
                 this.ready     = true;
 
                 // register for further events
-                this.registerEvents();
+                this.processes = [...processes];
             });
     }
 
@@ -107,46 +107,5 @@ export class ProcessListComponent implements OnDestroy, OnInit {
             .subscribe(() => {
                 /** @todo implement any usefull action ... */
             });
-    }
-
-    /**
-     * register for process list refresh and process stop event
-     *
-     * @private
-     * @memberof ProcessListComponent
-     */
-    private registerEvents(): void {
-
-        /** process list refreshed */
-        this.processService.processListUpdate$
-            .pipe(takeUntil(this.isDestroyed$))
-            .subscribe((processes: IProcess[]) => this.updateProcessList(processes));
-    }
-
-    /**
-     * load process list
-     *
-     * @private
-     * @returns {Observable<IProcess[]>}
-     * @memberof ProcessListComponent
-     */
-    private loadProcessList(): Observable<IProcess[]> {
-
-        return this.processService.getProcessList().pipe(
-            takeUntil(this.isDestroyed$)
-        );
-    }
-
-    /**
-     * we get a complete list of new processes, so we should
-     * merge both together to handle table rendering better so only
-     * added or removed elements will be rendered and not complete table
-     *
-     * @private
-     * @param {IProcess[]} processes
-     * @memberof ProcessListComponent
-     */
-    private updateProcessList(processes: IProcess[]): void {
-        this.processes = [...processes];
     }
 }

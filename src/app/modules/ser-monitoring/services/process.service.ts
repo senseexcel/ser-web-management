@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { QlikSessionService } from '@core/services';
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, BehaviorSubject } from 'rxjs';
 import { SerCommands } from '../api/ser-commands.interface';
 import { IProcessListResponse, ResponseStatus } from '../api/process-status-response.interface';
 import { IProcess } from '../api/process.interface';
@@ -25,7 +25,7 @@ export class ProcessService {
      * @type {Subject<IProcess[]>}
      * @memberof ProcessService
      */
-    public processListUpdate$: Subject<IProcess[]>;
+    public processList$: BehaviorSubject<IProcess[]>;
 
     /**
      * process which holds loaded processes
@@ -66,9 +66,9 @@ export class ProcessService {
     constructor(session: QlikSessionService) {
         this.qlikSession = session;
 
-        this.processListUpdate$ = new Subject();
-        this.processMap         = new Map();
-        this.processStop$       = new Subject();
+        this.processList$ = new BehaviorSubject([]);
+        this.processMap   = new Map();
+        this.processStop$ = new Subject();
     }
 
     /**
@@ -77,7 +77,8 @@ export class ProcessService {
      * @returns {Observable<string>}
      * @memberof ProcessService
      */
-    public getProcessList(): Observable<IProcess[]> {
+    public fetchProcesses(): Observable<IProcess[]> {
+
         return this.getSessionApp()
             .pipe(
                 switchMap((app: EngineAPI.IApp) => {
@@ -122,6 +123,7 @@ export class ProcessService {
                     ];
                     return this.mergeProcessesToMap(mockResponse);
                 }),
+                tap((processes: IProcess[]) => this.processList$.next(processes))
             );
     }
 
@@ -133,10 +135,7 @@ export class ProcessService {
     public validateIsAllocated(): Observable<ILicenseValidationResult> {
         return this.getSessionApp().pipe(
             map((): ILicenseValidationResult => {
-                return {
-                    isValid: true,
-                    errors: []
-                };
+                return { isValid: true, errors: [] };
             }),
             catchError(() => {
                 return of({
@@ -154,10 +153,9 @@ export class ProcessService {
      * @memberof ProcessService
      */
     public refreshProcessList(): Observable<IProcess[]> {
-        return this.getProcessList()
-            .pipe(
-                tap((response: IProcess[]) => this.processListUpdate$.next(response))
-            );
+        return this.fetchProcesses().pipe(
+            tap((response: IProcess[]) => this.processList$.next(response))
+        );
     }
 
     /**
@@ -177,7 +175,7 @@ export class ProcessService {
             }),
             tap(() => {
                 this.processMap.delete(process.id);
-                this.processListUpdate$.next(
+                this.processList$.next(
                     Array.from(this.processMap.values())
                 );
             }),

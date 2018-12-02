@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LicenseValidator } from '@app/modules/ser-license/services';
 import { ILicenseValidationResult } from '@app/modules/ser-license/api/validation-result.interface';
-import { finalize, takeUntil, catchError, tap, switchMap, mergeMap, mapTo, map, concatMap } from 'rxjs/operators';
-import { Subject, concat, of, interval, pipe, merge, empty } from 'rxjs';
+import { finalize, takeUntil, switchMap, concatMap, concat, reduce, tap, catchError } from 'rxjs/operators';
+import { Subject, interval, empty, of, merge, from, forkJoin } from 'rxjs';
 import { ProcessService } from '../../services';
 import { FormBuilder, FormControl } from '@angular/forms';
 
@@ -119,27 +119,31 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
     public ngOnInit() {
         this.isLoading = true;
 
-        concat(
+        merge(
             this.licenseValidator.validateQlikLicense(),
             this.processService.validateIsAllocated(),
             this.licenseValidator.validateLicenseExists()
         ).pipe(
+            reduce((a, b) => {
+                return {
+                    isValid: a.isValid && b.isValid,
+                    errors: [...a.errors, ...b.errors]
+                };
+            }),
+            tap((result: ILicenseValidationResult) => {
+                this.hasError = !result.isValid;
+                this.errors   = result.errors;
+            }),
+            switchMap(() => this.hasError ? empty() : this.processService.fetchProcesses()),
             finalize(() => {
-                this.autoRefreshControl = this.createAutoRefreshControl();
-
                 this.ready = true;
                 this.isLoading = false;
             }),
-            takeUntil(this.isDestroyed$)
+            takeUntil(this.isDestroyed$),
         )
-        .subscribe(
-            (result: ILicenseValidationResult) => {
-                if (!result.isValid) {
-                    this.hasError = true;
-                    this.errors = [...this.errors, ...result.errors];
-                }
-            }
-        );
+        .subscribe(() => {
+            this.autoRefreshControl = this.createAutoRefreshControl();
+        });
     }
 
     /**
@@ -175,7 +179,7 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
     }
 
     /**
-     *
+     * enable auto refresh if checkbox is enabled
      *
      * @private
      * @returns {FormControl}
@@ -189,15 +193,10 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
         );
 
         control.valueChanges.pipe(
-            switchMap((val) => {
-                return val ? interval$ : empty();
-            }),
+            switchMap((val) => val ? interval$ : empty()),
             takeUntil(this.isDestroyed$),
         ).subscribe();
 
         return control;
-    }
-
-    private refreshListByTimeout() {
     }
 }

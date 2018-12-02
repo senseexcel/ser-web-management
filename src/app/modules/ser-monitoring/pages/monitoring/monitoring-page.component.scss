@@ -3,6 +3,17 @@
 :host {
     width: 100%;
 
+    .qmc-page--content-header {
+        display: flex;
+        flex-direction: row;
+        align-items: baseline;
+
+        app-process-overview {
+            display: inline-block;
+            margin-left: 24px;
+        }
+    }
+
     .qmc-page--content-body {
         padding: 0;
     }
