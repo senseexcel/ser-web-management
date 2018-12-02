@@ -27,6 +27,10 @@
                 margin-right: 10px;
             }
 
+            input[type="checkbox"]:focus {
+                box-shadow: none;
+            }
+
             label {
                 @extend button;
                 margin:0;

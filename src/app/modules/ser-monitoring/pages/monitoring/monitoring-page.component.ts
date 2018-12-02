@@ -1,9 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { LicenseValidator } from '@app/modules/ser-license/services';
 import { ILicenseValidationResult } from '@app/modules/ser-license/api/validation-result.interface';
-import { finalize, takeUntil, catchError, tap } from 'rxjs/operators';
-import { Subject, concat, of } from 'rxjs';
+import { finalize, takeUntil, catchError, tap, switchMap, mergeMap, mapTo, map, concatMap } from 'rxjs/operators';
+import { Subject, concat, of, interval, pipe, merge, empty } from 'rxjs';
 import { ProcessService } from '../../services';
+import { FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
     selector: 'app-monitoring-page',
@@ -14,6 +15,14 @@ import { ProcessService } from '../../services';
 export class MonitoringPageComponent implements OnDestroy, OnInit {
 
     /**
+     * form control field to dis/enable autorefesh
+     *
+     * @type {FormControl}
+     * @memberof MonitoringPageComponent
+     */
+    public autoRefreshControl: FormControl;
+
+    /**
      * data has been loaded, page is ready
      *
      * @type {boolean}
@@ -21,8 +30,20 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
      */
     public ready: boolean;
 
+    /**
+     * flag we load some data or have finished
+     *
+     * @type {boolean}
+     * @memberof MonitoringPageComponent
+     */
     public isLoading: boolean;
 
+    /**
+     * if errors occure save them here
+     *
+     * @type {string[]}
+     * @memberof MonitoringPageComponent
+     */
     public errors: string[];
 
     /**
@@ -34,6 +55,16 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
     public hasError: boolean;
 
     /**
+     * form builder service to create checkbox field
+     * autocomplete
+     *
+     * @private
+     * @type {FormBuilder}
+     * @memberof MonitoringPageComponent
+     */
+    private formBuilder: FormBuilder;
+
+    /**
      * license validation service
      *
      * @private
@@ -42,6 +73,13 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
      */
     private licenseValidator: LicenseValidator;
 
+    /**
+     * process service
+     *
+     * @private
+     * @type {ProcessService}
+     * @memberof MonitoringPageComponent
+     */
     private processService: ProcessService;
 
     /**
@@ -56,12 +94,15 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
 
     constructor(
         processService: ProcessService,
-        validator: LicenseValidator
+        validator: LicenseValidator,
+        formBuilder: FormBuilder
     ) {
         this.licenseValidator = validator;
+        this.formBuilder = formBuilder;
+        this.processService = processService;
+
         this.isDestroyed$ = new Subject();
         this.hasError = false;
-        this.processService = processService;
         this.isLoading = false;
         this.errors = [];
     }
@@ -84,6 +125,8 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
             this.licenseValidator.validateLicenseExists()
         ).pipe(
             finalize(() => {
+                this.autoRefreshControl = this.createAutoRefreshControl();
+
                 this.ready = true;
                 this.isLoading = false;
             }),
@@ -129,5 +172,32 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
      */
     public stopAll() {
         /** @todo implement */
+    }
+
+    /**
+     *
+     *
+     * @private
+     * @returns {FormControl}
+     * @memberof MonitoringPageComponent
+     */
+    private createAutoRefreshControl(): FormControl {
+
+        const control   = this.formBuilder.control('');
+        const interval$ = interval(1000).pipe(
+            concatMap(() => this.processService.refreshProcessList())
+        );
+
+        control.valueChanges.pipe(
+            switchMap((val) => {
+                return val ? interval$ : empty();
+            }),
+            takeUntil(this.isDestroyed$),
+        ).subscribe();
+
+        return control;
+    }
+
+    private refreshListByTimeout() {
     }
 }
