@@ -1,8 +1,9 @@
 <div class="header">
     <i class="ser-icon ser-icon--warning"></i>
-    No license file found.
+    Some errors occured
 </div>
 <div class="body">
-    We could not find a valide license file, please check your <a [routerLink]="['/license']" routerLinkActive="">License</a> to get further informations,
-    or contact your system adminstrator or qlik consultant.
+    <ul class="lui-list">
+        <li *ngFor="let error of errors">{{error}}</li>
+    </ul>
 </div>

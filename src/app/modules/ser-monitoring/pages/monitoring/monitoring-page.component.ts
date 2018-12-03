@@ -188,7 +188,7 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
     private createAutoRefreshControl(): FormControl {
 
         const control   = this.formBuilder.control('');
-        const interval$ = interval(1000).pipe(
+        const interval$ = interval(5000).pipe(
             concatMap(() => this.processService.refreshProcessList())
         );
 
