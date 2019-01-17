@@ -2,6 +2,8 @@ import { IHubSettings, SettingsType, DistributeMode, ISerConnection } from 'ser.
 
 export class HubModel implements IHubSettings {
 
+    private hubSharedContentType: string;
+
     private hubType: SettingsType;
 
     private hubActive: boolean;
@@ -38,6 +40,10 @@ export class HubModel implements IHubSettings {
         return this.hubConnections;
     }
 
+    public get sharedContentType(): string {
+        return this.hubSharedContentType;
+    }
+
     public set type(type: SettingsType) {
         this.hubType = type;
     }
@@ -62,6 +68,10 @@ export class HubModel implements IHubSettings {
         this.hubConnections = connections;
     }
 
+    public set sharedContentType(type: string) {
+        this.hubSharedContentType = type;
+    }
+
     public get raw(): IHubSettings {
 
         return {
@@ -70,7 +80,8 @@ export class HubModel implements IHubSettings {
             target: this.hubTarget,
             mode:   this.hubMode,
             owner:  this.hubOwner,
-            connections: this.hubConnections
+            connections: this.hubConnections,
+            sharedContentType: this.sharedContentType
         };
     }
 }

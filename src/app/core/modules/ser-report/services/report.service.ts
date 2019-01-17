@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ISerGeneral, ISerTemplate, ISerConnection, IMailSettings, ISerSenseSelection, DistributeMode, IDeliverySettings } from 'ser.api';
+import { ISerGeneral, ISerTemplate, ISerConnection, IMailSettings, ISerSenseSelection, DistributeMode, IDeliverySettings, IHubSettings, ISettings, IFileSettings } from 'ser.api';
 import {
     DeliveryModel,
     EmailModel,
@@ -169,7 +169,7 @@ export class ReportService {
         const delivery = new DeliveryModel();
         const data     = modelData || {file: null, mail: null, hub: null};
         delivery.file  = this.createDeliveryModel(new FileModel(), data.file || {});
-        delivery.hub   = this.createDeliveryModel(new HubModel(), data.hub || {});
+        delivery.hub   = this.createHubDeliveryModel(new HubModel(), data.hub || {});
         delivery.mail  = this.createMailData(data.mail);
 
         return delivery;
@@ -184,15 +184,22 @@ export class ReportService {
      * @returns {IDeliverySettings}
      * @memberof ReportService
      */
-    private createDeliveryModel(model: IDeliverySettings, data): IDeliverySettings {
-        const createdModel: IDeliverySettings =  this.createModel<IDeliverySettings>(model, data);
+    private createDeliveryModel(model: ISettings, data): IDeliverySettings {
+        const createdModel =  this.createModel<IDeliverySettings>(model, data);
+
         /** get default mode for delivery this is string value */
         const defaultMode: string = DistributeMode[DistributeMode.DELETEALLFIRST];
         /** get current mode for delivery, sanitize both to be a numeric value */
         const currentMode: string = data && data.mode ? DistributeMode[data.mode.toUpperCase()] : DistributeMode[defaultMode];
         /** set mode for model, convert numeric value (0, 1 or 2) into string value again */
         createdModel.mode = DistributeMode[currentMode];
+
         return createdModel;
+    }
+
+    private createHubDeliveryModel(model: HubModel, data): IHubSettings {
+        const hubModel = this.createDeliveryModel(model, data);
+        return hubModel as IHubSettings;
     }
 
     /**

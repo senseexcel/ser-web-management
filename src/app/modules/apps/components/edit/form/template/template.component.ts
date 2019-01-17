@@ -68,8 +68,7 @@ export class TemplateComponent implements OnInit {
             outputFormat: this.formBuilder.control(formData.outputFormat),
             outputPassword: this.formBuilder.control(formData.outputPassword),
             scriptKeys: this.formBuilder.control(formData.scriptKeys),
-            scriptArgs: this.formBuilder.control(formData.scriptArgs),
-            generated: this.formBuilder.control(formData.generated)
+            scriptArgs: this.formBuilder.control(formData.scriptArgs)
         });
 
         return formGroup;

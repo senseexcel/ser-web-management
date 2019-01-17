@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { SelectionMode } from 'ser.api';
+import { SelectionType } from 'ser.api';
 import { ISerApp } from '@core/modules/ser-app/api/ser-app.interface';
 import { FormService } from '@core/modules/form-helper/provider/form.service';
 import { Observable } from 'rxjs';
@@ -66,8 +66,7 @@ export class SettingsComponent implements OnInit {
             timeout          : this.formBuilder.control(config.timeout),
             errorRepeatCount : this.formBuilder.control(config.errorRepeatCount),
             useSandbox       : this.formBuilder.control(config.useSandbox),
-            taskCount        : this.formBuilder.control(config.taskCount),
-            useUserSelections: this.formBuilder.control(config.useUserSelections)
+            taskCount        : this.formBuilder.control(config.cpuLimitInCore)
         });
 
         return generalGroup;
@@ -101,14 +100,14 @@ export class SettingsComponent implements OnInit {
      * @memberof SettingsComponent
      */
     private buildUserSelectionFields(): Array<{label: string, value: number}> {
-        return Object.keys(SelectionMode)
+        return Object.keys(SelectionType)
             .filter( (value) => {
                 return isNaN( Number(value) );
             })
             .map( (name) => {
                 return {
                     label: name,
-                    value: SelectionMode[name]
+                    value: SelectionType[name]
                 };
             });
     }

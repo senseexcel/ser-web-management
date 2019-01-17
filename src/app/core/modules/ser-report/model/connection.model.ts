@@ -72,7 +72,6 @@ export class ConnectionModel implements ISerConnection {
             credentials: this.connectionCredentials,
             lefs: this.connectionLefs,
             serverUri: this.connectionServerUri,
-            sharedSession: this.connectionSharedSession,
             sslValidThumbprints: this.connectionSslValidThumbprints,
             sslVerify: this.connectionSslVerify,
         };

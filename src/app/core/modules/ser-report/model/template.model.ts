@@ -95,7 +95,6 @@ export class TemplateModel implements ISerTemplate {
         }
 
         return {
-            generated: this.templateGenerated,
             input: this.templateInput,
             output: this.templateOutput,
             outputFormat: this.templateOutputFormat,

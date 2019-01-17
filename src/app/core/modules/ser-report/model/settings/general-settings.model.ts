@@ -1,4 +1,4 @@
-import { ISerGeneral, SelectionMode } from 'ser.api';
+import { ISerGeneral } from 'ser.api';
 
 export class GeneralSettingsModel implements ISerGeneral {
 
@@ -79,10 +79,8 @@ export class GeneralSettingsModel implements ISerGeneral {
         return {
             cleanupTimeOut: this.generalCleanupTimeOut,
             errorRepeatCount: this.generalErrorRepeatCount,
-            taskCount: this.generalTaskCount,
             timeout: this.generalTimeout,
-            useSandbox: this.generalUseSandbox,
-            useUserSelections: this.generalUseUserSelections
+            useSandbox: this.generalUseSandbox
         };
     }
 }

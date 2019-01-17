@@ -20,12 +20,6 @@
                 <mat-form-field class="form-control">
                     <input matInput formControlName="taskCount" placeholder="Task Count">
                 </mat-form-field>
-
-                <mat-radio-group formControlName="useUserSelections">
-                    <mat-radio-button *ngFor="let mode of userSelectionMode" [value]="mode.value">
-                        {{mode.label}}
-                    </mat-radio-button>
-                </mat-radio-group>
             </div>
         </mat-tab>
 
