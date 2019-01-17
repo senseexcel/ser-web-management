@@ -1,58 +1,58 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NgModule, InjectionToken } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BreadcrumbModule } from '@breadcrumb/breadcrumb.module';
-import { AppsModule } from '@apps/apps.module';
-
-import { DropDownModule } from '@core/modules/drop-down/drop-down.module';
-import { MenuModule } from '@core/modules/menu/menu.module';
-import { SerEngineModule } from '@core/modules/ser-engine/ser-engine.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PageService } from './services';
-import { configServiceFactory } from './services/config/config-service.factory';
-import { ConfigFactory } from './services/config/config-factory';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
-import { TopBarComponent } from './components/top-bar/top-bar.component';
-import { CoreModule } from '@core/core.module';
-import { CommonModule } from '@angular/common';
-import { UserModule } from '@core/modules/user/user.module';
-import { LicenseModule } from './modules/ser-license/license.module';
-import { ModalModule } from '@core/modules/modal/modal.module';
 
+import {
+  BootstrapModule,
+  BreadcrumbModule,
+  DropDownModule,
+  MenuModule,
+  ModalModule,
+  SmcCommonModule,
+  QrsModule,
+} from '@smc/modules';
+
+import { AppsPage, ContentManagerPage, DashboardPage, LicensePage } from '@smc/pages';
+import { TopBarComponent } from './components/top-bar/top-bar.component';
+
+/**
+ *
+ *
+ * @export
+ * @class AppModule
+ */
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent,
-    TopBarComponent
+    TopBarComponent,
   ],
-  entryComponents: [DashboardComponent],
+  entryComponents: [],
   imports: [
+
     AppRoutingModule,
-    AppsModule,
-    BreadcrumbModule,
     BrowserAnimationsModule,
     BrowserModule,
     CommonModule,
-    CoreModule,
+
+    /** smc modules */
+    BootstrapModule,
+    BreadcrumbModule,
     DropDownModule,
-    LicenseModule,
     MenuModule,
     ModalModule,
-    SerEngineModule,
-    UserModule
+    SmcCommonModule,
+
+    /** pages */
+    AppsPage,
+    ContentManagerPage,
+    DashboardPage,
+    LicensePage
   ],
-  providers: [
-    PageService,
-    ConfigFactory,
-    {
-      provide: 'SerEngineConfig',
-      useFactory: configServiceFactory,
-      deps: [ConfigFactory],
-      multi: false
-    }
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

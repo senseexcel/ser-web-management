@@ -1,0 +1,28 @@
+<div class="smc-page--sidebar sidebar-left" [hidden]="hide.sectionLeft">
+    <div #sectionLeft>
+        <ng-content select="[page-sidebar--left]"></ng-content>
+    </div>
+</div>
+
+<div class="smc-page--content">
+
+    <div #sectionHeader class="header smc-page--content-header" [hidden]="hide.sectionHeader">
+        <ng-content select="[page-content--header]"></ng-content>
+    </div>
+
+    <div class="smc-page--content-body">
+        <ng-content select="[page-content--body]"></ng-content>
+    </div>
+
+    <div class="smc-page--content-footer">
+        <!-- footer -->
+        <ng-content select="[page-content--footer]"></ng-content>
+    </div>
+</div>
+
+<!-- display only if sidebar right content exists -->
+<div class="smc-page--sidebar sidebar-right" [hidden]="hide.sectionRight">
+    <div #sectionRight>
+        <ng-content select="[page-sidebar--right]"></ng-content>
+    </div>
+</div>

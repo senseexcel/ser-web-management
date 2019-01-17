@@ -1,17 +1,17 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { PageService } from '../../services';
-import { IMenuItem } from '@core/modules/menu/api/menu-item.interface';
-import { DropDownOverlay } from '@core/modules/drop-down/model/drop-down-overlay';
-import { AppData } from '@core/model/app-data';
-import { ISessionUser } from '@core/api/session-user.interface';
+import { IMenuItem } from '@smc/modules/menu/api/menu-item.interface';
+import { DropDownOverlay } from '@smc/modules/drop-down/model/drop-down-overlay';
 import { Router } from '@angular/router';
+import { PAGE_SETTINGS } from '../../model/page.model';
+import { ISessionUser } from '@smc/modules/qrs';
+import { SMC_SETTINGS } from '@smc/modules/common/model/settings.model';
+import { ISettings } from '@smc/modules/common';
 
 @Component({
-    selector: 'app-top-bar',
+    selector: 'smc-top-bar',
     templateUrl: 'top-bar.component.html',
     styleUrls: ['./top-bar.component.scss']
 })
-
 export class TopBarComponent implements OnInit {
 
     /**
@@ -50,29 +50,16 @@ export class TopBarComponent implements OnInit {
      */
     private dropDownOverlay: DropDownOverlay;
 
-    /**
-     * page service to fetch main menu
-     *
-     * @private
-     * @type {PageService}
-     * @memberof TopBarComponent
-     */
-    private pageService: PageService;
-
-    private appData: AppData;
-
     constructor(
-        @Inject('AppData') appData,
+        @Inject(SMC_SETTINGS) private settings: ISettings,
+        @Inject(PAGE_SETTINGS) private pages,
         private router: Router,
-        pageService: PageService,
     ) {
-        this.pageService = pageService;
-        this.appData = appData;
     }
 
     ngOnInit() {
-        this.loggedInUser = this.appData.user;
-        this.mainMenu = this.pageService.pageData;
+        this.loggedInUser = this.settings.loggedInUser;
+        this.mainMenu = this.pages;
         this.helpMenu = this.createHelpMenu();
         this.userMenu = this.createUserMenu();
     }

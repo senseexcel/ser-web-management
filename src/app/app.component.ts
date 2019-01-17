@@ -1,37 +1,33 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { AppData } from '@core/model/app-data';
-import { ModalService } from '@core/modules/modal/services/modal.service';
-import { StorageService, SerStorageKey } from '@core/services/storage.service';
+import { Component, Inject } from '@angular/core';
+import { ModalService } from '@smc/modules/modal';
+import { SMC_SETTINGS } from '@smc/modules/common/model/settings.model';
+import { ISettings } from '@smc/modules/common';
+import { StorageService, SerStorageKey } from '@smc/modules/common/provider';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-
-  private appData: AppData;
+export class AppComponent {
 
   private modalService: ModalService;
 
   private storage: StorageService;
 
   public constructor(
-    @Inject('AppData') appData,
+    @Inject(SMC_SETTINGS) private settings: ISettings,
     storage: StorageService,
     modalService: ModalService
   ) {
-    this.appData = appData;
     this.modalService = modalService;
     this.storage = storage;
 
     const showModal = this.storage.read(SerStorageKey.MODAL_SER_TAG_MISSING);
 
-    if (!this.appData.tag && (typeof showModal !== 'boolean' || showModal)) {
+    if (!this.settings.serTag && (typeof showModal !== 'boolean' || showModal)) {
       this.displayModal();
     }
-  }
-
-  public ngOnInit() {
   }
 
   /**

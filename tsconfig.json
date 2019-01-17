@@ -21,11 +21,10 @@
     ],
     "paths": {
         "@api/*": ["src/app/api/*"],
-        "@apps/*": ["src/app/modules/apps/*"],
-        "@app/modules/*": ["src/app/modules/*"],
-        "@breadcrumb/*": ["src/app/modules/breadcrumb/*"],
-        "@core/*": ["src/app/core/*"],
-        "@dashboard/*": ["src/app/modules/dashboard/*"],
+        "@smc/pages": ["src/app/pages/index"],
+        "@smc/pages/*": ["src/app/pages/*"],
+        "@smc/modules": ["src/app/core"],
+        "@smc/modules/*": ["src/app/core/*"],
         "@node_modules/*": ["node_modules/*"],
     }
   }
