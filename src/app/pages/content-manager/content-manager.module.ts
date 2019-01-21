@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { ContentManagerRoutingModule } from './content-manager.routing.module';
-import { SmcUiModule, MaterialModule } from '@smc/modules';
+import { SmcUiModule, MaterialModule, SmcCommonModule } from '@smc/modules';
 import { ListComponent } from './components/list.component';
 import { CommonModule } from '@angular/common';
 import { PaginationModule } from '@smc/modules/smc-ui';
@@ -18,6 +18,7 @@ import { PaginationModule } from '@smc/modules/smc-ui';
         ContentManagerRoutingModule,
         MaterialModule,
         PaginationModule,
+        SmcCommonModule,
         SmcUiModule,
     ],
     providers: [],

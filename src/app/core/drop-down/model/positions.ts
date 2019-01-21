@@ -34,3 +34,10 @@ export const POSITION_TOP_RIGHT: IPosition = {
     overlayX: 'start',
     overlayY: 'top'
 };
+
+export const POSITION_TOP_CENTER: IPosition = {
+    originX: 'center',
+    originY: 'top',
+    overlayX: 'center',
+    overlayY: 'top'
+};

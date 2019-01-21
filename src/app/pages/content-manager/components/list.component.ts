@@ -64,6 +64,26 @@ export class ListComponent implements OnInit {
         this.selections.select(content);
     }
 
+    /**
+     * show tooltip
+     *
+     * @param {*} data
+     * @memberof ListComponent
+     */
+    public showMetaData(data) {
+        // @todo implement
+    }
+
+    /**
+     * hide tooltip
+     *
+     * @param {*} data
+     * @memberof ListComponent
+     */
+    public hideMetaData() {
+        // @todo implement
+    }
+
     private initializePagination() {
 
         this.pagination.configure({
