@@ -4,8 +4,8 @@ import { DropDownOverlay } from '@smc/modules/drop-down/model/drop-down-overlay'
 import { Router } from '@angular/router';
 import { PAGE_SETTINGS } from '../../model/page.model';
 import { ISessionUser } from '@smc/modules/qrs';
-import { SMC_SETTINGS } from '@smc/modules/common/model/settings.model';
-import { ISettings } from '@smc/modules/common';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
+import { ISettings } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-top-bar',
@@ -51,7 +51,7 @@ export class TopBarComponent implements OnInit {
     private dropDownOverlay: DropDownOverlay;
 
     constructor(
-        @Inject(SMC_SETTINGS) private settings: ISettings,
+        @Inject(SMC_SESSION) private settings: ISettings,
         @Inject(PAGE_SETTINGS) private pages,
         private router: Router,
     ) {

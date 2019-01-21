@@ -1,4 +1,4 @@
-import { IModel, IDataNode } from '@smc/modules/common/api';
+import { IModel, IDataNode } from '@smc/modules/smc-common/api';
 import { ExecutionModel } from './execution.model';
 import { IdentificationModel } from './indetification.model';
 import { IApp } from '@smc/modules/qrs';

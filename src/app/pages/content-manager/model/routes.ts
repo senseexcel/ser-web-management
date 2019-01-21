@@ -1,10 +1,9 @@
-
 import { Routes } from '@angular/router';
-import { ContentManagerPageComponent } from '../pages/page.component';
+import { ListComponent } from '../components/list.component';
 
 export const ContentManagerRoutes: Routes = [{
     path: 'content-manager',
-    component: ContentManagerPageComponent,
+    component: ListComponent,
     data: {
         breadcrumb: 'Content Manager'
     }

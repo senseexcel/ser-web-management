@@ -1,0 +1,20 @@
+<div class="pagination-component" [ngSwitch]="type" >
+    <ng-container *ngSwitchCase="'infinite'" [ngTemplateOutlet]="infinite"></ng-container>
+    <ng-container *ngSwitchDefault [ngTemplateOutlet]="pages"></ng-container>
+</div>
+
+<ng-template #content>
+    <ng-content></ng-content>
+</ng-template>
+
+<ng-template #pages>
+    <smc-pagination--navigation></smc-pagination--navigation>
+    <ng-template *ngTemplateOutlet="content"></ng-template>
+    <smc-pagination--navigation></smc-pagination--navigation>
+</ng-template>
+
+<ng-template #infinite>
+    <smc-pagination--infinite-scroll>
+        <ng-template *ngTemplateOutlet="content"></ng-template>
+    </smc-pagination--infinite-scroll>
+</ng-template>

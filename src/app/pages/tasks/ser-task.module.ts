@@ -22,9 +22,9 @@ import { SmcCommonModule } from '@smc/modules';
         CommonModule,
         FormHelperModule,
         MaterialModule,
-        SmcCommonModule,
         TaskRoutingModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        SmcCommonModule
     ],
     exports: [TaskComponent],
     declarations: [

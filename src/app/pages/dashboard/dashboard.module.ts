@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { MenuModule, SmcCommonModule } from '@smc/modules';
+import { MenuModule, SmcUiModule } from '@smc/modules';
 import { DashboardComponent } from './components/dashboard.component';
 import { DashboardRoutingModule } from './dashboard.routing.module';
 
@@ -9,7 +9,7 @@ import { DashboardRoutingModule } from './dashboard.routing.module';
         CommonModule,
         DashboardRoutingModule,
         MenuModule,
-        SmcCommonModule
+        SmcUiModule
     ],
     exports: [],
     declarations: [DashboardComponent],

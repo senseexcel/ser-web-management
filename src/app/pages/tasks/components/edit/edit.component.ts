@@ -7,9 +7,9 @@ import { ActivatedRoute, Data, Router, Params } from '@angular/router';
 import { TaskFormModel } from '../../model/task-form.model';
 import { IApp, ITask, AppRepository, TaskRepository } from '@smc/modules/qrs';
 import { ModalService } from '@smc/modules/modal';
-import { IDataNode, ISettings } from '@smc/modules/common';
+import { IDataNode, ISettings } from '@smc/modules/smc-common';
 import { TaskIncomatibleException } from '../../api/exceptions/incompatible.exception';
-import { SMC_SETTINGS } from '@smc/modules/common/model/settings.model';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { TaskFactory } from '../../services/task.factory';
 
 @Component({
@@ -80,7 +80,7 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     constructor(
-        @Inject(SMC_SETTINGS) private settings: ISettings,
+        @Inject(SMC_SESSION) private settings: ISettings,
         activatedRoute: ActivatedRoute,
         formHelperService: FormService<TaskFormModel, any>,
         location: Location,

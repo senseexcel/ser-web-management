@@ -1,0 +1,17 @@
+<div class="list-header--title">
+    <ng-content select="[list-header--title]"></ng-content>
+</div>
+<ul class="list-header">
+    <li class="list-item">
+        Total: {{total}}
+    </li>
+    <li class="list-item">
+        Showing: {{showing}}
+    </li>
+    <li class="list-item">
+        Selected: {{selected}}
+    </li>
+</ul>
+<div class="list-header--actions">
+    <ng-content select="[list-header--actions]"></ng-content>
+</div>

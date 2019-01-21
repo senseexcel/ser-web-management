@@ -54,7 +54,6 @@ export class ContentLibService {
         return this.createFileFormData(fileName, content)
             .pipe(
                 switchMap((formData: FormData) => {
-
                     const url = '/qrs/contentLibrary/senseexcel/uploadfile';
                     const params = new HttpParams()
                         .set('externalpath', fileName)

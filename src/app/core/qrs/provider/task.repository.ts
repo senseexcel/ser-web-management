@@ -6,8 +6,8 @@ import { map } from 'rxjs/internal/operators/map';
 import { IQrsFilter, IQrsFilterGroup, IApp } from '../api';
 import { switchMap, reduce, mergeMap, combineAll, take, bufferCount, catchError } from 'rxjs/operators';
 import { ITask } from '../api';
-import { SMC_SETTINGS } from '@smc/modules/common/model/settings.model';
-import { ISettings } from '@smc/modules/common';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
+import { ISettings } from '@smc/modules/smc-common';
 import { AppRepository } from './app.repository';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class TaskRepository {
     private filterService: FilterFactory;
 
     public constructor(
-        @Inject(SMC_SETTINGS) private settings: ISettings,
+        @Inject(SMC_SESSION) private settings: ISettings,
         private appRepository: AppRepository,
         httpClient: HttpClient,
         serFilterService: FilterFactory

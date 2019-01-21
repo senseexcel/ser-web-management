@@ -1,4 +1,4 @@
-import { IModel } from '@smc/modules/common/api/model.interface';
+import { IModel } from '@smc/modules/smc-common/api/model.interface';
 
 /**
  * model for task excution data

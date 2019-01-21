@@ -6,8 +6,8 @@ import { IMenuItem, IPage, IPageInformation } from '@smc/modules/menu';
 /** @deprecated in next version this is general app information */
 import { PAGE_SETTINGS } from '../../../model/page.model';
 import { AppRepository, TaskRepository, FilterFactory } from '@smc/modules/qrs';
-import { SMC_SETTINGS } from '@smc/modules/common/model/settings.model';
-import { ISettings } from '@smc/modules/common';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
+import { ISettings } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-dashboard',
@@ -37,7 +37,7 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     constructor(
-        @Inject(SMC_SETTINGS) private settings: ISettings,
+        @Inject(SMC_SESSION) private settings: ISettings,
         @Inject(PAGE_SETTINGS) private pages,
         router: Router,
         private appRepository: AppRepository,

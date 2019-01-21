@@ -1,0 +1,9 @@
+<div class="input-group">
+    <div class="input-group-prepend">
+        <span class="input-group-text">@Go to:</span>
+    </div>
+    <input 
+        type="text" class="form-control" 
+        (keyup)="onKeyUp($event)"
+        [formControl]="pageInput" >
+</div>

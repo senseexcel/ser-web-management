@@ -1,12 +1,12 @@
 
 <div class="qapp-list--table">
     <mat-spinner *ngIf="isLoading"></mat-spinner>
-    <smc-list-header>
+    <smc-list--header>
         <span>
             <i class="ser-icon ser-icon--apps"></i>
             Reports
         </span>
-    </smc-list-header>
+    </smc-list--header>
     <table class="table" *ngIf="apps.length && !isLoading" mat-table [dataSource]="apps">
         <!-- Position Column -->
         <ng-container matColumnDef="name">

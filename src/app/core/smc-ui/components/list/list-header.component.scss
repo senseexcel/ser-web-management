@@ -1,0 +1,28 @@
+:host {
+
+    display: flex;
+    width: 100%;
+
+    ul {
+        flex: 1;
+        list-style-type: none;
+        display: flex;
+        margin: 0;
+        background: #595959;
+        color: #FFF;
+        font-size: 14px;
+        line-height: 30px;
+
+        li:nth-child(1) {
+            font-weight: 700;
+
+            .ser-icon {
+                font-size:17px !important;
+            }
+        }
+
+        li:nth-child(n+2) {
+            margin-left: 24px;
+        }
+    }
+}

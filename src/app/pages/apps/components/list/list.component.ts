@@ -5,8 +5,8 @@ import { Subscription, empty, Observable, of } from 'rxjs';
 import { ModalService } from '@smc/modules/modal';
 import { switchMap } from 'rxjs/operators';
 import { IApp } from '@smc/modules/qrs';
-import { SMC_SETTINGS } from '@smc/modules/common/model/settings.model';
-import { ISettings, SmcCache } from '@smc/modules/common';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
+import { ISettings, SmcCache } from '@smc/modules/smc-common';
 import { AppRepository } from '@smc/modules/ser/provider/app.repository';
 
 @Component({
@@ -33,7 +33,7 @@ export class AppListComponent implements OnInit {
     private dialogService: ModalService;
 
     constructor(
-        @Inject(SMC_SETTINGS) private settings: ISettings,
+        @Inject(SMC_SESSION) private settings: ISettings,
         private appRepository: AppRepository,
         private smcCache: SmcCache,
         dialog: ModalService,
@@ -49,7 +49,7 @@ export class AppListComponent implements OnInit {
 
     public async ngOnInit() {
 
-        if (!this.smcCache.has('ser.apps')) {
+        if (this.smcCache.has('ser.apps') && Array.isArray(this.smcCache.get('ser.apps'))) {
             this.isLoading = false;
             this.apps = this.smcCache.get<IApp[]>('ser.apps');
         } else {

@@ -1,0 +1,20 @@
+<nav class="pagination mb-3" *ngIf="pageItems.length > 1">
+
+    <div class="btn-toolbar mr-3">
+        <div class="btn-group">
+            <button class="btn btn-primary" (click)="goPrevPage()">
+                <i class="fa fa-arrow-left"></i>
+            </button>
+            <button *ngFor='let pageItem of pageItems' (click)='setPage(pageItem.content)' [class.active]='pageItem.isActive' class='btn btn-secondary'>
+                <a>
+                    {{pageItem.content}}
+                </a>
+            </button>
+            <button class="btn btn-primary" (click)="goNextPage()">
+                <i class="fa fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <smc-pagination--page-input [maxPages]="pageCount"></smc-pagination--page-input>
+</nav>

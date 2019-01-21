@@ -1,8 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { ModalService } from '@smc/modules/modal';
-import { SMC_SETTINGS } from '@smc/modules/common/model/settings.model';
-import { ISettings } from '@smc/modules/common';
-import { StorageService, SerStorageKey } from '@smc/modules/common/provider';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
+import { ISettings } from '@smc/modules/smc-common';
+import { StorageService, SerStorageKey } from '@smc/modules/smc-common/provider';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +16,7 @@ export class AppComponent {
   private storage: StorageService;
 
   public constructor(
-    @Inject(SMC_SETTINGS) private settings: ISettings,
+    @Inject(SMC_SESSION) private settings: ISettings,
     storage: StorageService,
     modalService: ModalService
   ) {

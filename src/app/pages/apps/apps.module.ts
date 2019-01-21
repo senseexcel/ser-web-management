@@ -17,7 +17,7 @@ import { TasksComponent } from './components/tasks/task.component';
 import { ReportPreviewComponent } from './components/preview/preview.component';
 import { SelectionComponent } from './components/edit/form/selections/selection.component';
 
-import { FormHelperModule, MaterialModule, SerModule, SmcCommonModule } from '@smc/modules';
+import { FormHelperModule, MaterialModule, SerModule, SmcCommonModule, SmcUiModule } from '@smc/modules';
 import { QrsModule } from '@smc/modules/qrs/qrs.module';
 
 @NgModule({
@@ -28,8 +28,9 @@ import { QrsModule } from '@smc/modules/qrs/qrs.module';
     ReactiveFormsModule,
     AppsRoutingModule,
     QrsModule,
-    SmcCommonModule,
     SerModule,
+    SmcCommonModule,
+    SmcUiModule
   ],
   exports: [MaterialModule],
   declarations: [

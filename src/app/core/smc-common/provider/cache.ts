@@ -12,7 +12,7 @@ export class SmcCache {
      * @type {IDataNode}
      * @memberof Config
      */
-    private configData: IDataNode;
+    private configData: IDataNode = {};
 
     /**
      * import new config value,

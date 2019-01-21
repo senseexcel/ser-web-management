@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IModel, IDataNode } from '@smc/modules/common';
+import { IModel, IDataNode } from '@smc/modules/smc-common';
 
 import { ExecutionModel } from '../model/execution.model';
 import { IdentificationModel } from '../model/indetification.model';

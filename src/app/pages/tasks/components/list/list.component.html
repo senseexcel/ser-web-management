@@ -2,12 +2,12 @@
 
     <mat-spinner *ngIf="isLoading"></mat-spinner>
 
-    <smc-list-header>
+    <smc-list--header>
         <span>
             <i class="ser-icon ser-icon--tasks"></i>
             Report Tasks
         </span>
-    </smc-list-header>
+    </smc-list--header>
 
     <table class="table" mat-table [dataSource]="tasks" *ngIf="!isLoading">
 

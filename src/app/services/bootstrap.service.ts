@@ -1,12 +1,13 @@
 import { Injectable, Inject } from '@angular/core';
-import { IBootstrap } from '@smc/modules/bootstrap/api/bootstrap.interface';
 import { HttpClient } from '@angular/common/http';
-import { Observable, forkJoin, concat } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ISessionUser, ITag } from '@smc/modules/qrs';
-import { SMC_SETTINGS } from '@smc/modules/common/model/settings.model';
-import { ISettings } from '@smc/modules/common';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
+import { ISettings, IDataNode, SmcCache } from '@smc/modules/smc-common';
 import { FilterFactory } from '@smc/modules/qrs/provider/filter.factory';
+import { IBootstrap } from '../api/bootstrap.interface';
+import { SMC_SETTINGS } from '../model/smc-settings.model';
 
 @Injectable()
 export class BootstrapService implements IBootstrap {
@@ -14,7 +15,9 @@ export class BootstrapService implements IBootstrap {
     private http: HttpClient;
 
     public constructor(
-        @Inject(SMC_SETTINGS) private settings: ISettings,
+        @Inject(SMC_SESSION) private session: ISettings,
+        @Inject(SMC_SETTINGS) private settings: IDataNode,
+        private smcCache: SmcCache,
         private filterFactory: FilterFactory,
         http: HttpClient
     ) {
@@ -22,9 +25,12 @@ export class BootstrapService implements IBootstrap {
     }
 
     public bootstrap(): Promise<any> {
+
+        this.smcCache.set('smc.settings', this.settings);
+
         return forkJoin(
             this.fetchTag(),
-            this.fetchLoggedInUser()
+            this.fetchLoggedInUser(),
         )
         .toPromise();
     }
@@ -36,7 +42,7 @@ export class BootstrapService implements IBootstrap {
      * @returns {Observable<void>}
      * @memberof BootstrapService
      */
-    private fetchTag(): Observable<any> {
+    private fetchTag(): Observable<void> {
         const url = '/qrs/tag/full';
         const filter = this.filterFactory.createFilter('name', `'SER'`);
 
@@ -46,23 +52,25 @@ export class BootstrapService implements IBootstrap {
             }
         }).pipe(
             map((response: ITag[]) => {
-                if (!response.length) {
-                    return null;
+                if (response.length) {
+                    this.session.serTag = response[0];
                 }
-                this.settings.serTag = response[0];
             })
         );
     }
 
-    private fetchLoggedInUser(): Observable<any> {
+    private fetchLoggedInUser(): Observable<void> {
 
         const url = '/qps/user';
 
         return this.http.get(url)
         .pipe(
             map( (user: ISessionUser) => {
-                this.settings.loggedInUser = user;
+                this.session.loggedInUser = user;
             })
         );
+    }
+
+    private readSmcSettings(): void {
     }
 }

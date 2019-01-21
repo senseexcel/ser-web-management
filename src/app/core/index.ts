@@ -1,6 +1,5 @@
-export * from './bootstrap/bootstrap.module';
 export * from './breadcrumb/breadcrumb.module';
-export * from './common/common.module';
+export * from './smc-common/smc-common.module';
 export * from './drop-down/drop-down.module';
 export * from './form-helper/form-helper.module';
 export * from './material.module';
@@ -8,3 +7,4 @@ export * from './menu/menu.module';
 export * from './modal/modal.module';
 export * from './ser/ser.module';
 export * from './qrs/qrs.module';
+export * from './smc-ui/ui.module';

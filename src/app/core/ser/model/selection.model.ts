@@ -1,5 +1,5 @@
 import { ISerSenseSelection, SelectionType } from '../api/ser-selection.interface';
-import { IModel } from '@smc/modules/common/api/model.interface';
+import { IModel } from '@smc/modules/smc-common/api/model.interface';
 
 export enum SelectionObjectType {
     BOOKMARK = 'bookmark',

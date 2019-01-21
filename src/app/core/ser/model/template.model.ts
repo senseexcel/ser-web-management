@@ -1,6 +1,6 @@
 import { ISerTemplate } from 'ser.api';
 import { SelectionModel } from './selection.model';
-import { IModel } from '@smc/modules/common/api/model.interface';
+import { IModel } from '@smc/modules/smc-common/api/model.interface';
 
 export class TemplateModel implements ISerTemplate {
 

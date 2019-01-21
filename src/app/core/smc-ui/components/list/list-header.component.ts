@@ -1,7 +1,7 @@
 import { Component, OnInit, Host, Input } from '@angular/core';
 
 @Component({
-    selector: 'smc-list-header',
+    selector: 'smc-list--header',
     templateUrl: 'list-header.component.html',
     styleUrls: ['list-header.component.scss']
 })

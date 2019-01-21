@@ -2,9 +2,9 @@ import { InjectionToken } from '@angular/core';
 import { IDomainUser } from 'ser.api';
 import { ITag } from '@smc/modules/qrs';
 
-class SmcSettings {
+class SmcSession {
 
-    private static readonly instance: SmcSettings = new SmcSettings();
+    private static readonly instance: SmcSession = new SmcSession();
 
     private user: IDomainUser;
 
@@ -15,7 +15,7 @@ class SmcSettings {
     }
 
     public constructor() {
-        if (SmcSettings.instance) {
+        if (SmcSession.instance) {
             throw new Error('could not create instance of SmcSettings, use getInstance instead!');
         }
     }
@@ -37,8 +37,8 @@ class SmcSettings {
     }
 }
 
-export const SMC_SETTINGS = new InjectionToken('SmcSettings', {
+export const SMC_SESSION = new InjectionToken('SmcSession', {
     factory: () => {
-        return SmcSettings.getInstance();
+        return SmcSession.getInstance();
     }
 });

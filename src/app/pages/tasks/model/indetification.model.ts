@@ -1,4 +1,4 @@
-import { IModel } from '@smc/modules/common';
+import { IModel } from '@smc/modules/smc-common';
 
 export class IdentificationModel implements IModel {
 

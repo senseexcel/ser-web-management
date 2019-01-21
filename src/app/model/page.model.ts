@@ -2,7 +2,7 @@ import { InjectionToken } from '@angular/core';
 
 const PageData = [
     {
-        name   : 'manage content',
+        name: 'manage content',
         children: [{
             name: 'Reporting Apps',
             show: true,
@@ -21,6 +21,14 @@ const PageData = [
             disabled: false,
             icon: 'tasks',
             route: 'tasks'
+        },
+        {
+            name: 'Content Manager',
+            show: true,
+            description: 'Content Manager',
+            disabled: false,
+            icon: 'folder',
+            route: 'content-manager'
         }]
     },
     {
