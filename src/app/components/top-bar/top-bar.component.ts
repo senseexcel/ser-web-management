@@ -39,8 +39,6 @@ export class TopBarComponent implements OnInit {
 
     public loggedInUser: ISessionUser;
 
-    public pages: IDataNode;
-
     /**
      * holds the current drop down overlay for an
      * open menu
@@ -60,7 +58,7 @@ export class TopBarComponent implements OnInit {
 
     ngOnInit() {
         this.loggedInUser = this.session.loggedInUser;
-        this.pages    = this.settings.get<IDataNode>('smc.settings.pages');
+        this.mainMenu = this.settings.get<IMenuItem[]>('smc.settings.pages');
         this.helpMenu = this.createHelpMenu();
         this.userMenu = this.createUserMenu();
     }
