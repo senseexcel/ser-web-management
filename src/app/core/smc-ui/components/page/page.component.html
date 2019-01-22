@@ -10,7 +10,7 @@
         <ng-content select="[page-content--header]"></ng-content>
     </div>
 
-    <div class="smc-page--content-body">
+    <div class="smc-page--content-body" [ngClass]="{'no-padding': disablePadding}">
         <ng-content select="[page-content--body]"></ng-content>
     </div>
 

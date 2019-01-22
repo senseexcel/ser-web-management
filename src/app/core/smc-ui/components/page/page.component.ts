@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterContentInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterContentInit, ElementRef, ViewChild, Input } from '@angular/core';
 
 @Component({
     selector: 'smc-page',
@@ -15,6 +15,9 @@ export class SmcPageComponent implements AfterContentInit {
 
     @ViewChild('sectionHeader')
     private sectionHeader: ElementRef;
+
+    @Input('disablePadding')
+    public disablePadding = false;
 
     public hide = {
         sectionLeft: false,

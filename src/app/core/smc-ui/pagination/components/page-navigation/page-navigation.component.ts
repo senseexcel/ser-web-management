@@ -10,7 +10,8 @@ interface PageItem {
 
 @Component({
     selector: 'smc-pagination--navigation',
-    templateUrl: 'page-navigation.component.html'
+    templateUrl: 'page-navigation.component.html',
+    styleUrls: ['page-navigation.component.scss']
 })
 export class PageNavigationComponent implements OnInit {
 

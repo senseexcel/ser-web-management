@@ -1,0 +1,58 @@
+:host {
+
+    display: flex;
+
+    .btn-group {
+
+        display: flex;
+
+        /** reset styles first */
+        .btn {
+            border-radius: 0;
+            min-width: auto;
+            margin: 0;
+            padding: 0;
+            border: 0;
+            outline: none;
+            box-shadow: none;
+            height: auto;
+            line-height: initial;
+            background: none;
+        }
+
+        .btn {
+            padding: .5rem 1rem;
+            color: darken(#FFF, 30);
+
+            &.active {
+                border-bottom: 1px solid #FFF;
+                color: #FFF;
+            }
+        }
+
+        .btn.btn--prev-page,
+        .btn.btn--next-page {
+
+            color: #FFF;
+
+            &:before {
+                display: inline-block;
+                font-family: "LUI icons";
+                font-size: inherit;
+                font-weight: normal;
+                font-style: normal;
+                text-decoration: inherit;
+                text-transform: none;
+                direction: ltr;
+            }
+        }
+
+        .btn.btn--prev-page::before {
+            content: '\EA';
+        }
+
+        .btn.btn--next-page::before {
+            content: '\EB';
+        }
+    }
+}

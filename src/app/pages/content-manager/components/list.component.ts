@@ -17,15 +17,11 @@ import { SelectionModel } from '@angular/cdk/collections';
 export class ListComponent implements OnInit {
 
     public columns: string[] = [];
-
     public tableData: IDataNode[];
-
     public isLoading = false;
-
+    public totalSelected = 0;
     public total = 0;
-
     public visible: number;
-
     public selections: SelectionModel<IDataNode>;
 
     private listSettings: IDataNode;
@@ -52,6 +48,10 @@ export class ListComponent implements OnInit {
     ngOnInit() {
         this.initializePagination();
         this.loadSharedContentData();
+
+        this.selections.changed.subscribe(() => {
+            this.totalSelected = 1;
+        });
     }
 
     /**
@@ -76,7 +76,7 @@ export class ListComponent implements OnInit {
         }
 
         const contentToDelete = this.selections.selected.reduce<number[]>((idCollection, content) => {
-            idCollection.push(content.id);
+            idCollection.push(content.Id);
             return idCollection;
         }, []);
 
@@ -95,6 +95,17 @@ export class ListComponent implements OnInit {
             });
     }
 
+    private clearSelections() {
+        this.selections.clear();
+        this.totalSelected = 0;
+    }
+
+    /**
+     * initialize pagination
+     *
+     * @private
+     * @memberof ListComponent
+     */
     private initializePagination() {
 
         this.pagination.configure({
@@ -108,6 +119,9 @@ export class ListComponent implements OnInit {
     }
 
     private loadSharedContentData(start = 0) {
+
+        /** clear selections and update pagination */
+        this.clearSelections();
 
         this.isLoading = true;
         this.sharedContentRepository.count()
@@ -126,9 +140,6 @@ export class ListComponent implements OnInit {
                 this.columns = tableData.columnNames;
                 this.tableData = DataConverter.convertQrsTableToJson(tableData);
                 this.visible = this.tableData.length;
-
-                /** clear selections and update pagination */
-                this.selections.clear();
 
                 /** @todo should be repaint */
                 this.pagination.update({

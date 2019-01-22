@@ -35,15 +35,15 @@ export class SharedContentRepository {
         const tableDefinition = {
             'entity': 'SharedContent',
             'columns': [
-                { 'name': 'id', 'columnType': 'Property', 'definition': 'id' },
-                { 'name': 'name', 'columnType': 'Property', 'definition': 'name' },
-                { 'name': 'type', 'columnType': 'Property', 'definition': 'type' },
-                { 'name': 'description', 'columnType': 'Property', 'definition': 'description' },
-                { 'name': 'owner', 'columnType': 'Property', 'definition': 'owner' },
-                { 'name': 'createdDate', 'columnType': 'Property', 'definition': 'createdDate' },
-                { 'name': 'modifiedDate', 'columnType': 'Property', 'definition': 'modifiedDate' },
-                { 'name': 'tags', 'columnType': 'Property', 'definition': 'tags' },
-                { 'name': 'metaData', 'columnType': 'Property', 'definition': 'metaData' }
+                { 'name': 'Id', 'columnType': 'Property', 'definition': 'id' },
+                { 'name': 'Name', 'columnType': 'Property', 'definition': 'name' },
+                { 'name': 'Type', 'columnType': 'Property', 'definition': 'type' },
+                { 'name': 'Description', 'columnType': 'Property', 'definition': 'description' },
+                { 'name': 'Owner', 'columnType': 'Property', 'definition': 'owner' },
+                { 'name': 'CreatedDate', 'columnType': 'Property', 'definition': 'createdDate' },
+                { 'name': 'ModifiedDate', 'columnType': 'Property', 'definition': 'modifiedDate' },
+                { 'name': 'Tags', 'columnType': 'Property', 'definition': 'tags' },
+                { 'name': 'MetaData', 'columnType': 'Property', 'definition': 'metaData' }
             ]
         };
 
