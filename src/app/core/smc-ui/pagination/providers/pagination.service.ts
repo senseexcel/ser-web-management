@@ -95,7 +95,6 @@ export class PaginationService {
      * @param {number} [value]
      */
     public update(data: IConfig, value?: number): void {
-
         this.pageModel.setItemCount(data.itemTotalCount);
         this.pageModel.setPageCount(
             Math.ceil(this.pageModel.getItemCount() / this.pageModel.getItemPageCount()));

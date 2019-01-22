@@ -44,11 +44,19 @@
   <div page-content--footer>
     <nav class="navbar navbar-expand-lg action-bar-bottom">
       <div class="btn-toolbar" role="group">
+
+        <button type="button" class="nav-item mr-4" (click)="reloadSharedContent()">
+          <span class="button-label">
+            Reload
+          </span>
+        </button>
+
         <button type="button" class="nav-item mr-4" [disabled]="selections.isEmpty()" (click)="deleteSharedContent()">
           <span class="button-label">
             Delete
           </span>
         </button>
+
       </div>
     </nav>
   </div>

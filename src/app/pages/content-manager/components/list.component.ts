@@ -95,6 +95,17 @@ export class ListComponent implements OnInit {
             });
     }
 
+    public reloadSharedContent() {
+        this.clearSelections();
+        this.pagination.showPage(1);
+    }
+
+    /**
+     * clear all selections which has been made
+     *
+     * @private
+     * @memberof ListComponent
+     */
     private clearSelections() {
         this.selections.clear();
         this.totalSelected = 0;
@@ -118,6 +129,13 @@ export class ListComponent implements OnInit {
         });
     }
 
+    /**
+     * update shared content
+     *
+     * @private
+     * @param {number} [start=0]
+     * @memberof ListComponent
+     */
     private loadSharedContentData(start = 0) {
 
         /** clear selections and update pagination */
