@@ -3,6 +3,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { IQrsFilter as IFilter, IApp } from '../api';
 import { FilterFactory } from './filter.factory';
 import { Injectable } from '@angular/core';
+import { IDataNode } from '@smc/modules/smc-common';
+import { map, switchMap } from 'rxjs/operators';
 
 @Injectable()
 export class AppRepository {
@@ -14,25 +16,12 @@ export class AppRepository {
     }
 
     /**
-     * filters all given apps for sense excel reporting apps
-     *
-     * @private
-     * @param {IQlikApp[]} apps
-     * @returns {Observable<IQlikApp[]>}
-     * @memberof SerAppService
-     */
-    private fetchAppsByScript(apps): Observable<any> {
-        return of([]);
-    }
-
-    /**
      * fetch all apps
      *
      * @returns {Observable<IQlikApp[]>}
      * @memberof SerAppService
      */
     public fetchApps(filter: IFilter = null): Observable<IApp[]> {
-
         const url = `/qrs/app/full/`;
         let params: HttpParams = new HttpParams();
 
@@ -45,6 +34,24 @@ export class AppRepository {
     }
 
     /**
+     * update app in qrs
+     *
+     * @param {string} id
+     * @param {IDataNode} updateData
+     * @returns
+     * @memberof AppRepository
+     */
+    public update(id: string, updateData: IDataNode): Observable<IApp> {
+
+        return this.fetchApp(id).pipe(
+            switchMap((app) => {
+                updateData.modifiedDate = app.modifiedDate;
+                return this.http.put<IApp>(`/qrs/app/${id}`, updateData);
+            })
+        );
+    }
+
+    /**
      * get app by id
      *
      * @param {string} id
@@ -52,7 +59,7 @@ export class AppRepository {
      * @memberof SerAppService
      */
     public fetchApp(id: string): Observable<any> {
-        return of([]);
+        return this.http.get(`/qrs/app/${id}`);
     }
 
     /**
@@ -63,31 +70,5 @@ export class AppRepository {
      */
     public fetchAppCount(qrsFilter?: IFilter): Observable<number> {
         return of(1);
-    }
-
-    /**
-     *  fetch all sense excel reporting apps
-     *
-     * @private
-     * @param {IQlikApp[]} apps
-     * @returns {Observable<IQlikApp[]>}
-     * @memberof SerAppService
-     */
-    public fetchSerApps(useTag = true, excludeTag: boolean = false): Observable<any> {
-        return of([]);
-    }
-
-    public addTagToApp(app: any) {
-    }
-
-    /**
-     * create new app
-     *
-     * @param {string} appName
-     * @returns {Observable<any>}
-     * @memberof SerAppService
-     */
-    public createApp(appName: string): Promise<any> {
-        return Promise.resolve();
     }
 }

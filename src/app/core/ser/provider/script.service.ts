@@ -1,9 +1,15 @@
 import { Injectable } from '@angular/core';
 import * as hjson from 'hjson';
 import { ISerScriptData, ISerReport } from '../api';
+import { EnigmaService } from '@smc/modules/smc-common';
 
 @Injectable()
 export class ScriptService {
+
+    public constructor(
+        private enigmaService: EnigmaService
+    ) {
+    }
 
     public parse(source: string): ISerScriptData {
 

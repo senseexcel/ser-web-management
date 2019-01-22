@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Subscription, empty, Observable, of } from 'rxjs';
 import { ModalService } from '@smc/modules/modal';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, tap } from 'rxjs/operators';
 import { IApp } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings, SmcCache } from '@smc/modules/smc-common';
@@ -53,11 +53,7 @@ export class AppListComponent implements OnInit {
             this.isLoading = false;
             this.apps = this.smcCache.get<IApp[]>('ser.apps');
         } else {
-            this.appRepository.fetchApps()
-                .subscribe((apps: IApp[]) => {
-                    this.isLoading = false;
-                    this.apps = apps;
-                });
+            this.loadApps();
         }
     }
 
@@ -105,15 +101,7 @@ export class AppListComponent implements OnInit {
      * @memberof AppListComponent
      */
     public reloadList() {
-        this.isLoading = true;
-
-        this.selection.clear();
-        this.serAppsSub.unsubscribe();
-        this.serAppsSub = this.reloadApps().subscribe(() => {
-            this.isLoading = false;
-        });
-
-        return this.serAppsSub;
+        this.loadApps();
     }
 
     /**
@@ -122,18 +110,7 @@ export class AppListComponent implements OnInit {
      *
      * @memberof AppListComponent
      */
-    public repairApps() {
-
-        /*
-        const updateStream$ = this.appManager.updateSerAppsWithTag()
-            .pipe(
-                tap((apps) => {
-                    return this.dialogService.openMessageModal('Apps Synchronized', `${apps.length} App(s) where synchronized.`);
-                }),
-                switchMap(() => this.reloadApps())
-            );
-            */
-        const updateStream$ = of(true);
+    public syncApps() {
 
         const dialogCtrl = this.dialogService.openDialog(
             'Synchronize SER Apps',
@@ -145,13 +122,13 @@ export class AppListComponent implements OnInit {
                 switchMap((confirm: boolean) => {
                     if (confirm) {
                         this.isLoading = true;
-                        return updateStream$;
+                        return this.appRepository.addTagToSerApps();
                     }
                     return empty();
                 }),
-            )
-            .subscribe(() => {
-                this.isLoading = false;
+            ).subscribe((apps) => {
+                this.dialogService.openMessageModal('Apps Synchronized', `${apps.length} App(s) where synchronized.`);
+                this.loadApps();
             });
     }
 
@@ -162,15 +139,11 @@ export class AppListComponent implements OnInit {
      * @returns {Observable<IApp[]>}
      * @memberof AppListComponent
      */
-    private reloadApps(): Observable<IApp[]> {
-        /*
-        return this.appManager.loadSerApps(true)
-            .pipe(
-                tap((apps: IApp[]) => {
-                    this.qlikApps = apps;
-                })
-            );
-        */
-        return of([]);
+    private loadApps() {
+        this.appRepository.fetchApps()
+            .subscribe((apps: IApp[]) => {
+                this.isLoading = false;
+                this.apps = apps;
+            });
     }
 }
