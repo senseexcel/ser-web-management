@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef } from '@angular/core';
 import { ITableData } from '@smc/modules/qrs/api/table.interface';
 import { SharedContentRepository } from '@smc/modules/qrs';
 import { mergeMap, catchError, map } from 'rxjs/operators';
@@ -33,7 +33,7 @@ export class ListComponent implements OnInit {
     constructor(
         private sharedContentRepository: SharedContentRepository,
         private pagination: PaginationService,
-        private smcCache: SmcCache
+        private smcCache: SmcCache,
     ) {
         this.selections = new SelectionModel();
 
@@ -62,26 +62,6 @@ export class ListComponent implements OnInit {
      */
     public selectSharedContent(content: IDataNode) {
         this.selections.select(content);
-    }
-
-    /**
-     * show tooltip
-     *
-     * @param {*} data
-     * @memberof ListComponent
-     */
-    public showMetaData(data) {
-        // @todo implement
-    }
-
-    /**
-     * hide tooltip
-     *
-     * @param {*} data
-     * @memberof ListComponent
-     */
-    public hideMetaData() {
-        // @todo implement
     }
 
     private initializePagination() {
@@ -118,6 +98,8 @@ export class ListComponent implements OnInit {
 
                 /** clear selections and update pagination */
                 this.selections.clear();
+
+                /** @todo should be repaint */
                 this.pagination.update({
                     itemTotalCount: this.total
                 });

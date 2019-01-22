@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewEncapsulation } from '@angular/core';
 import { ModalService } from '@smc/modules/modal';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings } from '@smc/modules/smc-common';
@@ -7,7 +7,8 @@ import { StorageService, SerStorageKey } from '@smc/modules/smc-common/provider'
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
 
