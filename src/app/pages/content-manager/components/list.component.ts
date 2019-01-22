@@ -85,7 +85,7 @@ export class ListComponent implements OnInit {
                 /* on success all delete requests was successful
                  * if this was the last page and we removed all items on last page we have to go one page back
                  */
-                if (success && this.visible === contentToDelete.length && this.pagination.isLastPage) {
+                if (success && this.visible === contentToDelete.length && this.pagination.isLastPage()) {
                     this.pagination.showPrevPage();
                     return;
                 }
@@ -159,7 +159,6 @@ export class ListComponent implements OnInit {
                 this.tableData = DataConverter.convertQrsTableToJson(tableData);
                 this.visible = this.tableData.length;
 
-                /** @todo should be repaint */
                 this.pagination.update({
                     itemTotalCount: this.total
                 });

@@ -72,6 +72,7 @@ export const Pages = [
     }
 ];
 
+/** @deprecated use SmcCache.get('smc.settings.pages') instead */
 export const PAGE_SETTINGS = new InjectionToken('Pages', {
     factory: () => Pages
 });
