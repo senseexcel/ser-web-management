@@ -1,11 +1,14 @@
 import { InjectionToken } from '@angular/core';
+import { IDataNode } from '@smc/modules/smc-common';
+import { Pages } from './page.model';
 
-const SmcSettings = {
+const SmcSettings: IDataNode = {
 
     list: {
         /** items per page */
-        itemPageCount: 1,
-    }
+        itemPageCount: 2,
+    },
+    pages: Pages
 };
 
 export const SMC_SETTINGS = new InjectionToken('SmcSettings', {

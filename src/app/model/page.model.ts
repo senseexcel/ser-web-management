@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core';
 
-const PageData = [
+export const Pages = [
     {
         name: 'manage content',
         children: [{
@@ -73,5 +73,5 @@ const PageData = [
 ];
 
 export const PAGE_SETTINGS = new InjectionToken('Pages', {
-    factory: () => PageData
+    factory: () => Pages
 });

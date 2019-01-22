@@ -1,6 +1,3 @@
-<ng-template #tableCell>
-</ng-template>
-
 <smc-page>
   <!-- page header -->
   <div page-content--header>
@@ -47,7 +44,7 @@
   <div page-content--footer>
     <nav class="navbar navbar-expand-lg action-bar-bottom">
       <div class="btn-toolbar" role="group">
-        <button type="button" class="nav-item mr-4" (click)="deleteApps()">
+        <button type="button" class="nav-item mr-4" [disabled]="selections.isEmpty()" (click)="deleteSharedContent()">
           <span class="button-label">
             Delete
           </span>

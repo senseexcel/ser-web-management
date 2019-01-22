@@ -80,6 +80,15 @@ export class PaginationService {
     }
 
     /**
+     * display prev page
+     *
+     * @memberof PaginationService
+     */
+    public showPrevPage(): void {
+        this.showPage(this.getCurrentPage() - 1);
+    }
+
+    /**
      * update data this will trigger PaginationService.UPDATE event
      *
      * @param {({} | string)} data

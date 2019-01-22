@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { FilterFactory } from './filter.factory';
 import { HttpClient } from '@angular/common/http';
 import { ITableData } from '../api/table.interface';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { map } from 'rxjs/internal/operators/map';
+import { mergeMap, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class SharedContentRepository {
@@ -11,7 +12,7 @@ export class SharedContentRepository {
     constructor(
         private http: HttpClient,
         private filterFactory: FilterFactory
-    ) {}
+    ) { }
 
     public count(): Observable<number> {
         const url = '/qrs/sharedcontent/count';
@@ -33,15 +34,16 @@ export class SharedContentRepository {
         const url = '/qrs/sharedcontent/table';
         const tableDefinition = {
             'entity': 'SharedContent',
-            'columns' : [
-                {'name': 'name', 'columnType': 'Property', 'definition': 'name'},
-                {'name': 'type', 'columnType': 'Property', 'definition': 'type'},
-                {'name': 'description', 'columnType': 'Property', 'definition': 'description'},
-                {'name': 'owner', 'columnType': 'Property', 'definition': 'owner'},
-                {'name': 'createdDate', 'columnType': 'Property', 'definition': 'createdDate'},
-                {'name': 'modifiedDate', 'columnType': 'Property', 'definition': 'modifiedDate'},
-                {'name': 'tags', 'columnType': 'Property', 'definition': 'tags'},
-                {'name': 'metaData', 'columnType': 'Property', 'definition': 'metaData'}
+            'columns': [
+                { 'name': 'id', 'columnType': 'Property', 'definition': 'id' },
+                { 'name': 'name', 'columnType': 'Property', 'definition': 'name' },
+                { 'name': 'type', 'columnType': 'Property', 'definition': 'type' },
+                { 'name': 'description', 'columnType': 'Property', 'definition': 'description' },
+                { 'name': 'owner', 'columnType': 'Property', 'definition': 'owner' },
+                { 'name': 'createdDate', 'columnType': 'Property', 'definition': 'createdDate' },
+                { 'name': 'modifiedDate', 'columnType': 'Property', 'definition': 'modifiedDate' },
+                { 'name': 'tags', 'columnType': 'Property', 'definition': 'tags' },
+                { 'name': 'metaData', 'columnType': 'Property', 'definition': 'metaData' }
             ]
         };
 
@@ -51,5 +53,38 @@ export class SharedContentRepository {
                 take: String(limit)
             }
         }) as Observable<ITableData>;
+    }
+
+    /**
+     * delete shared content data by ids
+     *
+     * @param {number[]} ids
+     * @memberof SharedContentRepository
+     */
+    public delete(sharedContentIds: number[]): Observable<boolean> {
+
+        const url = '/qrs/sharedcontent';
+        return of(sharedContentIds).pipe(
+            mergeMap((ids: number[]) => {
+                /**
+                 * convert given ids into http delete request to remove
+                 * given shared content. If some Error occours content could
+                 * not deleted and return -1 otherwise return 1
+                 */
+                const deleteRequests = ids.map(
+                    id => this.http.delete<number>(`${url}/${id}`).pipe(
+                        map(() => 1),
+                        catchError(() => of(-1))
+                    )
+                );
+
+                /**
+                 * join all requests
+                 */
+                return forkJoin(...deleteRequests).pipe(
+                    map((response: number[]) => !response.some((status) => status === -1))
+                );
+            })
+        );
     }
 }

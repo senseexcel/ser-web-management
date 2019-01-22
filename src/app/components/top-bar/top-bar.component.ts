@@ -2,10 +2,9 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { IMenuItem } from '@smc/modules/menu/api/menu-item.interface';
 import { DropDownOverlay } from '@smc/modules/drop-down/model/drop-down-overlay';
 import { Router } from '@angular/router';
-import { PAGE_SETTINGS } from '../../model/page.model';
 import { ISessionUser } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
-import { ISettings } from '@smc/modules/smc-common';
+import { ISettings, SmcCache, IDataNode } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-top-bar',
@@ -40,6 +39,8 @@ export class TopBarComponent implements OnInit {
 
     public loggedInUser: ISessionUser;
 
+    public pages: IDataNode;
+
     /**
      * holds the current drop down overlay for an
      * open menu
@@ -51,15 +52,15 @@ export class TopBarComponent implements OnInit {
     private dropDownOverlay: DropDownOverlay;
 
     constructor(
-        @Inject(SMC_SESSION) private settings: ISettings,
-        @Inject(PAGE_SETTINGS) private pages,
+        @Inject(SMC_SESSION)  private session: ISettings,
+        private settings: SmcCache,
         private router: Router,
     ) {
     }
 
     ngOnInit() {
-        this.loggedInUser = this.settings.loggedInUser;
-        this.mainMenu = this.pages;
+        this.loggedInUser = this.session.loggedInUser;
+        this.pages    = this.settings.get<IDataNode>('smc.settings.pages');
         this.helpMenu = this.createHelpMenu();
         this.userMenu = this.createUserMenu();
     }

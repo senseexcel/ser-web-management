@@ -64,6 +64,37 @@ export class ListComponent implements OnInit {
         this.selections.select(content);
     }
 
+    /**
+     * delete shared content which has been selected
+     *
+     * @returns
+     * @memberof ListComponent
+     */
+    public deleteSharedContent() {
+        if (this.selections.isEmpty()) {
+            return;
+        }
+
+        const contentToDelete = this.selections.selected.reduce<number[]>((idCollection, content) => {
+            idCollection.push(content.id);
+            return idCollection;
+        }, []);
+
+        this.sharedContentRepository.delete(contentToDelete)
+            .subscribe((success: boolean) => {
+                /* on success all delete requests was successful
+                 * if this was the last page and we removed all items on last page we have to go one page back
+                 */
+                if (success && this.visible === contentToDelete.length && this.pagination.isLastPage) {
+                    this.pagination.showPrevPage();
+                    return;
+                }
+
+                // otherwise reload just content on current page
+                this.loadSharedContentData((this.pagination.getCurrentPage() - 1) * this.listSettings.itemPageCount);
+            });
+    }
+
     private initializePagination() {
 
         this.pagination.configure({
