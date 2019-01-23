@@ -13,9 +13,7 @@ export class ScriptService {
 
     public parse(source: string): ISerScriptData {
 
-        const indexStart = source.indexOf('SER.START');
-
-        if ( indexStart === -1 ) {
+        if (!this.hasSerScript(source)) {
             throw new Error('no ser data available');
         }
 
@@ -70,5 +68,15 @@ export class ScriptService {
         }
 
         return reports;
+    }
+
+    /**
+     *
+     *
+     * @returns {boolean}
+     * @memberof ScriptService
+     */
+    public isValid(): boolean {
+        return false;
     }
 }

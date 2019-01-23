@@ -10,6 +10,12 @@ export class DeliveryModel implements ISerDelivery {
 
     private deliveryHubSettings: IHubSettings;
 
+    public constructor() {
+        this.deliveryEmailSettings = new EmailModel();
+        this.deliveryFileSettings  = new FileModel();
+        this.deliveryHubSettings   = new HubModel();
+    }
+
     public get mail(): IMailSettings {
         return this.deliveryEmailSettings;
     }

@@ -58,7 +58,7 @@ export class TaskRepository {
             /**
              * no tag available, in this case we need to check all ser apps
              * and get tasks for ser apps could be very slow
-             */
+             *
             taskSource$ = this.appRepository.fetchSerApps()
                 .pipe(
                     switchMap(apps => from(apps).pipe(
@@ -68,6 +68,7 @@ export class TaskRepository {
                         return allTasks.concat(appTasks);
                     })
                 );
+                */
         }
         return taskSource$;
     }
@@ -79,6 +80,7 @@ export class TaskRepository {
      */
     public synchronizeTasks() {
 
+        /*
         return this.appRepository.fetchSerApps(false).pipe(
             switchMap((apps) => {
                 if (apps.length === 0) {
@@ -108,6 +110,7 @@ export class TaskRepository {
                 return of([]);
             })
         );
+        */
     }
 
     public fetchTask(taskId: string): Observable<any> {

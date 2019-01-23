@@ -3,7 +3,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TaskManagerService } from '../../services/task-manager.service';
 import { takeUntil, switchMap, tap } from 'rxjs/operators';
-import { Subject, empty } from 'rxjs';
+import { Subject, empty, of } from 'rxjs';
 import { ModalService } from '@smc/modules/modal/services/modal.service';
 import { ITask } from '@smc/modules/qrs';
 
@@ -203,7 +203,8 @@ export class ListComponent implements OnDestroy, OnInit {
         ).switch.pipe(
             switchMap((confirm: boolean) => {
                 if (confirm) {
-                    return this.taskManagerService.syncTasks();
+                    // return this.taskManagerService.syncTasks();
+                    return of([]);
                 }
                 return empty();
             }),

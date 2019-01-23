@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { IQrsFilter as IFilter, IApp } from '../api';
+import { IQrsFilter as IFilter, IApp, FilterOperator } from '../api';
 import { FilterFactory } from './filter.factory';
 import { Injectable } from '@angular/core';
 import { IDataNode } from '@smc/modules/smc-common';
@@ -13,6 +13,26 @@ export class AppRepository {
         private filterFactory: FilterFactory,
         private http: HttpClient
     ) {
+    }
+
+    /**
+     * check app exists
+     *
+     * @param {string} id
+     * @returns {Observable<boolean>}
+     * @memberof AppRepository
+     */
+    public exists(id: string): Observable<boolean> {
+
+        const url = '/qrs/app/count';
+        const filter = this.filterFactory.createFilter('id', id, FilterOperator.EQUAL);
+        let params: HttpParams = new HttpParams();
+
+        params = params.set('filter', this.filterFactory.createFilterQueryString(filter));
+        return this.http.get<{value: number}>(url, {params})
+            .pipe(
+                map((response) => response.value !== 0)
+            );
     }
 
     /**

@@ -13,6 +13,7 @@ import { ITask } from '@smc/modules/qrs/api/task.interface';
 import { ModalService } from '@smc/modules/modal';
 import { IApp } from '@smc/modules/qrs';
 import { IApp as ISerApp } from '@smc/modules/ser';
+import { EnigmaService } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-qlik-edit',
@@ -68,7 +69,8 @@ export class AppEditComponent implements OnInit, OnDestroy {
         reportService: ReportService,
         router: Router,
         breadcrumbService: BreadcrumbService,
-        taskApiService: TaskRepository
+        taskApiService: TaskRepository,
+        private enigmaService: EnigmaService
     ) {
         this.location = location;
         this.modalService = modalService;
@@ -108,7 +110,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     *
     * @memberof AppEditComponent
     */
-    public ngOnInit() {
+    public async ngOnInit() {
 
         this.isLoading = true;
 
@@ -121,7 +123,10 @@ export class AppEditComponent implements OnInit, OnDestroy {
         ];
 
         const params = this.activeRoute.snapshot.params;
-        const serApp$ = this.initExistingApp(params.id);
+        const app    = await this.enigmaService.openApp(params.id);
+        const script = await app.getScript();
+
+        /**  */
 
         /*
         app$.pipe(

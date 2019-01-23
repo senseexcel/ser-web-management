@@ -7,16 +7,24 @@ import {
     ConnectionModel,
     DeliveryModel
 } from './';
+import { importData } from '@smc/modules/smc-common/utils/import-data.decorator';
 
 export class ReportModel implements ISerReport {
 
-    private reportGeneral: ISerGeneral;
+    private reportGeneral: GeneralSettingsModel;
 
     private reportTemplate: ISerTemplate;
 
     private reportConnections: ISerConnection;
 
     private reportDistribute: ISerDelivery;
+
+    public constructor() {
+        this.reportGeneral     = new GeneralSettingsModel();
+        this.reportTemplate    = new TemplateModel();
+        this.reportConnections = new ConnectionModel();
+        this.reportDistribute  = new DeliveryModel();
+    }
 
     public set connections(connections: ISerConnection) {
         this.reportConnections = connections;
@@ -27,7 +35,7 @@ export class ReportModel implements ISerReport {
     }
 
     public set general(value: ISerGeneral) {
-        this.reportGeneral = value;
+        this.reportGeneral.raw = value;
     }
 
     public set template(template: ISerTemplate) {
@@ -48,6 +56,10 @@ export class ReportModel implements ISerReport {
 
     public get template(): ISerTemplate {
         return this.reportTemplate;
+    }
+
+    @importData
+    public set raw(data: ISerReport) {
     }
 
     public get raw(): ISerReport {
