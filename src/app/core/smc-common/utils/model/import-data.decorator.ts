@@ -1,4 +1,4 @@
-import { IDataNode } from '../api';
+import { IDataNode } from '../../api';
 
 export function importData(target, key = null, descriptor: PropertyDescriptor): PropertyDescriptor {
 

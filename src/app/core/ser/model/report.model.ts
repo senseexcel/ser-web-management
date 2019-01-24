@@ -7,7 +7,7 @@ import {
     ConnectionModel,
     DeliveryModel
 } from './';
-import { importData } from '@smc/modules/smc-common/utils/import-data.decorator';
+import { importData } from '@smc/modules/smc-common/utils/model/import-data.decorator';
 
 export class ReportModel implements ISerReport {
 

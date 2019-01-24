@@ -1,9 +1,13 @@
-import { Validate, Validators } from '@smc/modules/smc-common/utils/validate-property.decorator';
 import { BookModel } from './book.model';
-import { IDataNode } from '@smc/modules/smc-common';
-import { importData } from '@smc/modules/smc-common/utils/import-data.decorator';
+import { IDataNode, IModel } from '@smc/modules/smc-common';
+import { Validate, Validators, DATA_MODEL_VALIDATION } from '@smc/modules/smc-common/utils/model/validate-property.decorator';
+import { importData } from '@smc/modules/smc-common/utils/model/import-data.decorator';
 
-export class UserModel {
+interface IModelValidator {
+    onModelValidationChange(isValid: boolean): void;
+}
+
+export class UserModel implements IModel, IModelValidator {
 
     private userName: string;
 
@@ -13,12 +17,17 @@ export class UserModel {
 
     private userAge: number;
 
+    public isValid: boolean;
+
     public constructor() {
         this.userBook = new BookModel();
+        this.isValid = false;
     }
 
     @Validate<string>([
-        Validators.Required
+        Validators.Required,
+        Validators.isString,
+        Validators.NotEmpty,
     ])
     public set name(name: string) {
         this.userName = name;
@@ -52,15 +61,19 @@ export class UserModel {
         return this.userAge;
     }
 
-    public set book(book: BookModel) {
+    public set book(book: IDataNode) {
         this.userBook.raw = book;
     }
 
-    public get book(): BookModel {
+    public get book(): IDataNode {
         return this.userBook;
     }
 
     @importData
     public set raw(data: IDataNode) {
+    }
+
+    public onModelValidationChange(isValid: boolean) {
+        this.isValid = isValid;
     }
 }

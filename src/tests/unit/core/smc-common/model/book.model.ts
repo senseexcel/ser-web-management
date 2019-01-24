@@ -1,11 +1,8 @@
-import { IDataNode } from '@smc/modules/smc-common';
-import { importData } from '@smc/modules/smc-common/utils/import-data.decorator';
+import { IDataNode, IModel } from '@smc/modules/smc-common';
+import { importData } from '@smc/modules/smc-common/utils/model/import-data.decorator';
+import { Validate, Validators } from '@smc/modules/smc-common/utils/model/validate-property.decorator';
 
-interface IDataModel {
-    raw: IDataNode;
-}
-
-export class BookModel implements IDataModel {
+export class BookModel implements IModel {
 
     private bookTitle: string;
 
@@ -20,6 +17,7 @@ export class BookModel implements IDataModel {
         return this.rawData;
     }
 
+    @Validate([Validators.isString])
     public set title(title: string) {
         this.bookTitle = title;
     }
