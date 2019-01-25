@@ -1,9 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { IApp } from '@smc/modules/ser';
+import { IApp, ReportModel } from '@smc/modules/ser';
 import { FormService, IFormResponse } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';
 import { ISerFormResponse } from '../../../../../api/ser-form.response.interface';
+import { IMailSettings } from 'ser.api';
 
 @Component({
     selector: 'smc-apps--edit-form-distribution-mail',
@@ -12,10 +13,8 @@ import { ISerFormResponse } from '../../../../../api/ser-form.response.interface
 export class DistributionMailComponent implements OnInit {
 
     public mailForm: FormGroup;
-    public formService: FormService<IApp, ISerFormResponse>;
 
-    private app: IApp;
-    private formBuilder: FormBuilder;
+    private report: ReportModel;
     private updateHook: Observable<IFormResponse>;
 
     public mailTypes = [{
@@ -30,11 +29,9 @@ export class DistributionMailComponent implements OnInit {
     }];
 
     constructor(
-        formBuilder: FormBuilder,
-        formService: FormService<IApp, ISerFormResponse>
+        private formBuilder: FormBuilder,
+        private formService: FormService<ReportModel, ISerFormResponse>
     ) {
-        this.formBuilder = formBuilder;
-        this.formService = formService;
     }
 
     ngOnInit() {
@@ -44,13 +41,8 @@ export class DistributionMailComponent implements OnInit {
         this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
         this.formService.editModel()
-        .subscribe((app: IApp) => {
-
-            if ( app === null ) {
-                return;
-            }
-
-            this.app = app;
+        .subscribe((report: ReportModel) => {
+            this.report = report;
             this.mailForm = this.createMailForm();
         });
     }
@@ -63,7 +55,7 @@ export class DistributionMailComponent implements OnInit {
      * @memberof DistributionMailComponent
      */
     private createMailForm(): FormGroup {
-        const mailSettings = this.app.report.distribute.mail;
+        const mailSettings = this.report.distribute.mail;
         return this.formBuilder.group({
             active: this.formBuilder.control(mailSettings.active),
             mailType: this.formBuilder.control(mailSettings.mailType),

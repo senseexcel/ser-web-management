@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IApp } from '@smc/modules/ser';
+import { IApp, ReportModel } from '@smc/modules/ser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '@smc/modules/form-helper';
 import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
@@ -15,18 +15,14 @@ import { ISerTemplate } from 'ser.api';
 export class TemplateComponent implements OnInit {
 
     public templateForm: FormGroup;
-
-    private formBuilder: FormBuilder;
-    private formService: FormService<IApp, ISerFormResponse>;
     private updateHook: Observable<ISerFormResponse>;
-    private currentApp: IApp;
+    private report: ReportModel;
 
     constructor(
-        formBuilder: FormBuilder,
-        formService: FormService<IApp, ISerFormResponse>
+        private formBuilder: FormBuilder,
+        private formService: FormService<ReportModel, ISerFormResponse>
     ) {
         this.formBuilder = formBuilder;
-        this.formService = formService;
     }
 
     ngOnInit() {
@@ -37,10 +33,10 @@ export class TemplateComponent implements OnInit {
 
         /** register on app has been loaded */
         this.formService.editModel()
-        .subscribe ((app: IApp) => {
-            this.currentApp = app;
+        .subscribe ((report: ReportModel) => {
+            this.report = report;
 
-            if ( this.currentApp ) {
+            if (this.report) {
                 /** @todo should only update form fields and not create every time a new form group */
                 this.templateForm = this.buildTemplateForm();
             }
@@ -60,7 +56,7 @@ export class TemplateComponent implements OnInit {
      */
     private buildTemplateForm(): FormGroup {
 
-        const formData: ISerTemplate = this.currentApp.report.template;
+        const formData: ISerTemplate = this.report.template;
 
         const formGroup = this.formBuilder.group({
             input: this.formBuilder.control(formData.input, Validators.required),

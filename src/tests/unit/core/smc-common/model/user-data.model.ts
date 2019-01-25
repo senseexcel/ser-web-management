@@ -30,5 +30,6 @@ export class UserDataModel implements IModelValidator {
     }
 
     onModelValidationChange(isValid: boolean): void {
+        this.isValid = isValid;
     }
 }

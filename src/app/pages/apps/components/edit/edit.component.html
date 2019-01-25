@@ -24,7 +24,7 @@
             </div>
             <div class="qmc-page--content-body">
                 <div class="content">
-                    <ng-container *ngIf="formDataLoaded">
+                    <ng-container>
                         <div #connections class="edit-group">
                             <smc-apps--edit-form-connection></smc-apps--edit-form-connection>
                         </div>
@@ -41,7 +41,6 @@
                             <smc-edit-form-settings></smc-edit-form-settings>
                         </div>
                     </ng-container>
-                    <mat-spinner *ngIf="!formDataLoaded"></mat-spinner>
                 </div>
             </div>
             <smc-edit-controls (apply)="save()" (cancel)="cancel()" (preview)="preview()"></smc-edit-controls>

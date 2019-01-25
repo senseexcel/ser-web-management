@@ -12,8 +12,8 @@ import { IBreadCrumb } from '@smc/modules/breadcrumb/api/breadcrumb.interface';
 import { ITask } from '@smc/modules/qrs/api/task.interface';
 import { ModalService } from '@smc/modules/modal';
 import { IApp } from '@smc/modules/qrs';
-import { IApp as ISerApp } from '@smc/modules/ser';
-import { EnigmaService } from '@smc/modules/smc-common';
+import { IApp as ISerApp, ReportModel } from '@smc/modules/ser';
+import { EnigmaService, SmcCache, IDataNode } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-qlik-edit',
@@ -28,7 +28,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public associatedItems: any;
     public selectedProperty: any;
     public isLoading = true;
-    public formService: FormService<ISerApp, ISerFormResponse>;
     public formDataLoaded = false;
     public isSubRoute = false;
     public taskCount = 0;
@@ -63,14 +62,14 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
     constructor(
         activeRoute: ActivatedRoute,
-        formService: FormService<ISerApp, ISerFormResponse>,
+        public formService: FormService<ReportModel, ISerFormResponse>,
         location: Location,
         modalService: ModalService,
         reportService: ReportService,
         router: Router,
         breadcrumbService: BreadcrumbService,
         taskApiService: TaskRepository,
-        private enigmaService: EnigmaService
+        private smcCache: SmcCache
     ) {
         this.location = location;
         this.modalService = modalService;
@@ -112,8 +111,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
     */
     public async ngOnInit() {
 
-        this.isLoading = true;
-
         this.properties = [
             { label: 'App' },
             { label: 'Template' },
@@ -122,35 +119,8 @@ export class AppEditComponent implements OnInit, OnDestroy {
             { label: 'Settings' }
         ];
 
-        const params = this.activeRoute.snapshot.params;
-        const app    = await this.enigmaService.openApp(params.id);
-        const script = await app.getScript();
-
-        /**  */
-
-        /*
-        app$.pipe(
-            switchMap(() => serApp$),
-            takeUntil(this.isDestroyed$)
-        )
-        .subscribe((tasks: ITask[]) => {
-            this.associatedItems = [{
-                label: 'Tasks',
-                items: 'tasks',
-                route: 'tasks',
-                count: tasks.length
-            }];
-            this.formDataLoaded = true;
-        }, () => {
-            this.modalService.openMessageModal(
-                'Found incompatible Script !',
-                'This app contains an incompatible or more complex Script and could not be edited with this Webmanagement Console.\n\n\
-                If you want to edit this script go to  Qlik Sense App Dataload Editor and edit the script manually.'
-            ).onClose.subscribe(() => {
-                this.router.navigate(['.'], {relativeTo: this.activeRoute.parent});
-            });
-        });
-        */
+        const data: IDataNode = this.smcCache.get('smc.pages.app.edit');
+        this.formService.loadModel(data.report);
 
         this.breadCrumbService.breadcrumbs
             .pipe(
@@ -278,35 +248,5 @@ export class AppEditComponent implements OnInit, OnDestroy {
                     });
                 })
             );
-    }
-
-    /**
-    * initialize existing app
-    *
-    * @private
-    * @memberof AppEditComponent
-    */
-    private initExistingApp(qDocId: string) {
-
-        /*
-        return this.appManager.fetchApp(qDocId)
-            .pipe(
-                switchMap((app: IApp) => {
-                    this.appManager.selectApps([app]);
-                    return this.appManager.openApp(app);
-                }),
-                switchMap((app: ISerApp) => {
-                    if (app.invalid) {
-                        throw new Error('invalid app');
-                    } else {
-                        this.app = app;
-                        this.formService.loadModel(app);
-                        this.apps = this.appManager.getSelectedApps();
-                        // load tasks
-                        return this.taskApiService.fetchTasksForApp(app.appId);
-                    }
-                })
-            );
-            */
     }
 }

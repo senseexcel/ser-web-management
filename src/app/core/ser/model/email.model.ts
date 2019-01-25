@@ -1,5 +1,6 @@
 import { IMailSettings, EMailType, IMailServerSettings, SettingsType } from 'ser.api';
-import { MailServerSettingsModel } from './';
+import { MailServerSettingsModel } from './mail-server.model';
+import { mapDataTo } from '@smc/modules/smc-common/utils';
 
 export class EmailModel implements IMailSettings {
 
@@ -9,11 +10,15 @@ export class EmailModel implements IMailSettings {
     private emailModelTo: string;
     private emailModelCc: string;
     private emailModelBcc: string;
-    private emailModelMailServer: IMailServerSettings;
+    private emailModelMailServer: MailServerSettingsModel;
     private emailModelPaths: string[];
     private emailModelReportName: string;
     private emailModelType: SettingsType;
     private emailModelActive: boolean;
+
+    public constructor() {
+        this.emailModelMailServer = new MailServerSettingsModel();
+    }
 
     public set subject(subject: string) {
         this.emailModelSubject = subject;
@@ -38,7 +43,8 @@ export class EmailModel implements IMailSettings {
         this.emailModelBcc = bcc;
     }
 
-    public set mailServer(mailServer: IMailServerSettings) {
+    @mapDataTo(MailServerSettingsModel)
+    public set mailServer(mailServer: MailServerSettingsModel) {
         this.emailModelMailServer = mailServer;
     }
 
@@ -82,7 +88,7 @@ export class EmailModel implements IMailSettings {
         return this.emailModelBcc;
     }
 
-    public get mailServer(): IMailServerSettings {
+    public get mailServer(): MailServerSettingsModel {
         return this.emailModelMailServer;
     }
 

@@ -12,9 +12,8 @@ describe('SMC: Modules', () => {
 
                 it('should call onModelValidationChange on valid result', () => {
                     const userDataModel = new UserDataModel();
-                    const spy = spyOn(UserDataModel.prototype, 'onModelValidationChange').and.callThrough();
-                    userDataModel.name = 'Max';
-                    expect(spy).toHaveBeenCalled();
+                    userDataModel.name  = 10 as any;
+                    expect(userDataModel.isValid).toBeFalsy();
                 });
 
                 it('should call onModelValidationChange and returns true', () => {
@@ -24,18 +23,19 @@ describe('SMC: Modules', () => {
                     expect(spy).toHaveBeenCalledWith(true);
                 });
 
-                it('should call onModelValidationChange on invalid result', () => {
+                it('should not call onModelValidationChange', () => {
                     const userDataModel = new UserDataModel();
                     const spy = spyOn(UserDataModel.prototype, 'onModelValidationChange').and.callThrough();
                     userDataModel.name = 10 as any;
-                    expect(spy).toHaveBeenCalled();
+                    expect(spy).toHaveBeenCalledTimes(0);
                 });
 
                 it('should call onModelValidationChange and returns false', () => {
                     const userDataModel = new UserDataModel();
+                    userDataModel.name = 'Max';
+
                     const spy = spyOn(UserDataModel.prototype, 'onModelValidationChange').and.callThrough();
                     userDataModel.name = 10 as any;
-                    // but it has been called ...
                     expect(spy).toHaveBeenCalledWith(false);
                 });
             });

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { EnigmaService } from '@smc/modules/smc-common';
-import { ScriptService } from '@smc/modules/ser/provider';
+import { EnigmaService, SmcCache } from '@smc/modules/smc-common';
+import { ScriptService, ReportService } from '@smc/modules/ser/provider';
 import { Observable, of, from } from 'rxjs';
 import { AppRepository } from '@smc/modules/qrs';
 import { tap, catchError, mergeMap, map } from 'rxjs/operators';
@@ -12,7 +12,9 @@ export class EditGuard implements CanActivate {
     constructor(
         private appRepository: AppRepository,
         private enigmaService: EnigmaService,
-        private scriptService: ScriptService
+        private scriptService: ScriptService,
+        private reportService: ReportService,
+        private smcCache: SmcCache
     ) { }
 
     /**
@@ -36,7 +38,19 @@ export class EditGuard implements CanActivate {
                 map((script: string) => {
                     let valid = true;
                     valid = valid && this.scriptService.hasSerScript(script);
-                    valid = valid && this.scriptService.isValid(script);
+
+                    const parsedScript = this.scriptService.parse(script);
+                    const reportData   = this.scriptService.extractReports(parsedScript);
+                    const report = this.reportService.createReport(reportData[0]);
+                    valid = valid && report.isValid;
+
+                    if (valid && report.isValid) {
+                        this.smcCache.set('smc.pages.app.edit', {
+                            app: id,
+                            script: parsedScript,
+                            report
+                        });
+                    }
                     return valid;
                 })
             )),

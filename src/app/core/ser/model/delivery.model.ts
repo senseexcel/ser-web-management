@@ -1,6 +1,8 @@
 import { IMailSettings, IFileSettings, IHubSettings } from 'ser.api';
 import { ISerDelivery } from '../api/ser-delivery.interface';
-import { FileModel, HubModel, EmailModel } from './';
+import { FileModel } from './file.model';
+import { HubModel } from './hub.model';
+import { EmailModel } from './email.model';
 
 export class DeliveryModel implements ISerDelivery {
 

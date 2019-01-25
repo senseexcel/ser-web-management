@@ -1,7 +1,7 @@
 import { ModelValidation } from './mixins/model-validation.mixin';
 
 /**
- * Decorator for DataModels
+ * Class Decorator for DataModels
  *
  * @export
  * @param {*} target

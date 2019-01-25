@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DistributeMode } from 'ser.api';
-import { IApp } from '@smc/modules/ser/api/app.interface';
 import { FormService } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';
 import { ISerFormResponse } from '../../../../../api/ser-form.response.interface';
+import { ReportModel } from '@smc/modules/ser';
 
 @Component({
     selector: 'smc-apps--edit-form-distribution-file',
@@ -16,17 +16,13 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
     public fileForm: FormGroup;
     public distributionModes;
 
-    private app: IApp;
-    private formBuilder: FormBuilder;
-    private formService: FormService<IApp, ISerFormResponse>;
+    private report: ReportModel;
     private updateHook: Observable<ISerFormResponse>;
 
     constructor(
-        formBuilder: FormBuilder,
-        formService: FormService<IApp, ISerFormResponse>
+        private formBuilder: FormBuilder,
+        private formService: FormService<ReportModel, ISerFormResponse>
     ) {
-        this.formBuilder = formBuilder;
-        this.formService = formService;
     }
 
     ngOnDestroy() {
@@ -40,13 +36,8 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
         this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
         this.formService.editModel()
-        .subscribe((app: IApp) => {
-
-            if ( app === null ) {
-                return;
-            }
-
-            this.app = app;
+        .subscribe((report: ReportModel) => {
+            this.report = report;
             this.fileForm = this.createFileForm();
         });
     }
@@ -61,7 +52,7 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
     private createFileForm(): FormGroup {
 
         this.distributionModes = this.createDistributionModes();
-        const fileData = this.app.report.distribute.file;
+        const fileData = this.report.distribute.file;
 
         return this.formBuilder.group({
             active     : this.formBuilder.control(fileData.active),

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { SelectionType } from 'ser.api';
-import { IApp } from '@smc/modules/ser';
+import { ReportModel } from '@smc/modules/ser';
 import { FormService } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';
 import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
@@ -13,35 +13,26 @@ import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
 
 export class SettingsComponent implements OnInit {
 
-    private formBuilder: FormBuilder;
-
     public userSelectionMode: Array<{label: string, value: number}>;
-
     public generalForm: FormGroup;
-
     public mailServerSettingsForm: FormGroup;
 
-    public formService: FormService<IApp, ISerFormResponse>;
-
     public isReady = false;
-
-    private app: IApp;
+    private report: ReportModel;
 
     constructor(
-        builder: FormBuilder,
-        formService: FormService<IApp, ISerFormResponse>,
+        private formBuilder: FormBuilder,
+        public formService: FormService<ReportModel, ISerFormResponse>,
     ) {
-        this.formBuilder = builder;
-        this.formService = formService;
     }
 
     ngOnInit() {
 
         this.formService.registerHook(FormService.HOOK_UPDATE, this.buildUpdateHook());
         this.formService.editModel()
-        .subscribe( (app: IApp) => {
-            if ( app !== null ) {
-                this.app = app;
+        .subscribe((report: ReportModel) => {
+            if ( report !== null ) {
+                this.report = report;
                 this.userSelectionMode      = this.buildUserSelectionFields();
                 this.generalForm            = this.buildGeneralSettingsForm();
                 this.mailServerSettingsForm = this.buildMailServerSettingsForm();
@@ -59,7 +50,7 @@ export class SettingsComponent implements OnInit {
      * @memberof SettingsComponent
      */
     private buildGeneralSettingsForm(): FormGroup {
-        const config       = this.app.report.general;
+        const config       = this.report.general;
 
         const generalGroup = this.formBuilder.group({
             cleanupTimeOut   : this.formBuilder.control(config.cleanupTimeOut),
@@ -80,7 +71,7 @@ export class SettingsComponent implements OnInit {
      * @memberof SettingsComponent
      */
     private buildMailServerSettingsForm(): FormGroup {
-        const mailServerSettings = this.app.report.distribute.mail.mailServer;
+        const mailServerSettings = this.report.distribute.mail.mailServer;
 
         return this.formBuilder.group({
             host: this.formBuilder.control(mailServerSettings.host),

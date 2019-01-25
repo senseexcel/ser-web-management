@@ -11,9 +11,12 @@ const enum PROPERTIES {
 export function ModelValidation() {
 
     const self = this;
+    const map  = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(self), PROPERTIES.VALIDATION_MAP);
 
-    const VALIDATION_MAP: Map<IDataNode, boolean> = Object.getOwnPropertyDescriptor(
-        Object.getPrototypeOf(self), PROPERTIES.VALIDATION_MAP).value;
+    let VALIDATION_MAP: Map<IDataNode, boolean>;
+    if (map && map.value)  {
+        VALIDATION_MAP = new Map(Array.from(map.value.entries()));
+    }
 
     /**
      * if validation was successfully and old value was false

@@ -1,23 +1,25 @@
 import { ISerGeneral, ISerTemplate, ISerConnection } from 'ser.api';
 import { ISerReport } from '../api/report.interface';
 import { ISerDelivery } from '../api/ser-delivery.interface';
-import {
-    GeneralSettingsModel,
-    TemplateModel,
-    ConnectionModel,
-    DeliveryModel
-} from './';
-import { importData } from '@smc/modules/smc-common/utils/model/import-data.decorator';
 
-export class ReportModel implements ISerReport {
+import { GeneralSettingsModel } from './general-settings.model';
+import { TemplateModel } from './template.model';
+import { ConnectionModel } from './connection.model';
+import { DeliveryModel } from './delivery.model';
+import { DataModel, importData, Validate, Validators, OnValidationChange, mapDataTo } from '@smc/modules/smc-common/utils/model';
+
+@DataModel
+export class ReportModel implements ISerReport, OnValidationChange {
 
     private reportGeneral: GeneralSettingsModel;
 
-    private reportTemplate: ISerTemplate;
+    private reportTemplate: TemplateModel;
 
     private reportConnections: ISerConnection;
 
     private reportDistribute: ISerDelivery;
+
+    private reportValid = false;
 
     public constructor() {
         this.reportGeneral     = new GeneralSettingsModel();
@@ -26,20 +28,28 @@ export class ReportModel implements ISerReport {
         this.reportDistribute  = new DeliveryModel();
     }
 
+    @Validate([Validators.Required])
+    @mapDataTo(ConnectionModel)
     public set connections(connections: ISerConnection) {
         this.reportConnections = connections;
     }
 
+    @Validate([Validators.Required])
+    @mapDataTo(DeliveryModel)
     public set distribute(delivery: ISerDelivery) {
         this.reportDistribute = delivery;
     }
 
+    @Validate([Validators.Required])
+    @mapDataTo(GeneralSettingsModel)
     public set general(value: ISerGeneral) {
         this.reportGeneral.raw = value;
     }
 
-    public set template(template: ISerTemplate) {
-        this.reportTemplate = template;
+    @Validate([Validators.Required])
+    @mapDataTo(TemplateModel)
+    public set template(data: ISerTemplate) {
+        this.reportTemplate.raw = data;
     }
 
     public get connections(): ISerConnection {
@@ -60,6 +70,14 @@ export class ReportModel implements ISerReport {
 
     @importData
     public set raw(data: ISerReport) {
+    }
+
+    public onModelValidationChange(isValid: boolean): void {
+        this.reportValid = isValid;
+    }
+
+    public get isValid(): boolean {
+        return this.reportValid;
     }
 
     public get raw(): ISerReport {

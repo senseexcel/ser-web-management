@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IApp } from '@smc/modules/ser';
+import { IApp, ReportModel } from '@smc/modules/ser';
 import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -30,25 +30,6 @@ export class SelectionComponent implements OnInit {
     public selectionTypes: SelectionType;
 
     /**
-     * form builder service to create form elements
-     *
-     * @private
-     * @type {FormBuilder}
-     * @memberof SelectionComponent
-     */
-    private formBuilder: FormBuilder;
-
-    /**
-     * form helper service to get notified if a new model has been
-     * loaded or form should save
-     *
-     * @private
-     * @type {FormService<IApp, ISerFormResponse>}
-     * @memberof SelectionComponent
-     */
-    private formService: FormService<IApp, ISerFormResponse>;
-
-    /**
      * update hook which is called by formService on update form values
      * this should write current form data into model
      *
@@ -57,15 +38,7 @@ export class SelectionComponent implements OnInit {
      * @memberof SelectionComponent
      */
     private updateHook: Observable<ISerFormResponse>;
-
-    /**
-     * current app model which has been loaded
-     *
-     * @private
-     * @type {IApp}
-     * @memberof SelectionComponent
-     */
-    private currentApp: IApp;
+    private report: ReportModel;
 
     /**
      * formgroup for template selections
@@ -77,11 +50,9 @@ export class SelectionComponent implements OnInit {
     private selectionForm: FormGroup;
 
     constructor(
-        formBuilder: FormBuilder,
-        formService: FormService<IApp, ISerFormResponse>
+        private formBuilder: FormBuilder,
+        private formService: FormService<ReportModel, ISerFormResponse>
     ) {
-        this.formBuilder = formBuilder;
-        this.formService = formService;
     }
 
     ngOnInit() {
@@ -96,9 +67,9 @@ export class SelectionComponent implements OnInit {
 
         /** register on app has been loaded and model has been loaded to edit*/
         this.formService.editModel()
-        .subscribe ((app: IApp) => {
-            this.currentApp = app;
-            if ( this.currentApp ) {
+        .subscribe ((report: ReportModel) => {
+            this.report = report;
+            if ( this.report ) {
                 this.selectionForm = this.buildSelectionForm();
             }
         });
@@ -126,7 +97,8 @@ export class SelectionComponent implements OnInit {
      */
     private buildSelectionForm(): FormGroup {
 
-        const selectionSettings = this.currentApp.report.template.selections[0] || {};
+
+        const selectionSettings = this.report.template.selections[0] || {};
         const selectionType     = selectionSettings.type || SelectionType.Dynamic;
 
         const formGroup: FormGroup = this.formBuilder.group({
@@ -184,13 +156,11 @@ export class SelectionComponent implements OnInit {
     private buildUpdateHook(): Observable<ISerFormResponse> {
 
         const observer = new Observable<ISerFormResponse>((obs) => {
-
             const fields     = this.selectionForm.getRawValue();
-
-            let selection = this.currentApp.report.template.selections[0];
+            let selection = this.report.template.selections[0];
             if (!selection) {
                 selection = new SelectionModel();
-                this.currentApp.report.template.selections = [selection];
+                this.report.template.selections = [selection];
             }
 
             selection.values  = fields.selection.values;

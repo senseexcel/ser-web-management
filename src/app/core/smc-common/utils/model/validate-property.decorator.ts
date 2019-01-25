@@ -71,7 +71,7 @@ export function Validate<T>(validators: Array<(property: T) => boolean>) {
 export abstract class Validators {
 
     public static Required(property: any): boolean {
-        return property !== null && property !== undefined;
+        return property !== undefined;
     }
 
     public static NotEmpty(property: any): boolean {
@@ -96,5 +96,9 @@ export abstract class Validators {
         let isString = true;
         isString = isString && Object.prototype.toString.call(value).slice(8, -1).toLowerCase() === 'string';
         return isString;
+    }
+
+    public static isArray(value: any[]): boolean {
+        return Array.isArray(value);
     }
 }
