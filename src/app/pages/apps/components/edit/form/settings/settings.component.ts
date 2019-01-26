@@ -27,7 +27,6 @@ export class SettingsComponent implements OnInit {
     }
 
     ngOnInit() {
-
         this.formService.registerHook(FormService.HOOK_UPDATE, this.buildUpdateHook());
         this.formService.editModel()
         .subscribe((report: ReportModel) => {
@@ -51,14 +50,12 @@ export class SettingsComponent implements OnInit {
      */
     private buildGeneralSettingsForm(): FormGroup {
         const config       = this.report.general;
-
         const generalGroup = this.formBuilder.group({
             cleanupTimeOut   : this.formBuilder.control(config.cleanupTimeOut),
             timeout          : this.formBuilder.control(config.timeout),
             errorRepeatCount : this.formBuilder.control(config.errorRepeatCount),
             useSandbox       : this.formBuilder.control(config.useSandbox),
         });
-
         return generalGroup;
     }
 
@@ -71,7 +68,6 @@ export class SettingsComponent implements OnInit {
      */
     private buildMailServerSettingsForm(): FormGroup {
         const mailServerSettings = this.report.distribute.mail.mailServer;
-
         return this.formBuilder.group({
             host: this.formBuilder.control(mailServerSettings.host),
             from: this.formBuilder.control(mailServerSettings.from),
@@ -110,20 +106,16 @@ export class SettingsComponent implements OnInit {
      * @memberof ConnectionComponent
      */
     private buildUpdateHook(): Observable<ISerFormResponse> {
-
         const observer = Observable.create((obs) => {
-
             if (this.generalForm.invalid || this.mailServerSettingsForm.invalid) {
                 obs.next(false);
                 return;
             }
-
             /** import data to models */
             this.report.general.raw = this.generalForm.getRawValue();
             this.report.distribute.mail.mailServer.raw = this.mailServerSettingsForm.getRawValue();
             obs.next(true);
         });
-
         return observer;
     }
 }

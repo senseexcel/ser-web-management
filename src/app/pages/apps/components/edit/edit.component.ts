@@ -115,8 +115,10 @@ export class AppEditComponent implements OnInit, OnDestroy {
             { label: 'Settings' }
         ];
 
-        const data: IDataNode = this.smcCache.get('smc.pages.app.edit');
-        this.report = data.report;
+        console.log(this.smcCache);
+
+        const data: IDataNode = this.smcCache.get('smc.pages.report.edit.current.report');
+        this.report = data.model;
         this.formService.loadModel(this.report);
 
         this.breadCrumbService.breadcrumbs
@@ -174,11 +176,11 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
     public preview() {
         this.updateReportData().subscribe((success: boolean) => {
-            if (success) {
-                this.isSubRoute = true;
-                this.router.navigate(['./preview'], { relativeTo: this.activeRoute });
-            }
-        });
+                if (success) {
+                    this.isSubRoute = true;
+                    this.router.navigate(['./preview'], { relativeTo: this.activeRoute });
+                }
+            });
     }
 
     public showTasks() {
@@ -189,27 +191,15 @@ export class AppEditComponent implements OnInit, OnDestroy {
     }
 
     public showForm(property) {
-
         let scrollToContainer: ElementRef;
 
         switch (property.label.toLowerCase()) {
-            case 'app':
-                scrollToContainer = this.connectionsContainer;
-                break;
-            case 'template':
-                scrollToContainer = this.templateContainer;
-                break;
-            case 'selections':
-                scrollToContainer = this.selectionContainer;
-                break;
-            case 'distribution':
-                scrollToContainer = this.distributeContainer;
-                break;
-            case 'settings':
-                scrollToContainer = this.settingsContainer;
-                break;
-            default:
-                return;
+            case 'app':          scrollToContainer = this.connectionsContainer; break;
+            case 'template':     scrollToContainer = this.templateContainer;    break;
+            case 'selections':   scrollToContainer = this.selectionContainer;   break;
+            case 'distribution': scrollToContainer = this.distributeContainer;  break;
+            case 'settings':     scrollToContainer = this.settingsContainer;    break;
+            default:             return;
         }
 
         scrollToContainer.nativeElement.scrollIntoView({
@@ -229,7 +219,11 @@ export class AppEditComponent implements OnInit, OnDestroy {
     */
     private updateReportData(): Observable<boolean> {
         return this.formService.updateModel().pipe(
-            map((result) => result.every((isValid) => isValid))
+            map((result) => result.every((isValid) => isValid)),
+            tap(() => {
+                const cleanedReport = this.reportService.cleanReport(this.report.raw);
+                this.smcCache.set('smc.pages.report.edit.current.report.raw', cleanedReport, true);
+            })
         );
     }
 }

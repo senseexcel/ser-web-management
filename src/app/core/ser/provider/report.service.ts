@@ -3,6 +3,7 @@ import {
     ReportModel,
 } from '../model';
 import { ISerReport } from '../api';
+import { IDataNode } from '@smc/modules/smc-common';
 
 @Injectable()
 export class ReportService {
@@ -15,7 +16,7 @@ export class ReportService {
      * @memberof ReportService
      */
     public createReport(modelData: ISerReport): ReportModel {
-        const data   = modelData || {general: null, distribute: null, connections: null, template: null};
+        const data = modelData || { general: null, distribute: null, connections: null, template: null };
         const report = new ReportModel();
         report.raw = data;
         return report;
@@ -35,16 +36,16 @@ export class ReportService {
         let model: any = report;
 
         /** get first correct model which is defined by path */
-        path.concat([name]).forEach( (modelName: string) => {
-            if (!model[modelName] ) {
+        path.concat([name]).forEach((modelName: string) => {
+            if (!model[modelName]) {
                 throw new Error('not not find correct model to update.');
             }
             model = model[modelName];
         });
 
         /** set fields on model */
-        Object.keys(model.raw).forEach( (property) => {
-            if ( ! updateData[property] ) {
+        Object.keys(model.raw).forEach((property) => {
+            if (!updateData[property]) {
                 return;
             }
             model[property] = updateData[property];
@@ -60,47 +61,25 @@ export class ReportService {
      * @returns
      * @memberof ReportService
      */
-    public cleanReport(report: any) {
-        const data = report;
+    public cleanReport(report: IDataNode) {
+        const data = JSON.parse(JSON.stringify(report));
         for (const key in data) {
-
-            if ( ! data.hasOwnProperty(key) ) {
+            if (!data.hasOwnProperty(key)) {
                 continue;
             }
 
             const value = data[key];
-            if ( value && Object.prototype.toString.apply(value).slice(8, -1) === 'Object') {
+            if (value && Object.prototype.toString.apply(value).slice(8, -1) === 'Object') {
                 const cleaned = this.cleanReport(data[key]);
-                if ( Object.keys(cleaned).length === 0 ) {
-                    delete data[key];
-                }
-            } else {
-                if ( data[key] === undefined ) {
-                    delete data[key];
-                }
+                data[key] = Object.keys(cleaned).length ? cleaned : null;
+            } else if (value && Array.isArray(value) && !value.length) {
+                data[key] = null;
+            }
+
+            if (data[key] === undefined || data[key] === null) {
+                delete data[key];
             }
         }
         return data;
-    }
-
-    /**
-     * validate model only values which we find in
-     * raw data of model are accepted otherwise it will
-     * be rejected
-     *
-     * @private
-     * @param {*} model
-     * @param {*} data
-     * @returns {boolean}
-     * @memberof ReportService
-     */
-    private validateModelData(model, data): boolean {
-        let isValid = true;
-        Object.keys(data).forEach((property) => {
-            if (!(property in model)) {
-                isValid = false;
-            }
-        });
-        return isValid;
     }
 }

@@ -40,15 +40,18 @@ export class EditGuard implements CanActivate {
                     valid = valid && this.scriptService.hasSerScript(script);
 
                     const parsedScript = this.scriptService.parse(script);
-                    const reportData   = this.scriptService.extractReports(parsedScript);
+                    const reportData = this.scriptService.extractReports(parsedScript);
                     const report = this.reportService.createReport(reportData[0]);
                     valid = valid && report.isValid;
 
                     if (valid && report.isValid) {
-                        this.smcCache.set('smc.pages.app.edit', {
+                        this.smcCache.set('smc.pages.report.edit.current', {
                             app: id,
                             script: parsedScript,
-                            report
+                            report: {
+                                model: report,
+                                raw: {}
+                            }
                         });
                     }
                     return valid;

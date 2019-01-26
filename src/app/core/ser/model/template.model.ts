@@ -92,7 +92,6 @@ export class TemplateModel implements ISerTemplate {
 
     @importData
     public set raw(data: ISerTemplate) {
-        console.log(data);
     }
 
     public get raw(): ISerTemplate {
@@ -111,7 +110,7 @@ export class TemplateModel implements ISerTemplate {
             keepFormula: this.templateKeepFormula,
             scriptKeys: this.templateScriptKeys,
             scriptArgs: this.templateScriptArgs,
-            selections: selections[0] ? [selections[0].raw] : [{}]
+            selections: selections[0] ? [selections[0].raw] : []
         };
     }
 }

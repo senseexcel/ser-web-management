@@ -59,7 +59,7 @@ export class FormService<T, R> {
      * @returns {Observable<any>}
      * @memberof FormService
      */
-    public updateModel(): Observable<any[]> {
+    public updateModel(): Observable<R[]> {
         if (this.hooks.has(FormService.HOOK_UPDATE)) {
             const batch: Observable<R>[] = this.hooks.get(FormService.HOOK_UPDATE);
             return from(batch).pipe(
