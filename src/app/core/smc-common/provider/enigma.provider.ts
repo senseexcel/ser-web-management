@@ -71,11 +71,19 @@ export class EnigmaService {
         return script;
     }
 
-    public async saveScript(appId: string, script: string): Promise<void> {
-        const app = await this.openApp(appId);
+    /**
+     * write script to app
+     *
+     * @param {string} script
+     * @param {string} appid
+     * @returns {Promise<void>}
+     * @memberof AppRepository
+     */
+    public async writeScript(script: string, appid: string): Promise<void> {
+        // could we wrap this into Observable ...
+        const app = await this.openApp(appid);
         await app.setScript(script);
-        await app.doSave();
-        await this.closeApp(app);
+        this.closeApp(app);
     }
 
     /**

@@ -47,7 +47,7 @@ export class EditGuard implements CanActivate {
                     if (valid && report.isValid) {
                         this.smcCache.set('smc.pages.report.edit.current', {
                             app: id,
-                            script: parsedScript,
+                            scriptData: parsedScript,
                             report: {
                                 model: report,
                                 raw: {}

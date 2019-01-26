@@ -6,6 +6,7 @@ import { switchMap, map, tap, mergeMap, concatMap, filter, combineAll, bufferCou
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { ScriptService } from './script.service';
 import { SER_INITIAL_SCRIPT } from '../model/default-script';
+import { ISerConfig, ISerReport } from 'ser.api';
 
 @Injectable()
 export class AppRepository {
@@ -140,4 +141,5 @@ export class AppRepository {
             })
         );
     }
+
 }

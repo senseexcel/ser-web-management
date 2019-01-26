@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as hjson from 'hjson';
-import { ISerScriptData, ISerReport } from '../api';
+import { ISerScriptData, ISerReport, ISerConfig } from '../api';
 
 @Injectable()
 export class ScriptService {
@@ -27,6 +27,14 @@ export class ScriptService {
 
     public hasSerScript(script: string): boolean {
         return script.indexOf('SER.START') !== -1;
+    }
+
+    public createReportConfig(report: ISerReport): ISerConfig {
+        return {
+            tasks: [{
+                reports: [report]
+            }]
+        };
     }
 
     /**

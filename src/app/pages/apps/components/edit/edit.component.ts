@@ -5,12 +5,13 @@ import { ReportService } from '@smc/modules/ser/provider/report.service';
 import { FormService } from '@smc/modules/form-helper/provider/form.service';
 import { TaskRepository } from '@smc/modules/qrs';
 import { Subject, of, Observable } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
+import { map, takeUntil, tap, mergeMap } from 'rxjs/operators';
 import { BreadcrumbService } from '@smc/modules/breadcrumb/provider/breadcrumb.service';
 import { IBreadCrumb } from '@smc/modules/breadcrumb/api/breadcrumb.interface';
 import { ModalService } from '@smc/modules/modal';
-import { ReportModel } from '@smc/modules/ser';
-import { SmcCache, IDataNode } from '@smc/modules/smc-common';
+import { ReportModel, ISerScriptData } from '@smc/modules/ser';
+import { SmcCache, IDataNode, EnigmaService } from '@smc/modules/smc-common';
+import { ScriptService } from '@smc/modules/ser/provider';
 
 @Component({
     selector: 'smc-qlik-edit',
@@ -47,36 +48,22 @@ export class AppEditComponent implements OnInit, OnDestroy {
     private settingsContainer: ElementRef;
 
     private isDestroyed$: Subject<boolean>;
-    private activeRoute: ActivatedRoute;
-    private reportService: ReportService;
     private report: ReportModel;
-    private router: Router;
-    private breadCrumbService: BreadcrumbService;
-    private taskApiService: TaskRepository;
-    private location: Location;
-    private modalService: ModalService;
 
     constructor(
-        activeRoute: ActivatedRoute,
-        public formService: FormService<ReportModel, boolean>,
-        location: Location,
-        modalService: ModalService,
-        reportService: ReportService,
-        router: Router,
-        breadcrumbService: BreadcrumbService,
-        taskApiService: TaskRepository,
-        private smcCache: SmcCache
+        private formService: FormService<ReportModel, boolean>,
+        private enigmaService: EnigmaService,
+        private reportService: ReportService,
+        private scriptService: ScriptService,
+        private smcCache: SmcCache,
+        private activeRoute: ActivatedRoute,
+        private location: Location,
+        private modalService: ModalService,
+        private router: Router,
+        private breadcrumbService: BreadcrumbService,
+        private taskApiService: TaskRepository
     ) {
-        this.location = location;
-        this.modalService = modalService;
         this.isDestroyed$ = new Subject<boolean>();
-        this.activeRoute = activeRoute;
-        this.formService = formService;
-        this.reportService = reportService;
-        this.router = router;
-        this.breadCrumbService = breadcrumbService;
-
-        this.taskApiService = taskApiService;
     }
 
     public cancel() {
@@ -115,13 +102,11 @@ export class AppEditComponent implements OnInit, OnDestroy {
             { label: 'Settings' }
         ];
 
-        console.log(this.smcCache);
-
         const data: IDataNode = this.smcCache.get('smc.pages.report.edit.current.report');
         this.report = data.model;
         this.formService.loadModel(this.report);
 
-        this.breadCrumbService.breadcrumbs
+        this.breadcrumbService.breadcrumbs
             .pipe(
                 takeUntil(this.isDestroyed$)
             )
@@ -142,45 +127,38 @@ export class AppEditComponent implements OnInit, OnDestroy {
     * @memberof AppEditComponent
     */
     public save() {
-
-        this.updateReportData()
-            .subscribe((couldUpdate) => {
-                console.log('i do an update');
-            });
-
-        /*
         this.updateReportData()
             .pipe(
-                map(() => ),
-                catchError(() => {
-                    return of(null);
+                tap((isValid) => {
+                    if (!isValid) {
+                        throw new Error('invalid data submitted, please check your form input');
+                    }
+                }),
+                mergeMap(() => {
+                    const data: IDataNode = this.smcCache.get('smc.pages.report.edit.current');
+                    const reportConfig = this.scriptService.createReportConfig(data.report.raw);
+                    const scriptData: ISerScriptData = data.scriptData;
+                    scriptData.script = reportConfig;
+                    return this.enigmaService.writeScript(this.scriptService.stringify(scriptData), data.app);
                 })
             )
-            .subscribe((app: ISerApp) => {
-                let title: string;
-                let message: string;
-
-                if (app) {
-                    title   = `Success`;
-                    message = `App was successfully saved.`;
-                    this.modalService.openMessageModal(title, message);
-                } else {
-                    title   = `An error occurred.`;
-                    message = `Application could not saved.`;
-                    this.modalService
-                        .openMessageModal(title, message);
-                }
+            .subscribe(() => {
+                const title = `Success`;
+                const message = `App was successfully saved.`;
+                this.modalService.openMessageModal(title, message);
+            }, (e: Error) => {
+                const title = `Error`;
+                this.modalService.openMessageModal(title, e.message);
             });
-            */
     }
 
     public preview() {
         this.updateReportData().subscribe((success: boolean) => {
-                if (success) {
-                    this.isSubRoute = true;
-                    this.router.navigate(['./preview'], { relativeTo: this.activeRoute });
-                }
-            });
+            if (success) {
+                this.isSubRoute = true;
+                this.router.navigate(['./preview'], { relativeTo: this.activeRoute });
+            }
+        });
     }
 
     public showTasks() {
@@ -194,19 +172,18 @@ export class AppEditComponent implements OnInit, OnDestroy {
         let scrollToContainer: ElementRef;
 
         switch (property.label.toLowerCase()) {
-            case 'app':          scrollToContainer = this.connectionsContainer; break;
-            case 'template':     scrollToContainer = this.templateContainer;    break;
-            case 'selections':   scrollToContainer = this.selectionContainer;   break;
-            case 'distribution': scrollToContainer = this.distributeContainer;  break;
-            case 'settings':     scrollToContainer = this.settingsContainer;    break;
-            default:             return;
+            case 'app': scrollToContainer = this.connectionsContainer; break;
+            case 'template': scrollToContainer = this.templateContainer; break;
+            case 'selections': scrollToContainer = this.selectionContainer; break;
+            case 'distribution': scrollToContainer = this.distributeContainer; break;
+            case 'settings': scrollToContainer = this.settingsContainer; break;
+            default: return;
         }
 
         scrollToContainer.nativeElement.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
         });
-
         this.selectedProperty = property;
     }
 
