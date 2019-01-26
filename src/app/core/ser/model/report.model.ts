@@ -3,10 +3,9 @@ import { GeneralSettingsModel } from './general-settings.model';
 import { TemplateModel } from './template.model';
 import { ConnectionModel } from './connection.model';
 import { DeliveryModel } from './delivery.model';
-import { DataModel, importData, Validate, Validators, OnValidationChange, mapDataTo } from '@smc/modules/smc-common/utils/model';
+import { importData, mapDataTo } from '@smc/modules/smc-common/utils/model';
 
-@DataModel
-export class ReportModel implements ISerReport, OnValidationChange {
+export class ReportModel implements ISerReport {
 
     private reportGeneral: GeneralSettingsModel;
 
@@ -25,28 +24,24 @@ export class ReportModel implements ISerReport, OnValidationChange {
         this.reportDistribute  = new DeliveryModel();
     }
 
-    @Validate([Validators.Required])
     @mapDataTo(ConnectionModel)
     public set connections(connections: ConnectionModel) {
         this.reportConnections = connections;
     }
 
-    @Validate([Validators.Required])
     @mapDataTo(DeliveryModel)
     public set distribute(delivery: DeliveryModel) {
         this.reportDistribute = delivery;
     }
 
-    @Validate([Validators.Required])
     @mapDataTo(GeneralSettingsModel)
     public set general(value: GeneralSettingsModel) {
-        this.reportGeneral.raw = value;
+        this.reportGeneral = value;
     }
 
-    @Validate([Validators.Required])
     @mapDataTo(TemplateModel)
-    public set template(data: TemplateModel) {
-        this.reportTemplate.raw = data;
+    public set template(template: TemplateModel) {
+        this.reportTemplate = template;
     }
 
     public get connections(): ConnectionModel {
@@ -78,12 +73,10 @@ export class ReportModel implements ISerReport, OnValidationChange {
     }
 
     public get raw(): ISerReport {
-
         const general     = this.reportGeneral     as GeneralSettingsModel;
         const template    = this.reportTemplate    as TemplateModel;
         const connections = this.reportConnections as ConnectionModel;
         const distribute  = this.reportDistribute  as DeliveryModel;
-
         return {
             general    : general.raw,
             template   : template.raw,

@@ -1,12 +1,5 @@
 import { Validate, Validators } from '@smc/modules/smc-common/utils/model/validate-property.decorator';
-import { DataModel } from '@smc/modules/smc-common/utils/model/data-model.decorator';
-
-interface IModelValidator {
-    onModelValidationChange(isValid: boolean): void;
-}
-
-@DataModel
-export class UserDataModel implements IModelValidator {
+export class UserDataModel {
 
     private userName: string;
 
@@ -27,9 +20,5 @@ export class UserDataModel implements IModelValidator {
 
     public get name(): string {
         return this.userName;
-    }
-
-    onModelValidationChange(isValid: boolean): void {
-        this.isValid = isValid;
     }
 }

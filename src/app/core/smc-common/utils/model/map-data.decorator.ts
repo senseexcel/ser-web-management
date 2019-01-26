@@ -26,7 +26,6 @@ export function mapDataTo<T>(constructor: ModelConstructor<IModel>) {
         return {
             set: function (data: IDataNode[]|IDataNode) {
                 let value = data;
-
                 if (Array.isArray(value)) {
                     value = value.map((modelData) => mapDataToModel(modelData));
                 } else {

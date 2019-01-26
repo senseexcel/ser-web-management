@@ -14,7 +14,7 @@ export class ReportService {
      * @memberof ReportService
      */
     public createReport(modelData: ISerReport): ReportModel {
-        const data = modelData || { general: null, distribute: null, connections: null, template: null };
+        const data = modelData || { general: {}, distribute: {}, connections: {}, template: {} } as any;
         const report = new ReportModel();
         report.raw = data;
         return report;

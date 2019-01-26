@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as hjson from 'hjson';
 import { ISerScriptData, ISerReport, ISerConfig } from '../api';
+import { ContentLibNotExistsException } from '@smc/pages/license/api/exceptions';
 
 @Injectable()
 export class ScriptService {
@@ -58,13 +59,15 @@ export class ScriptService {
      * @param data
      */
     public extractReports(data: ISerScriptData): ISerReport[] {
-        let reports: ISerReport[];
-        try {
-            reports = data.script.tasks[0].reports;
-        } catch (e) {
-            reports = [];
+        // check model has
+        let isValidScript = data.script.hasOwnProperty('tasks');
+        isValidScript = isValidScript && Array.isArray(data.script.tasks);
+        isValidScript = isValidScript && data.script.tasks[0].hasOwnProperty('reports');
+
+        if (!isValidScript) {
+            throw new Error('invalid or customized script found');
         }
-        return reports;
+        return data.script.tasks[0].reports;
     }
 
     /**

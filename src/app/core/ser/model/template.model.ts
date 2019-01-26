@@ -1,9 +1,8 @@
 import { ISerTemplate } from 'ser.api';
 import { SelectionModel } from './selection.model';
 import { IModel } from '@smc/modules/smc-common/api/model.interface';
-import { importData, Validate, Validators, DataModel, mapDataTo } from '@smc/modules/smc-common/utils/model';
+import { importData, Validate, Validators, mapDataTo } from '@smc/modules/smc-common/utils/model';
 
-@DataModel
 export class TemplateModel implements ISerTemplate {
 
     private templateGenerated: boolean;

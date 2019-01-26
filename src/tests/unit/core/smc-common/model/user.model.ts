@@ -1,13 +1,9 @@
 import { BookModel } from './book.model';
 import { IDataNode, IModel } from '@smc/modules/smc-common';
-import { Validate, Validators, DATA_MODEL_VALIDATION } from '@smc/modules/smc-common/utils/model/validate-property.decorator';
+import { Validate, Validators } from '@smc/modules/smc-common/utils/model/validate-property.decorator';
 import { importData } from '@smc/modules/smc-common/utils/model/import-data.decorator';
 
-interface IModelValidator {
-    onModelValidationChange(isValid: boolean): void;
-}
-
-export class UserModel implements IModel, IModelValidator {
+export class UserModel implements IModel {
 
     private userName: string;
 
