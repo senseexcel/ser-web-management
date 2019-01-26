@@ -1,18 +1,11 @@
 import { Injectable } from '@angular/core';
 import * as hjson from 'hjson';
 import { ISerScriptData, ISerReport } from '../api';
-import { EnigmaService } from '@smc/modules/smc-common';
 
 @Injectable()
 export class ScriptService {
 
-    public constructor(
-        private enigmaService: EnigmaService
-    ) {
-    }
-
     public parse(source: string): ISerScriptData {
-
         if (!this.hasSerScript(source)) {
             throw new Error('no ser data available');
         }
@@ -44,7 +37,6 @@ export class ScriptService {
      * @memberof SerScriptService
      */
     public stringify(script: ISerScriptData): string {
-
         return ''.concat(
             script.before,
             hjson.stringify(script.script),
@@ -58,15 +50,12 @@ export class ScriptService {
      * @param data
      */
     public extractReports(data: ISerScriptData): ISerReport[] {
-
         let reports: ISerReport[];
-
         try {
             reports = data.script.tasks[0].reports;
         } catch (e) {
             reports = [];
         }
-
         return reports;
     }
 
