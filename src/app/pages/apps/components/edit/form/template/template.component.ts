@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { IApp, ReportModel } from '@smc/modules/ser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '@smc/modules/form-helper';
-import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
 import { Observable } from 'rxjs';
 import { ISerTemplate } from 'ser.api';
 
@@ -15,12 +14,12 @@ import { ISerTemplate } from 'ser.api';
 export class TemplateComponent implements OnInit {
 
     public templateForm: FormGroup;
-    private updateHook: Observable<ISerFormResponse>;
+    private updateHook: Observable<boolean>;
     private report: ReportModel;
 
     constructor(
         private formBuilder: FormBuilder,
-        private formService: FormService<ReportModel, ISerFormResponse>
+        private formService: FormService<ReportModel, boolean>
     ) {
         this.formBuilder = formBuilder;
     }
@@ -55,18 +54,15 @@ export class TemplateComponent implements OnInit {
      * @memberof ConnectionComponent
      */
     private buildTemplateForm(): FormGroup {
-
         const formData: ISerTemplate = this.report.template;
-
         const formGroup = this.formBuilder.group({
-            input: this.formBuilder.control(formData.input, Validators.required),
-            output: this.formBuilder.control(formData.output, Validators.required),
+            input: this.formBuilder.control(formData.input),
+            output: this.formBuilder.control(formData.output),
             outputFormat: this.formBuilder.control(formData.outputFormat),
             outputPassword: this.formBuilder.control(formData.outputPassword),
             scriptKeys: this.formBuilder.control(formData.scriptKeys),
             scriptArgs: this.formBuilder.control(formData.scriptArgs)
         });
-
         return formGroup;
     }
 
@@ -77,20 +73,16 @@ export class TemplateComponent implements OnInit {
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<ISerFormResponse> {
-
-        const observer = new Observable<ISerFormResponse>((obs) => {
-            obs.next({
-                data: [{
-                    fields: this.templateForm.getRawValue(),
-                    group: 'template',
-                    path: ''
-                }],
-                errors: [],
-                valid: this.templateForm.valid,
-            });
+    private buildUpdateHook(): Observable<boolean> {
+        const observer = new Observable<boolean>((obs) => {
+            const model = this.report.template;
+            if (this.templateForm.invalid) {
+                obs.next(false);
+                return;
+            }
+            model.raw = this.templateForm.getRawValue();
+            obs.next(true);
         });
-
         return observer;
     }
 }

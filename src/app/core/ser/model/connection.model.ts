@@ -1,4 +1,5 @@
 import { ISerConnection, ISerCredentials, ISerThumbprint } from 'ser.api';
+import { importData } from '@smc/modules/smc-common/utils';
 
 export class ConnectionModel implements ISerConnection {
 
@@ -65,6 +66,9 @@ export class ConnectionModel implements ISerConnection {
     public get sslVerify(): boolean {
         return this.connectionSslVerify;
     }
+
+    @importData
+    public set raw(data: ISerConnection) {}
 
     public get raw(): ISerConnection {
         return {

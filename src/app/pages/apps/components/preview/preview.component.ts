@@ -13,25 +13,21 @@ export class ReportPreviewComponent implements OnInit {
 
     public appName: string;
 
-    private formService: FormService<IApp, null>;
-
-    private data: ISerReport;
+    public data: ISerReport;
 
     constructor(
-        formService: FormService<IApp, null>
+        private formService: FormService<ReportModel, void>
     ) {
         this.formService = formService;
     }
 
     ngOnInit() {
         this.formService.editModel()
-        .subscribe( (app: IApp) => {
-            if ( app === null ) {
+        .subscribe( (report: ReportModel) => {
+            if (!report) {
                 return;
             }
-            const report = (app.report as ReportModel).raw;
-            this.appName = app.title;
-            this.data = report;
+            this.data = report.raw;
         });
     }
 }

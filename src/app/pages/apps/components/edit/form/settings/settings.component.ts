@@ -57,7 +57,6 @@ export class SettingsComponent implements OnInit {
             timeout          : this.formBuilder.control(config.timeout),
             errorRepeatCount : this.formBuilder.control(config.errorRepeatCount),
             useSandbox       : this.formBuilder.control(config.useSandbox),
-            taskCount        : this.formBuilder.control(config.cpuLimitInCore)
         });
 
         return generalGroup;
@@ -113,19 +112,16 @@ export class SettingsComponent implements OnInit {
     private buildUpdateHook(): Observable<ISerFormResponse> {
 
         const observer = Observable.create((obs) => {
-            obs.next({
-                data: [{
-                    fields: this.generalForm.getRawValue(),
-                    group: 'general',
-                    path: ''
-                }, {
-                    fields: this.mailServerSettingsForm.getRawValue(),
-                    group: 'mailServer',
-                    path: 'distribute/mail'
-                }],
-                errors: [],
-                valid: true,
-            });
+
+            if (this.generalForm.invalid || this.mailServerSettingsForm.invalid) {
+                obs.next(false);
+                return;
+            }
+
+            /** import data to models */
+            this.report.general.raw = this.generalForm.getRawValue();
+            this.report.distribute.mail.mailServer.raw = this.mailServerSettingsForm.getRawValue();
+            obs.next(true);
         });
 
         return observer;

@@ -4,16 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReportService } from '@smc/modules/ser/provider/report.service';
 import { FormService } from '@smc/modules/form-helper/provider/form.service';
 import { TaskRepository } from '@smc/modules/qrs';
-import { Subject, of } from 'rxjs';
-import { switchMap, map, catchError, takeUntil } from 'rxjs/operators';
-import { ISerFormResponse, ISerReportFormGroup } from '../../api/ser-form.response.interface';
+import { Subject, of, Observable } from 'rxjs';
+import { map, takeUntil, tap } from 'rxjs/operators';
 import { BreadcrumbService } from '@smc/modules/breadcrumb/provider/breadcrumb.service';
 import { IBreadCrumb } from '@smc/modules/breadcrumb/api/breadcrumb.interface';
-import { ITask } from '@smc/modules/qrs/api/task.interface';
 import { ModalService } from '@smc/modules/modal';
-import { IApp } from '@smc/modules/qrs';
-import { IApp as ISerApp, ReportModel } from '@smc/modules/ser';
-import { EnigmaService, SmcCache, IDataNode } from '@smc/modules/smc-common';
+import { ReportModel } from '@smc/modules/ser';
+import { SmcCache, IDataNode } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-qlik-edit',
@@ -23,7 +20,6 @@ import { EnigmaService, SmcCache, IDataNode } from '@smc/modules/smc-common';
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
-    public apps: IApp[];
     public properties: any[];
     public associatedItems: any;
     public selectedProperty: any;
@@ -52,8 +48,8 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
     private isDestroyed$: Subject<boolean>;
     private activeRoute: ActivatedRoute;
-    private app: ISerApp;
     private reportService: ReportService;
+    private report: ReportModel;
     private router: Router;
     private breadCrumbService: BreadcrumbService;
     private taskApiService: TaskRepository;
@@ -62,7 +58,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
     constructor(
         activeRoute: ActivatedRoute,
-        public formService: FormService<ReportModel, ISerFormResponse>,
+        public formService: FormService<ReportModel, boolean>,
         location: Location,
         modalService: ModalService,
         reportService: ReportService,
@@ -120,7 +116,8 @@ export class AppEditComponent implements OnInit, OnDestroy {
         ];
 
         const data: IDataNode = this.smcCache.get('smc.pages.app.edit');
-        this.formService.loadModel(data.report);
+        this.report = data.report;
+        this.formService.loadModel(this.report);
 
         this.breadCrumbService.breadcrumbs
             .pipe(
@@ -145,11 +142,14 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public save() {
 
         this.updateReportData()
+            .subscribe((couldUpdate) => {
+                console.log('i do an update');
+            });
+
+        /*
+        this.updateReportData()
             .pipe(
-                map(() => {
-                    /** save app */
-                    // return this.appManager.saveApp(this.app);
-                }),
+                map(() => ),
                 catchError(() => {
                     return of(null);
                 })
@@ -169,21 +169,22 @@ export class AppEditComponent implements OnInit, OnDestroy {
                         .openMessageModal(title, message);
                 }
             });
+            */
     }
 
     public preview() {
-        // save model first ?
-        this.updateReportData().subscribe(() => {
-            this.isSubRoute = true;
-            this.router.navigate(['./preview'], { relativeTo: this.activeRoute });
+        this.updateReportData().subscribe((success: boolean) => {
+            if (success) {
+                this.isSubRoute = true;
+                this.router.navigate(['./preview'], { relativeTo: this.activeRoute });
+            }
         });
     }
 
     public showTasks() {
-        // save model first ?
-        this.updateReportData().subscribe(() => {
+        this.updateReportData().subscribe((success: boolean) => {
             this.isSubRoute = true;
-            this.router.navigate(['./tasks', this.app.appId], { relativeTo: this.activeRoute });
+            // this.router.navigate(['./tasks', this.report.appId], { relativeTo: this.activeRoute });
         });
     }
 
@@ -226,27 +227,9 @@ export class AppEditComponent implements OnInit, OnDestroy {
     * @returns
     * @memberof AppEditComponent
     */
-    private updateReportData() {
-
-        return this.formService.updateModel()
-            .pipe(
-                map((formData: ISerFormResponse[]) => {
-                    /** read form data and update report model with given values */
-                    formData.forEach((response: ISerFormResponse) => {
-
-                        if (!response.data) {
-                            return;
-                        }
-
-                        response.data.forEach((data: ISerReportFormGroup) => {
-                            const group = data.group;
-                            const path = data.path.length !== 0 ? data.path.split('/') : [];
-                            const fields = data.fields;
-
-                            this.reportService.updateReport(this.app.report, group, path, fields);
-                        });
-                    });
-                })
-            );
+    private updateReportData(): Observable<boolean> {
+        return this.formService.updateModel().pipe(
+            map((result) => result.every((isValid) => isValid))
+        );
     }
 }

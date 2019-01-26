@@ -1,4 +1,5 @@
 import { IHubSettings, SettingsType, DistributeMode, ISerConnection } from 'ser.api';
+import { importData } from '@smc/modules/smc-common/utils';
 
 export class HubModel implements IHubSettings {
 
@@ -71,6 +72,9 @@ export class HubModel implements IHubSettings {
     public set sharedContentType(type: string) {
         this.hubSharedContentType = type;
     }
+
+    @importData
+    public set raw(hubSettings: IHubSettings) {}
 
     public get raw(): IHubSettings {
 

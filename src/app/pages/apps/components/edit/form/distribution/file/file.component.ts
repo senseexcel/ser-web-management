@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { DistributeMode } from 'ser.api';
 import { FormService } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';
-import { ISerFormResponse } from '../../../../../api/ser-form.response.interface';
 import { ReportModel } from '@smc/modules/ser';
 
 @Component({
@@ -17,11 +16,11 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
     public distributionModes;
 
     private report: ReportModel;
-    private updateHook: Observable<ISerFormResponse>;
+    private updateHook: Observable<boolean>;
 
     constructor(
         private formBuilder: FormBuilder,
-        private formService: FormService<ReportModel, ISerFormResponse>
+        private formService: FormService<ReportModel, boolean>
     ) {
     }
 
@@ -83,21 +82,17 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<ISerFormResponse> {
-
-        const observer = new Observable<ISerFormResponse>((obs) => {
+    private buildUpdateHook(): Observable<boolean> {
+        const observer = new Observable<boolean>((obs) => {
             const fileData = this.fileForm.getRawValue();
             fileData.mode  = this.fileForm.controls.mode.value;
-
-            obs.next({
-                data: [{
-                    fields: fileData,
-                    group: 'file',
-                    path: 'distribute'
-                }],
-                errors: [],
-                valid: this.fileForm.valid,
-            });
+            if (this.fileForm.invalid) {
+                obs.next(false);
+                return;
+            }
+            this.report.distribute.file.raw = this.fileForm.getRawValue();
+            this.report.distribute.file.mode = this.fileForm.controls.mode.value;
+            obs.next(true);
         });
         return observer;
     }

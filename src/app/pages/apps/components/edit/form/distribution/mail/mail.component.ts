@@ -1,10 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { IApp, ReportModel } from '@smc/modules/ser';
+import { ReportModel } from '@smc/modules/ser';
 import { FormService, IFormResponse } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';
-import { ISerFormResponse } from '../../../../../api/ser-form.response.interface';
-import { IMailSettings } from 'ser.api';
 
 @Component({
     selector: 'smc-apps--edit-form-distribution-mail',
@@ -15,7 +13,7 @@ export class DistributionMailComponent implements OnInit {
     public mailForm: FormGroup;
 
     private report: ReportModel;
-    private updateHook: Observable<IFormResponse>;
+    private updateHook: Observable<boolean>;
 
     public mailTypes = [{
         label: 'Markdown',
@@ -30,7 +28,7 @@ export class DistributionMailComponent implements OnInit {
 
     constructor(
         private formBuilder: FormBuilder,
-        private formService: FormService<ReportModel, ISerFormResponse>
+        private formService: FormService<ReportModel, boolean>
     ) {
     }
 
@@ -59,11 +57,11 @@ export class DistributionMailComponent implements OnInit {
         return this.formBuilder.group({
             active: this.formBuilder.control(mailSettings.active),
             mailType: this.formBuilder.control(mailSettings.mailType),
-            to: this.formBuilder.control(mailSettings.to,   [Validators.required, Validators.email]),
-            cc: this.formBuilder.control(mailSettings.cc,   [Validators.email]),
-            bcc: this.formBuilder.control(mailSettings.bcc, [Validators.email]),
-            subject: this.formBuilder.control(mailSettings.subject, [Validators.required]),
-            message: this.formBuilder.control(mailSettings.message, [Validators.required])
+            to: this.formBuilder.control(mailSettings.to),
+            cc: this.formBuilder.control(mailSettings.cc),
+            bcc: this.formBuilder.control(mailSettings.bcc),
+            subject: this.formBuilder.control(mailSettings.subject),
+            message: this.formBuilder.control(mailSettings.message)
         });
     }
 
@@ -74,19 +72,14 @@ export class DistributionMailComponent implements OnInit {
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<ISerFormResponse> {
-
-        const observer = new Observable<ISerFormResponse>((obs) => {
-            const mail = this.mailForm.getRawValue();
-            obs.next({
-                data: [{
-                    fields: mail,
-                    group: 'mail',
-                    path: 'distribute'
-                }],
-                errors: [],
-                valid: this.mailForm.valid,
-            });
+    private buildUpdateHook(): Observable<boolean> {
+        const observer = new Observable<boolean>((obs) => {
+            if (this.mailForm.invalid) {
+                obs.next(false);
+                return;
+            }
+            this.report.distribute.mail.raw = this.mailForm.getRawValue();
+            obs.next(true);
         });
         return observer;
     }

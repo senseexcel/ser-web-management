@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DistributeMode } from 'ser.api';
 import { FormService } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';
-import { ISerFormResponse } from '../../../../../api/ser-form.response.interface';
 import { ReportModel } from '@smc/modules/ser';
 
 @Component({
@@ -16,11 +15,11 @@ export class DistributionHubComponent implements OnInit, OnDestroy {
     public distributeModes: any;
 
     private report: ReportModel;
-    private updateHook: Observable<ISerFormResponse>;
+    private updateHook: Observable<boolean>;
 
     constructor(
         private formBuilder: FormBuilder,
-        private formService: FormService<ReportModel, ISerFormResponse>
+        private formService: FormService<ReportModel, boolean>
     ) {
     }
 
@@ -71,18 +70,14 @@ export class DistributionHubComponent implements OnInit, OnDestroy {
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<ISerFormResponse> {
-
-        const observer = new Observable<ISerFormResponse>((obs) => {
-            obs.next({
-                data: [{
-                    fields: this.hubForm.getRawValue(),
-                    group: 'hub',
-                    path: 'distribute'
-                }],
-                errors: [],
-                valid: this.hubForm.valid,
-            });
+    private buildUpdateHook(): Observable<boolean> {
+        const observer = new Observable<boolean>((obs) => {
+            if (this.hubForm.invalid) {
+                obs.next(false);
+                return;
+            }
+            this.report.distribute.hub.raw = this.hubForm.getRawValue();
+            obs.next(true);
         });
         return observer;
     }

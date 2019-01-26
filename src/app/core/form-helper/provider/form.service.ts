@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, forkJoin, of, from } from 'rxjs';
-import { switchMap, bufferCount } from 'rxjs/operators';
+import { reduce, tap, combineAll, switchMap, bufferCount, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class FormService<T, R> {
@@ -20,7 +20,7 @@ export class FormService<T, R> {
      * available hooks
      *
      * @private
-     * @type {Map<string, Observable<R>[]>}
+     * @type {Map<string, Observable<R>[]}
      * @memberof FormService
      */
     private hooks: Map<string, Observable<R>[]>;
@@ -52,25 +52,22 @@ export class FormService<T, R> {
     }
 
     /**
-     * call update model, run all hooks for update
+     * call update form model, this runs all update
+     * hooks which are defined and return combined result
+     * of all registered update hooks
      *
      * @returns {Observable<any>}
      * @memberof FormService
      */
-    public updateModel(): Observable<any> {
-
-        if ( this.hooks.has(FormService.HOOK_UPDATE) ) {
-
-            const batch = this.hooks.get(FormService.HOOK_UPDATE);
-            const source = from(batch);
-
-            return source.pipe(
-                switchMap((hook: Observable<R>) => {
-                    return hook;
-                }),
-                bufferCount(batch.length)
+    public updateModel(): Observable<any[]> {
+        if (this.hooks.has(FormService.HOOK_UPDATE)) {
+            const batch: Observable<R>[] = this.hooks.get(FormService.HOOK_UPDATE);
+            return from(batch).pipe(
+                switchMap((hook: Observable<R>) => hook),
+                bufferCount(batch.length),
             );
         }
+        return of([]);
     }
 
     /**
@@ -80,12 +77,10 @@ export class FormService<T, R> {
      * @param fn
      */
     public registerHook(name: string, obs: Observable<R>) {
-
-        if ( ! this.hooks.has(name) ) {
+        if (!this.hooks.has(name)) {
             this.hooks.set(name, [obs]);
             return;
         }
-
         this.hooks.get(name).push(obs);
     }
 
@@ -98,17 +93,13 @@ export class FormService<T, R> {
      * @memberof FormService
      */
     public unRegisterHook(name: string, hook: Observable<R>) {
-
-        if ( ! this.hooks.has(name) || this.hooks.get(name).indexOf(hook) === -1) {
+        if (!this.hooks.has(name) || this.hooks.get(name).indexOf(hook) === -1) {
             return;
         }
-
         const hooks = this.hooks.get(name);
         const removeIndex = hooks.indexOf(hook);
-
         hooks.splice(removeIndex, 1);
-
-        if ( hooks.length === 0 ) {
+        if (hooks.length === 0) {
             this.hooks.delete(name);
         }
     }

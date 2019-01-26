@@ -1,4 +1,5 @@
 import { IMailServerSettings } from 'ser.api';
+import { importData } from '@smc/modules/smc-common/utils';
 
 export class MailServerSettingsModel implements IMailServerSettings {
 
@@ -56,6 +57,9 @@ export class MailServerSettingsModel implements IMailServerSettings {
     public set useSsl(useSsl: boolean) {
         this.mailServerSettingsUseSsl = useSsl;
     }
+
+    @importData
+    public set raw(data: IMailServerSettings) {}
 
     public get raw(): IMailServerSettings {
 

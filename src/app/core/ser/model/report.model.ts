@@ -1,7 +1,4 @@
-import { ISerGeneral, ISerTemplate, ISerConnection } from 'ser.api';
 import { ISerReport } from '../api/report.interface';
-import { ISerDelivery } from '../api/ser-delivery.interface';
-
 import { GeneralSettingsModel } from './general-settings.model';
 import { TemplateModel } from './template.model';
 import { ConnectionModel } from './connection.model';
@@ -15,9 +12,9 @@ export class ReportModel implements ISerReport, OnValidationChange {
 
     private reportTemplate: TemplateModel;
 
-    private reportConnections: ISerConnection;
+    private reportConnections: ConnectionModel;
 
-    private reportDistribute: ISerDelivery;
+    private reportDistribute: DeliveryModel;
 
     private reportValid = false;
 
@@ -30,41 +27,41 @@ export class ReportModel implements ISerReport, OnValidationChange {
 
     @Validate([Validators.Required])
     @mapDataTo(ConnectionModel)
-    public set connections(connections: ISerConnection) {
+    public set connections(connections: ConnectionModel) {
         this.reportConnections = connections;
     }
 
     @Validate([Validators.Required])
     @mapDataTo(DeliveryModel)
-    public set distribute(delivery: ISerDelivery) {
+    public set distribute(delivery: DeliveryModel) {
         this.reportDistribute = delivery;
     }
 
     @Validate([Validators.Required])
     @mapDataTo(GeneralSettingsModel)
-    public set general(value: ISerGeneral) {
+    public set general(value: GeneralSettingsModel) {
         this.reportGeneral.raw = value;
     }
 
     @Validate([Validators.Required])
     @mapDataTo(TemplateModel)
-    public set template(data: ISerTemplate) {
+    public set template(data: TemplateModel) {
         this.reportTemplate.raw = data;
     }
 
-    public get connections(): ISerConnection {
+    public get connections(): ConnectionModel {
         return this.reportConnections;
     }
 
-    public get distribute(): ISerDelivery {
+    public get distribute(): DeliveryModel {
         return this.reportDistribute;
     }
 
-    public get general(): ISerGeneral {
+    public get general(): GeneralSettingsModel {
         return this.reportGeneral;
     }
 
-    public get template(): ISerTemplate {
+    public get template(): TemplateModel {
         return this.reportTemplate;
     }
 

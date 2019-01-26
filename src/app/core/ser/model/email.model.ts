@@ -1,6 +1,6 @@
 import { IMailSettings, EMailType, IMailServerSettings, SettingsType } from 'ser.api';
 import { MailServerSettingsModel } from './mail-server.model';
-import { mapDataTo } from '@smc/modules/smc-common/utils';
+import { mapDataTo, importData } from '@smc/modules/smc-common/utils';
 
 export class EmailModel implements IMailSettings {
 
@@ -107,6 +107,9 @@ export class EmailModel implements IMailSettings {
     public get active(): boolean {
         return this.emailModelActive;
     }
+
+    @importData
+    public set raw(data: IMailSettings) {}
 
     public get raw(): IMailSettings {
 

@@ -71,6 +71,13 @@ export class EnigmaService {
         return script;
     }
 
+    public async saveScript(appId: string, script: string): Promise<void> {
+        const app = await this.openApp(appId);
+        await app.setScript(script);
+        await app.doSave();
+        await this.closeApp(app);
+    }
+
     /**
      * create new session for app
      *

@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { IApp, ReportModel } from '@smc/modules/ser';
-import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
+import { ReportModel } from '@smc/modules/ser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { SelectionObjectType, SelectionModel, SelectionType } from '@smc/modules/ser';
+import { SelectionObjectType, SelectionType } from '@smc/modules/ser';
 import { FormService } from '@smc/modules/form-helper';
 
 @Component({
@@ -37,7 +36,7 @@ export class SelectionComponent implements OnInit {
      * @type {Observable<ISerFormResponse>}
      * @memberof SelectionComponent
      */
-    private updateHook: Observable<ISerFormResponse>;
+    private updateHook: Observable<boolean>;
     private report: ReportModel;
 
     /**
@@ -51,7 +50,7 @@ export class SelectionComponent implements OnInit {
 
     constructor(
         private formBuilder: FormBuilder,
-        private formService: FormService<ReportModel, ISerFormResponse>
+        private formService: FormService<ReportModel, boolean>
     ) {
     }
 
@@ -97,7 +96,7 @@ export class SelectionComponent implements OnInit {
      */
     private buildSelectionForm(): FormGroup {
 
-
+        /*
         const selectionSettings = this.report.template.selections[0] || {};
         const selectionType     = selectionSettings.type || SelectionType.Dynamic;
 
@@ -127,6 +126,8 @@ export class SelectionComponent implements OnInit {
         // set type one time to trigger change event
         formGroup.controls.type.setValue(selectionType);
         return formGroup;
+        */
+       return this.formBuilder.group({});
     }
 
     /**
@@ -153,9 +154,11 @@ export class SelectionComponent implements OnInit {
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<ISerFormResponse> {
+    private buildUpdateHook(): Observable<boolean> {
 
-        const observer = new Observable<ISerFormResponse>((obs) => {
+        const observer = new Observable<boolean>((obs) => {
+            obs.next(true);
+            /*
             const fields     = this.selectionForm.getRawValue();
             let selection = this.report.template.selections[0];
             if (!selection) {
@@ -175,6 +178,7 @@ export class SelectionComponent implements OnInit {
                 errors: [],
                 valid: this.selectionForm.valid,
             });
+            */
         });
 
         return observer;
