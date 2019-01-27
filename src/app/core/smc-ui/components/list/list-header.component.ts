@@ -1,4 +1,4 @@
-import { Component, OnInit, Host, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'smc-list--header',
@@ -29,6 +29,23 @@ export class ListHeaderComponent implements OnInit {
     @Input()
     total: number;
 
+    /**
+     * emits on reload button pressed
+     *
+     * @type {EventEmitter<void>}
+     * @memberof ListHeaderComponent
+     */
+    @Output()
+    public reload: EventEmitter<void>;
+
+    public constructor() {
+        this.reload = new EventEmitter();
+    }
+
     ngOnInit() {
+    }
+
+    public doReload() {
+        this.reload.emit();
     }
 }

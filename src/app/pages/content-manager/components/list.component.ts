@@ -95,7 +95,7 @@ export class ListComponent implements OnInit {
             });
     }
 
-    public reloadSharedContent() {
+    public reloadList() {
         this.clearSelections();
         this.pagination.showPage(1);
     }
@@ -153,7 +153,6 @@ export class ListComponent implements OnInit {
                 }),
                 catchError(() => of(null))
             ).subscribe((tableData: ITableData) => {
-
                 /** update properties */
                 this.columns = tableData.columnNames;
                 this.tableData = DataConverter.convertQrsTableToJson(tableData);

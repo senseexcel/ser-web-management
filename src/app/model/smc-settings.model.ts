@@ -6,7 +6,7 @@ const SmcSettings: IDataNode = {
 
     list: {
         /** items per page */
-        itemPageCount: 1,
+        itemPageCount: 100,
     },
     pages: Pages
 };

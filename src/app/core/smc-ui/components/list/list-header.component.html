@@ -14,4 +14,13 @@
 </ul>
 <div class="list-header--actions">
     <ng-content select="[list-header--actions]"></ng-content>
+
+    <!-- button toolbar -->
+    <nav class="navbar list-header--actions-navbar">
+        <div class="btn-toolbar" role="group">
+        <button type="button" class="btn" (click)="doReload()">
+            <i class="ser-icon ser-icon--reload"></i>
+        </button>
+        </div>
+    </nav>
 </div>

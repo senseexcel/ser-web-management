@@ -26,4 +26,29 @@
             margin-left: 24px;
         }
     }
+
+    .list-header--actions {
+
+        display: flex;
+        align-items: baseline;
+
+        ::ng-deep .btn {
+            min-width: auto;
+            width: auto;
+            margin: 0;
+            border: 0;
+            border-radius: 0;
+            background: none;
+            box-shadow: none;
+
+            i.ser-icon {
+                color: rgba(#FFF, .6);
+                margin: 0;
+            }
+        }
+    }
+
+    .list-header--actions-navbar {
+        padding: 0;
+    }
 }
