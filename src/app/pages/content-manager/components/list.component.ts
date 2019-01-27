@@ -100,6 +100,12 @@ export class ListComponent implements OnInit {
         this.pagination.showPage(1);
     }
 
+    public selectAll() {
+    }
+
+    public deselectAll() {
+    }
+
     /**
      * clear all selections which has been made
      *

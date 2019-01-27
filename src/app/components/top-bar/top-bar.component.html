@@ -19,7 +19,7 @@
     </div>
 
     <div class="navbar-group navbar-group--right">
-        <smc-drop-down [hostClass]="'top-bar--menu'" [label]="loggedInUser.userName" (show)="showMenuOverlay($event)">
+        <smc-drop-down [hostClass]="['top-bar--menu']" [label]="loggedInUser.userName" (show)="showMenuOverlay($event)">
             <app-menu [menuItems]="userMenu"></app-menu>
         </smc-drop-down>
     </div>

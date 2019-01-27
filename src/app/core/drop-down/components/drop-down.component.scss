@@ -1,18 +1,30 @@
 :host {
-    display: block;
+  display: block;
 
-    button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: auto;
-    }
+  button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: auto;
+  }
 
-    button > i.ser-icon {
-        margin: 0;
-    }
+  button>i.ser-icon {
+    margin: 0;
+  }
 
-    button > .label + i.ser-icon {
-        margin-left: 10px;
+  button>.label+i.ser-icon {
+    margin-left: 10px;
+  }
+}
+
+::ng-deep {
+  .smc-ui--drop-down {
+
+    >.ser-icon--arrow-up {
+      position: relative;
+      font-size: 20px;
+      align-self: center;
+      line-height: 10px;
     }
+  }
 }

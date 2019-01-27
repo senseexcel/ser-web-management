@@ -8,7 +8,7 @@ import { POSITION_BOTTOM_CENTER, POSITION_BOTTOM_LEFT } from '../model/positions
 
 @Component({
     selector: 'smc-drop-down',
-    styleUrls: ['drop-down.component.scss'],
+    styleUrls: ['./drop-down.component.scss'],
     templateUrl: 'drop-down.component.html'
 })
 
@@ -21,9 +21,9 @@ export class DropDownComponent implements OnInit {
      * @memberof DropDownComponent
      */
     @Input()
-    public hostClass: string;
+    public hostClass: string[];
 
-    @Input()
+    @Input('label')
     public label: string;
 
     @Output()
@@ -134,7 +134,7 @@ export class DropDownComponent implements OnInit {
             .withPositions([POSITION_BOTTOM_CENTER]);
 
         const overlayConfig = new OverlayConfig({
-            panelClass: this.hostClass,
+            panelClass: [...this.hostClass, 'smc-ui--drop-down'],
             positionStrategy
         });
 
@@ -153,8 +153,7 @@ export class DropDownComponent implements OnInit {
 
             const deltaCenter = centerSourceX - centerOverlayX;
 
-            this.arrowUpIcon.nativeElement.style.position = 'relative';
-            this.arrowUpIcon.nativeElement.style.left     =  `${deltaCenter}px`;
+            this.arrowUpIcon.nativeElement.style.left      =  `${deltaCenter}px`;
         });
 
         return dropDownOverlay;
