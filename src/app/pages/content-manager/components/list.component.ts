@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ITableData } from '@smc/modules/qrs/api/table.interface';
 import { SharedContentRepository } from '@smc/modules/qrs';
-import { mergeMap, catchError, filter, distinctUntilChanged, tap, switchMap, takeWhile, takeUntil, skipWhile } from 'rxjs/operators';
-import { of, Observable, fromEvent, merge, Subject } from 'rxjs';
+import { mergeMap, catchError, filter, switchMap, takeUntil } from 'rxjs/operators';
+import { of, Observable, fromEvent, Subject } from 'rxjs';
 import { IDataNode, SmcCache } from '@smc/modules/smc-common';
 import { DataConverter } from '@smc/modules/qrs';
 import { PaginationService } from '@smc/modules/smc-ui/pagination';
@@ -106,7 +106,7 @@ export class ListComponent implements OnInit, OnDestroy {
     }
 
     public reloadList() {
-        this.clearSelections();
+        this.selections.clear();
         this.pagination.showPage(1);
     }
 
@@ -115,16 +115,6 @@ export class ListComponent implements OnInit, OnDestroy {
     }
 
     public deselectAll() {
-        this.selections.clear();
-    }
-
-    /**
-     * clear all selections which has been made
-     *
-     * @private
-     * @memberof ListComponent
-     */
-    private clearSelections() {
         this.selections.clear();
     }
 
@@ -141,9 +131,11 @@ export class ListComponent implements OnInit, OnDestroy {
             currentPage: 1
         });
 
-        this.pagination.pageChange.subscribe((page: number) => {
-            this.loadSharedContentData((page - 1) * this.listSettings.itemPageCount);
-        });
+        this.pagination.pageChange
+            .pipe(takeUntil(this.isDestroyed))
+            .subscribe((page: number) => {
+                this.loadSharedContentData((page - 1) * this.listSettings.itemPageCount);
+            });
     }
 
     /**
@@ -154,10 +146,6 @@ export class ListComponent implements OnInit, OnDestroy {
      * @memberof ListComponent
      */
     private loadSharedContentData(start = 0) {
-
-        /** clear selections and update pagination */
-        this.clearSelections();
-
         this.isLoading = true;
         this.sharedContentRepository.count()
             .pipe(
@@ -170,10 +158,14 @@ export class ListComponent implements OnInit, OnDestroy {
                 }),
                 catchError(() => of(null))
             ).subscribe((tableData: ITableData) => {
+
                 /** update properties */
                 this.columns = tableData.columnNames;
                 this.tableData = DataConverter.convertQrsTableToJson(tableData);
                 this.visible = this.tableData.length;
+
+                /** clear selections */
+                this.selections.clear();
 
                 this.pagination.update({
                     itemTotalCount: this.total
