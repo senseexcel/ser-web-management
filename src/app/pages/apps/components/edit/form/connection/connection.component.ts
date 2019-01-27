@@ -1,12 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { map, mergeMap, filter, mergeAll, flatMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
-
 import { FormService } from '@smc/modules/form-helper';
 import { IApp } from '@smc/modules/qrs';
-import { IApp as ISerApp } from '@smc/modules/ser';
+import { IApp as ISerApp, ReportModel } from '@smc/modules/ser';
 
 @Component({
     selector: 'smc-apps--edit-form-connection',
@@ -16,18 +14,15 @@ export class ConnectionComponent implements OnInit, OnDestroy {
 
     public connectionForm: FormGroup;
     public apps: IApp[];
-    public currentApp: ISerApp;
 
-    private formBuilder: FormBuilder;
-    private formService: FormService<ISerApp, ISerFormResponse>;
+    private model: ReportModel;
     private updateHook: Observable<any>;
 
     constructor(
-        formBuilder: FormBuilder,
-        formService: FormService<ISerApp, ISerFormResponse>
+        private formBuilder: FormBuilder,
+        private formService: FormService<ReportModel, ISerFormResponse>
     ) {
         this.formBuilder = formBuilder;
-        this.formService = formService;
     }
 
     /**
@@ -36,7 +31,6 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      * @memberof ConnectionComponent
      */
     ngOnDestroy() {
-        // @todo implement
         this.formService.unRegisterHook(FormService.HOOK_UPDATE, this.updateHook);
     }
 
@@ -51,21 +45,12 @@ export class ConnectionComponent implements OnInit, OnDestroy {
         this.updateHook = this.buildUpdateHook();
         this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
+
         /** register on app has been loaded */
         this.formService.editModel()
-        .pipe(
-            mergeMap( (app: ISerApp) => {
-                return this.loadAvailableApps(app);
-            })
-        )
-        .subscribe ((result) => {
-            this.currentApp = result.app;
-            this.apps       = result.apps;
-
-            if ( this.currentApp ) {
-                /** @todo should only update form fields and not create every time a new form group */
-                this.connectionForm = this.buildFormGroup();
-            }
+        .subscribe ((report: ReportModel) => {
+            this.model = report;
+            this.connectionForm = this.buildFormGroup();
         });
     }
 
@@ -109,7 +94,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
     private buildFormGroup(): FormGroup {
 
         const formGroup = this.formBuilder.group({
-            app: this.formBuilder.control(this.currentApp.report.connections.app, Validators.required)
+            app: this.formBuilder.control(this.model.connections.app)
         });
 
         return formGroup;
@@ -122,20 +107,15 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      * @returns {Observable<string>}
      * @memberof ConnectionComponent
      */
-    private buildUpdateHook(): Observable<ISerFormResponse> {
-
-        const observer = new Observable<ISerFormResponse>((obs) => {
-            obs.next({
-                data: [{
-                    fields: this.connectionForm.getRawValue(),
-                    group: 'connections',
-                    path: ''
-                }],
-                errors: [],
-                valid: this.connectionForm.valid,
-            });
+    private buildUpdateHook(): Observable<boolean> {
+        const observer = new Observable<boolean>((obs) => {
+            if (this.connectionForm.invalid) {
+                obs.next(false);
+                return;
+            }
+            this.model.connections.raw = this.connectionForm.getRawValue();
+            obs.next(true);
         });
-
         return observer;
     }
 }

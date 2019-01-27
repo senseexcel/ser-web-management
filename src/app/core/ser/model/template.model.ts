@@ -1,6 +1,7 @@
 import { ISerTemplate } from 'ser.api';
 import { SelectionModel } from './selection.model';
 import { IModel } from '@smc/modules/smc-common/api/model.interface';
+import { importData, Validate, Validators, mapDataTo } from '@smc/modules/smc-common/utils/model';
 
 export class TemplateModel implements ISerTemplate {
 
@@ -12,7 +13,7 @@ export class TemplateModel implements ISerTemplate {
     private templateKeepFormula: boolean;
     private templateScriptKeys: string[];
     private templateScriptArgs: string[];
-    private templateSelections: SelectionModel[];
+    private templateSelections: SelectionModel[] = [];
 
     public get generated(): boolean {
         return this.templateGenerated;
@@ -82,8 +83,14 @@ export class TemplateModel implements ISerTemplate {
         this.templateScriptArgs = args;
     }
 
-    public set selections(selection: SelectionModel[]) {
-        this.templateSelections = selection;
+    @Validate([Validators.isArray])
+    @mapDataTo<SelectionModel[]>(SelectionModel)
+    public set selections(selections: SelectionModel[]) {
+        this.templateSelections = selections;
+    }
+
+    @importData
+    public set raw(data: ISerTemplate) {
     }
 
     public get raw(): ISerTemplate {
@@ -102,7 +109,7 @@ export class TemplateModel implements ISerTemplate {
             keepFormula: this.templateKeepFormula,
             scriptKeys: this.templateScriptKeys,
             scriptArgs: this.templateScriptArgs,
-            selections: [selections[0].raw],
+            selections: selections[0] ? [selections[0].raw] : []
         };
     }
 }

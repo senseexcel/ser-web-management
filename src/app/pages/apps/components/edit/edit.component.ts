@@ -4,15 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReportService } from '@smc/modules/ser/provider/report.service';
 import { FormService } from '@smc/modules/form-helper/provider/form.service';
 import { TaskRepository } from '@smc/modules/qrs';
-import { Subject, of } from 'rxjs';
-import { switchMap, map, catchError, takeUntil } from 'rxjs/operators';
-import { ISerFormResponse, ISerReportFormGroup } from '../../api/ser-form.response.interface';
+import { Subject, of, Observable } from 'rxjs';
+import { map, takeUntil, tap, mergeMap } from 'rxjs/operators';
 import { BreadcrumbService } from '@smc/modules/breadcrumb/provider/breadcrumb.service';
 import { IBreadCrumb } from '@smc/modules/breadcrumb/api/breadcrumb.interface';
-import { ITask } from '@smc/modules/qrs/api/task.interface';
 import { ModalService } from '@smc/modules/modal';
-import { IApp } from '@smc/modules/qrs';
-import { IApp as ISerApp } from '@smc/modules/ser';
+import { ReportModel, ISerScriptData } from '@smc/modules/ser';
+import { SmcCache, IDataNode, EnigmaService } from '@smc/modules/smc-common';
+import { ScriptService } from '@smc/modules/ser/provider';
 
 @Component({
     selector: 'smc-qlik-edit',
@@ -22,12 +21,10 @@ import { IApp as ISerApp } from '@smc/modules/ser';
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
-    public apps: IApp[];
     public properties: any[];
     public associatedItems: any;
     public selectedProperty: any;
     public isLoading = true;
-    public formService: FormService<ISerApp, ISerFormResponse>;
     public formDataLoaded = false;
     public isSubRoute = false;
     public taskCount = 0;
@@ -51,35 +48,22 @@ export class AppEditComponent implements OnInit, OnDestroy {
     private settingsContainer: ElementRef;
 
     private isDestroyed$: Subject<boolean>;
-    private activeRoute: ActivatedRoute;
-    private app: ISerApp;
-    private reportService: ReportService;
-    private router: Router;
-    private breadCrumbService: BreadcrumbService;
-    private taskApiService: TaskRepository;
-    private location: Location;
-    private modalService: ModalService;
+    private report: ReportModel;
 
     constructor(
-        activeRoute: ActivatedRoute,
-        formService: FormService<ISerApp, ISerFormResponse>,
-        location: Location,
-        modalService: ModalService,
-        reportService: ReportService,
-        router: Router,
-        breadcrumbService: BreadcrumbService,
-        taskApiService: TaskRepository
+        private formService: FormService<ReportModel, boolean>,
+        private enigmaService: EnigmaService,
+        private reportService: ReportService,
+        private scriptService: ScriptService,
+        private smcCache: SmcCache,
+        private activeRoute: ActivatedRoute,
+        private location: Location,
+        private modalService: ModalService,
+        private router: Router,
+        private breadcrumbService: BreadcrumbService,
+        private taskApiService: TaskRepository
     ) {
-        this.location = location;
-        this.modalService = modalService;
         this.isDestroyed$ = new Subject<boolean>();
-        this.activeRoute = activeRoute;
-        this.formService = formService;
-        this.reportService = reportService;
-        this.router = router;
-        this.breadCrumbService = breadcrumbService;
-
-        this.taskApiService = taskApiService;
     }
 
     public cancel() {
@@ -108,9 +92,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     *
     * @memberof AppEditComponent
     */
-    public ngOnInit() {
-
-        this.isLoading = true;
+    public async ngOnInit() {
 
         this.properties = [
             { label: 'App' },
@@ -120,34 +102,11 @@ export class AppEditComponent implements OnInit, OnDestroy {
             { label: 'Settings' }
         ];
 
-        const params = this.activeRoute.snapshot.params;
-        const serApp$ = this.initExistingApp(params.id);
+        const data: IDataNode = this.smcCache.get('smc.pages.report.edit.current.report');
+        this.report = data.model;
+        this.formService.loadModel(this.report);
 
-        /*
-        app$.pipe(
-            switchMap(() => serApp$),
-            takeUntil(this.isDestroyed$)
-        )
-        .subscribe((tasks: ITask[]) => {
-            this.associatedItems = [{
-                label: 'Tasks',
-                items: 'tasks',
-                route: 'tasks',
-                count: tasks.length
-            }];
-            this.formDataLoaded = true;
-        }, () => {
-            this.modalService.openMessageModal(
-                'Found incompatible Script !',
-                'This app contains an incompatible or more complex Script and could not be edited with this Webmanagement Console.\n\n\
-                If you want to edit this script go to  Qlik Sense App Dataload Editor and edit the script manually.'
-            ).onClose.subscribe(() => {
-                this.router.navigate(['.'], {relativeTo: this.activeRoute.parent});
-            });
-        });
-        */
-
-        this.breadCrumbService.breadcrumbs
+        this.breadcrumbService.breadcrumbs
             .pipe(
                 takeUntil(this.isDestroyed$)
             )
@@ -168,79 +127,63 @@ export class AppEditComponent implements OnInit, OnDestroy {
     * @memberof AppEditComponent
     */
     public save() {
-
         this.updateReportData()
             .pipe(
-                map(() => {
-                    /** save app */
-                    // return this.appManager.saveApp(this.app);
+                tap((isValid) => {
+                    if (!isValid) {
+                        throw new Error('invalid data submitted, please check your form input');
+                    }
                 }),
-                catchError(() => {
-                    return of(null);
+                mergeMap(() => {
+                    const data: IDataNode = this.smcCache.get('smc.pages.report.edit.current');
+                    const reportConfig = this.scriptService.createReportConfig(data.report.raw);
+                    const scriptData: ISerScriptData = data.scriptData;
+                    scriptData.script = reportConfig;
+                    return this.enigmaService.writeScript(this.scriptService.stringify(scriptData), data.app);
                 })
             )
-            .subscribe((app: ISerApp) => {
-                let title: string;
-                let message: string;
-
-                if (app) {
-                    title   = `Success`;
-                    message = `App was successfully saved.`;
-                    this.modalService.openMessageModal(title, message);
-                } else {
-                    title   = `An error occurred.`;
-                    message = `Application could not saved.`;
-                    this.modalService
-                        .openMessageModal(title, message);
-                }
+            .subscribe(() => {
+                const title = `Success`;
+                const message = `App was successfully saved.`;
+                this.modalService.openMessageModal(title, message);
+            }, (e: Error) => {
+                const title = `Error`;
+                this.modalService.openMessageModal(title, e.message);
             });
     }
 
     public preview() {
-        // save model first ?
-        this.updateReportData().subscribe(() => {
-            this.isSubRoute = true;
-            this.router.navigate(['./preview'], { relativeTo: this.activeRoute });
+        this.updateReportData().subscribe((success: boolean) => {
+            if (success) {
+                this.isSubRoute = true;
+                this.router.navigate(['./preview'], { relativeTo: this.activeRoute });
+            }
         });
     }
 
     public showTasks() {
-        // save model first ?
-        this.updateReportData().subscribe(() => {
+        this.updateReportData().subscribe((success: boolean) => {
             this.isSubRoute = true;
-            this.router.navigate(['./tasks', this.app.appId], { relativeTo: this.activeRoute });
+            // this.router.navigate(['./tasks', this.report.appId], { relativeTo: this.activeRoute });
         });
     }
 
     public showForm(property) {
-
         let scrollToContainer: ElementRef;
 
         switch (property.label.toLowerCase()) {
-            case 'app':
-                scrollToContainer = this.connectionsContainer;
-                break;
-            case 'template':
-                scrollToContainer = this.templateContainer;
-                break;
-            case 'selections':
-                scrollToContainer = this.selectionContainer;
-                break;
-            case 'distribution':
-                scrollToContainer = this.distributeContainer;
-                break;
-            case 'settings':
-                scrollToContainer = this.settingsContainer;
-                break;
-            default:
-                return;
+            case 'app': scrollToContainer = this.connectionsContainer; break;
+            case 'template': scrollToContainer = this.templateContainer; break;
+            case 'selections': scrollToContainer = this.selectionContainer; break;
+            case 'distribution': scrollToContainer = this.distributeContainer; break;
+            case 'settings': scrollToContainer = this.settingsContainer; break;
+            default: return;
         }
 
         scrollToContainer.nativeElement.scrollIntoView({
             behavior: 'smooth',
             block: 'start'
         });
-
         this.selectedProperty = property;
     }
 
@@ -251,57 +194,13 @@ export class AppEditComponent implements OnInit, OnDestroy {
     * @returns
     * @memberof AppEditComponent
     */
-    private updateReportData() {
-
-        return this.formService.updateModel()
-            .pipe(
-                map((formData: ISerFormResponse[]) => {
-                    /** read form data and update report model with given values */
-                    formData.forEach((response: ISerFormResponse) => {
-
-                        if (!response.data) {
-                            return;
-                        }
-
-                        response.data.forEach((data: ISerReportFormGroup) => {
-                            const group = data.group;
-                            const path = data.path.length !== 0 ? data.path.split('/') : [];
-                            const fields = data.fields;
-
-                            this.reportService.updateReport(this.app.report, group, path, fields);
-                        });
-                    });
-                })
-            );
-    }
-
-    /**
-    * initialize existing app
-    *
-    * @private
-    * @memberof AppEditComponent
-    */
-    private initExistingApp(qDocId: string) {
-
-        /*
-        return this.appManager.fetchApp(qDocId)
-            .pipe(
-                switchMap((app: IApp) => {
-                    this.appManager.selectApps([app]);
-                    return this.appManager.openApp(app);
-                }),
-                switchMap((app: ISerApp) => {
-                    if (app.invalid) {
-                        throw new Error('invalid app');
-                    } else {
-                        this.app = app;
-                        this.formService.loadModel(app);
-                        this.apps = this.appManager.getSelectedApps();
-                        // load tasks
-                        return this.taskApiService.fetchTasksForApp(app.appId);
-                    }
-                })
-            );
-            */
+    private updateReportData(): Observable<boolean> {
+        return this.formService.updateModel().pipe(
+            map((result) => result.every((isValid) => isValid)),
+            tap(() => {
+                const cleanedReport = this.reportService.cleanReport(this.report.raw);
+                this.smcCache.set('smc.pages.report.edit.current.report.raw', cleanedReport, true);
+            })
+        );
     }
 }

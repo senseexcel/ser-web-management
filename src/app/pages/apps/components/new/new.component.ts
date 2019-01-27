@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IApp } from '@smc/modules/ser';
+import { EnigmaService, ISettings } from '@smc/modules/smc-common';
+import { ScriptService, AppRepository } from '@smc/modules/ser/provider';
+import { SER_INITIAL_SCRIPT } from '@smc/modules/ser/model/default-script';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 
 @Component({
   selector: 'smc-qlik-new',
@@ -10,33 +13,27 @@ import { IApp } from '@smc/modules/ser';
 })
 export class AppNewComponent implements OnInit {
 
-  private formBuilder: FormBuilder;
   public formNameControl: FormControl;
 
   private route: ActivatedRoute;
-  private router: Router;
 
   constructor(
-    formBuilder: FormBuilder,
-    router: Router
+    @Inject(SER_INITIAL_SCRIPT) private initialScript,
+    private formBuilder: FormBuilder,
+    private appRepository: AppRepository,
+    private router: Router
   ) {
-    this.formBuilder = formBuilder;
-    this.router = router;
   }
 
   ngOnInit() {
     this.formNameControl = this.formBuilder.control('', Validators.required);
   }
 
-  public apply() {
+  public async apply() {
+
     if (this.formNameControl.valid) {
-      const name = this.formNameControl.value;
-      /*
-      this.appManager.createApp(name)
-        .then((app: IApp) => {
-          this.router.navigate([`apps/new/${app.appId}`]);
-        });
-      */
+      const id = await this.appRepository.createApp(this.formNameControl.value);
+      this.router.navigate([`apps/new/${id}`]);
     }
   }
 

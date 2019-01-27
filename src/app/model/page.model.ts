@@ -23,12 +23,12 @@ export const Pages = [
             route: 'tasks'
         },
         {
-            name: 'Content Manager',
+            name: 'Shared Content',
             show: true,
-            description: 'Content Manager',
+            description: 'Shared Content',
             disabled: false,
             icon: 'folder',
-            route: 'content-manager'
+            route: 'sharedcontent'
         }]
     },
     {

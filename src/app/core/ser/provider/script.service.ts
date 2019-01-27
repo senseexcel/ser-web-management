@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
 import * as hjson from 'hjson';
-import { ISerScriptData, ISerReport } from '../api';
+import { ISerScriptData, ISerReport, ISerConfig } from '../api';
+import { ContentLibNotExistsException } from '@smc/pages/license/api/exceptions';
 
 @Injectable()
 export class ScriptService {
 
     public parse(source: string): ISerScriptData {
-
-        const indexStart = source.indexOf('SER.START');
-
-        if ( indexStart === -1 ) {
+        if (!this.hasSerScript(source)) {
             throw new Error('no ser data available');
         }
 
@@ -32,6 +30,14 @@ export class ScriptService {
         return script.indexOf('SER.START') !== -1;
     }
 
+    public createReportConfig(report: ISerReport): ISerConfig {
+        return {
+            tasks: [{
+                reports: [report]
+            }]
+        };
+    }
+
     /**
      * return complete app script as string
      *
@@ -40,7 +46,6 @@ export class ScriptService {
      * @memberof SerScriptService
      */
     public stringify(script: ISerScriptData): string {
-
         return ''.concat(
             script.before,
             hjson.stringify(script.script),
@@ -54,15 +59,24 @@ export class ScriptService {
      * @param data
      */
     public extractReports(data: ISerScriptData): ISerReport[] {
+        // check model has
+        let isValidScript = data.script.hasOwnProperty('tasks');
+        isValidScript = isValidScript && Array.isArray(data.script.tasks);
+        isValidScript = isValidScript && data.script.tasks[0].hasOwnProperty('reports');
 
-        let reports: ISerReport[];
-
-        try {
-            reports = data.script.tasks[0].reports;
-        } catch (e) {
-            reports = [];
+        if (!isValidScript) {
+            throw new Error('invalid or customized script found');
         }
+        return data.script.tasks[0].reports;
+    }
 
-        return reports;
+    /**
+     *
+     *
+     * @returns {boolean}
+     * @memberof ScriptService
+     */
+    public isValid(): boolean {
+        return false;
     }
 }

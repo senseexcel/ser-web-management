@@ -1,4 +1,5 @@
 import { IFileSettings, SettingsType, DistributeMode, ISerConnection } from 'ser.api';
+import { importData } from '@smc/modules/smc-common/utils';
 
 export class FileModel implements IFileSettings {
 
@@ -61,6 +62,9 @@ export class FileModel implements IFileSettings {
     public set connections(connections: ISerConnection[]) {
         this.fileConnections = connections;
     }
+
+    @importData
+    public set raw(settings: IFileSettings) {}
 
     public get raw(): IFileSettings {
         return {

@@ -1,6 +1,8 @@
 import { ISerGeneral } from 'ser.api';
+import { importData } from '@smc/modules/smc-common/utils/model/import-data.decorator';
+import { IModel } from '@smc/modules/smc-common';
 
-export class GeneralSettingsModel implements ISerGeneral {
+export class GeneralSettingsModel implements ISerGeneral, IModel {
 
     private generalCleanupTimeOut: number;
 
@@ -13,6 +15,8 @@ export class GeneralSettingsModel implements ISerGeneral {
     private generalUseSandbox: boolean;
 
     private generalUseUserSelections: SelectionMode;
+
+    private rawData: ISerGeneral;
 
     /** The time after clean up the temp folder. */
     public set cleanupTimeOut(timeout: number) {
@@ -74,8 +78,12 @@ export class GeneralSettingsModel implements ISerGeneral {
         return this.generalUseUserSelections;
     }
 
-    public get raw(): ISerGeneral {
+    @importData
+    public set raw(data: ISerGeneral) {
+        this.rawData = data;
+    }
 
+    public get raw(): ISerGeneral {
         return {
             cleanupTimeOut: this.generalCleanupTimeOut,
             errorRepeatCount: this.generalErrorRepeatCount,

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormService } from '@smc/modules/form-helper';
-import { ISerReport } from '../../api/ser-config.interface';
-import { IApp, ReportModel } from '@smc/modules/ser';
+import { SmcCache, IDataNode } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-report-preview',
@@ -13,25 +11,13 @@ export class ReportPreviewComponent implements OnInit {
 
     public appName: string;
 
-    private formService: FormService<IApp, null>;
-
-    private data: ISerReport;
+    public previewData: IDataNode;
 
     constructor(
-        formService: FormService<IApp, null>
-    ) {
-        this.formService = formService;
-    }
+        private cache: SmcCache
+    ) {}
 
     ngOnInit() {
-        this.formService.editModel()
-        .subscribe( (app: IApp) => {
-            if ( app === null ) {
-                return;
-            }
-            const report = (app.report as ReportModel).raw;
-            this.appName = app.title;
-            this.data = report;
-        });
+        this.previewData = this.cache.get('smc.pages.report.edit.current.report.raw');
     }
 }

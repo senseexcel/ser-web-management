@@ -28,7 +28,7 @@
               <td *ngSwitchCase="'MetaData'"     mat-cell matTooltipClass="tooltip-pre" matTooltip="{{col[column][0] | hjson}}">Metadata</td>
               <td *ngSwitchCase="'CreatedDate'"  mat-cell>{{col[column] | momentFormat}}</td>
               <td *ngSwitchCase="'ModifiedDate'" mat-cell>{{col[column] | momentFormat}}</td>
-              <td *ngSwitchCase="'Owner'"        mat-cell>{{col[column].userDirectory}}/{{col[column].userId}}</td>
+              <td *ngSwitchCase="'Owner'"        mat-cell>{{col[column].userDirectory}}\{{col[column].userId}}</td>
               <td *ngSwitchDefault               mat-cell>{{col[column]}}</td>
             </ng-container>
           </ng-container>

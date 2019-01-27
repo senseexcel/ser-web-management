@@ -1,62 +1,82 @@
-import { ISerGeneral, ISerTemplate, ISerConnection } from 'ser.api';
 import { ISerReport } from '../api/report.interface';
-import { ISerDelivery } from '../api/ser-delivery.interface';
-import {
-    GeneralSettingsModel,
-    TemplateModel,
-    ConnectionModel,
-    DeliveryModel
-} from './';
+import { GeneralSettingsModel } from './general-settings.model';
+import { TemplateModel } from './template.model';
+import { ConnectionModel } from './connection.model';
+import { DeliveryModel } from './delivery.model';
+import { importData, mapDataTo } from '@smc/modules/smc-common/utils/model';
 
 export class ReportModel implements ISerReport {
 
-    private reportGeneral: ISerGeneral;
+    private reportGeneral: GeneralSettingsModel;
 
-    private reportTemplate: ISerTemplate;
+    private reportTemplate: TemplateModel;
 
-    private reportConnections: ISerConnection;
+    private reportConnections: ConnectionModel;
 
-    private reportDistribute: ISerDelivery;
+    private reportDistribute: DeliveryModel;
 
-    public set connections(connections: ISerConnection) {
+    private reportValid = false;
+
+    public constructor() {
+        this.reportGeneral     = new GeneralSettingsModel();
+        this.reportTemplate    = new TemplateModel();
+        this.reportConnections = new ConnectionModel();
+        this.reportDistribute  = new DeliveryModel();
+    }
+
+    @mapDataTo(ConnectionModel)
+    public set connections(connections: ConnectionModel) {
         this.reportConnections = connections;
     }
 
-    public set distribute(delivery: ISerDelivery) {
+    @mapDataTo(DeliveryModel)
+    public set distribute(delivery: DeliveryModel) {
         this.reportDistribute = delivery;
     }
 
-    public set general(value: ISerGeneral) {
+    @mapDataTo(GeneralSettingsModel)
+    public set general(value: GeneralSettingsModel) {
         this.reportGeneral = value;
     }
 
-    public set template(template: ISerTemplate) {
+    @mapDataTo(TemplateModel)
+    public set template(template: TemplateModel) {
         this.reportTemplate = template;
     }
 
-    public get connections(): ISerConnection {
+    public get connections(): ConnectionModel {
         return this.reportConnections;
     }
 
-    public get distribute(): ISerDelivery {
+    public get distribute(): DeliveryModel {
         return this.reportDistribute;
     }
 
-    public get general(): ISerGeneral {
+    public get general(): GeneralSettingsModel {
         return this.reportGeneral;
     }
 
-    public get template(): ISerTemplate {
+    public get template(): TemplateModel {
         return this.reportTemplate;
     }
 
-    public get raw(): ISerReport {
+    @importData
+    public set raw(data: ISerReport) {
+    }
 
+    public onModelValidationChange(isValid: boolean): void {
+        this.reportValid = isValid;
+    }
+
+    public get isValid(): boolean {
+        return this.reportValid;
+    }
+
+    public get raw(): ISerReport {
         const general     = this.reportGeneral     as GeneralSettingsModel;
         const template    = this.reportTemplate    as TemplateModel;
         const connections = this.reportConnections as ConnectionModel;
         const distribute  = this.reportDistribute  as DeliveryModel;
-
         return {
             general    : general.raw,
             template   : template.raw,

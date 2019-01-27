@@ -1,38 +1,53 @@
 import { IMailSettings, IFileSettings, IHubSettings } from 'ser.api';
 import { ISerDelivery } from '../api/ser-delivery.interface';
-import { FileModel, HubModel, EmailModel } from './';
+import { FileModel } from './file.model';
+import { HubModel } from './hub.model';
+import { EmailModel } from './email.model';
+import { mapDataTo, importData } from '@smc/modules/smc-common/utils';
 
 export class DeliveryModel implements ISerDelivery {
 
-    private deliveryEmailSettings: IMailSettings;
+    private deliveryEmailSettings: EmailModel;
 
-    private deliveryFileSettings: IFileSettings;
+    private deliveryFileSettings: FileModel;
 
-    private deliveryHubSettings: IHubSettings;
+    private deliveryHubSettings: HubModel;
 
-    public get mail(): IMailSettings {
+    public constructor() {
+        this.deliveryEmailSettings = new EmailModel();
+        this.deliveryFileSettings  = new FileModel();
+        this.deliveryHubSettings   = new HubModel();
+    }
+
+    public get mail(): EmailModel {
         return this.deliveryEmailSettings;
     }
 
-    public get file(): IFileSettings {
+    public get file(): FileModel {
         return this.deliveryFileSettings;
     }
 
-    public get hub(): IHubSettings {
+    public get hub(): HubModel {
         return this.deliveryHubSettings;
     }
 
-    public set mail(settings: IMailSettings) {
+    @mapDataTo(EmailModel)
+    public set mail(settings: EmailModel) {
         this.deliveryEmailSettings = settings;
     }
 
-    public set file(settings: IFileSettings) {
+    @mapDataTo(FileModel)
+    public set file(settings: FileModel) {
         this.deliveryFileSettings = settings;
     }
 
-    public set hub(settings: IHubSettings) {
+    @mapDataTo(HubModel)
+    public set hub(settings: HubModel) {
         this.deliveryHubSettings = settings;
     }
+
+    @importData
+    public set raw(data: ISerDelivery) {}
 
     public get raw(): ISerDelivery {
 

@@ -2,9 +2,9 @@ import { Routes } from '@angular/router';
 import { ListComponent } from '../components/list.component';
 
 export const ContentManagerRoutes: Routes = [{
-    path: 'content-manager',
+    path: 'sharedcontent',
     component: ListComponent,
     data: {
-        breadcrumb: 'Content Manager'
+        breadcrumb: 'Shared Content'
     }
 }];

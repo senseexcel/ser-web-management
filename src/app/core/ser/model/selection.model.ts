@@ -1,5 +1,6 @@
 import { ISerSenseSelection, SelectionType } from '../api/ser-selection.interface';
 import { IModel } from '@smc/modules/smc-common/api/model.interface';
+import { importData } from '@smc/modules/smc-common/utils';
 
 export enum SelectionObjectType {
     BOOKMARK = 'bookmark',
@@ -45,7 +46,7 @@ export class SelectionModel implements ISerSenseSelection, IModel {
      * @type {string[]}
      * @memberof SelectionModel
      */
-    private serSelectionValues: string[];
+    private serSelectionValues: string[] = [];
 
     /**
      * sense excel reporting selection object type, bookmark or hiddenbookmark
@@ -126,6 +127,9 @@ export class SelectionModel implements ISerSenseSelection, IModel {
     public set values(values: string[]) {
         this.serSelectionValues = values;
     }
+
+    @importData
+    public set raw(data: ISerSenseSelection) {}
 
     /**
      * get raw value for model

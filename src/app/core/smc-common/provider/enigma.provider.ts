@@ -24,7 +24,6 @@ export class EnigmaService {
         const global = await this.openSession() as any; /** cast as any since type is not valid */
         const newApp = await global.createApp(appName, 'main') as AppCreatedResponse;
         const session = global.openDoc(newApp.qAppId);
-
         this.sessions.set(newApp.qAppId, session);
         return session;
     }
@@ -37,13 +36,11 @@ export class EnigmaService {
      * @memberof SessionService
      */
     public async openApp(appId: string): Promise<EngineAPI.IApp> {
-
         if (!this.sessions.has(appId) ) {
             const global  = await this.openSession() as any; /** cast as any since type is not valid */
             const session = await global.openDoc(appId, '', '', '', true);
             this.sessions.set(appId, session);
         }
-
         return this.sessions.get(appId);
     }
 
@@ -72,6 +69,21 @@ export class EnigmaService {
         const script = await app.getScript();
         await this.closeApp(app);
         return script;
+    }
+
+    /**
+     * write script to app
+     *
+     * @param {string} script
+     * @param {string} appid
+     * @returns {Promise<void>}
+     * @memberof AppRepository
+     */
+    public async writeScript(script: string, appid: string): Promise<void> {
+        // could we wrap this into Observable ...
+        const app = await this.openApp(appid);
+        await app.setScript(script);
+        this.closeApp(app);
     }
 
     /**

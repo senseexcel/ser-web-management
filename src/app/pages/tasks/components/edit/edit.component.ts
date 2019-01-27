@@ -262,6 +262,7 @@ export class EditComponent implements OnInit {
      */
     private initExistingTask(): Observable<TaskFormModel> {
 
+        /*
         return this.activeRoute.params
             .pipe(
                 switchMap((params) => {
@@ -284,6 +285,8 @@ export class EditComponent implements OnInit {
                     return of(this.taskFormModel);
                 })
             );
+            */
+        return of(null);
     }
 
     /**
@@ -300,6 +303,7 @@ export class EditComponent implements OnInit {
             name: 'New Task',
         }];
 
+        /*
         return this.appRepository.fetchSerApps()
             .pipe(
                 switchMap((apps: IApp[]) => {
@@ -311,6 +315,8 @@ export class EditComponent implements OnInit {
                     this.taskFormModel.task = task;
                 })
             );
+            */
+        return of(null);
     }
 
     /**
