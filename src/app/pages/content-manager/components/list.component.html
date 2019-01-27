@@ -2,12 +2,15 @@
   <!-- page header -->
   <div page-content--header>
     <smc-list--header
-      [selected]=totalSelected [showing]=visible [total]=total 
+      [selected]=selections.selected.length [showing]=visible [total]=total 
       (reload)="reloadList()" (selectAll)="selectAll()" (deselectAll)="deselectAll()"
     >
 
       <ng-container list-header--title>
-        Shared Content
+        <span>
+            <i class="ser-icon ser-icon--folder"></i>
+            Shared Content
+        </span>
       </ng-container>
 
       <ng-container list-header--actions>

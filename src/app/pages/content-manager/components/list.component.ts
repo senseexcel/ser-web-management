@@ -1,8 +1,8 @@
-import { Component, OnInit, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ITableData } from '@smc/modules/qrs/api/table.interface';
 import { SharedContentRepository } from '@smc/modules/qrs';
-import { mergeMap, catchError, map } from 'rxjs/operators';
-import { of, Observable } from 'rxjs';
+import { mergeMap, catchError, filter, distinctUntilChanged, tap, switchMap, takeWhile, takeUntil, skipWhile } from 'rxjs/operators';
+import { of, Observable, fromEvent, merge, Subject } from 'rxjs';
 import { IDataNode, SmcCache } from '@smc/modules/smc-common';
 import { DataConverter } from '@smc/modules/qrs';
 import { PaginationService } from '@smc/modules/smc-ui/pagination';
@@ -14,24 +14,25 @@ import { SelectionModel } from '@angular/cdk/collections';
     styleUrls: ['./list.component.scss'],
     viewProviders: [PaginationService]
 })
-export class ListComponent implements OnInit {
+export class ListComponent implements OnInit, OnDestroy {
 
     public columns: string[] = [];
     public tableData: IDataNode[];
     public isLoading = false;
-    public totalSelected = 0;
     public total = 0;
     public visible: number;
     public selections: SelectionModel<IDataNode>;
 
     private listSettings: IDataNode;
+    private ctrlKeyDown: boolean;
+    private isDestroyed: Subject<boolean> = new Subject();
 
     constructor(
         private sharedContentRepository: SharedContentRepository,
         private pagination: PaginationService,
         private smcCache: SmcCache,
     ) {
-        this.selections = new SelectionModel();
+        this.selections = new SelectionModel(true);
 
         try {
             this.listSettings = this.smcCache.get('smc.settings.list');
@@ -48,10 +49,12 @@ export class ListComponent implements OnInit {
     ngOnInit() {
         this.initializePagination();
         this.loadSharedContentData();
+        this.registerKeyEvents();
+    }
 
-        this.selections.changed.subscribe(() => {
-            this.totalSelected = 1;
-        });
+    ngOnDestroy() {
+        this.selections.clear();
+        this.isDestroyed.next(true);
     }
 
     /**
@@ -61,6 +64,13 @@ export class ListComponent implements OnInit {
      * @memberof ListComponent
      */
     public selectSharedContent(content: IDataNode) {
+        if (this.ctrlKeyDown && this.selections.isSelected(content)) {
+            this.selections.deselect(content);
+            return;
+        }
+        if (!this.ctrlKeyDown) {
+            this.selections.clear();
+        }
         this.selections.select(content);
     }
 
@@ -101,9 +111,11 @@ export class ListComponent implements OnInit {
     }
 
     public selectAll() {
+        this.selections.select(...this.tableData);
     }
 
     public deselectAll() {
+        this.selections.clear();
     }
 
     /**
@@ -114,7 +126,6 @@ export class ListComponent implements OnInit {
      */
     private clearSelections() {
         this.selections.clear();
-        this.totalSelected = 0;
     }
 
     /**
@@ -170,5 +181,28 @@ export class ListComponent implements OnInit {
 
                 this.isLoading = false;
             });
+    }
+
+    /**
+     * register keyboard events to get notified
+     * if ctrl key has been pressed down for multi selection
+     *
+     * @private
+     * @memberof ListComponent
+     */
+    private registerKeyEvents() {
+        /** could be used as pipe / directive ? */
+        fromEvent(document, 'keydown').pipe(
+            filter((e: KeyboardEvent) => e.keyCode === 17 && !this.ctrlKeyDown),
+            switchMap(() => {
+                this.ctrlKeyDown = true;
+                return fromEvent(document, 'keyup').pipe(
+                    filter((e: KeyboardEvent) => e.keyCode === 17)
+                );
+            }),
+            takeUntil(this.isDestroyed)
+        ).subscribe(() => {
+            this.ctrlKeyDown = false;
+        });
     }
 }
