@@ -109,7 +109,12 @@ export class AppRepository {
      * @returns {Observable<number>}
      * @memberof SerTaskService
      */
-    public fetchAppCount(qrsFilter?: IFilter): Observable<number> {
-        return of(1);
+    public fetchAppCount(filter?: IFilter): Observable<number> {
+        let params: HttpParams = new HttpParams();
+        if (filter) {
+            params = params.set('filter', this.filterFactory.createFilterQueryString(filter));
+        }
+        return this.http.get<{value: number}>(`/qrs/app/count`, {params})
+            .pipe(map((response) => response.value));
     }
 }

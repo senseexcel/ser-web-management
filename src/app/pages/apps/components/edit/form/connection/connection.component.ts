@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable, of, Subject } from 'rxjs';
-import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
 import { FormService } from '@smc/modules/form-helper';
 import { AppRepository, FilterFactory, FilterOperator, DataConverter, IApp, FilterConditionalOperator } from '@smc/modules/qrs';
 import { ReportModel } from '@smc/modules/ser';
@@ -9,7 +8,9 @@ import { ITable } from '@smc/modules/qrs/api/request/table.interface';
 import { takeUntil, filter, map, switchMap, debounceTime, mergeMap, tap } from 'rxjs/operators';
 import { ITableData } from '@smc/modules/qrs/api/table.interface';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
-import { IDataNode, SmcCache } from '@smc/modules/smc-common';
+import { IDataNode } from '@smc/modules/smc-common';
+import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
+import { CacheService } from '../../../../providers/cache.service';
 
 @Component({
     selector: 'smc-apps--edit-form-connection',
@@ -31,7 +32,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
         private formService: FormService<ReportModel, ISerFormResponse>,
         private appRepository: AppRepository,
         private filterFactory: FilterFactory,
-        private smcCache: SmcCache
+        private cacheService: CacheService
     ) {
         this.formBuilder = formBuilder;
     }
@@ -105,7 +106,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
             ]
         };
 
-        const currentApp: string = this.smcCache.get('smc.pages.report.edit.current.app');
+        const currentApp: string = this.cacheService.currentReportData.app;
 
         /** create filters for search query */
         const searchFor  = this.filterFactory.createFilter('name', `'${name}'`, FilterOperator.STARTS_WITH);
@@ -155,20 +156,23 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      * @memberof ConnectionComponent
      */
     private registerModelLoadEvent() {
-
         this.formService.editModel()
             .pipe(
                 mergeMap((report: ReportModel) => {
-                    const appName$ = report.connections.app ? this.appRepository.fetchApp(report.connections.app) : of({ name: '' });
+                    const appName$ = report.connections.app
+                        ? this.appRepository.fetchApp(report.connections.app)
+                        : of({ name: '', id: '' });
+
                     return appName$.pipe(map((app: IApp) => {
-                        return { report, appName: app.name };
+                        return { report, app };
                     }));
                 }),
                 takeUntil(this.isDestroyed)
             )
             .subscribe((result: IDataNode) => {
                 this.model = result.report;
-                this.connectionForm = this.buildFormGroup(result.appName);
+                this.selectedAppId  = result.app.id;
+                this.connectionForm = this.buildFormGroup(result.app.name);
             });
     }
 

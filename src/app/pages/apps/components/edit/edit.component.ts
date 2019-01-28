@@ -4,14 +4,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ReportService } from '@smc/modules/ser/provider/report.service';
 import { FormService } from '@smc/modules/form-helper/provider/form.service';
 import { TaskRepository } from '@smc/modules/qrs';
-import { Subject, of, Observable } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { map, takeUntil, tap, mergeMap } from 'rxjs/operators';
 import { BreadcrumbService } from '@smc/modules/breadcrumb/provider/breadcrumb.service';
 import { IBreadCrumb } from '@smc/modules/breadcrumb/api/breadcrumb.interface';
 import { ModalService } from '@smc/modules/modal';
-import { ReportModel, ISerScriptData } from '@smc/modules/ser';
-import { SmcCache, IDataNode, EnigmaService } from '@smc/modules/smc-common';
+import { ReportModel } from '@smc/modules/ser';
+import { EnigmaService } from '@smc/modules/smc-common';
 import { ScriptService } from '@smc/modules/ser/provider';
+import { CacheService } from '../../providers/cache.service';
 
 @Component({
     selector: 'smc-qlik-edit',
@@ -55,13 +56,13 @@ export class AppEditComponent implements OnInit, OnDestroy {
         private enigmaService: EnigmaService,
         private reportService: ReportService,
         private scriptService: ScriptService,
-        private smcCache: SmcCache,
         private activeRoute: ActivatedRoute,
         private location: Location,
         private modalService: ModalService,
         private router: Router,
         private breadcrumbService: BreadcrumbService,
-        private taskApiService: TaskRepository
+        private taskApiService: TaskRepository,
+        private cacheService: CacheService
     ) {
         this.isDestroyed$ = new Subject<boolean>();
     }
@@ -102,8 +103,8 @@ export class AppEditComponent implements OnInit, OnDestroy {
             { label: 'Settings' }
         ];
 
-        const data: IDataNode = this.smcCache.get('smc.pages.report.edit.current.report');
-        this.report = data.model;
+        const data = this.cacheService.currentReportData;
+        this.report = data.report;
         this.formService.loadModel(this.report);
 
         this.breadcrumbService.breadcrumbs
@@ -135,11 +136,12 @@ export class AppEditComponent implements OnInit, OnDestroy {
                     }
                 }),
                 mergeMap(() => {
-                    const data: IDataNode = this.smcCache.get('smc.pages.report.edit.current');
-                    const reportConfig = this.scriptService.createReportConfig(data.report.raw);
-                    const scriptData: ISerScriptData = data.scriptData;
+                    const cachedData   = this.cacheService.currentReportData;
+                    const reportConfig = this.scriptService.createReportConfig(cachedData.raw);
+                    const scriptData   = cachedData.script;
+
                     scriptData.script = reportConfig;
-                    return this.enigmaService.writeScript(this.scriptService.stringify(scriptData), data.app);
+                    return this.enigmaService.writeScript(this.scriptService.stringify(scriptData), cachedData.app);
                 })
             )
             .subscribe(() => {
@@ -198,8 +200,9 @@ export class AppEditComponent implements OnInit, OnDestroy {
         return this.formService.updateModel().pipe(
             map((result) => result.every((isValid) => isValid)),
             tap(() => {
+                console.log(this.report.raw);
                 const cleanedReport = this.reportService.cleanReport(this.report.raw);
-                this.smcCache.set('smc.pages.report.edit.current.report.raw', cleanedReport, true);
+                this.cacheService.currentReportData.raw = cleanedReport;
             })
         );
     }

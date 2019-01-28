@@ -8,6 +8,7 @@ import { PAGE_SETTINGS } from '../../../model/page.model';
 import { AppRepository, TaskRepository, FilterFactory } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings } from '@smc/modules/smc-common';
+import { CacheService } from '@smc/pages/apps/providers/cache.service';
 
 @Component({
     selector: 'smc-dashboard',
@@ -30,7 +31,7 @@ export class DashboardComponent implements OnInit {
 
     private router: Router;
 
-    private pageTiles;
+    public pageTiles;
 
     /**
      *Creates an instance of DashboardComponent.
@@ -43,8 +44,10 @@ export class DashboardComponent implements OnInit {
         private appRepository: AppRepository,
         private taskRepository: TaskRepository,
         private filterFactory: FilterFactory,
+        private cache: CacheService
     ) {
-        this.router           = router;
+        this.router = router;
+        console.log(this.cache);
     }
 
     /**
@@ -100,7 +103,7 @@ export class DashboardComponent implements OnInit {
             switch (item.name) {
                 case 'Reporting Apps' : title = `${item.name} (${counts[1]})`; break;
                 case 'Reporting Tasks': title = `${item.name} (${counts[0]})`; break;
-                default            : title = item.name;
+                default               : title = item.name;
             }
 
             return { ...item, title };
@@ -134,7 +137,6 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     private fetchSerApps(): Observable<number> {
-
         if (!this.settings.serTag) {
             return of(0);
         }

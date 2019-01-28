@@ -19,9 +19,11 @@ import { SelectionComponent } from './components/edit/form/selections/selection.
 
 import { FormHelperModule, MaterialModule, SerModule, SmcCommonModule, SmcUiModule } from '@smc/modules';
 import { QrsModule } from '@smc/modules/qrs/qrs.module';
+import { AppsServiceModule } from './apps-service.module';
 
 @NgModule({
   imports: [
+    AppsServiceModule,
     CommonModule,
     FormHelperModule,
     MaterialModule,
@@ -57,6 +59,7 @@ import { QrsModule } from '@smc/modules/qrs/qrs.module';
     AppEditComponent,
     ReportPreviewComponent,
     TasksComponent
-  ]
+  ],
+  providers: []
 })
 export class AppsModule { }

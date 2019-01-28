@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { EnigmaService, SmcCache } from '@smc/modules/smc-common';
+import { CanActivate, ActivatedRouteSnapshot } from '@angular/router';
+import { EnigmaService } from '@smc/modules/smc-common';
 import { ScriptService, ReportService } from '@smc/modules/ser/provider';
 import { Observable, of, from } from 'rxjs';
 import { AppRepository } from '@smc/modules/qrs';
 import { tap, catchError, mergeMap, map } from 'rxjs/operators';
+import { CacheService } from '../providers/cache.service';
 
 @Injectable()
 export class EditGuard implements CanActivate {
@@ -14,7 +15,7 @@ export class EditGuard implements CanActivate {
         private enigmaService: EnigmaService,
         private scriptService: ScriptService,
         private reportService: ReportService,
-        private smcCache: SmcCache
+        private cacheService: CacheService
     ) { }
 
     /**
@@ -40,17 +41,15 @@ export class EditGuard implements CanActivate {
                     valid = valid && this.scriptService.hasSerScript(script);
 
                     const parsedScript = this.scriptService.parse(script);
-                    const reportData = this.scriptService.extractReports(parsedScript);
-                    const report = this.reportService.createReport(reportData[0]);
+                    const reportData   = this.scriptService.extractReports(parsedScript);
+                    const report       = this.reportService.createReport(reportData[0]);
 
-                    this.smcCache.set('smc.pages.report.edit.current', {
+                    this.cacheService.currentReportData = {
                         app: id,
-                        scriptData: parsedScript,
-                        report: {
-                            model: report,
-                            raw: this.reportService.cleanReport(report.raw)
-                        }
-                    }, true);
+                        script: parsedScript,
+                        report,
+                        raw: this.reportService.cleanReport(report.raw)
+                    };
                     return true;
                 })
             )),

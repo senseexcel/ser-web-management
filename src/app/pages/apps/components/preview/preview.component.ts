@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { SmcCache, IDataNode } from '@smc/modules/smc-common';
+import { IDataNode } from '@smc/modules/smc-common';
+import { CacheService } from '../../providers/cache.service';
 
 @Component({
     selector: 'smc-report-preview',
@@ -14,10 +15,10 @@ export class ReportPreviewComponent implements OnInit {
     public previewData: IDataNode;
 
     constructor(
-        private cache: SmcCache
+        private cache: CacheService
     ) {}
 
     ngOnInit() {
-        this.previewData = this.cache.get('smc.pages.report.edit.current.report.raw');
+        this.previewData = this.cache.currentReportData.raw;
     }
 }

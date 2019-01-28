@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as hjson from 'hjson';
 import { ISerScriptData, ISerReport, ISerConfig } from '../api';
-import { ContentLibNotExistsException } from '@smc/pages/license/api/exceptions';
 
 @Injectable()
 export class ScriptService {

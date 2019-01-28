@@ -1,7 +1,7 @@
 import { NgModule, Compiler, FactoryProvider, NgModuleFactory } from '@angular/core';
 import { EditGuard } from './guards/edit.guard';
 import { CreateGuard } from './guards/create.guard';
-import { RouterModule, Router, ROUTES, Routes } from '@angular/router';
+import { RouterModule, ROUTES, Routes } from '@angular/router';
 import { AppRoutes } from './model/routes';
 
 /**
