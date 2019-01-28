@@ -24,8 +24,6 @@ export class AppListComponent implements OnInit {
 
     public selection: SelectionModel<IApp>;
 
-    private serAppsSub: Subscription;
-
     private router: Router;
 
     private route: ActivatedRoute;
@@ -48,7 +46,6 @@ export class AppListComponent implements OnInit {
     }
 
     public async ngOnInit() {
-
         if (this.smcCache.has('ser.apps') && Array.isArray(this.smcCache.get('ser.apps'))) {
             this.isLoading = false;
             this.apps = this.smcCache.get<IApp[]>('ser.apps');
@@ -84,6 +81,7 @@ export class AppListComponent implements OnInit {
      */
     public selectApp(app: IApp) {
         this.selection.select(app);
+        console.log(this.selection.selected.length);
     }
 
     /**
@@ -144,6 +142,7 @@ export class AppListComponent implements OnInit {
             .subscribe((apps: IApp[]) => {
                 this.isLoading = false;
                 this.apps = apps;
+
             });
     }
 }

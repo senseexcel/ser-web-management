@@ -16,6 +16,9 @@ export class ListHeaderComponent {
     @Input()
     total: number;
 
+    @Input()
+    disableActions: boolean;
+
     @Output()
     public reload: EventEmitter<void> = new EventEmitter();
 

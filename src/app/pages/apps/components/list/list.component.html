@@ -1,59 +1,61 @@
+<smc-page [disablePadding]="true">
 
-<div class="qapp-list--table">
-    <mat-spinner *ngIf="isLoading"></mat-spinner>
-    <smc-list--header>
+  <!-- page header -->
+  <div page-content--header>
+    <smc-list--header [selected]=selection.selected.length [showing]=apps.length [total]=apps.length [disableActions]="true" (reload)="reloadList()">
+      <ng-container list-header--title>
         <span>
-            <i class="ser-icon ser-icon--apps"></i>
-            Reports
+          <i class="ser-icon ser-icon--apps"></i>
+          Reports
         </span>
+      </ng-container>
     </smc-list--header>
+  </div>
+
+  <!-- page content -->
+  <div page-content--body>
     <table class="table" *ngIf="apps.length && !isLoading" mat-table [dataSource]="apps">
-        <!-- Position Column -->
-        <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let app"> {{app.name}} </td>
-        </ng-container>
-        <!-- Weight Column -->
-        <ng-container matColumnDef="id">
-            <th mat-header-cell *matHeaderCellDef> Document ID </th>
-            <td mat-cell *matCellDef="let app"> {{app.id}} </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
-        <tr mat-row *matRowDef="let row; columns: tableHeaders;" appMouseDblClick (dblClick)="editApp()" [ngClass]="{'selected': selection.isSelected(row)}" (click)="selectApp(row)">
+      <!-- Position Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let app"> {{app.name}} </td>
+      </ng-container>
+      <!-- Weight Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef> Document ID </th>
+        <td mat-cell *matCellDef="let app"> {{app.id}} </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="tableHeaders"></tr>
+      <tr mat-row *matRowDef="let row; columns: tableHeaders;" smcMouseDblClick (dblClick)="editApp()" [ngClass]="{'selected': selection.isSelected(row)}"
+        (click)="selectApp(row)">
     </table>
-</div>
+  </div>
 
-<nav class="qapp-list--actions navbar navbar-expand-lg action-bar-bottom">
-    <div class="btn-toolbar" role="group">
-
+  <!-- page footer -->
+  <div page-content--footer>
+    <nav class="navbar navbar-expand-lg action-bar-bottom">
+      <div class="btn-toolbar" role="group">
         <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="editApp()">
-            <span class="button-label">
-                Edit
-            </span>
+          <span class="button-label">
+            Edit
+          </span>
         </button>
-
-        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="deleteApps()" >
-            <span class="button-label">
-                Delete
-            </span>
+        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="deleteApps()">
+          <span class="button-label">
+            Delete
+          </span>
         </button>
-
         <button type="button" [disabled]="isLoading" class="nav-item" (click)="createApp()">
-            <span class="button-label">
-                Create new
-            </span>
+          <span class="button-label">
+            Create new
+          </span>
         </button>
-
-        <button type="button" class="nav-item" [disabled]="isLoading" (click)="reloadList()">
-            <span class="button-label">
-                Reload
-            </span>
-        </button>
-
         <button type="button" class="nav-item" *ngIf="settings.serTag" [disabled]="isLoading" (click)="syncApps()">
-            <span class="button-label">
-                Synchronize Apps
-            </span>
+          <span class="button-label">
+            Synchronize Apps
+          </span>
         </button>
-    </div>
-</nav>
+      </div>
+    </nav>
+  </div>
+</smc-page>

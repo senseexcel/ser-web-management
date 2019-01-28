@@ -16,7 +16,7 @@
     <ng-content select="[list-header--actions]"></ng-content>
 
     <!-- table actions -->
-    <smc-drop-down [hostClass]="['list-header--actions-overlay']" [label]="'Actions'">
+    <smc-drop-down [hostClass]="['list-header--actions-overlay']" [label]="'Actions'" *ngIf="!disableActions">
         <div class="content">
             <div class="actions--title">Table actions</div>
             <ul class="actions--body">

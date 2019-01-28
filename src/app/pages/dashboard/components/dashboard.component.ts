@@ -47,7 +47,6 @@ export class DashboardComponent implements OnInit {
         private cache: CacheService
     ) {
         this.router = router;
-        console.log(this.cache);
     }
 
     /**
@@ -140,7 +139,6 @@ export class DashboardComponent implements OnInit {
         if (!this.settings.serTag) {
             return of(0);
         }
-
         const appFilter = this.filterFactory.createFilter(
             'tags.id', this.settings.serTag.id
         );

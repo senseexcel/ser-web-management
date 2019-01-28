@@ -200,7 +200,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
         return this.formService.updateModel().pipe(
             map((result) => result.every((isValid) => isValid)),
             tap(() => {
-                console.log(this.report.raw);
                 const cleanedReport = this.reportService.cleanReport(this.report.raw);
                 this.cacheService.currentReportData.raw = cleanedReport;
             })
