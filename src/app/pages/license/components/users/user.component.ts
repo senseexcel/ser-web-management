@@ -130,20 +130,6 @@ export class UserComponent implements OnDestroy, OnInit {
             map((model: LicenseModel): ITableUser[] => {
                 this.licensedUserInfo.total   = model.users.length;
                 this.licensedUserInfo.showing = model.users.length;
-
-                /**
-                 * @todo improve
-                 * @see  https://github.com/senseexcel/ser-web-management/issues/87
-                 *
-                 * if we allready have the user loaded just change values
-                 * so we can avoid creating a complete new array and rerender full table
-                 * again
-                 *
-                 * to force change detection now use array destruction to create new user array
-                 * like this
-                 *
-                 * const user = [...this.users];
-                 */
                 return model.users.map((user: ILicenseUser): ITableUser => {
                     return {
                         edit: false,

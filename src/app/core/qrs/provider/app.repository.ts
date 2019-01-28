@@ -1,17 +1,18 @@
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { IQrsFilter as IFilter, IApp, FilterOperator } from '../api';
+import { IQrsFilter as IFilter, IApp, FilterOperator, IQrsFilter, IQrsFilterGroup } from '../api';
 import { FilterFactory } from './filter.factory';
 import { Injectable } from '@angular/core';
 import { IDataNode } from '@smc/modules/smc-common';
 import { map, switchMap } from 'rxjs/operators';
+import { ITable } from '../api/request/table.interface';
 
 @Injectable()
 export class AppRepository {
 
     public constructor(
         private filterFactory: FilterFactory,
-        private http: HttpClient
+        private http: HttpClient,
     ) {
     }
 
@@ -29,7 +30,7 @@ export class AppRepository {
         let params: HttpParams = new HttpParams();
 
         params = params.set('filter', this.filterFactory.createFilterQueryString(filter));
-        return this.http.get<{value: number}>(url, {params})
+        return this.http.get<{ value: number }>(url, { params })
             .pipe(
                 map((response) => response.value !== 0)
             );
@@ -45,11 +46,31 @@ export class AppRepository {
         const url = `/qrs/app/full/`;
         let params: HttpParams = new HttpParams();
 
-        if (filter ) {
+        if (filter) {
             params = params.set('filter', this.filterFactory.createFilterQueryString(filter));
         }
 
-        const source$ = this.http.get(url, {params});
+        const source$ = this.http.get(url, { params });
+        return source$ as Observable<IApp[]>;
+    }
+
+    public fetchTable(
+        definition: ITable,
+        start: number = 0,
+        limit: number = 0,
+        filter: IQrsFilter | IQrsFilterGroup = null
+    ): Observable<IApp[]> {
+        const url = `/qrs/app/table`;
+
+        let params: HttpParams = new HttpParams();
+        params = params.set('skip', String(start));
+        params = params.set('take', String(limit));
+
+        if (filter) {
+            params = params.set('filter', this.filterFactory.createFilterQueryString(filter));
+        }
+
+        const source$ = this.http.post(url, definition, { params });
         return source$ as Observable<IApp[]>;
     }
 
