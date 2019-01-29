@@ -1,34 +1,26 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map, mergeMap } from 'rxjs/operators';
+import * as MomentTimezone from 'moment-timezone';
 import { IModel, IDataNode } from '@smc/modules/smc-common';
+import { ISchemaEvent, ITask, IApp, FilterFactory } from '@smc/modules/qrs';
 
 import { ExecutionModel } from '../model/execution.model';
 import { IdentificationModel } from '../model/indetification.model';
 import { TaskModel } from '../model/task.model';
 import { TriggerModel } from '../model/trigger.model';
-
 import { BehaviorSubject, Observable, of, forkJoin } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { ISchemaEvent, ITask, IApp, FilterFactory } from '@smc/modules/qrs';
-import { map, mergeMap } from 'rxjs/operators';
-import * as MomentTimezone from 'moment-timezone';
 import { TaskIncomatibleException } from '../api/exceptions/incompatible.exception';
 
-Injectable();
+@Injectable()
 export class TaskFactory {
 
     public selectedTasks: BehaviorSubject<ITask[]>;
 
-    private http: HttpClient;
-
-    private date: MomentTimezone.Moment;
-
     public constructor(
-        http: HttpClient,
+        private http: HttpClient,
         private filterFactory: FilterFactory
-    ) {
-        this.http = http;
-        this.date = MomentTimezone.tz('Europe/Paris');
-    }
+    ) { }
 
     /**
      * build task model

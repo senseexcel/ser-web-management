@@ -14,7 +14,7 @@ import {
   QrsModule,
 } from '@smc/modules';
 
-import { AppsPage, ContentManagerPage, DashboardPage, LicensePage } from '@smc/pages';
+import { AppsPage, ContentManagerPage, DashboardPage, LicensePage, TasksPage } from '@smc/pages';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { BootstrapService } from './services/bootstrap.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -51,7 +51,8 @@ import { IBootstrap } from './api/bootstrap.interface';
     AppsPage,
     ContentManagerPage,
     DashboardPage,
-    LicensePage
+    LicensePage,
+    TasksPage,
   ],
   providers: [
     BootstrapService,

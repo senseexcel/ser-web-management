@@ -6,7 +6,7 @@ import { Subject, Observable } from 'rxjs';
 import { takeUntil, filter } from 'rxjs/operators';
 
 @Component({
-    selector: 'app-task-form-execution',
+    selector: 'smc-task-form-execution',
     templateUrl: 'execution.component.html'
 })
 

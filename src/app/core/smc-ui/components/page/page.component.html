@@ -11,7 +11,8 @@
     </div>
 
     <div class="smc-page--content-body" [ngClass]="{'no-padding': disablePadding}">
-        <ng-content select="[page-content--body]"></ng-content>
+        <mat-spinner *ngIf="loading"></mat-spinner> 
+        <ng-content select="[page-content--body]" *ngIf="!loading"></ng-content>
     </div>
 
     <div class="smc-page--content-footer">

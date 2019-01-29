@@ -19,6 +19,9 @@ export class SmcPageComponent implements AfterContentInit {
     @Input('disablePadding')
     public disablePadding = false;
 
+    @Input('loading')
+    public loading = false;
+
     public hide = {
         sectionLeft: false,
         sectionRight: false,

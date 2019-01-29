@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 @Component({
-    selector: 'app-task-form-trigger',
+    selector: 'smc-task-form-trigger',
     templateUrl: 'trigger.component.html'
 })
 

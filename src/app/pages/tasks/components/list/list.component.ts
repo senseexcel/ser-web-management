@@ -4,7 +4,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TaskManagerService } from '../../services/task-manager.service';
 import { takeUntil, switchMap, tap } from 'rxjs/operators';
 import { Subject, empty, of } from 'rxjs';
-import { ModalService } from '@smc/modules/modal/services/modal.service';
+import { ModalService } from '@smc/modules/modal';
 import { ITask } from '@smc/modules/qrs';
 
 @Component({
