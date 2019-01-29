@@ -1,8 +1,8 @@
-<smc-page [disablePadding]="true" [loading]="isLoading">
+<smc-ui--page [disablePadding]="true" [loading]="isLoading">
 
   <!-- page header -->
   <div page-content--header>
-    <smc-list--header [selected]=selection.selected.length [showing]=tasks.length [total]=tasks.length [disableActions]="true"
+    <smc-ui--list-header [selected]=selection.selected.length [showing]=tasks.length [total]=tasks.length [disableActions]="true"
       (reload)="reloadList()">
       <ng-container list-header--title>
         <span>
@@ -10,21 +10,18 @@
           Tasks
         </span>
       </ng-container>
-    </smc-list--header>
+    </smc-ui--list-header>
   </div>
 
   <!-- page content -->
   <div page-content--body>
-
     <table class="table" mat-table [dataSource]="tasks">
-
       <ng-container *ngFor="let column of tableHeaderFields" matColumnDef="{{column}}">
         <th mat-header-cell *matHeaderCellDef>{{column}}</th>
         <ng-container *matCellDef="let col">
           <td mat-cell>{{col[column]}}</td>
         </ng-container>
       </ng-container>
-
       <tr mat-header-row *matHeaderRowDef="tableHeaderFields"></tr>
       <tr mat-row *matRowDef="let row; columns: tableHeaderFields;" [ngClass]="{'selected': selection.isSelected(row)}"
         appMouseDblClick (click)="selectTask(row)" (dblClick)="editTask()">
@@ -41,4 +38,4 @@
     </smc-ui--button-navbar>
   </div>
 
-</smc-page>
+</smc-ui--page>

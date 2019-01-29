@@ -10,8 +10,8 @@
     font-weight: bold;
   }
 
-  .smc-page--sidebar,
-  .smc-page--content {
+  .smc-ui--page--sidebar,
+  .smc-ui--page--content {
     header: {
       font-size: 14px;
       padding: 12px 0;
@@ -19,7 +19,7 @@
   }
 
   /** smc PAGE SIDEBAR */
-  .smc-page--sidebar {
+  .smc-ui--page--sidebar {
 
     color: #FFF;
     background: #595959;
@@ -60,7 +60,7 @@
   }
 
   /* smc PAGE CONTENT */
-  .smc-page--content {
+  .smc-ui--page--content {
 
     color: #FFF;
     background: #595959;
@@ -74,7 +74,7 @@
     }
   }
 
-  .smc-page--content-body {
+  .smc-ui--page--content-body {
     overflow-y: auto;
     background: #FFF;
     color: #000;
@@ -86,7 +86,7 @@
     }
   }
 
-  .smc-page--content-footer {
+  .smc-ui--page--content-footer {
     min-height: 37px;
     padding: 0 2px 11px 10px;
     background: #8C8C8C;

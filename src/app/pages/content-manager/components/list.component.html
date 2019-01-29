@@ -1,7 +1,7 @@
-<smc-page [disablePadding]="true">
+<smc-ui--page [disablePadding]="true">
   <!-- page header -->
   <div page-content--header>
-    <smc-list--header
+    <smc-ui--list-header
       [selected]=selections.selected.length [showing]=visible [total]=total 
       (reload)="reloadList()" (selectAll)="selectAll()" (deselectAll)="deselectAll()"
     >
@@ -17,7 +17,7 @@
         <smc-pagination--navigation></smc-pagination--navigation>
       </ng-container>
 
-    </smc-list--header>
+    </smc-ui--list-header>
   </div>
 
   <!-- page content -->
@@ -57,4 +57,4 @@
       </div>
     </nav>
   </div>
-</smc-page>
+</smc-ui--page>

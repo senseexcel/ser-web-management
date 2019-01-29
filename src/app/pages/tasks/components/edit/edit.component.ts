@@ -13,7 +13,7 @@ import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { TaskFactory } from '../../services/task.factory';
 
 @Component({
-    selector: 'smc-page--task-edit',
+    selector: 'smc-ui--page--task-edit',
     templateUrl: 'edit.component.html',
     styleUrls: ['edit.component.scss'],
     providers: [FormService]

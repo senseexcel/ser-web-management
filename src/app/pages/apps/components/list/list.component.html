@@ -1,15 +1,15 @@
-<smc-page [disablePadding]="true">
+<smc-ui--page [disablePadding]="true">
 
   <!-- page header -->
   <div page-content--header>
-    <smc-list--header [selected]=selection.selected.length [showing]=apps.length [total]=apps.length [disableActions]="true" (reload)="reloadList()">
+    <smc-ui--list-header [selected]=selection.selected.length [showing]=apps.length [total]=apps.length [disableActions]="true" (reload)="reloadList()">
       <ng-container list-header--title>
         <span>
           <i class="ser-icon ser-icon--apps"></i>
           Reports
         </span>
       </ng-container>
-    </smc-list--header>
+    </smc-ui--list-header>
   </div>
 
   <!-- page content -->
@@ -58,4 +58,4 @@
       </div>
     </nav>
   </div>
-</smc-page>
+</smc-ui--page>

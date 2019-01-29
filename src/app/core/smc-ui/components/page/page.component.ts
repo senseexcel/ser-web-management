@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterContentInit, ElementRef, ViewChild, Input } from '@angular/core';
 
 @Component({
-    selector: 'smc-page',
+    selector: 'smc-ui--page',
     templateUrl: 'page.component.html',
     styleUrls: ['./page.component.scss']
 })

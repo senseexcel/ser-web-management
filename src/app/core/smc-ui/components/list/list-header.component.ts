@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
-    selector: 'smc-list--header',
+    selector: 'smc-ui--list-header',
     templateUrl: 'list-header.component.html',
     styleUrls: ['list-header.component.scss']
 })
