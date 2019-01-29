@@ -28,7 +28,6 @@
 
         <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
           <th mat-header-cell *matHeaderCellDef>{{column}}</th>
-
           <ng-container *matCellDef="let col">
             <ng-container [ngSwitch]="column">
               <td *ngSwitchCase="'MetaData'" mat-cell matTooltipClass="tooltip-pre" matTooltip="{{col[column][0] | hjson}}" [matTooltipShowDelay]="500">Metadata</td>

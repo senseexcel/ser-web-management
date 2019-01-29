@@ -2,7 +2,8 @@
 
   <!-- page header -->
   <div page-content--header>
-    <smc-list--header [selected]=selection.selected.length [showing]=tasks.length [total]=tasks.length [disableActions]="true" (reload)="reloadList()">
+    <smc-list--header [selected]=selection.selected.length [showing]=tasks.length [total]=tasks.length [disableActions]="true"
+      (reload)="reloadList()">
       <ng-container list-header--title>
         <span>
           <i class="ser-icon ser-icon--tasks"></i>
@@ -33,24 +34,11 @@
 
   <!-- page footer -->
   <div page-content--footer>
-    <nav class="navbar navbar-expand-lg action-bar-bottom">
-      <div class="btn-toolbar" role="group">
-        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="editTask()">
-          <span class="button-label">
-            Edit
-          </span>
-        </button>
-        <button type="button" class="nav-item" [disabled]="isLoading" (click)="syncTasks()">
-          <span class="button-label">
-            Synchronize Tasks
-          </span>
-        </button>
-        <button type="button" [disabled]="isLoading" class="nav-item" (click)="createNew()">
-          <span class="button-label">
-            Create new
-          </span>
-        </button>
-      </div>
-    </nav>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="editTask()"  [disabled]="isLoading || selection.isEmpty()">Edit</smc-ui--button>
+      <smc-ui--button (click)="createNew()" [disabled]="isLoading">Create New</smc-ui--button>
+      <smc-ui--button (click)="syncTasks()" [disabled]="isLoading">Synchronize Tasks</smc-ui--button>
+    </smc-ui--button-navbar>
   </div>
+
 </smc-page>
