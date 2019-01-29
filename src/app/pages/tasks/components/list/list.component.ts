@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { Router, ActivatedRoute, Params } from '@angular/router';
-import { TaskManagerService } from '../../services/task-manager.service';
 import { takeUntil, switchMap, tap } from 'rxjs/operators';
-import { Subject, empty, of } from 'rxjs';
+import { Subject, empty, of, Observable } from 'rxjs';
 import { ModalService } from '@smc/modules/modal';
 import { ITask } from '@smc/modules/qrs';
+import { TaskRepository } from '@smc/modules/ser/provider';
 
 @Component({
     selector: 'smc-ser-task-list',
@@ -16,90 +16,26 @@ import { ITask } from '@smc/modules/qrs';
 export class ListComponent implements OnDestroy, OnInit {
 
     public isLoading: boolean;
-
-    /**
-     * all tasks which are loaded for app
-     *
-     * @type {ITask[]}
-     * @memberof TasksComponent
-     */
     public tasks: ITask[];
-
-    /**
-     * table header fields
-     *
-     * @type {string[]}
-     * @memberof TasksComponent
-     */
-    public tableHeaderFields: string[];
-
-    /**
-     * selected tasks
-     *
-     * @type {SelectionModel<ITask>}
-     * @memberof TasksComponent
-     */
+    public columns: string[];
     public selection: SelectionModel<ITask>;
 
-    /**
-     * current router service
-     *
-     * @private
-     * @type {Router}
-     * @memberof ListComponent
-     */
-    private router: Router;
-
-    /**
-     * activated route
-     *
-     * @private
-     * @type {ActivatedRoute}
-     * @memberof ListComponent
-     */
-    private route: ActivatedRoute;
-
-    /**
-     * task manager service to load tasks from cache or make qrs request
-     *
-     * @private
-     * @type {TaskManagerService}
-     * @memberof ListComponent
-     */
-    private taskManagerService: TaskManagerService;
-
-    /**
-     * submits true if component is destroyed to unregister from
-     * subscriptions
-     *
-     * @private
-     * @type {Subject<boolean>}
-     * @memberof ListComponent
-     */
     private isDestroyed$: Subject<boolean>;
-
-    private dialog: ModalService;
 
     /**
      *Creates an instance of ListComponent.
      * @param {SerAppManagerService} appManager
      * @param {Router} router
      * @param {ActivatedRoute} route
-     * @param {TaskManagerService} taskManagerService
      * @memberof ListComponent
      */
     constructor(
-        dialog: ModalService,
-        router: Router,
-        route: ActivatedRoute,
-        taskManagerService: TaskManagerService,
+        private dialog: ModalService,
+        private router: Router,
+        private route: ActivatedRoute,
+        private taskRepository: TaskRepository
     ) {
-        this.dialog  = dialog;
-        this.route   = route;
-        this.router  = router;
-        this.taskManagerService = taskManagerService;
         this.isDestroyed$       = new Subject<boolean>();
-
         this.tasks = [];
         this.selection = new SelectionModel<ITask>();
     }
@@ -120,7 +56,7 @@ export class ListComponent implements OnDestroy, OnInit {
      * @memberof ListComponent
      */
     public ngOnInit() {
-        this.tableHeaderFields = [
+        this.columns = [
             'id',
             'name',
             'enabled',
@@ -139,7 +75,6 @@ export class ListComponent implements OnDestroy, OnInit {
      */
     public selectTask(task: ITask) {
         this.selection.select(task);
-        this.taskManagerService.selectTasks([task]);
     }
 
     /**
@@ -153,30 +88,6 @@ export class ListComponent implements OnDestroy, OnInit {
     }
 
     /**
-     * delete a task
-     * @todo implement
-     *
-     * @memberof ListComponent
-     */
-    public deleteTask() {}
-
-    /**
-     * start task
-     * @todo implement
-     *
-     * @memberof ListComponent
-     */
-    public startTask() {}
-
-    /**
-     * stop task
-     * @todo implement
-     *
-     * @memberof ListComponent
-     */
-    public stopTask() {}
-
-    /**
      * reload task list
      *
      * @memberof ListComponent
@@ -187,7 +98,6 @@ export class ListComponent implements OnDestroy, OnInit {
 
     /**
      * create new task
-     * @todo implement
      *
      * @memberof ListComponent
      */
@@ -201,15 +111,14 @@ export class ListComponent implements OnDestroy, OnInit {
             'Synchronize Tasks',
             'This will Synchronize Sense Excel Reporting Tasks and add SER Tag to Task. This can take a while...'
         ).switch.pipe(
-            switchMap((confirm: boolean) => {
+            switchMap((confirm: boolean): Observable<any> => {
                 if (confirm) {
-                    // return this.taskManagerService.syncTasks();
-                    return of([]);
+                    return this.taskRepository.synchronizeTasks();
                 }
                 return empty();
             }),
         )
-        .subscribe((tasks) => {
+        .subscribe((tasks: any[]) => {
             if (tasks) {
                 this.dialog.openMessageModal('Tasks Synchronized', `${tasks.length} Task(s) where synchronized.`);
                 this.reloadList();
@@ -229,7 +138,7 @@ export class ListComponent implements OnDestroy, OnInit {
             switchMap((params: Params) => {
                 this.isLoading = true;
                 const appId = params.id || null;
-                return this.taskManagerService.loadTasks(appId);
+                return this.taskRepository.fetchTasks();
             }),
             takeUntil(this.isDestroyed$)
         )

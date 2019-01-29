@@ -1,11 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { TaskManagerService } from '../../services/task-manager.service';
 
 @Component({
     selector: 'smc-ser-task',
     templateUrl: 'task.component.html',
-    styleUrls: ['./task.component.scss'],
-    providers: [TaskManagerService]
+    styleUrls: ['./task.component.scss']
 })
 
 export class TaskComponent implements OnInit {

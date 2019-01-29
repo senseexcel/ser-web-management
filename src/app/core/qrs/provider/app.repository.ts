@@ -1,6 +1,6 @@
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { IQrsFilter as IFilter, IApp, FilterOperator, IQrsFilter, IQrsFilterGroup } from '../api';
+import { IQrsFilter as IFilter, IApp, FilterOperator, IQrsFilter, IQrsFilterGroup, IAppFull } from '../api';
 import { FilterFactory } from './filter.factory';
 import { Injectable } from '@angular/core';
 import { IDataNode } from '@smc/modules/smc-common';
@@ -42,7 +42,7 @@ export class AppRepository {
      * @returns {Observable<IQlikApp[]>}
      * @memberof SerAppService
      */
-    public fetchApps(filter: IFilter = null): Observable<IApp[]> {
+    public fetchApps(filter?: IQrsFilter | IQrsFilterGroup): Observable<IAppFull[]> {
         const url = `/qrs/app/full/`;
         let params: HttpParams = new HttpParams();
 
@@ -51,7 +51,7 @@ export class AppRepository {
         }
 
         const source$ = this.http.get(url, { params });
-        return source$ as Observable<IApp[]>;
+        return source$ as Observable<IAppFull[]>;
     }
 
     public fetchTable(

@@ -96,7 +96,7 @@ export class FormIdentificationComponent implements OnInit {
 
             /** find selected app */
             const selectedApp = this.formModel.apps.find((app: IApp) => {
-                return app.appId === formData.app;
+                return app.id === formData.app;
             });
 
             /** write data to model */

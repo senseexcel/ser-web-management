@@ -1,4 +1,5 @@
 import { ITag } from './tag.interface';
+import { IApp } from './app.interface';
 
 export interface ITask {
 
@@ -16,17 +17,7 @@ export interface ITask {
 
     publishTime?: string;
 
-    app: {
-        id: string;
-
-        name: string;
-
-        publishTime?: string;
-
-        published?: boolean;
-
-        availabilityStatus?: number;
-    };
+    app: IApp;
 
     isManuallyTriggered?: boolean;
 

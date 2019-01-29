@@ -2,28 +2,30 @@
 
   <!-- page header -->
   <div page-content--header>
-    <smc-ui--list-header [selected]=selection.selected.length [showing]=tasks.length [total]=tasks.length [disableActions]="true"
-      (reload)="reloadList()">
-      <ng-container list-header--title>
-        <span>
-          <i class="ser-icon ser-icon--tasks"></i>
-          Tasks
-        </span>
-      </ng-container>
+    <smc-ui--list-header 
+        [selected]=selection.selected.length
+        [showing]=tasks.length
+        [total]=tasks.length
+        [disableActions]="true" (reload)="reloadList()"
+    >
+      <span list-header--title>
+        <i class="ser-icon ser-icon--tasks"></i>
+        Tasks
+      </span>
     </smc-ui--list-header>
   </div>
 
   <!-- page content -->
   <div page-content--body>
     <table class="table" mat-table [dataSource]="tasks">
-      <ng-container *ngFor="let column of tableHeaderFields" matColumnDef="{{column}}">
+      <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
         <th mat-header-cell *matHeaderCellDef>{{column}}</th>
         <ng-container *matCellDef="let col">
           <td mat-cell>{{col[column]}}</td>
         </ng-container>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="tableHeaderFields"></tr>
-      <tr mat-row *matRowDef="let row; columns: tableHeaderFields;" [ngClass]="{'selected': selection.isSelected(row)}"
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns;" [ngClass]="{'selected': selection.isSelected(row)}"
         appMouseDblClick (click)="selectTask(row)" (dblClick)="editTask()">
       </tr>
     </table>
@@ -32,7 +34,7 @@
   <!-- page footer -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="editTask()"  [disabled]="isLoading || selection.isEmpty()">Edit</smc-ui--button>
+      <smc-ui--button (click)="editTask()" [disabled]="isLoading || selection.isEmpty()">Edit</smc-ui--button>
       <smc-ui--button (click)="createNew()" [disabled]="isLoading">Create New</smc-ui--button>
       <smc-ui--button (click)="syncTasks()" [disabled]="isLoading">Synchronize Tasks</smc-ui--button>
     </smc-ui--button-navbar>

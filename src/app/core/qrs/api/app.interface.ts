@@ -2,8 +2,18 @@ import { ICustomProperty } from './custom-property.interface';
 import { ITag } from './tag.interface';
 
 export interface IApp {
-
     id: string;
+
+    name: string;
+
+    publishTime?: string;
+
+    published?: boolean;
+
+    availabilityStatus?: number;
+}
+
+export interface IAppFull extends IApp {
 
     createdDate: string;
 
@@ -42,17 +52,11 @@ export interface IApp {
 
     };
 
-    name: string;
-
     appId: string;
 
     sourceAppId: string;
 
     targetAppId: string;
-
-    publishTime: string;
-
-    published: string;
 
     tags?: ITag[];
 
@@ -71,8 +75,6 @@ export interface IApp {
     migrationHash: string;
 
     dynamicColor: string;
-
-    availabilityStatus: string;
 
     privileges: string;
 

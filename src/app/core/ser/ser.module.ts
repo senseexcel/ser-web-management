@@ -1,6 +1,6 @@
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { CleanReportPipe } from './pipes/clean.json';
-import { ScriptService, ReportService, AppRepository } from './provider';
+import { ScriptService, ReportService, AppRepository, TaskRepository } from './provider';
 import { SmcCommonModule } from '@smc/modules/smc-common/smc-common.module';
 import { SmcCache } from '@smc/modules/smc-common';
 import { QrsModule } from '../qrs/qrs.module.js';
@@ -9,7 +9,11 @@ import { QrsModule } from '../qrs/qrs.module.js';
     imports: [QrsModule, SmcCommonModule],
     exports: [CleanReportPipe],
     declarations: [CleanReportPipe],
-    providers: [ScriptService, ReportService, AppRepository,
+    providers: [
+        ScriptService,
+        ReportService,
+        AppRepository,
+        TaskRepository,
         {
             provide: APP_INITIALIZER,
             useFactory: (cache: SmcCache) => {

@@ -3,12 +3,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 /** core modules */
-import { SmcCommonModule, QrsModule, MaterialModule, FormHelperModule, SmcUiModule } from '@smc/modules';
+import { SmcCommonModule, QrsModule, MaterialModule, FormHelperModule, SmcUiModule, SerModule } from '@smc/modules';
 /** task routing module */
 import { TaskRoutingModule } from './tasks-routing.module';
 /** task services */
 import { TaskFactory } from './services/task.factory';
-import { TaskManagerService } from './services/task-manager.service';
 /** task components */
 import { EditComponent, ListComponent, FormComponents, TaskComponent,  } from './components';
 
@@ -19,6 +18,7 @@ import { EditComponent, ListComponent, FormComponents, TaskComponent,  } from '.
         MaterialModule,
         ReactiveFormsModule,
         QrsModule,
+        SerModule,
         TaskRoutingModule,
         SmcCommonModule,
         SmcUiModule
@@ -33,8 +33,7 @@ import { EditComponent, ListComponent, FormComponents, TaskComponent,  } from '.
         TaskComponent
     ],
     providers: [
-        TaskFactory,
-        TaskManagerService
+        TaskFactory
     ],
     entryComponents: [
         EditComponent

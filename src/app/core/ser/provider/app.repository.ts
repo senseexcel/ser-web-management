@@ -1,12 +1,11 @@
 import { Injectable, Inject } from '@angular/core';
-import { AppRepository as QrsAppRepository, FilterFactory, IApp } from '@smc/modules/qrs';
+import { AppRepository as QrsAppRepository, FilterFactory, IApp, IQrsFilter, IAppFull } from '@smc/modules/qrs';
 import { EnigmaService, SmcCache, ISettings } from '@smc/modules/smc-common';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { switchMap, map, tap, mergeMap, concatMap, filter, combineAll, bufferCount } from 'rxjs/operators';
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { ScriptService } from './script.service';
 import { SER_INITIAL_SCRIPT } from '../model/default-script';
-import { ISerConfig, ISerReport } from 'ser.api';
 
 @Injectable()
 export class AppRepository {
@@ -22,20 +21,37 @@ export class AppRepository {
     ) {}
 
     /**
+     * fetch app by id
+     *
+     * @param {string} appid
+     * @returns {Observable<IApp>}
+     * @memberof AppRepository
+     */
+    public fetchApp(appid: string): Observable<IApp> {
+
+        const qrsFilter = this.filterFactory.createFilter('id', `${appid}`);
+        return this.qrsAppRepository.fetchApps(qrsFilter).pipe(
+            switchMap((apps: IApp[]): Observable<IApp[]> => this.filterApps(apps)),
+            map((apps: IApp[]) => apps[0])
+        );
+    }
+
+    /**
      * fetch all apps
      *
      * @returns {Observable<IApp[]>}
      * @memberof AppRepository
      */
-    public fetchApps(): Observable<IApp[]> {
+    public fetchApps(appFilter?: IQrsFilter): Observable<IApp[]> {
 
         let app$;
         if (!this.session.serTag) {
-            app$ = this.qrsAppRepository.fetchApps().pipe(
+            app$ = this.qrsAppRepository.fetchApps(appFilter).pipe(
                 switchMap((apps: IApp[]): Observable<IApp[]> => this.filterApps(apps)));
         } else {
             const tagFilter = this.filterFactory.createFilter('tags.id', `${this.session.serTag.id}`);
-            app$ = this.qrsAppRepository.fetchApps(tagFilter);
+            const _filter   = appFilter ? this.filterFactory.createFilterGroup([tagFilter, appFilter]) : tagFilter;
+            app$ = this.qrsAppRepository.fetchApps(_filter);
         }
 
         app$ = app$.pipe(
@@ -53,7 +69,7 @@ export class AppRepository {
      * @returns {Observable<IApp[]>}
      * @memberof AppRepository
      */
-    public fetchUntaggedApps(): Observable<IApp[]> {
+    public fetchUntaggedApps(): Observable<IAppFull[]> {
 
         if (!this.session.serTag) {
             return this.qrsAppRepository.fetchApps();
@@ -61,8 +77,8 @@ export class AppRepository {
 
         return this.qrsAppRepository.fetchApps()
             .pipe(
-                map((apps: IApp[]) =>
-                    apps.filter((app: IApp) =>
+                map((apps: IAppFull[]) =>
+                    apps.filter((app: IAppFull) =>
                         app.tags.every(tag => tag.id !== this.session.serTag.id)
                     )
                 )
@@ -106,6 +122,7 @@ export class AppRepository {
             concatMap(async (app: IApp): Promise<IApp | null> => {
                 try {
                     const script = await this.enigmaService.getAppScript(app.id);
+                    console.log(script);
                     return this.scriptService.hasSerScript(script) ? app : null;
                 } catch (error) {
                     return null;
