@@ -148,7 +148,6 @@ export class EditComponent implements OnInit {
                 },
                 // error
                 (error) => {
-                    console.error(error);
                     let message = 'An error occured on open the task. Please check logs for detailed informations.';
                     let title = 'Could not open Task';
 

@@ -56,8 +56,6 @@ export class FormIdentificationComponent implements OnInit {
                 return;
             }
 
-            console.log(model);
-
             this.formModel = model;
             this.apps      = model.apps;
 

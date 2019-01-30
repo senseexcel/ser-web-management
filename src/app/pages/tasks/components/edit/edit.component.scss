@@ -1,3 +1,46 @@
 :host {
     height: 100%;
+
+    [page-content--body] {
+        padding-top: 1rem;
+    }
+
+    [page-sidebar--right] {
+
+        .header {
+            font-weight: 600;
+        }
+
+        .header, 
+        .lui-item {
+            padding: 0 0 0 1rem;
+        }
+
+        .header {
+            margin-bottom: .5rem;
+        }
+
+        .lui-item {
+            line-height: 2rem;
+            cursor: pointer;
+
+            &:hover {
+                background: darken($color: #FFF, $amount: 20);
+                color: #000;
+            }
+        }
+
+        .lui-item.active {
+            background: #FFF;
+            color: #000;
+        }
+    }
+
+    &::ng-deep {
+        [page-content--body] .header {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+    }
 }

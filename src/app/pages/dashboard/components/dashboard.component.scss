@@ -3,15 +3,21 @@ $colors: (text: #595959,
 hover: #F2F2F2,
 disabled: #E4E4E4,
 );
+  .smc-ui--page--sidebar.sidebar-left {
+    flex: 0 0 200px;
+  }
 
 :host {
 
   width: 100%;
 
+
   [page-sidebar--left] {
     margin: 0;
 
     &::ng-deep {
+
+
       .lui-list--group {
         margin: 0;
       }
