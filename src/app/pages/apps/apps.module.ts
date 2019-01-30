@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { AppsRoutingModule } from './apps-routing.module';
 
 import { AppEditComponent, AppListComponent, AppsComponent, AppNewComponent } from './components';
-import { ConnectionComponent, SettingsComponent, TemplateComponent, FormControlsComponent } from './components/edit';
+import { ConnectionComponent, SettingsComponent, TemplateComponent } from './components/edit';
 import {
   DistributionComponent,
   DistributionFileComponent,
@@ -40,7 +40,6 @@ import { AppsServiceModule } from './apps-service.module';
     AppListComponent,
     AppsComponent,
     ConnectionComponent,
-    FormControlsComponent,
     SettingsComponent,
     TasksComponent,
     TemplateComponent,

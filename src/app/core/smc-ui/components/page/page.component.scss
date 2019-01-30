@@ -87,9 +87,13 @@
   }
 
   .smc-ui--page--content-footer {
-    min-height: 37px;
-    padding: 0 2px 11px 10px;
     background: #8C8C8C;
+
+    &::ng-deep {
+      .navbar {
+        height: 48px;
+      }
+    }
   }
 }
 
@@ -107,4 +111,3 @@
       padding: 1.3rem;
     }
 }
-

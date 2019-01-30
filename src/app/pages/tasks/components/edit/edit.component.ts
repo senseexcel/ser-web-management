@@ -168,6 +168,10 @@ export class EditComponent implements OnInit {
             );
     }
 
+    public navigateBack() {
+        this.router.navigate(['../..'], { relativeTo: this.activeRoute });
+    }
+
     /**
      * apply form data and save to task model
      *

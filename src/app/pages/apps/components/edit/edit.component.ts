@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostBinding, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReportService } from '@smc/modules/ser/provider/report.service';
@@ -29,9 +29,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public formDataLoaded = false;
     public isSubRoute = false;
     public taskCount = 0;
-
-    @HostBinding('class.flex-container')
-    protected hostClass = true;
+    public app: string;
 
     @ViewChild('connections')
     private connectionsContainer: ElementRef;
@@ -104,6 +102,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
         ];
 
         const data = this.cacheService.currentReportData;
+        this.app    = data.app;
         this.report = data.report;
         this.formService.loadModel(this.report);
 
@@ -152,6 +151,10 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 const title = `Error`;
                 this.modalService.openMessageModal(title, e.message);
             });
+    }
+
+    public navigateBack() {
+        this.router.navigate(['../..'], { relativeTo: this.activeRoute });
     }
 
     public preview() {

@@ -1,32 +1,43 @@
-<div class="qapp-detail">
+<smc-ui--page>
 
-  <div class="qapp-detail--sidebar sidebar-left">
+  <!-- CONTENT HEADER -->
+  <div page-content--header>
+    <i class="ser-icon ser-icon--apps"></i>
+    <span>Report Script Preview</span>
+  </div>
 
-    <div class="header">
-      <a (click)="navigateBack()">
+  <!-- CONTENT BODY -->
+  <div page-content--body>
+    <ng-container>
+      <pre>{{ previewData | hjson}}</pre>
+    </ng-container>
+  </div>
+
+  <!-- CONTENT FOOTER -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="closePreview()">Close Preview</smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+
+  <!-- SIDEBAR LEFT -->
+  <div page-sidebar--left>
+    <div class="header sidebar-content">
+      <a (click)="closePreview()">
         <i class="lui-icon lui-icon--arrow-up"></i>
         <span>Back</span>
       </a>
     </div>
 
-    <ul class="lui-list">
+    <ul class="overview lui-list">
       <li class="lui-item">
-          {{appName}}
+        Preview Report Configuration
       </li>
     </ul>
   </div>
 
-  <div class="qapp-detail--content">
-
-    <div class="qapp-detail--content-header">
-      <h3>Preview Sense Excel Reporting Task</h3>
-    </div>
-
-    <div class="qapp-detail--content-body">
-        <pre>{{ previewData | hjson}}</pre>
-    </div>
+  <!-- SIDEBAR RIGHT -->
+  <div page-sidebar--right>
   </div>
 
-  <div class="qapp-content--sidebar sidebar-right">
-  </div>
-</div>
+</smc-ui--page>
