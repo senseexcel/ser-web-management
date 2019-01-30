@@ -81,7 +81,6 @@ export class AppListComponent implements OnInit {
      */
     public selectApp(app: IApp) {
         this.selection.select(app);
-        console.log(this.selection.selected.length);
     }
 
     /**
@@ -138,11 +137,11 @@ export class AppListComponent implements OnInit {
      * @memberof AppListComponent
      */
     private loadApps() {
+        this.isLoading = true;
         this.appRepository.fetchApps()
             .subscribe((apps: IApp[]) => {
                 this.isLoading = false;
                 this.apps = apps;
-
             });
     }
 }

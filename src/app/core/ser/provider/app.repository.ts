@@ -2,13 +2,15 @@ import { Injectable, Inject } from '@angular/core';
 import { AppRepository as QrsAppRepository, FilterFactory, IApp, IQrsFilter, IAppFull } from '@smc/modules/qrs';
 import { EnigmaService, SmcCache, ISettings } from '@smc/modules/smc-common';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
-import { switchMap, map, tap, mergeMap, concatMap, filter, combineAll, bufferCount } from 'rxjs/operators';
+import { switchMap, map, tap, mergeMap, concatMap, bufferCount } from 'rxjs/operators';
 import { Observable, of, forkJoin, from } from 'rxjs';
 import { ScriptService } from './script.service';
 import { SER_INITIAL_SCRIPT } from '../model/default-script';
 
 @Injectable()
 export class AppRepository {
+
+    private validatedApps: Map<string, boolean>;
 
     constructor(
         @Inject(SMC_SESSION) private session: ISettings,
@@ -18,7 +20,9 @@ export class AppRepository {
         private filterFactory: FilterFactory,
         private qrsAppRepository: QrsAppRepository,
         private scriptService: ScriptService
-    ) {}
+    ) {
+        this.validatedApps = new Map();
+    }
 
     /**
      * fetch app by id
@@ -50,7 +54,7 @@ export class AppRepository {
                 switchMap((apps: IApp[]): Observable<IApp[]> => this.filterApps(apps)));
         } else {
             const tagFilter = this.filterFactory.createFilter('tags.id', `${this.session.serTag.id}`);
-            const _filter   = appFilter ? this.filterFactory.createFilterGroup([tagFilter, appFilter]) : tagFilter;
+            const _filter = appFilter ? this.filterFactory.createFilterGroup([tagFilter, appFilter]) : tagFilter;
             app$ = this.qrsAppRepository.fetchApps(_filter);
         }
 
@@ -119,14 +123,20 @@ export class AppRepository {
      */
     public filterApps(apps: IApp[]): Observable<IApp[]> {
         return from(apps).pipe(
-            concatMap(async (app: IApp): Promise<IApp | null> => {
-                try {
-                    const script = await this.enigmaService.getAppScript(app.id);
-                    console.log(script);
-                    return this.scriptService.hasSerScript(script) ? app : null;
-                } catch (error) {
-                    return null;
+            concatMap(async (app: IApp): Promise<any> => {
+                let isValid = false;
+                if (this.validatedApps.has(app.id)) {
+                    isValid = this.validatedApps.get(app.id);
+                } else {
+                    try {
+                        const script = await this.enigmaService.getAppScript(app.id);
+                        isValid = this.scriptService.hasSerScript(script);
+                    } catch (error) {
+                        isValid = false;
+                    }
+                    this.validatedApps.set(app.id, isValid);
                 }
+                return isValid ? app : null;
             }),
             bufferCount(apps.length),
             map((result: IApp[]) => result.filter(app => !!app))
@@ -158,5 +168,4 @@ export class AppRepository {
             })
         );
     }
-
 }

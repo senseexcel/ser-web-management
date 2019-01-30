@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { AppRepository } from './app.repository';
-import { switchMap, mergeMap, reduce, map, combineAll, catchError, bufferCount } from 'rxjs/operators';
+import { switchMap, mergeMap, reduce, map, combineAll, catchError, bufferCount, concatMap } from 'rxjs/operators';
 import { from, of, Observable, forkJoin } from 'rxjs';
 import { ITask, IApp, TaskRepository as QrsTaskRepository, FilterFactory, IQrsFilter, IQrsFilterGroup } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
@@ -32,27 +32,9 @@ export class TaskRepository {
 
         if (!this.session.serTag) {
             task$ = task$.pipe(
-                mergeMap((tasks: ITask[]) => {
-                    /** get all tasks we can find and loop them */
-                    return from(tasks).pipe(
-                        /**
-                         * currently this will trigger an additional request but since we know
-                         */
-                        mergeMap(task => forkJoin(of(task), this.appRepository.filterApps([task.app]))),
-                        map((response: [ITask, IApp[]]) => {
-                            const [task, app] = response;
-                            if (!app[0]) {
-                                return null;
-                            }
-                            return task;
-                        }),
-                        bufferCount(tasks.length)
-                    );
-                }),
-                map((tasks) => tasks.filter((task) => !!task))
+                mergeMap((tasks: ITask[]) => this.filterTasks(tasks))
             );
         }
-
         return task$;
     }
 
@@ -95,6 +77,30 @@ export class TaskRepository {
             catchError((error) => {
                 return of([]);
             })
+        );
+    }
+
+    /**
+     * filter tasks for valid apps, app which has been validated
+     * means the app contains a SER Script should be shown
+     *
+     * @private
+     * @param {ITask[]} tasks
+     * @returns {Observable<ITask[]>}
+     * @memberof TaskRepository
+     */
+    private filterTasks(tasks: ITask[]): Observable<ITask[]> {
+        return from(tasks).pipe(
+            concatMap(task => forkJoin(of(task), this.appRepository.filterApps([task.app]))),
+            map((response: [ITask, IApp[]]) => {
+                const [task, app] = response;
+                if (!app[0]) {
+                    return null;
+                }
+                return task;
+            }),
+            bufferCount(tasks.length),
+            map((response) => response.filter((task) => !!task))
         );
     }
 }
