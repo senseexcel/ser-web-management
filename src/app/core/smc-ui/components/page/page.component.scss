@@ -96,29 +96,15 @@
 /** 
  * theme for page
  */
-:host-context(.page-layout) {
+:host-context(.page-layout.home) {
 
-  &.two-columns {
-    .smc-ui--page--sidebar {
-      &.sidebar-right {
-        display: none;
-      }
-    }
-  }
-
-  &.two-columns.small {
     .smc-ui--page--sidebar.sidebar-left {
       flex: 0 0 200px;
+      margin: 0;
     }
-  }
 
-  &.one-column
-  .smc-ui--page--sidebar {
-
-    &.sidebar-left,
-    &.sidebar-right {
-      display: none;
+    .smc-ui--page--content-body {
+      padding: 1.3rem;
     }
-  }
 }
 

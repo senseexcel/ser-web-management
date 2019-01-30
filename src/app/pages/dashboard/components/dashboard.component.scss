@@ -24,12 +24,15 @@ disabled: #E4E4E4,
 
       .lui-list {
 
+
         .ser-icon {
           font-size: 12px;
           margin: 0px 5px 0 0;
+          text-align: right;
+          width: 1rem;
 
           &:before {
-            margin: 0 0 2px;
+            margin: 0;
           }
         }
 
@@ -41,6 +44,10 @@ disabled: #E4E4E4,
           border-left: solid 4px #60BF91;
           background: #595959;
           margin-bottom: 1px;
+        }
+
+        .lui-list--item:not(.lui-list--header) {
+          color: rgba(255, 255, 255, .8);
         }
 
         .lui-list--group {
