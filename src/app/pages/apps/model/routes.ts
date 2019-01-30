@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AppListComponent, AppEditComponent, AppsComponent, AppNewComponent  } from '../components';
 import { EditGuard } from '../guards/edit.guard';
-import { CreateGuard  } from '../guards/create.guard';
 import { ReportPreviewComponent } from '../components/preview/preview.component';
 import { ListComponent, EditComponent } from '@smc/pages/tasks/components';
 import { TasksComponent } from '../components/tasks/task.component';
@@ -59,14 +58,13 @@ export const AppRoutes: Routes = [{
     }, {
         path: 'new',
         component: AppNewComponent,
-        canActivate: [CreateGuard],
         data: {
             breadcrumb: 'New App',
         }
     }, {
         path: 'new/:id',
         component: AppEditComponent,
-        canActivate: [CreateGuard],
+        canActivate: [EditGuard],
         data: {
             breadcrumb: 'New App',
             page: 'detail'
@@ -74,7 +72,6 @@ export const AppRoutes: Routes = [{
         children: [{
             path: 'preview',
             component: ReportPreviewComponent,
-            canActivate: [CreateGuard],
             data: {
                 breadcrumb: 'Report Preview'
             }

@@ -1,6 +1,5 @@
 import { NgModule, Compiler, FactoryProvider, NgModuleFactory } from '@angular/core';
 import { EditGuard } from './guards/edit.guard';
-import { CreateGuard } from './guards/create.guard';
 import { RouterModule, ROUTES, Routes } from '@angular/router';
 import { AppRoutes } from './model/routes';
 
@@ -24,7 +23,7 @@ delete (<any>AppsModuleRoutesFactory).useValue;
 @NgModule({
     imports: [RouterModule],
     exports: [RouterModule],
-    providers: [EditGuard, CreateGuard, AppsModuleRoutesFactory]
+    providers: [EditGuard, AppsModuleRoutesFactory]
 })
 
 export class AppsRoutingModule {}

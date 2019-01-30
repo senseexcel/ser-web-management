@@ -1,34 +1,45 @@
-<div class="qapp-detail">
+<smc-ui--page>
 
-  <div class="qapp-detail--sidebar sidebar-left">
-
-    <div class="header">
-      <a (click)="navigateBack()">
-        <i class="lui-icon lui-icon--arrow-up"></i>
-        <span>New</span>
-      </a>
-    </div>
+  <!-- CONTENT HEADER -->
+  <div page-content--header>
+    <i class="ser-icon ser-icon--apps"></i>
+    <span>Create new</span>
   </div>
 
-  <div class="qapp-detail--content">
-  
-    <div class="qapp-stage-header">
-      <h1 class="qapp-h1"> <i class="icon-qmc-Task"></i> Please enter a name</h1>
-  
-    </div>
-    <div class="qapp-manage-content-section"></div>
-    <div class="qapp-detail--content-body vh100">
+  <!-- CONTENT BODY -->
+  <div page-content--body>
+    <ng-container>
       <mat-form-field class="form-control">
         <input matInput [formControl]="formNameControl" placeholder="Enter reporting app name here">
       </mat-form-field>
+    </ng-container>
+  </div>
+
+  <!-- CONTENT FOOTER -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="apply()">Apply</smc-ui--button>
+      <smc-ui--button (click)="cancel()">Cancel</smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+
+  <!-- SIDEBAR LEFT -->
+  <div page-sidebar--left>
+    <div class="header sidebar-content">
+      <a (click)="navigateBack()">
+        <i class="lui-icon lui-icon--arrow-up"></i>
+        <span>Applications</span>
+      </a>
     </div>
 
-    <div class="btn-toolbar" style="padding:10px">
-      <button class="btn" (click)="apply()">apply</button>
-      <button class="btn" (click)="cancel()">cancel</button>
-    </div>
+    <ul class="lui-list overview">
+      <li class="lui-item">
+        New Report
+      </li>
+    </ul>
   </div>
-  
-  <div class="qapp-content--sidebar sidebar-right">
+
+  <!-- SIDEBAR RIGHT -->
+  <div page-sidebar--right>
   </div>
-  </div>
+</smc-ui--page>
