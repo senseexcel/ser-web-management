@@ -7,6 +7,7 @@ import { IQrsFilter, IQrsFilterGroup, IApp } from '../api';
 import { ITask } from '../api';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings } from '@smc/modules/smc-common';
+import { ITaskDefinition } from '../api/task-definition.interface';
 
 @Injectable()
 export class TaskRepository {
@@ -95,8 +96,8 @@ export class TaskRepository {
     /**
      * create a new task
      */
-    public createTask(taskDefinition: ITask): Observable<any> {
-        const url = `/qrs/reloadtask/create`;
+    public createTask(taskDefinition: ITaskDefinition): Observable<any> {
+        const url = `/qrs/ReloadTask/create`;
         return this.httpClient.post(url, taskDefinition, { withCredentials: true });
     }
 
@@ -107,7 +108,7 @@ export class TaskRepository {
      * @returns
      * @memberof SerTaskService
      */
-    public updateTask(taskDefinition: ITask): Observable<ITask> {
+    public updateTask(taskDefinition: ITaskDefinition): Observable<ITask> {
         const url = `/qrs/reloadtask/update`;
         return this.httpClient.post<ITask>(url, taskDefinition, {
                 headers: { 'Content-Type': 'application/json' },

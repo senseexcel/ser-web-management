@@ -29,7 +29,6 @@ export class TaskRepository {
         }
 
         let task$: Observable<ITask[]> = this.qrsTaskRepository.fetchTasks(filters);
-
         if (!this.session.serTag) {
             task$ = task$.pipe(
                 mergeMap((tasks: ITask[]) => this.filterTasks(tasks))
@@ -42,6 +41,7 @@ export class TaskRepository {
      * sync tasks and add SER tag
      * have to return a number
      *
+     * @todo rework
      * @memberof SerTaskService
      */
     public synchronizeTasks() {
@@ -69,7 +69,7 @@ export class TaskRepository {
                 return from(tasks).pipe(
                     map(task => {
                         task.tags.push(this.session.serTag);
-                        return this.qrsTaskRepository.updateTask(task);
+                        return this.qrsTaskRepository.updateTask({task});
                     })
                 );
             }),

@@ -134,7 +134,6 @@ export class TaskFactory {
                 }
             }).pipe(
                 map((events: any[]) => {
-
                     // validate event
                     let isValid = true;
                     isValid = isValid && events.length === 1;

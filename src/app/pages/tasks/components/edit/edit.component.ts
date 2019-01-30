@@ -5,7 +5,8 @@ import { switchMap, catchError,  tap } from 'rxjs/operators';
 import { of, Observable, forkJoin, empty } from 'rxjs';
 import { ActivatedRoute, Data, Router, Params } from '@angular/router';
 import { TaskFormModel } from '../../model/task-form.model';
-import { IApp, ITask, AppRepository, TaskRepository } from '@smc/modules/qrs';
+import { IApp, ITask, TaskRepository } from '@smc/modules/qrs';
+import { AppRepository } from '@smc/modules/ser/provider';
 import { ModalService } from '@smc/modules/modal';
 import { IDataNode, ISettings } from '@smc/modules/smc-common';
 import { TaskIncomatibleException } from '../../api/exceptions/incompatible.exception';
@@ -147,6 +148,7 @@ export class EditComponent implements OnInit {
                 },
                 // error
                 (error) => {
+                    console.error(error);
                     let message = 'An error occured on open the task. Please check logs for detailed informations.';
                     let title = 'Could not open Task';
 
@@ -237,7 +239,6 @@ export class EditComponent implements OnInit {
 
     /**
      * cancel edit
-     * @todo implement
      *
      * @memberof EditComponent
      */
@@ -262,7 +263,6 @@ export class EditComponent implements OnInit {
      */
     private initExistingTask(): Observable<TaskFormModel> {
 
-        /*
         return this.activeRoute.params
             .pipe(
                 switchMap((params) => {
@@ -276,17 +276,13 @@ export class EditComponent implements OnInit {
                 }),
                 switchMap((taskModel) => {
                     this.taskFormModel.task  = taskModel;
-                    // @todo handle this correct
-                    // return this.appRepository.loadSerApps();
-                    return this.appRepository.fetchSerApps();
+                    return this.appRepository.fetchApps();
                 }),
                 switchMap((apps: IApp[]) => {
                     this.taskFormModel.apps = apps;
                     return of(this.taskFormModel);
                 })
             );
-            */
-        return of(null);
     }
 
     /**
@@ -303,8 +299,7 @@ export class EditComponent implements OnInit {
             name: 'New Task',
         }];
 
-        /*
-        return this.appRepository.fetchSerApps()
+        return this.appRepository.fetchApps()
             .pipe(
                 switchMap((apps: IApp[]) => {
                     this.taskFormModel.apps = apps;
@@ -315,8 +310,6 @@ export class EditComponent implements OnInit {
                     this.taskFormModel.task = task;
                 })
             );
-            */
-        return of(null);
     }
 
     /**
@@ -346,13 +339,10 @@ export class EditComponent implements OnInit {
                     ...this.taskFactory.createSchemaEvent(startTime, task)
                 };
 
-                /*
                 return this.taskRepository.updateTask({
                     task,
                     schemaEvents: [event]
                 });
-                */
-                return this.taskRepository.updateTask(task);
             })
         );
     }
@@ -366,13 +356,12 @@ export class EditComponent implements OnInit {
      */
     private createNewtask(): Observable<ITask> {
         const task = this.createTaskData();
-        return this.taskRepository.createTask(task);
-        /*
+        return this.taskRepository.createTask({
+            task,
             schemaEvents: [
-                this.taskFactoryService.createSchemaEvent(this.taskFormModel.task.trigger.hour || 12)
+                this.taskFactory.createSchemaEvent(this.taskFormModel.task.trigger.hour || 12)
             ]
         });
-            */
     }
 
     /**
