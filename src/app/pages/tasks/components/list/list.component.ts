@@ -6,6 +6,8 @@ import { Subject, empty, of, Observable } from 'rxjs';
 import { ModalService } from '@smc/modules/modal';
 import { ITask } from '@smc/modules/qrs';
 import { TaskRepository } from '@smc/modules/ser/provider';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
+import { ISettings } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-ser-task-list',
@@ -19,6 +21,7 @@ export class ListComponent implements OnDestroy, OnInit {
     public tasks: ITask[];
     public columns: string[];
     public selection: SelectionModel<ITask>;
+    public hasSerTag: boolean;
 
     private isDestroyed$: Subject<boolean>;
 
@@ -30,14 +33,16 @@ export class ListComponent implements OnDestroy, OnInit {
      * @memberof ListComponent
      */
     constructor(
+        @Inject(SMC_SESSION) private session: ISettings,
         private dialog: ModalService,
         private router: Router,
         private route: ActivatedRoute,
-        private taskRepository: TaskRepository
+        private taskRepository: TaskRepository,
     ) {
         this.isDestroyed$ = new Subject<boolean>();
         this.tasks = [];
         this.selection = new SelectionModel<ITask>();
+        this.hasSerTag = !!this.session.serTag;
     }
 
     /**
@@ -112,12 +117,9 @@ export class ListComponent implements OnDestroy, OnInit {
             'Synchronize Tasks',
             'This will Synchronize Sense Excel Reporting Tasks and add SER Tag to Task. This can take a while...'
         ).switch.pipe(
-            switchMap((confirm: boolean): Observable<any> => {
-                if (confirm) {
-                    return this.taskRepository.synchronizeTasks();
-                }
-                return empty();
-            }),
+            switchMap((confirm: boolean): Observable<any> =>
+                confirm ? this.taskRepository.synchronizeTasks() : empty()
+            ),
         )
         .subscribe((tasks: any[]) => {
             if (tasks) {
@@ -139,11 +141,9 @@ export class ListComponent implements OnDestroy, OnInit {
             switchMap((params: Params) => {
                 this.isLoading = true;
                 const appId = params.id || null;
-
                 if (appId) {
                     return this.taskRepository.fetchTasksForApp(appId);
                 }
-
                 return this.taskRepository.fetchTasks();
             }),
             takeUntil(this.isDestroyed$)

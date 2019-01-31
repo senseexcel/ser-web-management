@@ -33,7 +33,7 @@
     <smc-ui--button-navbar>
       <smc-ui--button (click)="editTask()" [disabled]="isLoading || selection.isEmpty()">Edit</smc-ui--button>
       <smc-ui--button (click)="createNew()" [disabled]="isLoading">Create New</smc-ui--button>
-      <smc-ui--button (click)="syncTasks()" [disabled]="isLoading">Synchronize Tasks</smc-ui--button>
+      <smc-ui--button (click)="syncTasks()" [disabled]="isLoading" *ngIf="hasSerTag">Synchronize Tasks</smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 

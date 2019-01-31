@@ -13,9 +13,10 @@
     color: #FFF;
     font-size: 14px;
     line-height: 30px;
+    padding: 0;
 
-    li:nth-child(1) {
-      font-weight: 700;
+    li {
+      font-weight: 500;
 
       .ser-icon {
         font-size: 17px !important;
@@ -25,6 +26,10 @@
     li:nth-child(n+2) {
       margin-left: 24px;
     }
+  }
+
+  .list-header--title {
+    margin: 0 1rem 0 0;
   }
 
   .list-header--actions {

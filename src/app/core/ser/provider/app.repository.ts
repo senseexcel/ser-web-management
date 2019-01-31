@@ -48,23 +48,37 @@ export class AppRepository {
      */
     public fetchApps(appFilter?: IQrsFilter): Observable<IApp[]> {
 
-        let app$;
         if (!this.session.serTag) {
-            app$ = this.qrsAppRepository.fetchApps(appFilter).pipe(
-                switchMap((apps: IApp[]): Observable<IApp[]> => this.filterApps(apps)));
+            return this.fetchAppsByScript();
         } else {
             const tagFilter = this.filterFactory.createFilter('tags.id', `${this.session.serTag.id}`);
             const _filter = appFilter ? this.filterFactory.createFilterGroup([tagFilter, appFilter]) : tagFilter;
-            app$ = this.qrsAppRepository.fetchApps(_filter);
+            return this.qrsAppRepository.fetchApps(_filter)
+                .pipe(
+                    tap((apps: IApp[]) => {
+                        this.cache.set('ser.apps', apps, true);
+                    })
+                );
         }
+    }
 
-        app$ = app$.pipe(
+    /**
+     * ignore SER Tag even it is exists, this will open all apps possible
+     * and watch into their script to find SER specific parts.
+     *
+     * This can take a while.
+     *
+     * @param {IQrsFilter} [appFilter]
+     * @returns {Observable<IApp[]>}
+     * @memberof AppRepository
+     */
+    public fetchAppsByScript(appFilter?: IQrsFilter): Observable<IApp[]> {
+        return this.qrsAppRepository.fetchApps(appFilter).pipe(
+            switchMap((apps: IApp[]): Observable<IApp[]> => this.filterApps(apps)),
             tap((apps: IApp[]) => {
                 this.cache.set('ser.apps', apps, true);
             })
         );
-
-        return app$;
     }
 
     /**

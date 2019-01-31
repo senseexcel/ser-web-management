@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
 import { AppRepository } from './app.repository';
-import { switchMap, mergeMap, reduce, map, combineAll, catchError, bufferCount, concatMap } from 'rxjs/operators';
+import { mergeMap, map, bufferCount, concatMap, filter, switchMap } from 'rxjs/operators';
 import { from, of, Observable, forkJoin } from 'rxjs';
-import { ITask, IApp, TaskRepository as QrsTaskRepository, FilterFactory, IQrsFilter, IQrsFilterGroup } from '@smc/modules/qrs';
+import { ITask, IApp, TaskRepository as QrsTaskRepository, FilterFactory, IQrsFilter, IQrsFilterGroup, ITag } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings } from '@smc/modules/smc-common/api';
 
@@ -16,15 +16,15 @@ export class TaskRepository {
         private filterFactory: FilterFactory
     ) { }
 
-    public fetchTasks(filter?: IQrsFilter): Observable<ITask[]> {
+    public fetchTasks(_filter?: IQrsFilter): Observable<ITask[]> {
         const filters: IQrsFilterGroup = this.filterFactory.createFilterGroup();
 
         if (this.session.serTag) {
             filters.addFilter(this.filterFactory.createFilter('tags.id', this.session.serTag.id));
         }
 
-        if (filter) {
-            filters.addFilter(filter);
+        if (_filter) {
+            filters.addFilter(_filter);
         }
 
 
@@ -52,41 +52,26 @@ export class TaskRepository {
      * sync tasks and add SER tag
      * have to return a number
      *
-     * @todo rework
      * @memberof SerTaskService
      */
-    public synchronizeTasks() {
+    public synchronizeTasks(): Observable<ITask[]> {
 
-        return this.appRepository.fetchApps().pipe(
-            switchMap((apps) => {
-                if (apps.length === 0) {
-                    throw new Error('no apps found');
-                }
-
-                return from(apps).pipe(
-                    mergeMap((app: IApp) => {
-                        const filter = this.filterFactory.createFilter('app.id', app.id);
-                        return this.qrsTaskRepository.fetchTasks(filter);
-                    })
-                );
-            }),
-            reduce((appTasks: ITask[], allTasks: ITask[]) => {
-                return allTasks.concat(appTasks);
-            }),
-            switchMap((tasks) => {
-                if (tasks.length === 0) {
-                    throw new Error('no tasks found');
-                }
-                return from(tasks).pipe(
-                    map(task => {
-                        task.tags.push(this.session.serTag);
-                        return this.qrsTaskRepository.updateTask({task});
-                    })
-                );
-            }),
-            combineAll(),
-            catchError((error) => {
-                return of([]);
+        return this.qrsTaskRepository.fetchTasks().pipe(
+            // step 1: get all tasks and filter them by SER Tag
+            // if task allready have an SER Tag remove it from result list
+            map((tasks: ITask[]) => tasks.filter((task: ITask) =>
+                task.tags.every((tag: ITag) => tag.id !== this.session.serTag.id)
+            )),
+            // step 2: all tasks which has been left must be filtered now
+            // to check which tasks is combined with a SER App
+            switchMap((tasks: ITask[]) => this.filterTasks(tasks)),
+            // step 3: update all tasks
+            mergeMap((tasks: ITask[]) => {
+                const updateRequests = tasks.map((task) => {
+                    task.tags.push(this.session.serTag);
+                    return this.qrsTaskRepository.updateTask({task});
+                });
+                return forkJoin<ITask>(...updateRequests);
             })
         );
     }
