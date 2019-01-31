@@ -27,8 +27,6 @@ export class EditGuard implements CanActivate {
      * @memberof EditGuard
      */
     canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-        console.log('ich werd aufgerufen ????');
-
         const id = route.params.id;
         return this.appRepository.exists(id).pipe(
             tap(isApp => {

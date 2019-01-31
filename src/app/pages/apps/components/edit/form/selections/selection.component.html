@@ -2,7 +2,7 @@
 <ng-container *ngIf="selectionForm">
     <div [formGroup]="selectionForm">
 
-        <!-- selection type --
+        <!-- selection type -->
         <mat-form-field class="form-control">
             <mat-select formControlName="type">
                 <mat-option *ngFor="let type of selectionTypes" [value]="type.value">
@@ -13,7 +13,7 @@
 
         <ng-container formGroupName="selection">
 
-            <!-- selection object type --
+            <!-- selection object type -->
             <mat-form-field class="form-control" [hidden]="selectionForm.controls.selection.controls.objectType.disabled">
                 <mat-select formControlName="objectType">
                     <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
@@ -22,16 +22,15 @@
                 </mat-select>
             </mat-form-field>
 
-            <!-- selection name --
+            <!-- selection name -->
             <mat-form-field class="form-control">
-                <input matInput formControlName="name" placeholder="Name" >
+                <input matInput formControlName="name" placeholder="Name">
             </mat-form-field>
 
-            <!-- selection value --
+            <!-- selection value -->
             <mat-form-field class="form-control">
                 <input matInput formControlName="values" placeholder="Value" >
             </mat-form-field>
         </ng-container>
-        -->
     </div>
 </ng-container>

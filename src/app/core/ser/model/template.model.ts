@@ -1,4 +1,4 @@
-import { ISerTemplate } from 'ser.api';
+import { ISerTemplate, ISerSenseSelection } from 'ser.api';
 import { SelectionModel } from './selection.model';
 import { IModel } from '@smc/modules/smc-common/api/model.interface';
 import { importData, Validate, Validators, mapDataTo } from '@smc/modules/smc-common/utils/model';
@@ -13,7 +13,7 @@ export class TemplateModel implements ISerTemplate {
     private templateKeepFormula: boolean;
     private templateScriptKeys: string[];
     private templateScriptArgs: string[];
-    private templateSelections: SelectionModel[] = [];
+    private templateSelections: ISerSenseSelection[] = [];
 
     public get generated(): boolean {
         return this.templateGenerated;
@@ -47,7 +47,7 @@ export class TemplateModel implements ISerTemplate {
         return this.templateScriptArgs;
     }
 
-    public get selections(): SelectionModel[] {
+    public get selections(): ISerSenseSelection[] {
         return this.templateSelections;
     }
 
@@ -85,7 +85,7 @@ export class TemplateModel implements ISerTemplate {
 
     @Validate([Validators.isArray])
     @mapDataTo<SelectionModel[]>(SelectionModel)
-    public set selections(selections: SelectionModel[]) {
+    public set selections(selections: ISerSenseSelection[]) {
         this.templateSelections = selections;
     }
 

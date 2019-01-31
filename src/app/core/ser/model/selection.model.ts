@@ -1,6 +1,7 @@
-import { ISerSenseSelection, SelectionType } from '../api/ser-selection.interface';
+import { SelectionType } from '../api/ser-selection.interface';
 import { IModel } from '@smc/modules/smc-common/api/model.interface';
-import { importData } from '@smc/modules/smc-common/utils';
+import { importData, mapToArray } from '@smc/modules/smc-common/utils';
+import { ISerSenseSelection } from 'ser.api';
 
 export enum SelectionObjectType {
     BOOKMARK = 'bookmark',
@@ -124,6 +125,7 @@ export class SelectionModel implements ISerSenseSelection, IModel {
      *
      * @memberof SelectionModel
      */
+    @mapToArray()
     public set values(values: string[]) {
         this.serSelectionValues = values;
     }

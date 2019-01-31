@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { SelectionObjectType, SelectionType } from '@smc/modules/ser';
 import { FormService } from '@smc/modules/form-helper';
+import { IDataNode } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-edit-form-selections',
@@ -57,7 +58,7 @@ export class SelectionComponent implements OnInit {
     ngOnInit() {
 
         /** convert enums to json object */
-        this.selectionTypes       = this.convertEnumToJSON(SelectionType);
+        this.selectionTypes = this.convertEnumToJSON(SelectionType);
         this.selectionObjectTypes = this.convertEnumToJSON(SelectionObjectType);
 
         /** create / register update hook if form should be updated */
@@ -66,12 +67,12 @@ export class SelectionComponent implements OnInit {
 
         /** register on app has been loaded and model has been loaded to edit*/
         this.formService.editModel()
-        .subscribe ((report: ReportModel) => {
-            this.report = report;
-            if ( this.report ) {
-                this.selectionForm = this.buildSelectionForm();
-            }
-        });
+            .subscribe((report: ReportModel) => {
+                this.report = report;
+                if (this.report) {
+                    this.selectionForm = this.buildSelectionForm();
+                }
+            });
     }
 
     private convertEnumToJSON(data): any {
@@ -96,9 +97,8 @@ export class SelectionComponent implements OnInit {
      */
     private buildSelectionForm(): FormGroup {
 
-        /*
-        const selectionSettings = this.report.template.selections[0] || {};
-        const selectionType     = selectionSettings.type || SelectionType.Dynamic;
+        const selectionSettings: IDataNode = this.report.template.selections[0] || {};
+        const selectionType = selectionSettings.type || SelectionType.Dynamic;
 
         const formGroup: FormGroup = this.formBuilder.group({
             type: this.formBuilder.control(null),
@@ -108,7 +108,7 @@ export class SelectionComponent implements OnInit {
                 ),
                 objectType: this.formBuilder.control(selectionSettings.objectType || SelectionObjectType.DEFAULT),
                 values: this.formBuilder.control(
-                    selectionSettings.values ? selectionSettings.values[0] : ''
+                    selectionSettings.values ? selectionSettings.values.join(' ,') : ''
                 )
             })
         });
@@ -117,17 +117,15 @@ export class SelectionComponent implements OnInit {
             const selectionFormGroup = formGroup.controls.selection as FormGroup;
             if (value === SelectionType.Dynamic) {
                 selectionFormGroup.controls.objectType.setValue(SelectionObjectType.DEFAULT);
-                selectionFormGroup.controls.objectType.disable({onlySelf: true, emitEvent: false});
+                selectionFormGroup.controls.objectType.disable({ onlySelf: true, emitEvent: false });
             } else {
-                selectionFormGroup.controls.objectType.enable({onlySelf: true, emitEvent: false});
+                selectionFormGroup.controls.objectType.enable({ onlySelf: true, emitEvent: false });
             }
         });
 
         // set type one time to trigger change event
         formGroup.controls.type.setValue(selectionType);
         return formGroup;
-        */
-       return this.formBuilder.group({});
     }
 
     /**
@@ -155,32 +153,21 @@ export class SelectionComponent implements OnInit {
      * @memberof ConnectionComponent
      */
     private buildUpdateHook(): Observable<boolean> {
-
         const observer = new Observable<boolean>((obs) => {
-            obs.next(true);
-            /*
-            const fields     = this.selectionForm.getRawValue();
-            let selection = this.report.template.selections[0];
-            if (!selection) {
-                selection = new SelectionModel();
-                this.report.template.selections = [selection];
+
+            if (this.selectionForm.invalid) {
+                obs.next(false);
+                return;
             }
-
-            selection.values  = fields.selection.values;
-            selection.name    = fields.selection.name;
-            selection.type    = fields.type;
-
-            selection.objectType = fields.selection.type === SelectionType.Dynamic
-                ? SelectionObjectType.HIDDEN_BOOKMARK
-                : fields.selection.objectType;
-
-            obs.next({
-                errors: [],
-                valid: this.selectionForm.valid,
-            });
-            */
+            const formData: IDataNode = this.selectionForm.getRawValue();
+            const {name, values, objectType} = formData.selection;
+            this.report.template.selections = [{
+                name,
+                values: values.split(',').map(val => val.replace(/(^\s*|\s*$)/g, '')),
+                objectType, type: formData.type
+            }];
+            obs.next(true);
         });
-
         return observer;
     }
 }
