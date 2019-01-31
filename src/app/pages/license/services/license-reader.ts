@@ -90,9 +90,10 @@ export class LicenseReader {
      * @memberof LicenseReader
      */
     private readUsers(users: string[]): ILicenseUser[] {
-
-        return users.map((user): ILicenseUser => {
-
+        let result = users.map((user): ILicenseUser => {
+            if (user.replace(/(^\s*|\s*$)/g, '').length === 0) {
+                return null;
+            }
             const data = user.split(';');
             const [, id, from, to] = [...data];
 
@@ -102,5 +103,7 @@ export class LicenseReader {
                 to   : to   || null
             };
         });
+        result = result.filter(user => user !== null);
+        return result;
     }
 }

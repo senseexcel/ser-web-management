@@ -5,7 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 // tslint:disable-next-line:max-line-length
 import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE } from '@angular/material';
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
-import { ModalModule, SmcCommonModule, MaterialModule } from '@smc/modules';
+import { ModalModule, SmcCommonModule, MaterialModule, SmcUiModule } from '@smc/modules';
 
 import { SER_DATE_FORMATS } from './api/ser-date-formats';
 import { components, InsertOverlayComponent, InsertOverlayFooterComponent } from './components';
@@ -24,7 +24,8 @@ import { JsonpInterceptorModule } from './jsonp-interceptor.module';
         ModalModule,
         ReactiveFormsModule,
         MaterialModule,
-        SmcCommonModule
+        SmcCommonModule,
+        SmcUiModule
     ],
     declarations: [
         ...components,

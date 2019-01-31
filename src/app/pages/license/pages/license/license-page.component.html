@@ -1,106 +1,82 @@
-<!-- display license page to edit or show detailed informations -->
-<ng-template #licenseTemplate>
-    <div class="qmc-page--content-body">
+<smc-ui--page [loading]="!ready">
 
-        <div class="license-block" #licenseInfo>
-            <div class="header qmc-page--content-header">
-                <i class="ser-icon ser-icon--license"></i>
-                <span>License informations</span>
-            </div>
-            <app-license-info></app-license-info>
-        </div>
+  <!-- CONTENT HEADER -->
+  <div page-content--header>
+    <i class="ser-icon ser-icon--license"></i>
+    <span>License Installation</span>
+  </div>
 
-        <div class="license-block" #licenseOverview>
-            <div class="header qmc-page--content-header">
-                <i class="ser-icon ser-icon--license"></i>
-                <span>License Overview</span>
-            </div>
-            <smc-license-overview></smc-license-overview>
-        </div>
-
-        <div class="license-block" #licensedUsers>
-            <div class="header qmc-page--content-header">
-                <i class="ser-icon ser-icon--license"></i>
-                <span>Licensed Users</span>
-            </div>
-            <app-license-user></app-license-user>
-        </div>
-    </div>
-
-    <div class="qmc-page--content-footer">
-        <button class="btn btn-primary" (click)="saveLicense()" >
-            apply
-        </button>
-    </div>
-</ng-template>
-
-<!-- if installation is invalid display error page -->
-<ng-template #errorTemplate>
-    <div class="qmc-page--content-body">
-        <smc-license-error [progress]="installationProgress"></smc-license-error>
-    </div>
-
-    <div class="qmc-page--content-footer">
-        <button class="btn btn-primary" (click)="reload()">
-            reload
-        </button>
-    </div>
-</ng-template>
-
-<!-- @todo rework template to handle reloading and only refresh current contents -->
-<div class="qmc-page qmc-page--edit" *ngIf="ready">
-
-    <div class="qmc-page--sidebar sidebar-left">
-
-        <div class="header sidebar-content">
-            <a (click)="navigateBack()">
-                <i class="lui-icon lui-icon--arrow-up"></i>
-                <span>Start</span>
-            </a>
-        </div>
-
-        <ul class="lui-list">
-            <li class="lui-item">
-                License
-            </li>
-        </ul>
-    </div>
-
-    <div class="qmc-page--content">
-
+  <!-- CONTENT BODY -->
+  <div page-content--body *ngIf="ready">
+    <!-- INSTALLATION VALID -->
+    <ng-container *ngIf="!isInstallationInvalid">
+      <div class="license-block" #licenseInfo>
         <div class="header qmc-page--content-header">
-            <i class="ser-icon ser-icon--license"></i>
-            <span>License Installation</span>
+          <i class="ser-icon ser-icon--license"></i>
+          <span>License informations</span>
         </div>
+        <app-license-info></app-license-info>
+      </div>
 
-        <ng-container *ngIf="ready">
-            <ng-container *ngTemplateOutlet="isInstallationInvalid?errorTemplate:licenseTemplate">
-            </ng-container>
-        </ng-container>
+      <div class="license-block" #licenseOverview>
+        <div class="header qmc-page--content-header">
+          <i class="ser-icon ser-icon--license"></i>
+          <span>License Overview</span>
+        </div>
+        <smc-license-overview></smc-license-overview>
+      </div>
 
-        <ng-container *ngIf="!ready">
-            <div class="qmc-page--content-body">
-            </div>
-            <div class="qmc-page--content-footer">
-                <button class="btn btn-primary">
-                    reload
-                </button>
-            </div>
-        </ng-container>
+      <div class="license-block" #licensedUsers>
+        <div class="header qmc-page--content-header">
+          <i class="ser-icon ser-icon--license"></i>
+          <span>Licensed Users</span>
+        </div>
+        <smc-license-user></smc-license-user>
+      </div>
+    </ng-container>
+
+    <!-- INSTALLATION INVALID -->
+    <ng-container *ngIf="isInstallationInvalid">
+        <smc-license-error [progress]="installationProgress"></smc-license-error>
+    </ng-container>
+  </div>
+
+  <!-- CONTENT FOOTER -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="saveLicense()" *ngIf="!isInstallationInvalid">Apply</smc-ui--button>
+      <smc-ui--button (click)="reload()" *ngIf="isInstallationInvalid">Reload</smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+
+  <!-- SIDEBAR LEFT -->
+  <div page-sidebar--left>
+    <div class="header sidebar-content">
+      <a (click)="navigateBack()">
+        <i class="lui-icon lui-icon--arrow-up"></i>
+        <span>Start</span>
+      </a>
     </div>
 
-    <div class="qmc-page--sidebar sidebar-right">
-            <div class="header">
-                Properties
-            </div>
+    <ul class="lui-list overview">
+      <li class="lui-item">
+        License
+      </li>
+    </ul>
+  </div>
 
-            <ul class="lui-list">
-                <li class="lui-item" 
-                    (click)="showPagePart(property, property.part)"
-                    *ngFor="let property of properties"
-                    [ngClass]="{'active': property == selectedProperty}" >
-                    {{property.label}}
-                </li>
-            </ul>
+  <!-- SIDEBAR RIGHT -->
+  <div page-sidebar--right>
+    <div class="header">
+      Properties
     </div>
-</div>
+
+    <ul class="lui-list">
+      <li class="lui-item" (click)="showPagePart(property, property.part)" *ngFor="let property of properties"
+        [ngClass]="{'active': property == selectedProperty}">
+        {{property.label}}
+      </li>
+    </ul>
+  </div>
+
+</smc-ui--page>

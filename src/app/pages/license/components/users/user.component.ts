@@ -18,7 +18,7 @@ interface ITableUser {
 }
 
 @Component({
-    selector   : 'app-license-user',
+    selector   : 'smc-license-user',
     styleUrls  : ['user.component.scss'],
     templateUrl: 'user.component.html'
 })
@@ -120,16 +120,16 @@ export class UserComponent implements OnDestroy, OnInit {
         this.selection    = null;
         this.suggest$     = null;
         this.isDestroyed$ = null;
-        this.users = null;
+        this.users        = null;
         this.userSuggestions = null;
     }
 
     ngOnInit() {
-
         this.license.onload$.pipe(
             map((model: LicenseModel): ITableUser[] => {
                 this.licensedUserInfo.total   = model.users.length;
                 this.licensedUserInfo.showing = model.users.length;
+
                 return model.users.map((user: ILicenseUser): ITableUser => {
                     return {
                         edit: false,
