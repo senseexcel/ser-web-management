@@ -2,12 +2,8 @@
 
   <!-- page header -->
   <div page-content--header>
-    <smc-ui--list-header 
-        [selected]=selection.selected.length
-        [showing]=tasks.length
-        [total]=tasks.length
-        [disableActions]="true" (reload)="reloadList()"
-    >
+    <smc-ui--list-header [selected]=selection.selected.length [showing]=tasks.length [total]=tasks.length
+      [disableActions]="true" (reload)="reloadList()">
       <span list-header--title>
         <i class="ser-icon ser-icon--tasks"></i>
         Tasks
@@ -20,8 +16,9 @@
     <table class="table" mat-table [dataSource]="tasks">
       <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
         <th mat-header-cell *matHeaderCellDef>{{column}}</th>
-        <ng-container *matCellDef="let col">
-          <td mat-cell>{{col[column]}}</td>
+        <ng-container *matCellDef="let col" [ngSwitch]="column">
+          <td mat-cell *ngSwitchCase="'Associated Resource'">{{col.app.name}}</td>
+          <td mat-cell *ngSwitchDefault>{{col[column]}}</td>
         </ng-container>
       </ng-container>
       <tr mat-header-row *matHeaderRowDef="columns"></tr>

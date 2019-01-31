@@ -59,6 +59,7 @@ export class ListComponent implements OnDestroy, OnInit {
         this.columns = [
             'id',
             'name',
+            'Associated Resource',
             'enabled',
             'status',
             'lastExecution',
