@@ -4,6 +4,7 @@ import { LicenseModel } from '../../model/license.model';
 import { finalize, takeUntil, tap, mergeMap } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
 import { ValidationStep, ILicenseValidationResult } from '../../api/validation-result.interface';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
     selector: 'smc-license-page',
@@ -13,111 +14,23 @@ import { ValidationStep, ILicenseValidationResult } from '../../api/validation-r
 
 export class LicensePageComponent implements OnDestroy, OnInit {
 
-    /**
-     *
-     *
-     * @type {boolean}
-     * @memberof LicensePageComponent
-     */
     public ready: boolean;
-
-    /**
-     * license model
-     *
-     * @type {LicenseModel}
-     * @memberof LicensePageComponent
-     */
     public licenseModel: LicenseModel;
-
-    /**
-     * flag installation is completed
-     *
-     * @type {boolean}
-     * @memberof LicensePageComponent
-     */
     public isInstallationInvalid: boolean;
-
-    /**
-     * map installation process
-     *
-     * @type {Map<ValidationStep, ILicenseValidationResult>}
-     * @memberof LicensePageComponent
-     */
     public installationProgress: Map<ValidationStep, ILicenseValidationResult>;
-
-    /**
-     * page properties which will be shown
-     *
-     * @type {any[]}
-     * @memberof LicensePageComponent
-     */
     public properties: any[] = [];
-
-    /**
-     * selected page part
-     *
-     * @type {*}
-     * @memberof LicensePageComponent
-     */
     public selectedProperty: any;
 
-    /**
-     * page part license overview
-     *
-     * @private
-     * @type {ElementRef}
-     * @memberof LicensePageComponent
-     */
     @ViewChild('licenseOverview')
     private overviewContainer: ElementRef;
 
-    /**
-     * page part license information
-     *
-     * @private
-     * @type {ElementRef}
-     * @memberof LicensePageComponent
-     */
     @ViewChild('licenseInfo')
     private infoContainer: ElementRef;
 
-    /**
-     * page part licensed users
-     *
-     * @private
-     * @type {ElementRef}
-     * @memberof LicensePageComponent
-     */
     @ViewChild('licensedUsers')
     private userContainer: ElementRef;
 
-    /**
-     * subject witch submits true if component gets destroyed
-     * to unsubscribe from observables
-     *
-     * @private
-     * @type {Subject<boolean>}
-     * @memberof LicensePageComponent
-     */
     private isDestroyed$: Subject<boolean>;
-
-    /**
-     * license service
-     *
-     * @private
-     * @type {License}
-     * @memberof LicensePageComponent
-     */
-    private license: License;
-
-    /**
-     * license validator service
-     *
-     * @private
-     * @type {LicenseValidator}
-     * @memberof LicensePageComponent
-     */
-    private licenseValidator: LicenseValidator;
 
     /**
      * Creates an instance of LicensePageComponent.
@@ -126,13 +39,12 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     constructor(
-        license: License,
-        licenseValidator: LicenseValidator,
+        private license: License,
+        private licenseValidator: LicenseValidator,
+        private router: Router,
+        private activatedRoute: ActivatedRoute
     ) {
-        this.licenseValidator = licenseValidator;
         this.isInstallationInvalid = false;
-        this.license = license;
-
         this.isDestroyed$ = new Subject();
     }
 
@@ -155,6 +67,10 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     ngOnDestroy() {
         this.isDestroyed$.next(true);
         this.isDestroyed$.complete();
+    }
+
+    public navigateBack() {
+        this.router.navigate(['..'], {relativeTo: this.activatedRoute});
     }
 
     /**
