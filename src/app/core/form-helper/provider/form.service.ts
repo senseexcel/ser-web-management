@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, forkJoin, of, from } from 'rxjs';
-import { reduce, tap, combineAll, switchMap, bufferCount, catchError } from 'rxjs/operators';
+import { reduce, tap, combineAll, switchMap, bufferCount, catchError, filter } from 'rxjs/operators';
 
 @Injectable()
 export class FormService<T, R> {
@@ -48,7 +48,9 @@ export class FormService<T, R> {
      * @memberof FormService
      */
     public editModel(): Observable<T> {
-        return this.model;
+        return this.model.pipe(
+            filter(model => model !== null)
+        );
     }
 
     /**

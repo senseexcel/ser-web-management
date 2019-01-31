@@ -35,7 +35,7 @@ export class ListComponent implements OnDestroy, OnInit {
         private route: ActivatedRoute,
         private taskRepository: TaskRepository
     ) {
-        this.isDestroyed$       = new Subject<boolean>();
+        this.isDestroyed$ = new Subject<boolean>();
         this.tasks = [];
         this.selection = new SelectionModel<ITask>();
     }
@@ -138,6 +138,11 @@ export class ListComponent implements OnDestroy, OnInit {
             switchMap((params: Params) => {
                 this.isLoading = true;
                 const appId = params.id || null;
+
+                if (appId) {
+                    return this.taskRepository.fetchTasksForApp(appId);
+                }
+
                 return this.taskRepository.fetchTasks();
             }),
             takeUntil(this.isDestroyed$)

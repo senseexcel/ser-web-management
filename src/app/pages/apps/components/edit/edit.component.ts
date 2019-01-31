@@ -93,6 +93,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     */
     public async ngOnInit() {
 
+        this.isLoading = true;
         this.properties = [
             { label: 'App' },
             { label: 'Template' },
@@ -104,7 +105,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
         const data = this.cacheService.currentReportData;
         this.app    = data.app;
         this.report = data.report;
-        this.formService.loadModel(this.report);
 
         this.breadcrumbService.breadcrumbs
             .pipe(
@@ -118,6 +118,19 @@ export class AppEditComponent implements OnInit, OnDestroy {
                     this.isSubRoute = true;
                 }
             });
+
+        this.taskApiService.fetchTaskCountApp(this.app)
+            .subscribe(count => {
+                this.formService.loadModel(this.report);
+                this.associatedItems = [{
+                    label: 'Tasks',
+                    items: 'tasks',
+                    route: 'tasks',
+                    count
+                }];
+                this.isLoading = false;
+            });
+
     }
 
     /**
@@ -169,7 +182,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public showTasks() {
         this.updateReportData().subscribe((success: boolean) => {
             this.isSubRoute = true;
-            // this.router.navigate(['./tasks', this.report.appId], { relativeTo: this.activeRoute });
+            this.router.navigate(['./tasks', this.app], { relativeTo: this.activeRoute });
         });
     }
 

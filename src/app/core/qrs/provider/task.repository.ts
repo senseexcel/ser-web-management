@@ -32,7 +32,11 @@ export class TaskRepository {
 
     public fetchTasks(filter?: IQrsFilter | IQrsFilterGroup): Observable<ITask[]> {
         const url = `/qrs/reloadtask/full`;
-        return this.httpClient.get<ITask[]>(url);
+        let params: HttpParams = new HttpParams();
+        if (filter) {
+            params = params.set('filter', this.filterService.createFilterQueryString(filter));
+        }
+        return this.httpClient.get<ITask[]>(url, {params});
     }
 
     /**
@@ -51,6 +55,11 @@ export class TaskRepository {
 
         return this.httpClient.get<{value: number}>(url, {params})
             .pipe(map(response => response.value));
+    }
+
+    public fetchTaskCountApp(app: string): Observable<number> {
+        const filter  = this.filterService.createFilter('app.id', app);
+        return this.fetchTaskCount(filter);
     }
 
     /**

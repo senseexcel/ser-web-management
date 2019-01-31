@@ -20,21 +20,32 @@ export class TaskRepository {
         const filters: IQrsFilterGroup = this.filterFactory.createFilterGroup();
 
         if (this.session.serTag) {
-            const serTagFilter: IQrsFilter = this.filterFactory.createFilter('tags.id', this.session.serTag.id);
-            filters.addFilter(serTagFilter);
+            filters.addFilter(this.filterFactory.createFilter('tags.id', this.session.serTag.id));
         }
 
         if (filter) {
             filters.addFilter(filter);
         }
 
-        let task$: Observable<ITask[]> = this.qrsTaskRepository.fetchTasks(filters);
+
+        let task$: Observable<ITask[]> = this.qrsTaskRepository.fetchTasks(filters.filters.length ? filters : null);
         if (!this.session.serTag) {
             task$ = task$.pipe(
                 mergeMap((tasks: ITask[]) => this.filterTasks(tasks))
             );
         }
         return task$;
+    }
+
+    public fetchTasksForApp(app): Observable<ITask[]> {
+        const filters: IQrsFilterGroup = this.filterFactory.createFilterGroup();
+        filters.addFilter(this.filterFactory.createFilter('app.id', app));
+
+        if (this.session.serTag) {
+            const serTagFilter: IQrsFilter = this.filterFactory.createFilter('tags.id', this.session.serTag.id);
+            filters.addFilter(serTagFilter);
+        }
+        return this.qrsTaskRepository.fetchTasks(filters);
     }
 
     /**
