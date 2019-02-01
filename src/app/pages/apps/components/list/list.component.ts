@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { Subscription, empty, Observable, of } from 'rxjs';
+import { empty } from 'rxjs';
 import { ModalService } from '@smc/modules/modal';
 import { switchMap, tap } from 'rxjs/operators';
 import { IApp } from '@smc/modules/qrs';
@@ -31,7 +31,7 @@ export class AppListComponent implements OnInit {
     private dialogService: ModalService;
 
     constructor(
-        @Inject(SMC_SESSION) private settings: ISettings,
+        @Inject(SMC_SESSION) public settings: ISettings,
         private appRepository: AppRepository,
         private smcCache: SmcCache,
         dialog: ModalService,

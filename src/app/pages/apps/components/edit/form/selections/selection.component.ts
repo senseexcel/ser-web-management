@@ -47,7 +47,7 @@ export class SelectionComponent implements OnInit {
      * @type {FormGroup}
      * @memberof SelectionComponent
      */
-    private selectionForm: FormGroup;
+    public selectionForm: FormGroup;
 
     constructor(
         private formBuilder: FormBuilder,

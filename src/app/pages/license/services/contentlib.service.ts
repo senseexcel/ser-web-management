@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, switchMap } from 'rxjs/operators';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 import { ContentLibNotExistsException } from '../api/exceptions';
@@ -74,9 +74,9 @@ export class ContentLibService {
     public readFile(file: IContentLibFileReference): Observable<string> {
 
         return this.http.get(file.logicalPath, {
-            responseType: 'blob'
+            responseType: 'blob' as 'json'
         }).pipe(
-            switchMap((content: Blob) => {
+            switchMap((content: Blob): Observable<string> => {
                 return Observable.create((obs) => {
                     const fileReader = new FileReader();
                     fileReader.readAsText(content);

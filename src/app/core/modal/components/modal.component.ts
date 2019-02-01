@@ -6,7 +6,7 @@ import { OverlayMessageComponent } from './message/message.component';
 import { MessageFooterComponent } from './message/message-footer.component';
 
 @Component({
-    selector: 'app-ser-modal',
+    selector: 'smc-ser-modal',
     templateUrl: 'modal.component.html',
     styleUrls: ['./modal.component.scss']
 })
@@ -35,7 +35,7 @@ export class ModalComponent implements OnInit {
      * @type {*}
      * @memberof ModalComponent
      */
-    private modalData: IModalData<any>;
+    public modalData: IModalData<any>;
 
     /**
      * modal overlay control

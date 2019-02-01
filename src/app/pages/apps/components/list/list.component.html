@@ -40,11 +40,6 @@
             Edit
           </span>
         </button>
-        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="deleteApps()">
-          <span class="button-label">
-            Delete
-          </span>
-        </button>
         <button type="button" [disabled]="isLoading" class="nav-item" (click)="createApp()">
           <span class="button-label">
             Create new
