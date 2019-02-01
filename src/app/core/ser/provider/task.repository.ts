@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { AppRepository } from './app.repository';
-import { mergeMap, map, bufferCount, concatMap, filter, switchMap } from 'rxjs/operators';
+import { mergeMap, map, bufferCount, concatMap, filter, switchMap, tap } from 'rxjs/operators';
 import { from, of, Observable, forkJoin } from 'rxjs';
 import { ITask, IApp, TaskRepository as QrsTaskRepository, FilterFactory, IQrsFilter, IQrsFilterGroup, ITag } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
@@ -67,6 +67,9 @@ export class TaskRepository {
             switchMap((tasks: ITask[]) => this.filterTasks(tasks)),
             // step 3: update all tasks
             mergeMap((tasks: ITask[]) => {
+                if (tasks.length === 0) {
+                    return of(tasks);
+                }
                 const updateRequests = tasks.map((task) => {
                     task.tags.push(this.session.serTag);
                     return this.qrsTaskRepository.updateTask({task});
@@ -86,6 +89,11 @@ export class TaskRepository {
      * @memberof TaskRepository
      */
     private filterTasks(tasks: ITask[]): Observable<ITask[]> {
+
+        if (tasks.length === 0) {
+            return of(tasks);
+        }
+
         return from(tasks).pipe(
             concatMap(task => forkJoin(of(task), this.appRepository.filterApps([task.app]))),
             map((response: [ITask, IApp[]]) => {

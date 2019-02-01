@@ -92,12 +92,12 @@ disabled: #E4E4E4,
     padding: $grid-gap;
   }
 
-  .qmc-page--content-footer {
-    background: #FFF;
-    font-size: 11px;
-    text-align: right;
-    padding: $grid-gap/2 $grid-gap;
-    color: lighten(map-get($colors, 'text'), 20);
+  [page-content--footer] {
+      background: #FFF;
+      font-size: .7rem;
+      text-align: right;
+      padding: $grid-gap/2 $grid-gap;
+      color: lighten(map-get($colors, 'text'), 20);
   }
 
   .page-tile--grid {

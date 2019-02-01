@@ -4,7 +4,7 @@ import { ModalControl } from '../../services/modal-control';
 import { IModalDialogData } from '../../api/modal-config.interface';
 
 @Component({
-    selector: 'app-overlay-message',
+    selector: 'smc-overlay-message',
     templateUrl: 'message.component.html',
     styleUrls: ['message.component.scss']
 })

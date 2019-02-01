@@ -5,6 +5,7 @@ import { finalize, takeUntil, tap, mergeMap } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
 import { ValidationStep, ILicenseValidationResult } from '../../api/validation-result.interface';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ModalService } from '@smc/modules/modal';
 
 @Component({
     selector: 'smc-license-page',
@@ -39,6 +40,7 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     constructor(
+        private modal: ModalService,
         private license: License,
         private licenseValidator: LicenseValidator,
         private router: Router,
@@ -58,8 +60,8 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     ngOnInit() {
         this.properties = [
             { label: 'License Information', part: 'information' },
-            { label: 'License Overview' , part: 'overview'},
-            { label: 'Licensed Users', part: 'users'}
+            { label: 'License Overview', part: 'overview' },
+            { label: 'Licensed Users', part: 'users' }
         ];
         this.loadPage();
     }
@@ -70,7 +72,7 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     }
 
     public navigateBack() {
-        this.router.navigate(['..'], {relativeTo: this.activatedRoute});
+        this.router.navigate(['..'], { relativeTo: this.activatedRoute });
     }
 
     /**
@@ -90,7 +92,9 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      */
     public saveLicense() {
         this.license.saveLicense()
-            .subscribe();
+            .subscribe(() => {
+                this.modal.openMessageModal('Success', 'License successfully updated.');
+            });
     }
 
     /**
@@ -139,11 +143,11 @@ export class LicensePageComponent implements OnDestroy, OnInit {
             .pipe(
                 tap((result) => {
                     this.isInstallationInvalid = !result.isValid;
-                    this.installationProgress  = result.data;
+                    this.installationProgress = result.data;
                 }),
                 mergeMap((result) => {
                     if (!result.isValid) {
-                        this.properties = [{label: 'Installation'}];
+                        this.properties = [{ label: 'Installation' }];
                         return of(null);
                     }
                     return this.license.loadLicense();

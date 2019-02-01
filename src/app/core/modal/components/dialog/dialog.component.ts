@@ -3,8 +3,9 @@ import { MODAL_DIALOG_DATA } from '../../api/modal-content.injector';
 import { IModalDialogData } from '../../api/modal-config.interface';
 
 @Component({
-    selector: 'app-overlay-dialog',
-    templateUrl: 'dialog.component.html'
+    selector: 'smc-overlay-dialog',
+    templateUrl: 'dialog.component.html',
+    styleUrls: ['./dialog.component.scss']
 })
 export class OverlayDialogComponent {
 
