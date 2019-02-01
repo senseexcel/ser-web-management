@@ -13,41 +13,12 @@ import { IDataNode } from '@smc/modules/smc-common';
 
 export class SelectionComponent implements OnInit {
 
-    /**
-     * sense excel selection object types
-     *
-     * @type {SelectionObjectType}
-     * @memberof SelectionComponent
-     */
+    public selectionForm: FormGroup;
+    public selectionTypes: SelectionType;
     public selectionObjectTypes: SelectionObjectType;
 
-    /**
-     * sense excel selection types static or dynamic
-     *
-     * @type {SelectionType}
-     * @memberof SelectionComponent
-     */
-    public selectionTypes: SelectionType;
-
-    /**
-     * update hook which is called by formService on update form values
-     * this should write current form data into model
-     *
-     * @private
-     * @type {Observable<ISerFormResponse>}
-     * @memberof SelectionComponent
-     */
     private updateHook: Observable<boolean>;
     private report: ReportModel;
-
-    /**
-     * formgroup for template selections
-     *
-     * @private
-     * @type {FormGroup}
-     * @memberof SelectionComponent
-     */
-    public selectionForm: FormGroup;
 
     constructor(
         private formBuilder: FormBuilder,

@@ -1,40 +1,38 @@
 <!-- page tile wrapper link if page is enabled -->
 <ng-template #pageTile let-page="pageData">
-    <a class="page-tile" (click)="displayPage(page)" *ngIf="!page.disabled" >
-        <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
-    </a>
-    <div class="page-tile disabled" *ngIf="page.disabled">
-        <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
-    </div>
+  <a class="page-tile" (click)="displayPage(page)" *ngIf="!page.disabled">
+    <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
+  </a>
+  <div class="page-tile disabled" *ngIf="page.disabled">
+    <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
+  </div>
 </ng-template>
 
 <!-- page tile content -->
 <ng-template #pageTileContent let-page="pageData">
-    <span class="page-tile--header">
-        <i *ngIf="page.icon" class="ser-icon ser-icon--{{page.icon}}"></i>
-        <span>{{page.title}}</span>
-    </span>
-    <span class="page-tile--body">
-        {{page.description}}
-    </span>
+  <span class="page-tile--header">
+    <i *ngIf="page.icon" class="ser-icon ser-icon--{{page.icon}}"></i>
+    <span i18n>{myObject.property, select, easy {Easy} medium {Medium} hard {Hard}}</span>
+  </span>
+  <span class="page-tile--body">
+    {{page.description}}
+  </span>
 </ng-template>
 
 <smc-ui--page class="page-layout home">
 
-    <div page-sidebar--left>
-        <app-menu [menuItems]="mainMenu"></app-menu>
-    </div>
+  <div page-sidebar--left>
+    <app-menu [menuItems]="mainMenu"></app-menu>
+  </div>
 
-    <div page-content--body>
-        <div class="page-tile--grid">
-            <ng-container *ngFor="let page of pageTiles"
-                    [ngTemplateOutlet]="pageTile"
-                    [ngTemplateOutletContext]="{pageData: page}">
-            </ng-container>
-        </div>
+  <div page-content--body>
+    <div class="page-tile--grid">
+      <ng-container *ngFor="let page of pageTiles" [ngTemplateOutlet]="pageTile" [ngTemplateOutletContext]="{pageData: page}">
+      </ng-container>
     </div>
+  </div>
 
-    <div page-content--footer>
-        Sense Excel Reporting Webmanager Console: Version 1.2.1
-    </div>
+  <div page-content--footer>
+    Sense Excel Reporting Webmanager Console: Version 1.2.1
+  </div>
 </smc-ui--page>

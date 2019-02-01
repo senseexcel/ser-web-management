@@ -33,7 +33,7 @@ export class ListComponent implements OnDestroy, OnInit {
      * @memberof ListComponent
      */
     constructor(
-        @Inject(SMC_SESSION) private session: ISettings,
+        @Inject(SMC_SESSION) public session: ISettings,
         private dialog: ModalService,
         private router: Router,
         private route: ActivatedRoute,

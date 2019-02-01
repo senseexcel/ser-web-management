@@ -33,7 +33,7 @@ export class ListComponent implements OnInit, OnDestroy {
         private smcCache: SmcCache,
     ) {
         this.selections = new SelectionModel(true);
-        this.tableData  = [];
+        this.tableData = [];
 
         try {
             this.listSettings = this.smcCache.get('smc.settings.list');
@@ -99,8 +99,7 @@ export class ListComponent implements OnInit, OnDestroy {
                 if (success &&
                     this.visible === contentToDelete.length &&
                     this.pagination.isLastPage() &&
-                    this.pagination.getCurrentPage() !== 1)
-                {
+                    this.pagination.getCurrentPage() !== 1) {
                     this.pagination.showPrevPage();
                     return;
                 }
@@ -167,9 +166,9 @@ export class ListComponent implements OnInit, OnDestroy {
                 });
 
                 /** update properties */
-                this.columns   = tableData.columnNames;
+                this.columns = tableData.columnNames;
                 this.tableData = DataConverter.convertQrsTableToJson(tableData);
-                this.visible   = this.tableData.length;
+                this.visible = this.tableData.length;
 
                 this.isLoading = false;
             });

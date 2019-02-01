@@ -45,7 +45,7 @@
             Create new
           </span>
         </button>
-        <button type="button" class="nav-item" *ngIf="settings.serTag" [disabled]="isLoading" (click)="syncApps()">
+        <button type="button" class="nav-item" *ngIf="session.serTag" [disabled]="isLoading" (click)="syncApps()">
           <span class="button-label">
             Synchronize Apps
           </span>
