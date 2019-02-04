@@ -62,3 +62,11 @@
 .ser-icon--check {
     &:before { content: "\06D"; }
 }
+
+.ser-icon--folder {
+    &:before { content: "\F1"; }
+}
+
+.ser-icon--reload {
+    &:before { content: "\0F4"; }
+}

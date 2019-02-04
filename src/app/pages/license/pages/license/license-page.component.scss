@@ -1,0 +1,59 @@
+:host {
+    width: 100%;
+
+    .license-block {
+
+        border-bottom: 1px solid #CCC;
+        margin: 0 0 .8rem;
+
+        &:last-child {
+            margin: 0;
+        }
+
+        .qmc-page--content-header {
+            font-size: 12px;
+            padding: 0 0 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+
+            &:last-child {
+                border: 0;
+            }
+        }
+    }
+
+    [page-content--body] {
+        padding-top: 1rem;
+    }
+
+    [page-sidebar--right] {
+
+        .header {
+            font-weight: 600;
+        }
+
+        .header, 
+        .lui-item {
+            padding: 0 0 0 1rem;
+        }
+
+        .header {
+            margin-bottom: .5rem;
+        }
+
+        .lui-item {
+            line-height: 2rem;
+            cursor: pointer;
+
+            &:hover {
+                background: darken($color: #FFF, $amount: 20);
+                color: #000;
+            }
+        }
+
+        .lui-item.active {
+            background: #FFF;
+            color: #000;
+        }
+    }
+}

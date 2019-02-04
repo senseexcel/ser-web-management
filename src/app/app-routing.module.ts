@@ -1,15 +1,18 @@
 import { NgModule, FactoryProvider } from '@angular/core';
 import { RouterModule, ROUTES, Routes} from '@angular/router';
-import { AppRoutes } from './model/app-routes';
 import { LocationStrategy } from '@angular/common';
-import { QmcLocationStrategy } from '@core/router/qmc-location.strategy';
+import { QmcLocationStrategy } from 'src/app/util/qmc-location.strategy';
 
 /**
  * @workarround
  * @see https://github.com/angular/angular/issues/22700
  */
 export function AppsRoutingFactory(): Routes {
-    return AppRoutes;
+    return [{
+        path: '',
+        redirectTo: 'dashboard',
+        pathMatch: 'full',
+    }];
 }
 
 const AppsModuleRoutesFactory: FactoryProvider = <any> {
@@ -25,7 +28,10 @@ delete (<any>AppsModuleRoutesFactory).useValue;
     imports: [RouterModule.forRoot([])],
     providers: [
         AppsModuleRoutesFactory,
-        { provide: LocationStrategy, useClass: QmcLocationStrategy }
+        {
+            provide: LocationStrategy,
+            useClass: QmcLocationStrategy
+        }
     ],
     exports: [RouterModule]
 })

@@ -23,7 +23,7 @@ module.exports = function (config) {
     },
     reporters: ['mocha'],
     port: 9876,
-    colors: true,
+    colors: false,
     logLevel: config.LOG_INFO,
     autoWatch: true,
     browsers: ['ChromeHeadless'],
@@ -33,6 +33,7 @@ module.exports = function (config) {
         flags: [
           '--headless',
           '--disable-gpu',
+          '--no-sandbox',
           '--remote-debugging-port=9222'
         ]
       }

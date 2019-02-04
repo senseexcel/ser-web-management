@@ -1,0 +1,81 @@
+<router-outlet></router-outlet>
+
+<smc-ui--page [loading]="isLoading" [hidden]="isSubRoute">
+
+  <!-- CONTENT HEADER -->
+  <div page-content--header>
+    <i class="ser-icon ser-icon--apps"></i>
+    <span>Edit Report</span>
+  </div>
+
+  <!-- CONTENT BODY -->
+  <div page-content--body>
+    <ng-container>
+      <div #connections class="edit-group">
+        <smc-apps--edit-form-connection></smc-apps--edit-form-connection>
+      </div>
+      <div #template class="edit-group">
+        <smc-edit-form-template></smc-edit-form-template>
+      </div>
+      <div #selections class="edit-group">
+        <smc-edit-form-selections></smc-edit-form-selections>
+      </div>
+      <div #distribute class="edit-group">
+        <smc-apps--edit-form-distribution></smc-apps--edit-form-distribution>
+      </div>
+      <div #settings class="edit-group">
+        <smc-edit-form-settings></smc-edit-form-settings>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- CONTENT FOOTER -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="save()">Apply</smc-ui--button>
+      <smc-ui--button (click)="cancel()">Cancel</smc-ui--button>
+      <smc-ui--button (click)="preview()">Preview</smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+
+  <!-- SIDEBAR LEFT -->
+  <div page-sidebar--left>
+    <div class="header sidebar-content">
+      <a (click)="navigateBack()">
+        <i class="lui-icon lui-icon--arrow-up"></i>
+        <span>Applications</span>
+      </a>
+    </div>
+
+    <ul class="lui-list overview">
+      <li class="lui-item">
+        {{app}}
+      </li>
+    </ul>
+  </div>
+
+  <!-- SIDEBAR RIGHT -->
+  <div page-sidebar--right>
+    <div class="header">
+      Properties
+    </div>
+
+    <ul class="lui-list">
+      <li class="lui-item" (click)="showForm(property)" *ngFor="let property of properties" [ngClass]="{'active': property == selectedProperty}">
+        {{property.label}}
+      </li>
+    </ul>
+
+    <ng-container *ngIf="associatedItems && associatedItems.length">
+      <div class="header">
+        Associated Items
+      </div>
+      <ul class="lui-list">
+        <li class="lui-item" *ngFor="let item of associatedItems">
+          <a (click)="showTasks()">{{item.label}} ({{item.count}})</a>
+        </li>
+      </ul>
+    </ng-container>
+  </div>
+
+</smc-ui--page>

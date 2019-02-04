@@ -1,0 +1,60 @@
+<smc-ui--page [loading]="!formDataLoaded">
+
+  <!-- content header -->
+  <div page-content--header>
+      <i class="ser-icon ser-icon--tasks"></i>
+      <span>Edit Reload Task</span>
+  </div>
+
+  <!-- content body -->
+  <div page-content--body>
+      <ng-container *ngIf="formDataLoaded">
+        <div #identification class="edit-group">
+          <smc-task-form-identification></smc-task-form-identification>
+        </div>
+        <div #execution class="edit-group">
+          <smc-task-form-execution #execution></smc-task-form-execution>
+        </div>
+        <div #trigger class="edit-group">
+          <smc-task-form-trigger #trigger></smc-task-form-trigger>
+        </div>
+      </ng-container>
+  </div>
+
+  <!-- content footer -->
+  <div page-content--footer>
+      <smc-ui--button-navbar>
+          <smc-ui--button (click)="onApply()">Apply</smc-ui--button>
+          <smc-ui--button (click)="onCancel()">Cancel</smc-ui--button>
+      </smc-ui--button-navbar>
+  </div>
+
+  <!-- sidebar left -->
+  <div page-sidebar--left>
+    <div class="header sidebar-content">
+      <a (click)="navigateBack()">
+        <i class="lui-icon lui-icon--arrow-up"></i>
+        <span>Tasks</span>
+      </a>
+    </div>
+
+    <ul class="lui-list overview">
+      <li class="lui-item" *ngFor="let task of tasks">
+        {{task.name}}
+      </li>
+    </ul>
+  </div>
+
+  <!-- sidebar right -->
+  <div page-sidebar--right>
+    <div class="header">
+      Properties
+    </div>
+    <ul class="lui-list">
+      <li class="lui-item" (click)="showForm(property)" *ngFor="let property of properties" [ngClass]="{'active': property == selectedProperty}">
+        {{property.label}}
+      </li>
+    </ul>
+  </div>
+
+</smc-ui--page>

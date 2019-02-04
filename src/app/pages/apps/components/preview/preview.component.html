@@ -1,0 +1,43 @@
+<smc-ui--page>
+
+  <!-- CONTENT HEADER -->
+  <div page-content--header>
+    <i class="ser-icon ser-icon--apps"></i>
+    <span>Report Script Preview</span>
+  </div>
+
+  <!-- CONTENT BODY -->
+  <div page-content--body>
+    <ng-container>
+      <pre>{{ previewData | hjson}}</pre>
+    </ng-container>
+  </div>
+
+  <!-- CONTENT FOOTER -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="closePreview()">Close Preview</smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+
+  <!-- SIDEBAR LEFT -->
+  <div page-sidebar--left>
+    <div class="header sidebar-content">
+      <a (click)="closePreview()">
+        <i class="lui-icon lui-icon--arrow-up"></i>
+        <span>Back</span>
+      </a>
+    </div>
+
+    <ul class="overview lui-list">
+      <li class="lui-item">
+        Preview Report Configuration
+      </li>
+    </ul>
+  </div>
+
+  <!-- SIDEBAR RIGHT -->
+  <div page-sidebar--right>
+  </div>
+
+</smc-ui--page>

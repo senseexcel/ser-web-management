@@ -1,0 +1,37 @@
+<div class="list-header--title">
+    <ng-content select="[list-header--title]"></ng-content>
+</div>
+<ul class="list-header">
+    <li class="list-item">
+        Total: {{total}}
+    </li>
+    <li class="list-item">
+        Showing: {{showing}}
+    </li>
+    <li class="list-item">
+        Selected: {{selected}}
+    </li>
+</ul>
+<div class="list-header--actions">
+    <ng-content select="[list-header--actions]"></ng-content>
+
+    <!-- table actions -->
+    <smc-drop-down [hostClass]="['list-header--actions-overlay']" [label]="'Actions'" *ngIf="!disableActions">
+        <div class="content">
+            <div class="actions--title">Table actions</div>
+            <ul class="actions--body">
+                <li class="actions--body-item" (click)="selectAllRows()">Select all rows</li>
+                <li class="actions--body-item" (click)="deselectAllRows()">Deselect all rows</li>
+            </ul>
+        </div>
+    </smc-drop-down>
+
+    <!-- button toolbar -->
+    <nav class="navbar list-header--actions-navbar">
+        <div class="btn-toolbar" role="group">
+        <button type="button" class="btn" (click)="doReload()">
+            <i class="ser-icon ser-icon--reload"></i>
+        </button>
+        </div>
+    </nav>
+</div>
