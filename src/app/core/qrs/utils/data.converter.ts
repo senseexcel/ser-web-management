@@ -10,6 +10,11 @@ export class DataConverter {
      * @memberof
      */
     public static convertQrsTableToJson(data: ITableData): IDataNode[] {
+
+        if (!data.rows.length) {
+            return [];
+        }
+
         return data.rows.reduce((previouseData: IDataNode[], qrsRow: Array<string | IDataNode>) => {
             const matRow: IDataNode = {};
             qrsRow.forEach((value, index) => {
