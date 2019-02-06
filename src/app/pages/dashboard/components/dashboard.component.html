@@ -12,17 +12,16 @@
 <ng-template #pageTileContent let-page="pageData">
   <span class="page-tile--header">
     <i *ngIf="page.icon" class="ser-icon ser-icon--{{page.icon}}"></i>
-    <span i18n>{myObject.property, select, easy {Easy} medium {Medium} hard {Hard}}</span>
+    <span translate="{{page.title.key}}" [translateParams]="page.title.param"></span>
   </span>
-  <span class="page-tile--body">
-    {{page.description}}
+  <span translate="{{page.description.key}}" class="page-tile--body">
   </span>
 </ng-template>
 
 <smc-ui--page class="page-layout home">
 
   <div page-sidebar--left>
-    <app-menu [menuItems]="mainMenu"></app-menu>
+    <smc-ui-menu [menuItems]="mainMenu"></smc-ui-menu>
   </div>
 
   <div page-content--body>
@@ -32,7 +31,5 @@
     </div>
   </div>
 
-  <div page-content--footer>
-    Sense Excel Reporting Webmanager Console: Version 1.2.1
-  </div>
+  <div page-content--footer translate [translateParams]="{VERSION: '1.2.1'}">SMC_DASHBOARD.VERSION</div>
 </smc-ui--page>

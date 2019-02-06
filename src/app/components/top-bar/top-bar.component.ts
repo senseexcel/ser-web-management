@@ -1,10 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { IMenuItem } from '@smc/modules/menu/api/menu-item.interface';
 import { DropDownOverlay } from '@smc/modules/drop-down/model/drop-down-overlay';
 import { Router } from '@angular/router';
 import { ISessionUser } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings, SmcCache, IDataNode } from '@smc/modules/smc-common';
+import { IMenuItem } from '@smc/modules/smc-ui/api';
+import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({
     selector: 'smc-top-bar',
@@ -13,28 +14,8 @@ import { ISettings, SmcCache, IDataNode } from '@smc/modules/smc-common';
 })
 export class TopBarComponent implements OnInit {
 
-    /**
-     * main menu
-     *
-     * @type {IMenuGroup[]}
-     * @memberof TopBarComponent
-     */
     public mainMenu: IMenuItem[];
-
-    /**
-     * help menu
-     *
-     * @type {IMenuItem[]}
-     * @memberof TopBarComponent
-     */
     public helpMenu: IMenuItem[];
-
-    /**
-     * user menu
-     *
-     * @type {IMenuItem[]}
-     * @memberof TopBarComponent
-     */
     public userMenu: IMenuItem[];
 
     public loggedInUser: ISessionUser;
@@ -51,14 +32,14 @@ export class TopBarComponent implements OnInit {
 
     constructor(
         @Inject(SMC_SESSION)  private session: ISettings,
-        private settings: SmcCache,
+        private settings: SettingsService,
         private router: Router,
     ) {
     }
 
     ngOnInit() {
         this.loggedInUser = this.session.loggedInUser;
-        this.mainMenu = this.settings.get<IMenuItem[]>('smc.settings.pages');
+        this.mainMenu = this.settings.menu;
         this.helpMenu = this.createHelpMenu();
         this.userMenu = this.createUserMenu();
     }
@@ -90,11 +71,11 @@ export class TopBarComponent implements OnInit {
      */
     private createHelpMenu(): IMenuItem[] {
         return [{
-            name: 'Setup after Installation',
+            label: 'Setup after Installation',
             disabled: true,
             show: true
         }, {
-            name: 'Keyboard Shortcuts',
+            label: 'Keyboard Shortcuts',
             disabled: true,
             show: true
         }];
@@ -109,7 +90,7 @@ export class TopBarComponent implements OnInit {
      */
     private createUserMenu(): IMenuItem[] {
         return [{
-            name: 'Logout',
+            label: 'Logout',
             disabled: false,
             show: true,
             route: 'user/logout'

@@ -2,7 +2,7 @@ import { ISerGeneral } from 'ser.api';
 import { importData } from '@smc/modules/smc-common/utils/model/import-data.decorator';
 import { IModel } from '@smc/modules/smc-common';
 
-export class GeneralSettingsModel implements ISerGeneral, IModel {
+export class GeneralSettingsModel implements ISerGeneral, IModel<ISerGeneral> {
 
     private generalCleanupTimeOut: number;
 

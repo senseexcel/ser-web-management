@@ -1,16 +1,11 @@
 {
   "name": "ser-web-management",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --disable-host-check --configuration=en",
-    "start:de": "ng serve --disable-host-check --configuration=de",
-    "i18n": "npm run i18n:en && npm run i18n:de",
-    "i18n:en": "ng xi18n --output-path i18n --out-file en_i18n.xlf",
-    "i18n:de": "ng xi18n --output-path i18n --out-file de_i18n.xlf --i18n-locale de",
-    "build": "npm run build:en && npm run build:de",
-    "build:en": "ng build --configuration=en",
-    "build:de": "ng build --configuration=de",
+    "start": "ng serve --disable-host-check",
+    "build": "ng build",
+    "build:prod": "ng build --prod",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

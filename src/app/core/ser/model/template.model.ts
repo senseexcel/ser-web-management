@@ -84,7 +84,7 @@ export class TemplateModel implements ISerTemplate {
     }
 
     @Validate([Validators.isArray])
-    @mapDataTo<SelectionModel[]>(SelectionModel)
+    @mapDataTo<SelectionModel>(SelectionModel)
     public set selections(selections: ISerSenseSelection[]) {
         this.templateSelections = selections;
     }
@@ -95,7 +95,7 @@ export class TemplateModel implements ISerTemplate {
 
     public get raw(): ISerTemplate {
 
-        let selections = this.templateSelections as IModel[];
+        let selections = this.templateSelections as IModel<any>[];
 
         if (!selections) {
             selections = [new SelectionModel()];

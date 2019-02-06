@@ -1,0 +1,19 @@
+{
+  "SMC_MENU": {
+    "GROUP": {
+      "MANAGE_CONTENT": "Manage Content",
+      "GOVERNANCE": "Governance",
+      "MANAGE_RESOURCES": "Manage Resources",
+      "CONFIGURE_SYSTEM": "Configure System"
+    },
+    "ITEM": {
+      "APPS": "Reporting Apps",
+      "TASKS": "Reporting Tasks",
+      "SHAREDCONTENT": "Sharedcontent Manager",
+      "MONITORING_APPS": "Monitoring Apps",
+      "LICENSE": "License Manager",
+      "INSTALLATION_WIZARD": "Installation Wizard",
+      "AUTO_UPDATE": "Auto Update"
+    }
+  }
+}

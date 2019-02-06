@@ -2,7 +2,7 @@ import { IDataNode, IModel } from '@smc/modules/smc-common';
 import { importData } from '@smc/modules/smc-common/utils/model/import-data.decorator';
 import { Validate, Validators } from '@smc/modules/smc-common/utils/model/validate-property.decorator';
 
-export class BookModel implements IModel {
+export class BookModel implements IModel<IDataNode> {
 
     private bookTitle: string;
 

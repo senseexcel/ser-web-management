@@ -3,7 +3,7 @@ import { IDataNode, IModel } from '@smc/modules/smc-common';
 import { Validate, Validators } from '@smc/modules/smc-common/utils/model/validate-property.decorator';
 import { importData } from '@smc/modules/smc-common/utils/model/import-data.decorator';
 
-export class UserModel implements IModel {
+export class UserModel implements IModel<IDataNode> {
 
     private userName: string;
 

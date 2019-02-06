@@ -1,31 +1,20 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { BreadcrumbModule, DropDownModule, ModalModule, QrsModule, SmcUiModule } from '@smc/modules';
+
+import { AppsPage, ContentManagerPage, DashboardPage, LicensePage, TasksPage } from '@smc/pages';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
-import {
-  BreadcrumbModule,
-  DropDownModule,
-  MenuModule,
-  ModalModule,
-  QrsModule,
-} from '@smc/modules';
-
-import { AppsPage, ContentManagerPage, DashboardPage, LicensePage, TasksPage } from '@smc/pages';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { BootstrapService } from './services/bootstrap.service';
-import { HttpClientModule } from '@angular/common/http';
 import { IBootstrap } from './api/bootstrap.interface';
+import i18n_en from './i18n/en.json';
 
-/**
- *
- *
- * @export
- * @class AppModule
- */
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,6 +22,8 @@ import { IBootstrap } from './api/bootstrap.interface';
   ],
   entryComponents: [],
   imports: [
+
+    TranslateModule.forRoot(),
 
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -44,8 +35,8 @@ import { IBootstrap } from './api/bootstrap.interface';
     QrsModule,
     BreadcrumbModule,
     DropDownModule,
-    MenuModule,
     ModalModule,
+    SmcUiModule,
 
     /** pages */
     AppsPage,
@@ -68,4 +59,9 @@ import { IBootstrap } from './api/bootstrap.interface';
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
+  public constructor(i18n: TranslateService) {
+    i18n.setTranslation('en', i18n_en, true);
+    i18n.setDefaultLang('en');
+  }
 }

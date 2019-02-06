@@ -1,4 +1,5 @@
 import { IModel } from '@smc/modules/smc-common/api/model.interface';
+import { IDataNode } from '@smc/modules/smc-common';
 
 /**
  * model for task excution data
@@ -6,7 +7,7 @@ import { IModel } from '@smc/modules/smc-common/api/model.interface';
  * @export
  * @class ExecutionModel
  */
-export class TriggerModel implements IModel {
+export class TriggerModel implements IModel<IDataNode> {
 
     private triggerHour: number;
 
@@ -28,7 +29,7 @@ export class TriggerModel implements IModel {
         return this.triggerHour;
     }
 
-    public get raw() {
+    public get raw(): IDataNode {
         return {
             enabled: this.enabled,
             hour:    this.hour

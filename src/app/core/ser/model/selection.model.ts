@@ -9,7 +9,7 @@ export enum SelectionObjectType {
     DEFAULT = 'field'
 }
 
-export class SelectionModel implements ISerSenseSelection, IModel {
+export class SelectionModel implements ISerSenseSelection, IModel<ISerSenseSelection> {
 
     /**
      * sense excel reporting selection object type

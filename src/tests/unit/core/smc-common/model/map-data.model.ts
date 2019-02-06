@@ -6,7 +6,7 @@ export class MapDataToUser {
     private userBooks: BookModel[];
 
     @Validate([Validators.isArray])
-    @mapDataTo(BookModel)
+    @mapDataTo<BookModel>(BookModel)
     public set books(books: BookModel[]) {
         this.userBooks = books;
     }
