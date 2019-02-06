@@ -33,6 +33,7 @@ export class ListComponent implements OnInit, OnDestroy {
         private smcCache: SmcCache,
     ) {
         this.selections = new SelectionModel(true);
+        this.tableData  = [];
 
         try {
             this.listSettings = this.smcCache.get('smc.settings.list');
@@ -95,7 +96,11 @@ export class ListComponent implements OnInit, OnDestroy {
                 /* on success all delete requests was successful
                  * if this was the last page and we removed all items on last page we have to go one page back
                  */
-                if (success && this.visible === contentToDelete.length && this.pagination.isLastPage()) {
+                if (success &&
+                    this.visible === contentToDelete.length &&
+                    this.pagination.isLastPage() &&
+                    this.pagination.getCurrentPage() !== 1)
+                {
                     this.pagination.showPrevPage();
                     return;
                 }
@@ -150,26 +155,21 @@ export class ListComponent implements OnInit, OnDestroy {
         this.sharedContentRepository.count()
             .pipe(
                 mergeMap((count: number): Observable<ITableData> => {
-                    if (count === 0) {
-                        return of(null);
-                    }
                     this.total = count;
                     return this.sharedContentRepository.fetchTable(start, this.listSettings.itemPageCount);
-                }),
-                catchError(() => of(null))
+                })
             ).subscribe((tableData: ITableData) => {
-
-                /** update properties */
-                this.columns = tableData.columnNames;
-                this.tableData = DataConverter.convertQrsTableToJson(tableData);
-                this.visible = this.tableData.length;
 
                 /** clear selections */
                 this.selections.clear();
-
                 this.pagination.update({
                     itemTotalCount: this.total
                 });
+
+                /** update properties */
+                this.columns   = tableData.columnNames;
+                this.tableData = DataConverter.convertQrsTableToJson(tableData);
+                this.visible   = this.tableData.length;
 
                 this.isLoading = false;
             });
