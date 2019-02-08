@@ -5,7 +5,6 @@ import { DashboardComponent } from './components/dashboard.component';
 import { DashboardRoutingModule } from './dashboard.routing.module';
 import { TranslateService } from '@ngx-translate/core';
 import i18n_en from './i18n/en.json';
-import { SettingsService } from 'src/app/services/settings.service';
 
 @NgModule({
     imports: [
@@ -18,7 +17,7 @@ import { SettingsService } from 'src/app/services/settings.service';
     providers: [],
 })
 export class DashboardModule {
-    public constructor(i18n: TranslateService, s: SettingsService) {
+    public constructor(i18n: TranslateService) {
         i18n.setTranslation('en', i18n_en, true);
     }
 }

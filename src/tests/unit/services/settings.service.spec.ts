@@ -1,10 +1,10 @@
 
 import { TestBed, inject, async } from '@angular/core/testing';
-import { SettingsService } from 'src/app/services/settings.service';
-import { AppSettingsModel } from 'src/app/model/app-settings.model';
-import { PageSettings } from '../mock/page-settings.mock';
-import { IAppPage } from '@api/app-page.interface';
-import { SectionModel } from 'src/app/model/section.model';
+import { HttpClient } from '@angular/common/http';
+
+interface IAuto {
+    doors: number;
+}
 
 describe('SMC: App', () => {
 
@@ -12,40 +12,25 @@ describe('SMC: App', () => {
 
         describe('Load Model to Service', () => {
 
-            let settingsService: SettingsService;
+            let settingsService: HttpClient;
 
             beforeEach(() => {
                 TestBed.configureTestingModule({
                     providers: [
-                        {
-                            provide: SettingsService,
-                            useFactory: () => {
-                                const settingsModel: AppSettingsModel = new AppSettingsModel();
-                                settingsModel.sections = PageSettings;
-                                return new SettingsService(settingsModel);
-                            }
-                        }
+                        HttpClient
                     ]
                 });
             });
 
-            beforeEach(inject([SettingsService], service => {
+            beforeEach(inject([HttpClient], service => {
                 settingsService = service;
             }));
 
-            it('should be initialized', () => {
-                expect(settingsService).toBeTruthy();
-            });
-
-            it('should return page count of 3', () => {
-                const pages: IAppPage[] = settingsService.pages;
-                expect(pages.length).toBe(3);
-            });
-
-            it('should have pages', () => {
-                const pages: IAppPage[] = settingsService.pages;
-                expect(pages[0].id).toEqual('page_1');
-                expect(pages[2].id).toEqual('page_3');
+            it('should do something', () => {
+                settingsService.get<IAuto>('./auto.json')
+                    .subscribe((a: IAuto) => {
+                        console.log(a);
+                    });
             });
         });
     });

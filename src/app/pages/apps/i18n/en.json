@@ -1,0 +1,148 @@
+{
+  "SMC_APPS": {
+    "EDIT": {
+      "ACTION": {
+        "SAVE": "Apply",
+        "CANCEL": "Cancel",
+        "PREVIEW": "Preview"
+      },
+      "ASSOCIATED_ITEMS": {
+        "LABEL": "Associated Items",
+        "ITEM": {
+          "TASKS": "Tasks ({{COUNT}})"
+        }
+      },
+      "FORM": {
+        "DISTRIBUTION": {
+          "TAB": {
+            "EMAIL": {
+              "FIELD": {
+                "ACTIVE": "Active",
+                "TO": "To",
+                "CC": "Cc",
+                "BCC": "Bcc",
+                "SUBJECT": "Subject",
+                "TYPE": {
+                  "MARKDOWN": "Markdown",
+                  "HTML": "Html",
+                  "TEXT": "Text"
+                },
+                "MESSAGE": "Message"
+              },
+              "LABEL": "Email"
+            },
+            "FILE": {
+              "FIELD": {
+                "ACTIVE": "Active",
+                "TARGET": "Target",
+                "OVERRIDE": "Override",
+                "DELETEALLFIRST": "Delete all first",
+                "CREATEONLY": "Create only"
+              },
+              "LABEL": "File"
+            },
+            "HUB": {
+              "FIELD": {
+                "ACTIVE": "Active",
+                "OWNER": "Owner",
+                "OVERRIDE": "Override",
+                "DELETEALLFIRST": "Delete all first",
+                "CREATEONLY": "Create only"
+              },
+              "LABEL": "Hub"
+            }
+          }
+        },
+        "SELECTIONS": {
+          "FIELD": {
+            "NAME": "Name",
+            "VALUE": "Value"
+          },
+          "TYPE": {
+            "DYNAMIC": {
+              "LABEL": "Dynamic"
+            },
+            "STATIC": {
+              "TYPE": {
+                "BOOKMARK": "Bookmark",
+                "DEFAULT": "DEFAULT",
+                "HIDDEN_BOOKMARK": "Hidden Bookmark"
+              },
+              "LABEL": "Static"
+            }
+          }
+        },
+        "SETTINGS": {
+          "TAB": {
+            "EMAIL_SERVER": {
+              "FIELD": {
+                "HOST": "Host",
+                "FROM": "From",
+                "PORT": "Port",
+                "USERNAME": "Username",
+                "PASSWORD": "Password",
+                "SSL": "Connect with SSL"
+              },
+              "LABEL": "Email Server"
+            },
+            "GENERAL": {
+              "FIELD": {
+                "CLEANUP_TIMEOUT": "Clean Up Timeout",
+                "ERROR_REPEAT_COUNT": "Error Repeat Count",
+                "TIMEOUT": "Timeout"
+              },
+              "LABEL": "General Settings"
+            }
+          }
+        },
+        "TEMPLATE": {
+          "TEMPLATE_INPUT": "Template Input",
+          "TEMPLATE_OUTPUT": "Template Output",
+          "TEMPLATE_OUTPUT_FORMAT": "Template Output Format",
+          "TEMPLATE_OUTPUT_PASSWORD": "Template Output Password",
+          "OUTPUT_FORMAT": "Output Format"
+        }
+      },
+      "MODAL": {
+        "ERROR_SAVE_TITLE": "Success",
+        "ERROR_SAVE_MESSAGE": "Could not save your app. Invalid Data submitted please check your input.",
+        "SUCCESS_SAVE_TITLE": "App Saved",
+        "SUCCESS_SAVE_MESSAGE": "App was successfully saved.",
+        "CANCEL_TITLE": "Warning",
+        "CANCEL_MESSAGE": "Discard all changes.<br /><br />Continue ?"
+      },
+      "OVERVIEW_HEADER": "Applications",
+      "PROPERTIES": {
+        "LABEL": "Properties",
+        "ITEM": {
+          "APP": "App",
+          "TEMPLATE": "Template",
+          "SELECTIONS": "Selections",
+          "DISTRIBUTION": "Distribution",
+          "SETTINGS": "Settings"
+        }
+      },
+      "TITLE": "Edit Report"
+    },
+
+    "PREVIEW": {
+      "HEADER": "Preview Report Configuration",
+      "OVERVIEW": {
+        "HEADER": "Back",
+        "TITLE": "Preview Report Configuration"
+      },
+      "ACTIONS": {
+        "CLOSE": "Close Preview"
+      }
+    },
+
+    "LIST": {
+      "ACTIONS": {
+        "EDIT": "Edit",
+        "NEW": "Create new app",
+        "SYNC": "Synchronize apps"
+      },
+      "HEADER": "Reports"
+    }
+  }
+}

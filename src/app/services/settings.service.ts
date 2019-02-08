@@ -1,24 +1,26 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, Optional } from '@angular/core';
 import { IAppSettings } from '../api/app-settings.interface';
-import { AppSettingsFactory } from '../util/app-settings-service.factory';
 import { IAppPage } from '@api/app-page.interface';
 import { IMenuItem } from '@smc/modules/smc-ui/api';
 import { IAppSection } from '@api/app-section.interface';
 import { PageModel } from '../model/page.model';
+import { AppSettingsModel } from '../model/app-settings.model';
+import { AppPageSettings } from '../settings/page.settings';
 
 @Injectable({
     providedIn: 'root',
-    useFactory: AppSettingsFactory
 })
 export class SettingsService {
 
-    constructor(
-        private appSettings: IAppSettings,
-    ) {
+    private appSettings: IAppSettings = new AppSettingsModel();
+
+    public constructor() {
+        this.appSettings = new AppSettingsModel();
+        this.appSettings.sections = AppPageSettings;
     }
 
     /**
-     * get menu from page settings
+     * extract sections and pages from page settings and convert to menu data
      *
      * @readonly
      * @type {IMenuItem[]}
@@ -45,7 +47,7 @@ export class SettingsService {
     }
 
     /**
-     * get only pages without sections
+     * flatten page settings and return only packages
      *
      * @readonly
      * @type {IAppPage[]}

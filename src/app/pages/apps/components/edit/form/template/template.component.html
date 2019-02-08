@@ -1,23 +1,23 @@
-<h3 class="header header-secondary">Template</h3>
+<h3 class="header header-secondary">{{'SMC_APPS.EDIT.PROPERTIES.ITEM.TEMPLATE' | translate}}</h3>
 <ng-container *ngIf="templateForm">
     <div [formGroup]="templateForm">
         <mat-form-field class="form-control">
-            <input matInput formControlName="input" placeholder="Template Input">
+            <input matInput formControlName="input" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_INPUT' | translate}}">
         </mat-form-field>
 
         <mat-form-field class="form-control">
-            <input matInput formControlName="output" placeholder="Template Output">
+            <input matInput formControlName="output" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_OUTPUT' | translate}}">
         </mat-form-field>
 
         <div class="row">
             <div class="col col-md-9">
                 <mat-form-field class="form-control">
-                    <input matInput formControlName="outputFormat" placeholder="Template Output Format">
+                    <input matInput formControlName="outputFormat" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_OUTPUT_FORMAT' | translate}}">
                 </mat-form-field>
             </div>
             <div class="col col-md-3">
                 <mat-form-field class="form-control">
-                    <mat-select placeholder="Output Format" (selectionChange)="setOutput($event)">
+                    <mat-select placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.OUTPUT_FORMAT' | translate}}" (selectionChange)="setOutput($event)">
                         <mat-option *ngFor="let format of ['csv', 'html', 'pdf', 'svg', 'tiff', 'tsv', 'xlsm', 'xls', 'xlsx']" [value]="format">
                             {{format}}
                         </mat-option>
@@ -27,7 +27,7 @@
         </div>
 
         <mat-form-field class="form-control">
-            <input matInput formControlName="outputPassword" placeholder="Template Output Password">
+            <input matInput formControlName="outputPassword" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_OUTPUT_PASSWORD' | translate}}">
         </mat-form-field>
     </div>
 </ng-container>

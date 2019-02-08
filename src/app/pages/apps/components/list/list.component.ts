@@ -31,7 +31,7 @@ export class AppListComponent implements OnInit {
     private dialogService: ModalService;
 
     constructor(
-        @Inject(SMC_SESSION) public settings: ISettings,
+        @Inject(SMC_SESSION) public session: ISettings,
         private appRepository: AppRepository,
         private smcCache: SmcCache,
         dialog: ModalService,

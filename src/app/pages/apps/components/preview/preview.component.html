@@ -3,7 +3,7 @@
   <!-- CONTENT HEADER -->
   <div page-content--header>
     <i class="ser-icon ser-icon--apps"></i>
-    <span>Report Script Preview</span>
+    <span>{{'SMC_APPS.PREVIEW.HEADER' | translate}}</span>
   </div>
 
   <!-- CONTENT BODY -->
@@ -16,7 +16,7 @@
   <!-- CONTENT FOOTER -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="closePreview()">Close Preview</smc-ui--button>
+      <smc-ui--button (click)="closePreview()">{{'SMC_APPS.PREVIEW.ACTIONS.CLOSE' | translate }}</smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 
@@ -25,13 +25,13 @@
     <div class="header sidebar-content">
       <a (click)="closePreview()">
         <i class="lui-icon lui-icon--arrow-up"></i>
-        <span>Back</span>
+        <span>{{'SMC_APPS.PREVIEW.OVERVIEW.HEADER' | translate}}</span>
       </a>
     </div>
 
     <ul class="overview lui-list">
       <li class="lui-item">
-        Preview Report Configuration
+        {{'SMC_APPS.PREVIEW.OVERVIEW.TITLE' | translate}}
       </li>
     </ul>
   </div>

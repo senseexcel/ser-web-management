@@ -6,7 +6,7 @@
       <ng-container list-header--title>
         <span>
           <i class="ser-icon ser-icon--apps"></i>
-          Reports
+          {{'SMC_APPS.LIST.HEADER' | translate}}
         </span>
       </ng-container>
     </smc-ui--list-header>
@@ -15,12 +15,10 @@
   <!-- page content -->
   <div page-content--body>
     <table class="table" *ngIf="apps.length && !isLoading" mat-table [dataSource]="apps">
-      <!-- Position Column -->
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef> Name </th>
         <td mat-cell *matCellDef="let app"> {{app.name}} </td>
       </ng-container>
-      <!-- Weight Column -->
       <ng-container matColumnDef="id">
         <th mat-header-cell *matHeaderCellDef> Document ID </th>
         <td mat-cell *matCellDef="let app"> {{app.id}} </td>
@@ -31,26 +29,13 @@
     </table>
   </div>
 
-  <!-- page footer -->
+
   <div page-content--footer>
-    <nav class="navbar navbar-expand-lg action-bar-bottom">
-      <div class="btn-toolbar" role="group">
-        <button type="button" [disabled]="selection.isEmpty() || isLoading" class="nav-item mr-4" (click)="editApp()">
-          <span class="button-label">
-            Edit
-          </span>
-        </button>
-        <button type="button" [disabled]="isLoading" class="nav-item" (click)="createApp()">
-          <span class="button-label">
-            Create new
-          </span>
-        </button>
-        <button type="button" class="nav-item" *ngIf="session.serTag" [disabled]="isLoading" (click)="syncApps()">
-          <span class="button-label">
-            Synchronize Apps
-          </span>
-        </button>
-      </div>
-    </nav>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="editApp()">{{'SMC_APPS.LIST.ACTIONS.EDIT' | translate }}</smc-ui--button>
+      <smc-ui--button (click)="createApp()">{{'SMC_APPS.LIST.ACTIONS.NEW'  | translate }}</smc-ui--button>
+      <smc-ui--button (click)="syncApps()">{{'SMC_APPS.LIST.ACTIONS.SYNC' | translate }}</smc-ui--button>
+    </smc-ui--button-navbar>
   </div>
+
 </smc-ui--page>

@@ -5,7 +5,7 @@
   <!-- CONTENT HEADER -->
   <div page-content--header>
     <i class="ser-icon ser-icon--apps"></i>
-    <span>Edit Report</span>
+    <span>{{"SMC_APPS.EDIT.TITLE" |translate}}</span>
   </div>
 
   <!-- CONTENT BODY -->
@@ -32,9 +32,9 @@
   <!-- CONTENT FOOTER -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="save()">Apply</smc-ui--button>
-      <smc-ui--button (click)="cancel()">Cancel</smc-ui--button>
-      <smc-ui--button (click)="preview()">Preview</smc-ui--button>
+      <smc-ui--button (click)="save()"   >{{'SMC_APPS.EDIT.ACTION.SAVE'    | translate}}</smc-ui--button>
+      <smc-ui--button (click)="cancel()" >{{'SMC_APPS.EDIT.ACTION.CANCEL'  | translate}}</smc-ui--button>
+      <smc-ui--button (click)="preview()">{{'SMC_APPS.EDIT.ACTION.PREVIEW' | translate}}</smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 
@@ -43,7 +43,7 @@
     <div class="header sidebar-content">
       <a (click)="navigateBack()">
         <i class="lui-icon lui-icon--arrow-up"></i>
-        <span>Applications</span>
+        <span>{{'SMC_APPS.EDIT.OVERVIEW_HEADER' | translate}}</span>
       </a>
     </div>
 
@@ -57,22 +57,22 @@
   <!-- SIDEBAR RIGHT -->
   <div page-sidebar--right>
     <div class="header">
-      Properties
+      {{'SMC_APPS.EDIT.PROPERTIES.LABEL' | translate}} 
     </div>
 
     <ul class="lui-list">
       <li class="lui-item" (click)="showForm(property)" *ngFor="let property of properties" [ngClass]="{'active': property == selectedProperty}">
-        {{property.label}}
+        {{property.label | translate}}
       </li>
     </ul>
 
     <ng-container *ngIf="associatedItems && associatedItems.length">
       <div class="header">
-        Associated Items
+      {{'SMC_APPS.EDIT.ASSOCIATED_ITEMS.LABEL' | translate}} 
       </div>
       <ul class="lui-list">
         <li class="lui-item" *ngFor="let item of associatedItems">
-          <a (click)="showTasks()">{{item.label}} ({{item.count}})</a>
+          <a (click)="showTasks()" translate="{{item.label}}" [translateParams]="{COUNT: item.count}"></a>
         </li>
       </ul>
     </ng-container>
