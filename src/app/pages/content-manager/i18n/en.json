@@ -1,0 +1,21 @@
+{
+    "SMC_CONTENT_MANAGER": {
+        "LIST": {
+            "ACTIONS": {
+                "DELETE": "Delete",
+                "DELETE_MULTI": "Delete ({{COUNT}})"
+            },
+            "COLUMN": {
+                "ID": "Id",
+                "NAME": "Name",
+                "TYPE": "Type",
+                "DESCRIPTION": "Description",
+                "OWNER": "Owner",
+                "CREATEDDATE": "Created Date",
+                "MODIFIEDDATE": "Modified Date",
+                "TAGS": "Tags",
+                "METADATA": "Metadata"
+            }
+        }
+    }
+}

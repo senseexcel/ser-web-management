@@ -23,6 +23,8 @@ export class ListComponent implements OnInit, OnDestroy {
     public visible: number;
     public selections: SelectionModel<IDataNode>;
 
+    public translateParamSelected = {COUNT: 0};
+
     private listSettings: IDataNode;
     private ctrlKeyDown: boolean;
     private isDestroyed: Subject<boolean> = new Subject();
@@ -73,6 +75,7 @@ export class ListComponent implements OnInit, OnDestroy {
             this.selections.clear();
         }
         this.selections.select(content);
+        this.translateParamSelected = {COUNT: this.selections.selected.length};
     }
 
     /**
@@ -82,6 +85,7 @@ export class ListComponent implements OnInit, OnDestroy {
      * @memberof ListComponent
      */
     public deleteSharedContent() {
+
         if (this.selections.isEmpty()) {
             return;
         }
@@ -93,6 +97,9 @@ export class ListComponent implements OnInit, OnDestroy {
 
         this.sharedContentRepository.delete(contentToDelete)
             .subscribe((success: boolean) => {
+
+                this.deselectAll();
+
                 /* on success all delete requests was successful
                  * if this was the last page and we removed all items on last page we have to go one page back
                  */
@@ -116,10 +123,12 @@ export class ListComponent implements OnInit, OnDestroy {
 
     public selectAll() {
         this.selections.select(...this.tableData);
+        this.translateParamSelected = {COUNT: this.selections.selected.length};
     }
 
     public deselectAll() {
         this.selections.clear();
+        this.translateParamSelected = {COUNT: 0};
     }
 
     /**

@@ -27,7 +27,7 @@
       <table class="table" mat-table [dataSource]="tableData">
 
         <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
-          <th mat-header-cell *matHeaderCellDef>{{column}}</th>
+          <th mat-header-cell *matHeaderCellDef>{{'SMC_CONTENT_MANAGER.LIST.COLUMN.' + column.toUpperCase() | translate}}</th>
           <ng-container *matCellDef="let col">
             <ng-container [ngSwitch]="column">
               <td *ngSwitchCase="'MetaData'" mat-cell matTooltipClass="tooltip-pre" matTooltip="{{col[column][0] | hjson}}" [matTooltipShowDelay]="500">...</td>
@@ -47,14 +47,9 @@
 
   <!-- page footer -->
   <div page-content--footer>
-    <nav class="navbar navbar-expand-lg action-bar-bottom">
-      <div class="btn-toolbar" role="group">
-        <button type="button" class="nav-item mr-4" [disabled]="selections.isEmpty()" (click)="deleteSharedContent()">
-          <span class="button-label">
-            Delete
-          </span>
-        </button>
-      </div>
-    </nav>
+    <smc-ui--button-navbar>
+      <smc-ui--button *ngIf="selections.selected.length <= 1" (click)="deleteSharedContent()" [disabled]="selections.isEmpty()">{{'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE' | translate}}</smc-ui--button>
+      <smc-ui--button *ngIf="selections.selected.length > 1"  (click)="deleteSharedContent()">{{'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE_MULTI' | translate:translateParamSelected}}</smc-ui--button>
+    </smc-ui--button-navbar>
   </div>
 </smc-ui--page>
