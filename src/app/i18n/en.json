@@ -15,5 +15,8 @@
       "INSTALLATION_WIZARD": "Installation Wizard",
       "AUTO_UPDATE": "Auto Update"
     }
+  },
+  "SMC_CORE": {
+    "CONTACT_CONSULTANT": "Please contact your system administrator or qlik consultant."
   }
 }

@@ -8,13 +8,10 @@ import { KeyValue } from '@angular/common';
     templateUrl: 'error.component.html'
 })
 
-export class ErrorComponent implements OnInit {
+export class ErrorComponent {
 
     @Input()
     public progress: Map<ValidationStep , ILicenseValidationResult>;
-
-    ngOnInit() {
-    }
 
     /**
      * sort function for keyvalue pipe, this will sort items at this way

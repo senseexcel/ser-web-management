@@ -6,7 +6,7 @@ import { Subject, forkJoin, of } from 'rxjs';
 import { ILicenseValidationResult } from '../../api/validation-result.interface';
 
 @Component({
-    selector: 'app-license-info',
+    selector: 'smc-license-info',
     styleUrls: ['info.component.scss'],
     templateUrl: 'info.component.html'
 })

@@ -3,25 +3,26 @@
   <!-- CONTENT HEADER -->
   <div page-content--header>
     <i class="ser-icon ser-icon--license"></i>
-    <span>License Installation</span>
+    <span>{{'SMC_LICENSE.HEADER' | translate}}</span>
   </div>
 
   <!-- CONTENT BODY -->
   <div page-content--body *ngIf="ready">
+
     <!-- INSTALLATION VALID -->
     <ng-container *ngIf="!isInstallationInvalid">
       <div class="license-block" #licenseInfo>
         <div class="header qmc-page--content-header">
           <i class="ser-icon ser-icon--license"></i>
-          <span>License informations</span>
+          <span>{{'SMC_LICENSE.INFORMATIONS.LABEL' | translate}}</span>
         </div>
-        <app-license-info></app-license-info>
+        <smc-license-info></smc-license-info>
       </div>
 
       <div class="license-block" #licenseOverview>
         <div class="header qmc-page--content-header">
           <i class="ser-icon ser-icon--license"></i>
-          <span>License Overview</span>
+          <span>{{'SMC_LICENSE.OVERVIEW.LABEL' | translate}}</span>
         </div>
         <smc-license-overview></smc-license-overview>
       </div>
@@ -29,7 +30,7 @@
       <div class="license-block" #licensedUsers>
         <div class="header qmc-page--content-header">
           <i class="ser-icon ser-icon--license"></i>
-          <span>Licensed Users</span>
+          <span>{{'SMC_LICENSE.USERS.LABEL' | translate}}</span>
         </div>
         <smc-license-user></smc-license-user>
       </div>
@@ -44,8 +45,8 @@
   <!-- CONTENT FOOTER -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="saveLicense()" *ngIf="!isInstallationInvalid">Apply</smc-ui--button>
-      <smc-ui--button (click)="reload()" *ngIf="isInstallationInvalid">Reload</smc-ui--button>
+      <smc-ui--button (click)="saveLicense()" *ngIf="!isInstallationInvalid">{{'SMC_LICENSE.ACTIONS.SAVE.BUTTON_LABEL' | translate}}</smc-ui--button>
+      <smc-ui--button (click)="reload()" *ngIf="isInstallationInvalid">{{'SMC_LICENSE.ACTIONS.RELOAD' | translate}}</smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 
@@ -54,13 +55,13 @@
     <div class="header sidebar-content">
       <a (click)="navigateBack()">
         <i class="lui-icon lui-icon--arrow-up"></i>
-        <span>Start</span>
+        <span>{{'SMC_LICENSE.ACTIONS.GO_BACK' | translate}}</span>
       </a>
     </div>
 
     <ul class="lui-list overview">
       <li class="lui-item">
-        License
+        {{'SMC_LICENSE.LABEL.LICENSE' | translate}}
       </li>
     </ul>
   </div>
@@ -68,13 +69,13 @@
   <!-- SIDEBAR RIGHT -->
   <div page-sidebar--right>
     <div class="header">
-      Properties
+        {{'SMC_LICENSE.LABEL.PROPERTIES' | translate}}
     </div>
 
     <ul class="lui-list">
-      <li class="lui-item" (click)="showPagePart(property, property.part)" *ngFor="let property of properties"
+      <li class="lui-item" (click)="showPagePart(property, property.key)" *ngFor="let property of properties"
         [ngClass]="{'active': property == selectedProperty}">
-        {{property.label}}
+        {{property.label | translate}}
       </li>
     </ul>
   </div>

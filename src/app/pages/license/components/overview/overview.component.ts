@@ -65,15 +65,16 @@ export class OverviewComponent implements OnDestroy, OnInit {
      * @memberof OverviewComponent
      */
     public insertLicense() {
+        this.openModal('SMC_LICENSE.OVERVIEW.ACTIONS.INSERT');
+    }
 
-        const modalData: IModalData<InsertOverlayComponent> = {
-            bodyComponent: InsertOverlayComponent,
-            control: InsertOverlayControl,
-            footerComponent: InsertOverlayFooterComponent,
-            title: 'Insert License',
-        };
-
-        this.modal.open(modalData, { panelClass: ['license-modal--insert']});
+    /**
+     * Edit License
+     *
+     * @memberof OverviewComponent
+     */
+    public editLicense() {
+        this.openModal('SMC_LICENSE.OVERVIEW.ACTIONS.EDIT');
     }
 
     public loadFromServer() {
@@ -100,6 +101,16 @@ export class OverviewComponent implements OnDestroy, OnInit {
                     }
                 }
             );
+    }
+
+    private openModal(title: string) {
+        const modalData: IModalData<InsertOverlayComponent> = {
+            bodyComponent: InsertOverlayComponent,
+            control: InsertOverlayControl,
+            footerComponent: InsertOverlayFooterComponent,
+            title,
+        };
+        this.modal.open(modalData, { panelClass: ['license-modal--insert']});
     }
 
     private handleResponseError(error: Error) {
