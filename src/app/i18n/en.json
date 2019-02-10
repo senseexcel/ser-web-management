@@ -17,6 +17,10 @@
     }
   },
   "SMC_CORE": {
-    "CONTACT_CONSULTANT": "Please contact your system administrator or qlik consultant."
+    "CONTACT_CONSULTANT": "Please contact your system administrator or qlik consultant.",
+    "DIALOG": {
+      "SER_TAG_MISSING_TITLE": "SER Tag not found",
+      "SER_TAG_MISSING_MESSAGE": "SER Tag for Apps was not found, this will increase loading times for app and task lists.<br /><br /> To add a SER Tag please contact your Administrator or Akquinet Qlik Consultant."
+    }
   }
 }

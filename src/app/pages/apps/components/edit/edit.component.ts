@@ -67,7 +67,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
     public cancel() {
         const title = `SMC_APPS.EDIT.MODAL.CANCEL_TITLE`;
-        const message = `SMC_APPS.EDIT.MODAL.CANCEL_MESSAGE`;
+        const message = {key: `SMC_APPS.EDIT.MODAL.CANCEL_MESSAGE`};
 
         this.modalService.openDialog(title, message)
             .switch.subscribe((confirm) => {
@@ -159,11 +159,10 @@ export class AppEditComponent implements OnInit, OnDestroy {
             )
             .subscribe(() => {
                 const title = 'SMC_APPS.EDIT.MODAL.SUCCESS_SAVE_TITLE';
-                const message = `SMC_APPS.EDIT.MODAL.SUCCESS_SAVE_MESSAGE`;
+                const message = {key: `SMC_APPS.EDIT.MODAL.SUCCESS_SAVE_MESSAGE`};
                 this.modalService.openMessageModal(title, message);
             }, (e: Error) => {
-                const title = `Error`;
-                this.modalService.openMessageModal(title, e.message);
+                console.error(e.message);
             });
     }
 

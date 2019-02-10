@@ -39,9 +39,8 @@ export class AppComponent {
    */
   private displayModal() {
 
-    const title   = 'SER Tag not found';
-    const message = `SER Tag for Apps was not found, this will increase loading times for app and task lists.\n\n
-       To add a SER Tag please contact your Administrator or Akquinet Qlik Consultant.`;
+    const title   = 'SMC_CORE.DIALOG.SER_TAG_MISSING_TITLE';
+    const message = {key: 'SMC_CORE.DIALOG.SER_TAG_MISSING_MESSAGE'};
 
     const modalControl = this.modalService.openMessageModal(title, message, {}, true);
     modalControl.onClose.subscribe(() => {
