@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { empty } from 'rxjs';
@@ -14,7 +14,7 @@ import { AppRepository } from '@smc/modules/ser/provider/app.repository';
     templateUrl: 'list.component.html',
     styleUrls: ['./list.component.scss'],
 })
-export class AppListComponent implements OnInit {
+export class AppListComponent implements OnInit, OnDestroy {
 
     public apps: IApp[] = [];
 
@@ -25,9 +25,7 @@ export class AppListComponent implements OnInit {
     public selection: SelectionModel<IApp>;
 
     private router: Router;
-
     private route: ActivatedRoute;
-
     private dialogService: ModalService;
 
     constructor(
@@ -54,6 +52,10 @@ export class AppListComponent implements OnInit {
         }
     }
 
+    public ngOnDestroy() {
+        this.selection.clear();
+    }
+
     /**
      * delete existing app
      *
@@ -70,7 +72,14 @@ export class AppListComponent implements OnInit {
      * @memberof AppListComponent
      */
     public editApp() {
-        this.router.navigate([`edit/${this.selection.selected[0].id}`], { relativeTo: this.route });
+
+        this.router
+            .navigate([`edit/${this.selection.selected[0].id}`], { relativeTo: this.route })
+            .then((routeChange: boolean) => {
+                if (!routeChange) {
+                    this.selection.clear();
+                }
+            });
     }
 
     /**
