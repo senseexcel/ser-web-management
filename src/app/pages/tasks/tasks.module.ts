@@ -2,14 +2,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-/** core modules */
+import { TranslateService } from '@ngx-translate/core';
 import { SmcCommonModule, QrsModule, MaterialModule, FormHelperModule, SmcUiModule, SerModule } from '@smc/modules';
-/** task routing module */
 import { TaskRoutingModule } from './tasks-routing.module';
-/** task services */
 import { TaskFactory } from './services/task.factory';
-/** task components */
 import { EditComponent, ListComponent, FormComponents, TaskComponent,  } from './components';
+
+import i18n_en from './i18n/en.json';
 
 @NgModule({
     imports: [
@@ -39,4 +38,9 @@ import { EditComponent, ListComponent, FormComponents, TaskComponent,  } from '.
         EditComponent
     ]
 })
-export class TasksModule { }
+export class TasksModule {
+
+    public constructor(translation: TranslateService) {
+        translation.setTranslation('en', i18n_en, true);
+    }
+}

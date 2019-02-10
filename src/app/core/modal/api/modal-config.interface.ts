@@ -1,5 +1,6 @@
 import { ComponentType } from '@angular/cdk/portal';
 import { IControlConstructor } from './control.interface';
+import { I18nTranslation } from '@smc/modules/smc-common/i18n/i18n-translation.interface';
 
 export interface IModalData<T> {
 
@@ -15,7 +16,7 @@ export interface IModalData<T> {
 }
 
 export interface IModalDialogData {
-    message: string;
+    message: I18nTranslation;
 }
 
 export interface IOverlayConfig {

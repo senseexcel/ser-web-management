@@ -64,11 +64,11 @@ export class ListComponent implements OnDestroy, OnInit {
         this.columns = [
             'id',
             'name',
-            'Associated Resource',
+            'associated_resource',
             'enabled',
             'status',
-            'lastExecution',
-            'nextExecution'
+            'last_execution',
+            'next_execution'
         ];
         this.fetchTasks();
     }
@@ -114,8 +114,8 @@ export class ListComponent implements OnDestroy, OnInit {
     public syncTasks() {
 
        this.dialog.openDialog(
-            'Synchronize Tasks',
-            'This will Synchronize Sense Excel Reporting Tasks and add SER Tag to Task. This can take a while...'
+            'SMC_TASKS.LIST.DIALOG.SYNC_TASKS_TITLE',
+            {key: 'SMC_TASKS.LIST.DIALOG.SYNC_TASKS_MESSAGE'}
         ).switch.pipe(
             switchMap((confirm: boolean): Observable<any> =>
                 confirm ? this.taskRepository.synchronizeTasks() : empty()
@@ -123,7 +123,12 @@ export class ListComponent implements OnDestroy, OnInit {
         )
         .subscribe((tasks: any[]) => {
             if (tasks) {
-                this.dialog.openMessageModal('Tasks Synchronized', `${tasks.length} Task(s) where synchronized.`);
+                this.dialog.openMessageModal(
+                    'SMC_TASKS.LIST.DIALOG.SYNC_TASKS_DONE_TITLE',
+                    {
+                        key: 'SMC_TASKS.LIST.DIALOG.SYNC_TASKS_DONE_MESSAGE',
+                        param: {COUNT: tasks.length}
+                    });
                 this.reloadList();
             }
         });

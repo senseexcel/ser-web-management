@@ -1,16 +1,15 @@
 <div *ngIf="!isLoading">
-    <header class="header">Execution</header>
+    <header class="header">{{'SMC_TASKS.EDIT.PROPERTIES.ITEM.EXECUTION' | translate}}</header>
 
     <div [formGroup]="executionForm">
-
-        <mat-checkbox formControlName="enabled">Enabled</mat-checkbox>
+        <mat-checkbox formControlName="enabled">{{'SMC_TASKS.EDIT.FIELDSET.EXECUTION.ENABLED' | translate}}</mat-checkbox>
 
         <mat-form-field class="form-control">
-            <input matInput formControlName="taskSessionTimeout" placeholder="Session Timeout" type="number">
+            <input matInput formControlName="taskSessionTimeout" placeholder="{{'SMC_TASKS.EDIT.FIELDSET.EXECUTION.SESSION_TIMEOUT' | translate}}" type="number">
         </mat-form-field>
 
         <mat-form-field class="form-control">
-            <input matInput formControlName="maxRetries" placeholder="maxRetries (between 1 - 20)" type="number">
+            <input matInput formControlName="maxRetries" placeholder="{{'SMC_TASKS.EDIT.FIELDSET.EXECUTION.MAX_RETRIES' | translate}}" type="number">
         </mat-form-field>
     </div>
 </div>

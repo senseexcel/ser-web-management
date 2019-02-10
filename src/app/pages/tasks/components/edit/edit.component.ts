@@ -8,7 +8,7 @@ import { TaskFormModel } from '../../model/task-form.model';
 import { IApp, ITask, TaskRepository } from '@smc/modules/qrs';
 import { AppRepository } from '@smc/modules/ser/provider';
 import { ModalService } from '@smc/modules/modal';
-import { IDataNode, ISettings } from '@smc/modules/smc-common';
+import { IDataNode, ISettings, I18nTranslation } from '@smc/modules/smc-common';
 import { TaskIncomatibleException } from '../../api/exceptions/incompatible.exception';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { TaskFactory } from '../../services/task.factory';
@@ -22,46 +22,14 @@ import { TaskFactory } from '../../services/task.factory';
 
 export class EditComponent implements OnInit {
 
-    /**
-     * all tasks which should be edited
-     *
-     * @type {ITask[]}
-     * @memberof EditComponent
-     */
     public tasks: ITask[];
-
-    /**
-     *
-     *
-     * @type {string[]}
-     * @memberof EditComponent
-     */
     public properties: IDataNode[];
-
     public formDataLoaded = false;
-
     public selectedProperty: any;
 
     private modalService: ModalService;
-
     private taskFormModel: TaskFormModel;
-
-    /**
-     * form helper service
-     *
-     * @private
-     * @type {FormService<ITask, any>}
-     * @memberof EditComponent
-     */
     private formHelperService: FormService<TaskFormModel, any>;
-
-    /**
-     * task service to create and update task models
-     *
-     * @private
-     * @type {TaskService}
-     * @memberof EditComponent
-     */
     private activeRoute: ActivatedRoute;
     private location: Location;
 
@@ -148,12 +116,14 @@ export class EditComponent implements OnInit {
                 },
                 // error
                 (error) => {
-                    let message = 'An error occured on open the task. Please check logs for detailed informations.';
-                    let title = 'Could not open Task';
+                    const message: I18nTranslation = {
+                        key: 'SMC_TASKS.EDIT.DIALOG.OPEN_ERROR_MESSAGE'
+                    };
+                    let title = 'SMC_TASKS.EDIT.DIALOG.OPEN_ERROR_TITLE';
 
                     if (error instanceof TaskIncomatibleException) {
-                        title = 'Task Incompatible';
-                        message = `It seems the task was created or modified by qmc and could not edited with webmanagement app.`;
+                        title = 'SMC_TASKS.EDIT.DIALOG.OPEN_ERROR_INCOMPATIBLE_TITLE';
+                        message.key = 'SMC_TASKS.EDIT.DIALOG.OPEN_ERROR_INCOMPATIBLE_MESSAGE';
                     } else {
                         console.error(error);
                     }
@@ -193,21 +163,23 @@ export class EditComponent implements OnInit {
             )
             .subscribe((task: ITask) => {
                 let title: string;
-                let message: string;
+
+                const message: I18nTranslation = {
+                    key: 'SMC_TASKS.EDIT.DIALOG.SAVE_SUCCESS_MESSAGE',
+                    param: {NAME: this.taskFormModel.task.identification.name || 'undefined'}
+                };
 
                 if (task) {
-                    title   = `Task ${this.taskFormModel.isNew ? 'created' : 'updated'} !`;
-                    message = `Task ${this.taskFormModel.task.identification.name} was successfully saved.`;
+                    title   = `SMC_TASKS.EDIT.DIALOG.SAVE_SUCCESS_${this.taskFormModel.isNew ? 'CREATED' : 'UPDATED'}` ;
                     this.modalService.openMessageModal(title, message)
                         .onClose.subscribe(() => {
-                            const path = this.activeRoute.parent.routeConfig.path;
                             this.router.navigate(['edit', task.id], {
                                 relativeTo: this.activeRoute.parent
                             });
                         });
                 } else {
-                    title   = `An error occurred.`;
-                    message = `Task ${this.taskFormModel.task.identification.name} could not saved.`;
+                    title = 'SMC_TASKS.EDIT.DIALOG.SAVE_ERROR_TITLE',
+                    message.key = 'SMC_TASKS.EDIT.DIALOG.SAVE_ERROR_MESSAGE';
                     this.modalService
                         .openMessageModal(title, message);
                 }
@@ -246,8 +218,11 @@ export class EditComponent implements OnInit {
      * @memberof EditComponent
      */
     public onCancel() {
-        const title = `Warning`;
-        const message = `Cancel current process will discard all current changes.\n\nContinue ?`;
+
+        const title   = 'SMC_TASKS.EDIT.DIALOG.CANCEL_TITLE';
+        const message = {
+            key: 'SMC_TASKS.EDIT.DIALOG.CANCEL_MESSAGE',
+        };
 
         this.modalService.openDialog(title, message)
             .switch.subscribe((confirm) => {
