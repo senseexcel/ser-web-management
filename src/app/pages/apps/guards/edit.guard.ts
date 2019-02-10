@@ -6,6 +6,7 @@ import { Observable, of, from } from 'rxjs';
 import { AppRepository } from '@smc/modules/qrs';
 import { tap, catchError, mergeMap, map } from 'rxjs/operators';
 import { CacheService } from '../providers/cache.service';
+import { ModalService } from '@smc/modules/modal';
 
 @Injectable()
 export class EditGuard implements CanActivate {
@@ -15,7 +16,8 @@ export class EditGuard implements CanActivate {
         private enigmaService: EnigmaService,
         private scriptService: ScriptService,
         private reportService: ReportService,
-        private cacheService: CacheService
+        private cacheService: CacheService,
+        private modalService: ModalService
     ) { }
 
     /**
@@ -52,7 +54,13 @@ export class EditGuard implements CanActivate {
                     return true;
                 })
             )),
-            catchError((e) => of(false))
+            catchError((e) => {
+                this.modalService.openMessageModal(
+                    'Script not valid',
+                    'It seems the Sense Excel Reporting script has been customized and/or is more complex and could not loaded into editor.'
+                );
+                return of(false);
+            })
         );
     }
 }

@@ -4,6 +4,7 @@
     </div>
 </div>
 
+
 <div class="smc-ui--page--content">
 
     <div #sectionHeader class="header smc-ui--page--content-header" [hidden]="hide.sectionHeader">
@@ -12,7 +13,9 @@
 
     <div class="smc-ui--page--content-body" [ngClass]="{'no-padding': disablePadding}">
         <mat-spinner *ngIf="loading"></mat-spinner> 
-        <ng-content select="[page-content--body]" *ngIf="!loading"></ng-content>
+        <div class="content-body--wrapper" *ngIf="!loading">
+            <ng-content select="[page-content--body]"></ng-content>
+        </div>
     </div>
 
     <div class="smc-ui--page--content-footer">
