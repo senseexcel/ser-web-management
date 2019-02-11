@@ -17,8 +17,6 @@ export class InsertOverlayFooterComponent {
     constructor(
         @Inject(MODAL_OVERLAY_CTRL) ctrl: InsertOverlayControl,
         license: License,
-        reader: LicenseReader,
-        validator: LicenseValidator
     ) {
         this.ctrl      = ctrl;
         this.license   = license;
@@ -30,7 +28,7 @@ export class InsertOverlayFooterComponent {
      * @memberof InsertOverlayFooterComponent
      */
     public apply() {
-        this.license.updateLicense(this.ctrl.content);
+        this.license.updateLicense(this.ctrl.content).subscribe();
         this.close();
     }
 

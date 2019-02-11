@@ -15,15 +15,11 @@ import { Subject } from 'rxjs';
 export class InsertOverlayComponent implements AfterViewInit, OnDestroy, OnInit {
 
     public insertField: FormControl;
-
     public licenseValue = '';
 
     private ctrl: InsertOverlayControl;
-
     private formBuilder: FormBuilder;
-
     private license: License;
-
     private isDestroyed$: Subject<boolean>;
 
     constructor(
