@@ -1,7 +1,7 @@
 import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
 import { fromEvent, Subject } from 'rxjs';
-import { debounceTime, switchMap, takeUntil, distinctUntilChanged, map } from 'rxjs/operators';
-import { RemoteSourceConnector } from '../../api/remote-source.connector';
+import { debounceTime, switchMap, takeUntil, distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { RemoteSource } from '../../api/remote-source.connector';
 import { EmptyRemoteSourceConnector } from '../../provider/empty-remote-source.connector';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 
@@ -13,7 +13,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material';
 export class ItemListComponent implements AfterViewInit, OnDestroy {
 
     @Input()
-    public remoteSource: RemoteSourceConnector = new EmptyRemoteSourceConnector();
+    public remoteSource: RemoteSource.Connector = new EmptyRemoteSourceConnector();
 
     @Input()
     public items: string[] = new Array();
@@ -24,12 +24,13 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
     @Output()
     public input: EventEmitter<string>;
 
-    public source: any[];
+    public source = [];
 
     @ViewChild('inputField')
     private textField: ElementRef;
 
     private isDestroyed$: Subject<boolean>;
+    isGrouped: boolean;
 
     constructor() {
         this.changed = new EventEmitter();
@@ -57,6 +58,12 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
         this.textField.nativeElement.value = '';
     }
 
+    /**
+     * select item via material select box
+     *
+     * @param {MatAutocompleteSelectedEvent} event
+     * @memberof ItemListComponent
+     */
     public onSelect(event: MatAutocompleteSelectedEvent) {
         this.items.push(event.option.value);
         this.textField.nativeElement.value = '';
@@ -69,6 +76,15 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
      */
     ngOnDestroy() {
         this.isDestroyed$.next(true);
+
+        // delete events
+        this.changed = null;
+        this.input   = null;
+
+        // delete
+        this.items   = null;
+        this.textField = null;
+        this.remoteSource = null;
     }
 
     /**
@@ -81,11 +97,16 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
         fromEvent(this.textField.nativeElement, 'keydown').pipe(
             debounceTime(200),
             map(() => this.textField.nativeElement.value),
+            tap(() => console.log(this.textField.nativeElement.value)),
             distinctUntilChanged(),
             switchMap((value) => this.remoteSource.fetch(value)),
             takeUntil(this.isDestroyed$)
-        ).subscribe((data: string[]) => {
-            this.source = data;
+        ).subscribe((source: RemoteSource.Source) => {
+            this.isGrouped = false;
+            if (source.type === RemoteSource.SourceType.GROUP) {
+                this.isGrouped = true;
+            }
+            this.source = source.data;
         });
     }
 }

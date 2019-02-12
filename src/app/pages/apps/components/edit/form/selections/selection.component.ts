@@ -9,7 +9,7 @@ import { AppConnector } from '@smc/pages/apps/providers/connection';
 import { SelectionPropertyConnector } from '@smc/pages/apps/providers/selection-property.connector';
 import { SelectionValueConnector } from '@smc/pages/apps/providers/selection-value.connector';
 import { EmptyRemoteSourceConnector } from '@smc/modules/smc-ui/provider';
-import { RemoteSourceConnector } from '@smc/modules/smc-ui/api/remote-source.connector';
+import { RemoteSource } from '@smc/modules/smc-ui/api/remote-source.connector';
 
 @Component({
     selector: 'smc-edit-form-selections',
@@ -24,8 +24,8 @@ export class SelectionComponent implements OnInit {
     public selectionTypes: SelectionType;
     public selectionForm: FormGroup;
 
-    public appDimensionConnector: RemoteSourceConnector;
-    public appValueConnector: RemoteSourceConnector;
+    public appDimensionConnector: RemoteSource.Connector;
+    public appValueConnector: RemoteSource.Connector;
 
     private updateHook: Observable<boolean>;
     private report: ReportModel;

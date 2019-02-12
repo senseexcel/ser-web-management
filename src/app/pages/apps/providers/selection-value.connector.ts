@@ -1,7 +1,7 @@
-import { RemoteSourceConnector } from '@smc/modules/smc-ui/api/remote-source.connector';
+import { RemoteSource } from '@smc/modules/smc-ui/api/remote-source.connector';
 import { Observable } from 'rxjs';
 
-export class SelectionValueConnector implements RemoteSourceConnector {
+export class SelectionValueConnector implements RemoteSource.Connector {
 
     private selectDimension: string;
     private selectField: string;
@@ -14,7 +14,11 @@ export class SelectionValueConnector implements RemoteSourceConnector {
         this.selectField = field;
     }
 
-    public fetch(value: string): Observable<string[]> {
+    public close() {
+        throw new Error('Method not implemented.');
+    }
+
+    public fetch(value: string): Observable<RemoteSource.Source> {
         throw new Error('Method not implemented.');
     }
 }

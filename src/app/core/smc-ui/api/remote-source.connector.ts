@@ -1,9 +1,34 @@
 import { Observable } from 'rxjs';
 import { IDataNode } from '@smc/modules/smc-common';
 
-export interface RemoteSourceConnector {
+export namespace RemoteSource {
 
-    config?: IDataNode;
+    export enum SourceType {
+        GROUP = 'group',
+        LIST  = 'list'
+    }
 
-    fetch(value: string): Observable<string[]>;
+    export interface Source {
+        type: SourceType;
+        data: string[] | Group[];
+    }
+
+    export interface Group {
+        name: string;
+
+        items: string[];
+    }
+
+    export interface Connector {
+
+        config?: IDataNode;
+
+        close(): void;
+
+        fetch(value: string): Observable<Source>;
+    }
 }
+
+
+
+

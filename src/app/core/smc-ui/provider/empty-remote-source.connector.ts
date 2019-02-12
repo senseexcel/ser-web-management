@@ -1,9 +1,15 @@
-import { RemoteSourceConnector } from '../api/remote-source.connector';
-import { of } from 'rxjs';
+import { RemoteSource } from '../api/remote-source.connector';
+import { of, Observable } from 'rxjs';
 
-export class EmptyRemoteSourceConnector implements RemoteSourceConnector {
+export class EmptyRemoteSourceConnector implements RemoteSource.Connector {
 
-    public fetch(searchString: string) {
-        return of([]);
+    public close() {
+    }
+
+    public fetch(): Observable<RemoteSource.Source> {
+        return of({
+            type: RemoteSource.SourceType.LIST,
+            data: []
+        });
     }
 }
