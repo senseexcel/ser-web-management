@@ -33,6 +33,9 @@
           <span>{{'SMC_LICENSE.USERS.LABEL' | translate}}</span>
         </div>
         <smc-license-user></smc-license-user>
+        <ng-container *ngIf="!licenseExists">
+          no license was found
+        </ng-container> 
       </div>
     </ng-container>
 

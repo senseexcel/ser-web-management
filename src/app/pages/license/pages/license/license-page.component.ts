@@ -21,6 +21,7 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     public installationProgress: Map<ValidationStep, ILicenseValidationResult>;
     public properties: any[] = [];
     public selectedProperty: any;
+    public licenseExists: boolean;
 
     @ViewChild('licenseOverview')
     private overviewContainer: ElementRef;
@@ -64,6 +65,13 @@ export class LicensePageComponent implements OnDestroy, OnInit {
             { key: 'users',       label: 'SMC_LICENSE.USERS.LABEL'       }
         ];
         this.loadPage();
+
+        this.license.onload$
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe((license: LicenseModel) => {
+                this.licenseModel = license;
+                this.licenseExists = license.raw && license.raw.replace(/(^\s*|\s*$)/gm, '') !== '';
+            });
     }
 
     ngOnDestroy() {

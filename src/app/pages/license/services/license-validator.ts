@@ -189,6 +189,14 @@ export class LicenseValidator {
      * @memberof LicenseValidator
      */
     public validateLicense(license: LicenseModel): Observable<ILicenseValidationResult> {
+
+        if (license.raw.replace(/(^\s*|\s*$)/g, '') === '') {
+            return of({
+                isValid: false,
+                errors: ['No license found']
+            });
+        }
+
         return forkJoin(
             this.validateLicenseKey(license.key),
             this.validateUsers(license)

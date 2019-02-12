@@ -25,72 +25,19 @@ interface ITableUser {
 
 export class UserComponent implements OnDestroy, OnInit {
 
-    /**
-     * current user which is edited
-     *
-     * @type {ITableUser}
-     * @memberof UserComponent
-     */
     public currentEditUser: ITableUser;
-
     public ready = false;
-
     public mode = 'list';
-
-    /**
-     * selection model
-     *
-     * @type {SelectionModel<ITableUser>}
-     * @memberof UserComponent
-     */
     public selection: SelectionModel<ITableUser>;
-
-    /**
-     * table header fields
-     *
-     * @memberof UserComponent
-     */
     public tableHeaderFields = ['id', 'from', 'to'];
-
-    /**
-     * all users fetched from license
-     *
-     * @type {ITableUser[]}
-     * @memberof UserComponent
-     */
     public users: ITableUser[];
-
-    /**
-     * values for auto suggest
-     *
-     * @type {any[]}
-     * @memberof UserComponent
-     */
     public userSuggestions: any[];
-
     public licensedUserInfo: any;
+    public licenseExists: boolean;
 
-    /**
-     * submit true if component will be destroyed to remove
-     * all subscriptions
-     *
-     * @private
-     * @type {Subject<boolean>}
-     * @memberof UserComponent
-     */
     private isDestroyed$: Subject<boolean>;
-
-    /**
-     * license service
-     *
-     * @private
-     * @type {License}
-     * @memberof UserComponent
-     */
     private license: License;
-
     private suggest$: Subject<any>;
-
     private repository: UserRepository;
 
     constructor(
@@ -125,8 +72,11 @@ export class UserComponent implements OnDestroy, OnInit {
     }
 
     ngOnInit() {
+
         this.license.onload$.pipe(
             map((model: LicenseModel): ITableUser[] => {
+
+                this.licenseExists            = model.raw.replace(/(^\s*|\s*$)/gm, '') !== '';
                 this.licensedUserInfo.total   = model.users.length;
                 this.licensedUserInfo.showing = model.users.length;
 
@@ -146,11 +96,8 @@ export class UserComponent implements OnDestroy, OnInit {
         });
 
         this.suggest$.pipe(
-            // trigger after 300ms unless something changed
             debounceTime(300),
-            // if more then 3 chars entered fetch qrs users
             switchMap((val) => val.length < 3 ? of([]) : this.repository.fetchQrsUsers(val)),
-            // ensure we unsubscribe if component is destroyed
             takeUntil(this.isDestroyed$)
         ).subscribe((result) => {
             this.userSuggestions = result;

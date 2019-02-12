@@ -1,52 +1,22 @@
 import { ILicenseUser } from '../api/license-user.interface';
+import { ILicenseValidationResult } from '../api/validation-result.interface';
 
 export class LicenseModel {
 
-    /**
-     * license serial number
-     *
-     * @private
-     * @type {string}
-     * @memberof LicenseModel
-     */
     private licenseKey: string;
-
-    /**
-     * complete license as string
-     *
-     * @private
-     * @type {string}
-     * @memberof LicenseModel
-     */
     private licenseRaw: string;
-
-    /**
-     * license core values
-     *
-     * @private
-     * @type {string}
-     * @memberof LicenseModel
-     */
     private licenseText: string;
-
-    /**
-     * all users which are registered in license
-     *
-     * @private
-     * @type {ILicenseUser[]}
-     * @memberof LicenseModel
-     */
     private licenseUsers: ILicenseUser[];
-
-    /**
-     * max users which can be active at the same time
-     * -1 is unlimited user access
-     *
-     * @private
-     * @type {number}
-     * @memberof LicenseModel
-     */
     private licenseUserLimit: number;
+    private licenseValidationResult: ILicenseValidationResult;
+
+    public set validationResult(result: ILicenseValidationResult) {
+        this.licenseValidationResult = result;
+    }
+
+    public get validationResult(): ILicenseValidationResult {
+        return this.licenseValidationResult;
+    }
 
     public get key(): string {
         return this.licenseKey;
