@@ -46,8 +46,8 @@ export class SelectionComponent implements OnInit {
      */
     ngOnInit() {
         /** convert enums to json object */
-        this.selectionTypes = this.convertEnumToJSON(SelectionType);
-        this.selectionObjectTypes = this.convertEnumToJSON(SelectionObjectType);
+        this.selectionTypes = this.convertEnumToJSON(SelectionType, 'SMC_APPS.EDIT.FORM.SELECTIONS.TYPE', 'LABEL');
+        this.selectionObjectTypes = this.convertEnumToJSON(SelectionObjectType, 'SMC_APPS.EDIT.FORM.SELECTIONS.TYPE.STATIC.TYPE');
 
         /** create / register update hook if form should be updated */
         this.updateHook = this.buildUpdateHook();
@@ -95,23 +95,15 @@ export class SelectionComponent implements OnInit {
             });
     }
 
-    /**
-     *
-     *
-     * @private
-     * @param {*} data
-     * @returns {*}
-     * @memberof SelectionComponent
-     */
-    private convertEnumToJSON(data): any {
-        return Object.keys(data)
-            .filter((key) => {
-                return isNaN(Number(key));
-            })
+    private convertEnumToJSON(_enum, i18nPrefix: string, i18nPostfix?: string): any {
+        return Object.keys(_enum)
+            .filter((key) => isNaN(Number(key)))
             .map((key) => {
+                let label = `${i18nPrefix}.${key.toUpperCase()}`;
+                label = i18nPostfix ? label.concat('.', i18nPostfix) : label;
                 return {
-                    label: key,
-                    value: data[key]
+                    label,
+                    value: _enum[key]
                 };
             });
     }

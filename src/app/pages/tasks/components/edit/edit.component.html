@@ -1,9 +1,8 @@
 <smc-ui--page [loading]="!formDataLoaded">
-
   <!-- content header -->
   <div page-content--header>
       <i class="ser-icon ser-icon--tasks"></i>
-      <span>Edit Reload Task</span>
+      <span>{{'SMC_TASKS.EDIT.HEADER' | translate}}</span>
   </div>
 
   <!-- content body -->
@@ -24,8 +23,8 @@
   <!-- content footer -->
   <div page-content--footer>
       <smc-ui--button-navbar>
-          <smc-ui--button (click)="onApply()">Apply</smc-ui--button>
-          <smc-ui--button (click)="onCancel()">Cancel</smc-ui--button>
+          <smc-ui--button (click)="onApply()">{{'SMC_TASKS.EDIT.ACTIONS.APPLY' | translate}}</smc-ui--button>
+          <smc-ui--button (click)="onCancel()">{{'SMC_TASKS.EDIT.ACTIONS.CANCEL' | translate}}</smc-ui--button>
       </smc-ui--button-navbar>
   </div>
 
@@ -34,7 +33,7 @@
     <div class="header sidebar-content">
       <a (click)="navigateBack()">
         <i class="lui-icon lui-icon--arrow-up"></i>
-        <span>Tasks</span>
+        <span>{{'SMC_TASKS.EDIT.OVERVIEW.GO_BACK' | translate}}</span>
       </a>
     </div>
 
@@ -48,13 +47,12 @@
   <!-- sidebar right -->
   <div page-sidebar--right>
     <div class="header">
-      Properties
+      {{'SMC_TASKS.EDIT.PROPERTIES.LABEL' | translate}}
     </div>
     <ul class="lui-list">
       <li class="lui-item" (click)="showForm(property)" *ngFor="let property of properties" [ngClass]="{'active': property == selectedProperty}">
-        {{property.label}}
+        {{'SMC_TASKS.EDIT.PROPERTIES.ITEM.' + property.label.toUpperCase() | translate}}
       </li>
     </ul>
   </div>
-
 </smc-ui--page>

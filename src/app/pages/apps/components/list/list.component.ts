@@ -29,7 +29,7 @@ export class AppListComponent implements OnInit, OnDestroy {
     private dialogService: ModalService;
 
     constructor(
-        @Inject(SMC_SESSION) public settings: ISettings,
+        @Inject(SMC_SESSION) public session: ISettings,
         private appRepository: AppRepository,
         private smcCache: SmcCache,
         dialog: ModalService,
@@ -119,8 +119,8 @@ export class AppListComponent implements OnInit, OnDestroy {
     public syncApps() {
 
         const dialogCtrl = this.dialogService.openDialog(
-            'Synchronize SER Apps',
-            'This will Synchronize Sense Excel Reporting Apps and add SER Tag to App. This can take a while...'
+            'SMC_APPS.LIST.DIALOG.SYNC_APPS_TITLE',
+            {key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS.MESSAGE'}
         );
 
         dialogCtrl.switch
@@ -133,7 +133,13 @@ export class AppListComponent implements OnInit, OnDestroy {
                     return empty();
                 }),
             ).subscribe((apps) => {
-                this.dialogService.openMessageModal('Apps Synchronized', `${apps.length} App(s) where synchronized.`);
+                this.dialogService.openMessageModal(
+                    'SMC_APPS.LIST.DIALOG.SYNC_APPS_TITLE_SUCCESS',
+                    {
+                        key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS_MESSAGE_SUCCESS',
+                        param: { COUNT: apps.length }
+                    }
+                );
                 this.loadApps();
             });
     }

@@ -1,0 +1,35 @@
+{
+  "SMC_DASHBOARD": {
+    "TILE": {
+      "APPS": {
+        "TITLE": "Reporting Apps ({{COUNT}})",
+        "DESCRIPTION": "Reporting Apps Description"
+      },
+      "TASKS": {
+        "TITLE": "Reporting Tasks ({{COUNT}})",
+        "DESCRIPTION": "Reporting Tasks Description"
+      },
+      "SHAREDCONTENT": {
+        "TITLE": "Sharedcontent Manager",
+        "DESCRIPTION": "Shared Content Manager Description"
+      },
+      "MONITORING_APPS": {
+        "TITLE": "Monitoring Apps",
+        "DESCRIPTION": "Montioring Apps Description"
+      },
+      "LICENSE": {
+        "TITLE": "License Manager",
+        "DESCRIPTION": "License Manager Description"
+      },
+      "INSTALLATION_WIZARD": {
+        "TITLE": "Installation Wizard",
+        "DESCRIPTION": "Installation Wizard Description"
+      },
+      "AUTO_UPDATE": {
+        "TITLE": "Auto Update",
+        "DESCRIPTION": "Auto Update Description"
+      }
+    },
+    "VERSION": "SMC Version: {{VERSION}}"
+  }
+}

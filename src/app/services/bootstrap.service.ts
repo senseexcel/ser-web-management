@@ -7,7 +7,7 @@ import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings, IDataNode, SmcCache } from '@smc/modules/smc-common';
 import { FilterFactory } from '@smc/modules/qrs/provider/filter.factory';
 import { IBootstrap } from '../api/bootstrap.interface';
-import { SMC_SETTINGS } from '../model/smc-settings.model';
+import { SMC_SETTINGS } from '../settings/smc-settings.model';
 
 @Injectable()
 export class BootstrapService implements IBootstrap {

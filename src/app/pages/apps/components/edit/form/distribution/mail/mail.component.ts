@@ -16,13 +16,13 @@ export class DistributionMailComponent implements OnInit {
     private updateHook: Observable<boolean>;
 
     public mailTypes = [{
-        label: 'Markdown',
+        label: `SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.TYPE.MARKDOWN`,
         value: 'markdown'
     }, {
-        label: 'Html',
+        label: `SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.TYPE.HTML`,
         value: 'html'
     }, {
-        label: 'Text',
+        label: `SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.TYPE.TEXT`,
         value: 'text'
     }];
 

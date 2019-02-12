@@ -1,8 +1,8 @@
-import { Component, OnInit, Inject, Input } from '@angular/core';
+import { Component,  Input } from '@angular/core';
 import { IMenuItem } from '../../api/menu-item.interface';
 
 @Component({
-    selector: 'app-menu',
+    selector: 'smc-ui-menu',
     templateUrl: 'menu.component.html',
     styleUrls: ['menu.component.scss']
 })

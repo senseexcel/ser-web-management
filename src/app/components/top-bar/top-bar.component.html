@@ -13,14 +13,14 @@
                 </a>
             </button>
             <smc-drop-down [hostClass]="['top-bar--menu','menu-main']" (show)="showMenuOverlay($event)">
-                <app-menu [menuItems]="mainMenu"></app-menu>
+                <smc-ui-menu [menuItems]="mainMenu"></smc-ui-menu>
             </smc-drop-down>
         </div>
     </div>
 
     <div class="navbar-group navbar-group--right">
         <smc-drop-down [hostClass]="['top-bar--menu']" [label]="loggedInUser.userName" (show)="showMenuOverlay($event)">
-            <app-menu [menuItems]="userMenu"></app-menu>
+            <smc-ui-menu [menuItems]="userMenu"></smc-ui-menu>
         </smc-drop-down>
     </div>
 </nav>

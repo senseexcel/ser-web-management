@@ -1,0 +1,16 @@
+{
+    "SMC_UI": {
+        "LIST": {
+            "ACTIONS": {
+                "DESELECT_ALL": "Deselect all rows",
+                "SELECT_ALL": "Select all rows",
+                "TITLE": "Table Actions"
+            },
+            "HEADER": {
+                "SELECTED": "Selected: {{COUNT}}",
+                "TOTAL": "Total: {{COUNT}}",
+                "VISIBLE": "Showing: {{COUNT}}"
+            }
+        } 
+    }
+}

@@ -180,7 +180,7 @@ export class TaskFactory {
      * @returns {T}
      * @memberof ReportService
      */
-    private createModel(model: IModel, modelData: IDataNode): Observable<IModel> {
+    private createModel(model: IModel<IDataNode>, modelData: IDataNode): Observable<IModel<IDataNode>> {
         const rawData = model.raw;
         const data    = modelData || {};
 

@@ -1,0 +1,80 @@
+{
+  "SMC_LICENSE": {
+
+    "ACTIONS": {
+      "SAVE": {
+        "BUTTON_LABEL": "Save License",
+        "MODAL": {
+          "SUCCESS_TITLE": "License Saved",
+          "SUCCESS_MESSAGE": "License was updated successfully."
+        }
+      },
+      "GO_BACK": "Start",
+      "RELOAD": "Reload"
+    },
+
+    "HEADER": "License Manager",
+
+    "INSTALLATION": {
+      "INVALID": "Installation Invalid",
+      "QLIK_LICENSE_ACCESS": "Qlik License access",
+      "QLIK_LICENSE_VALID": "Qlik License valid",
+      "CONTENTLIB_EXISTS": "Content library \"senseexcel\" exists and have access rights"
+    },
+
+    "VALIDATION": {
+      "ERRORS": {
+        "SER_QLIK_NOT_EQUAL": "Sense Excel Reporting Serial not equal Qlik Serial.",
+        "NO_ACCESS_QLIK_LICENSE": "No access Qlik Serial",
+        "CONTENTLIB_NOT_EXISTS": "Content Library senseexcel does not exists",
+        "TO_MANY_USERS": "To many users uses the license at the same time!"
+      }
+    },
+
+    "INFORMATIONS": {
+      "LABEL": "License Information",
+      "SER_LICENSE_KEY": "SER License Key: {{KEY}}",
+      "QLIK_LICENSE_KEY": "Qlik License Key: {{KEY}}",
+      "LICENSE_VALID": "Valid",
+      "LICENSE_INVALID": "Invalid"
+    },
+
+    "LABEL": {
+      "PROPERTIES": "Properties",
+      "LICENSE": "License"
+    },
+
+    "OVERVIEW": {
+      "LABEL": "License Overview",
+      "ACTIONS": {
+        "LOAD": "Load from Server",
+        "EDIT": "Edit License",
+        "INSERT": "Insert License"
+      },
+      "MODAL": {
+        "TITLE": "Edit License",
+        "ERROR_CONNECTION_TITLE": "Connection Error",
+        "ERROR_CONNECTION_MESSAGE": "Please check your internet connection.",
+        "ERROR_REPONSE_TITLE": "Error load License",
+        "ERROR_RESPONSE_MESSAGE": "License could not loaded with following Reason: {{ERROR}} <br /> For more Informations please contact your sense excel reporting consultant"
+      }
+    },
+
+    "USERS": {
+      "LABEL": "Licensed Users",
+
+      "COLUMN": {
+        "USER_DOMAIN": "User Domain",
+        "ACTIVATED_FROM": "Activated From",
+        "ACTIVATED_UTIL": "Activated Until"
+      },
+
+      "ACTIONS": {
+        "ADD": "Add",
+        "DELETE": "Delete",
+        "EDIT": "Edit",
+        "APPLY": "Apply"
+      }
+    }
+  }
+}

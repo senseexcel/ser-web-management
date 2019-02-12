@@ -56,8 +56,8 @@ export class EditGuard implements CanActivate {
             )),
             catchError((e) => {
                 this.modalService.openMessageModal(
-                    'Script not valid',
-                    'It seems the Sense Excel Reporting script has been customized and/or is more complex and could not loaded into editor.'
+                    'SMC_APPS.EDIT_GUARD.DIALOG.NO_VALID_SCRIPT.TITLE',
+                    {key: 'SMC_APPS.EDIT_GUARD.DIALOG.NO_VALID_SCRIPT.MESSAGE'}
                 );
                 return of(false);
             })

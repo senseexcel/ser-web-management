@@ -1,10 +1,8 @@
 import { IDataNode, IModel } from '../../api';
 
- interface ModelConstructor<T> {
-    new (...args: any[]): T;
-}
+type ModelConstructor<T> = new (...args: any[]) => T;
 
-export function mapDataTo<T>(constructor: ModelConstructor<IModel>) {
+export function mapDataTo<T>(constructor: ModelConstructor<T>) {
 
     return (target, key = null, descriptor: PropertyDescriptor): PropertyDescriptor => {
 

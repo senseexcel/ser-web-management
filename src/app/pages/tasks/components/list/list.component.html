@@ -6,7 +6,7 @@
       [disableActions]="true" (reload)="reloadList()">
       <span list-header--title>
         <i class="ser-icon ser-icon--tasks"></i>
-        Tasks
+        {{'SMC_TASKS.LIST.TITLE' | translate}}
       </span>
     </smc-ui--list-header>
   </div>
@@ -15,9 +15,9 @@
   <div page-content--body>
     <table class="table" mat-table [dataSource]="tasks">
       <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
-        <th mat-header-cell *matHeaderCellDef>{{column}}</th>
+        <th mat-header-cell *matHeaderCellDef>{{ 'SMC_TASKS.LIST.COLUMN.' + column.toUpperCase() | translate}}</th>
         <ng-container *matCellDef="let col" [ngSwitch]="column">
-          <td mat-cell *ngSwitchCase="'Associated Resource'">{{col.app.name}}</td>
+          <td mat-cell *ngSwitchCase="'associated_resource'">{{col.app.name}}</td>
           <td mat-cell *ngSwitchDefault>{{col[column]}}</td>
         </ng-container>
       </ng-container>
@@ -31,9 +31,9 @@
   <!-- page footer -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="editTask()" [disabled]="isLoading || selection.isEmpty()">Edit</smc-ui--button>
-      <smc-ui--button (click)="createNew()" [disabled]="isLoading">Create New</smc-ui--button>
-      <smc-ui--button (click)="syncTasks()" [disabled]="isLoading" *ngIf="hasSerTag">Synchronize Tasks</smc-ui--button>
+      <smc-ui--button (click)="editTask()" [disabled]="isLoading || selection.isEmpty()">{{'SMC_TASKS.LIST.ACTIONS.EDIT' | translate}}</smc-ui--button>
+      <smc-ui--button (click)="createNew()" [disabled]="isLoading">{{'SMC_TASKS.LIST.ACTIONS.CREATE' | translate}}</smc-ui--button>
+      <smc-ui--button (click)="syncTasks()" [disabled]="isLoading" *ngIf="hasSerTag">{{'SMC_TASKS.LIST.ACTIONS.SYNC' | translate}}</smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 

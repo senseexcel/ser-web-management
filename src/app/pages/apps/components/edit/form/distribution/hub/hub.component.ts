@@ -57,7 +57,7 @@ export class DistributionHubComponent implements OnInit, OnDestroy {
             })
             .map( (name) => {
                 return {
-                    label: name,
+                    label: `SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.HUB.FIELD.${name.toUpperCase()}`,
                     value: name
                 };
             });

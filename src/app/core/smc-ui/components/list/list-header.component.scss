@@ -3,14 +3,14 @@
   display: flex;
   width: 100%;
   align-items: baseline;
+  background: #595959;
+  color: #FFF;
 
   ul {
     flex: 1;
     list-style-type: none;
     display: flex;
     margin: 0;
-    background: #595959;
-    color: #FFF;
     font-size: 14px;
     line-height: 30px;
     padding: 0;

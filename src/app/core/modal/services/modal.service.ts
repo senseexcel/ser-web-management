@@ -11,6 +11,7 @@ import { OverlayMessageComponent } from '../components/message/message.component
 import { DialogFooterComponent } from '../components/dialog/dialog-footer.component';
 import { MessageFooterComponent } from '../components/message/message-footer.component';
 import { IControl } from '../api/control.interface';
+import { I18nTranslation } from '@smc/modules/smc-common/i18n';
 
 @Injectable()
 export class ModalService {
@@ -23,7 +24,7 @@ export class ModalService {
         overlay: Overlay,
         injector: Injector
     ) {
-        this.overlay  = overlay;
+        this.overlay = overlay;
         this.injector = injector;
     }
 
@@ -36,14 +37,11 @@ export class ModalService {
     public open<T>(data: IModalData<T>, configuration: IOverlayConfig = {}): IControl {
 
         const overlayRef = this.createOverlay(configuration);
-
         const control: IControl = new (data.control || ModalControl)(overlayRef);
-
-        /** create injection tokens */
-        const tokens     = this.createInjectionTokens(data, control as IControl);
-        const injector   = this.createInjector(tokens);
-
+        const tokens = this.createInjectionTokens(data, control as IControl);
+        const injector = this.createInjector(tokens);
         const overlayPortal = new ComponentPortal(ModalComponent, null, injector);
+
         overlayRef.attach(overlayPortal);
 
         return control;
@@ -55,7 +53,11 @@ export class ModalService {
      * @returns {DialogControl}
      * @memberof ModalService
      */
-    public openDialog(title: string, msg: string, configuration: IOverlayConfig = {}): DialogControl {
+    public openDialog(
+        title: string,
+        msg: I18nTranslation,
+        configuration: IOverlayConfig = {}
+    ): DialogControl {
 
         // create dialog modal
         const overlayData: IModalData<OverlayDialogComponent> = {
@@ -63,18 +65,15 @@ export class ModalService {
             bodyComponent: OverlayDialogComponent,
             footerComponent: DialogFooterComponent
         };
-
-        /** create injector data for dialog data */
-        const dialogData: IModalDialogData = { message: msg };
-        const overlayRef    = this.createOverlay(configuration);
-        const control       = new DialogControl(overlayRef);
-
-        /** create injection tokens */
+        const dialogData: IModalDialogData = {message: msg};
+        const overlayRef = this.createOverlay(configuration);
+        const control = new DialogControl(overlayRef);
         const tokens = this.createInjectionTokens(overlayData, control);
+
         tokens.set(MODAL_DIALOG_DATA, dialogData);
 
         /** create injector and portal component */
-        const injector      = this.createInjector(tokens);
+        const injector = this.createInjector(tokens);
         const overlayPortal = new ComponentPortal(ModalComponent, null, injector);
 
         /** attach overlay  */
@@ -89,7 +88,12 @@ export class ModalService {
      * @returns {ModalControl}
      * @memberof ModalService
      */
-    public openMessageModal(title: string, msg: string, configuration: IOverlayConfig = {}, dismisable = false): ModalControl {
+    public openMessageModal(
+        title: string,
+        msg: I18nTranslation,
+        configuration: IOverlayConfig = {},
+        dismisable = false
+    ): ModalControl {
 
         // create dialog modal
         const overlayData: IModalData<OverlayMessageComponent> = {
@@ -99,17 +103,16 @@ export class ModalService {
         };
 
         /** create injector data for dialog data */
-        const dialogData: IModalDialogData = { message: msg };
-        const overlayRef    = this.createOverlay(configuration);
-        const control       = new ModalControl(overlayRef);
-
-        /** create injection tokens */
+        const dialogData: IModalDialogData = {message: msg};
+        const overlayRef = this.createOverlay(configuration);
+        const control = new ModalControl(overlayRef);
         const tokens = this.createInjectionTokens(overlayData, control);
+
         tokens.set(MODAL_DIALOG_DATA, dialogData);
         tokens.set(MODAL_DIALOG_ENABLE_SWITCH_OFF, dismisable);
 
         /** create injector and portal component */
-        const injector      = this.createInjector(tokens);
+        const injector = this.createInjector(tokens);
         const overlayPortal = new ComponentPortal(ModalComponent, null, injector);
 
         /** attach overlay  */
@@ -127,7 +130,7 @@ export class ModalService {
      * @memberof ModalService
      */
     private createOverlay(overlayConfig: IOverlayConfig = {}): OverlayRef {
-        const config     = this.createOverlayConfig(overlayConfig);
+        const config = this.createOverlayConfig(overlayConfig);
         const overlayRef = this.overlay.create(config);
         return overlayRef;
     }
@@ -146,7 +149,7 @@ export class ModalService {
             .centerVertically()
             .centerHorizontally();
 
-        const mergedConfig      = {...DEFAULT_OVERLAY_CONFIGURATION, ...config};
+        const mergedConfig = { ...DEFAULT_OVERLAY_CONFIGURATION, ...config };
         mergedConfig.panelClass = [...DEFAULT_OVERLAY_CONFIGURATION.panelClass, ...config.panelClass];
 
         const overlayConfig: OverlayConfig = {

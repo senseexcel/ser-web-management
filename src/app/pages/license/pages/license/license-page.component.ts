@@ -60,9 +60,9 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      */
     ngOnInit() {
         this.properties = [
-            { label: 'License Information', part: 'information' },
-            { label: 'License Overview', part: 'overview' },
-            { label: 'Licensed Users', part: 'users' }
+            { key: 'information', label: 'SMC_LICENSE.INFORMATIONS.LABEL'},
+            { key: 'overview',    label: 'SMC_LICENSE.OVERVIEW.LABEL'    },
+            { key: 'users',       label: 'SMC_LICENSE.USERS.LABEL'       }
         ];
         this.loadPage();
 
@@ -101,7 +101,10 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     public saveLicense() {
         this.license.saveLicense()
             .subscribe(() => {
-                this.modal.openMessageModal('Success', 'License successfully updated.');
+                this.modal.openMessageModal(
+                    'SMC_LICENSE.ACTIONS.SAVE.MODAL.SUCCESS_TITLE',
+                    {key: 'SMC_LICENSE.ACTIONS.SAVE.MODAL.SUCCESS_MESSAGE'}
+                );
             });
     }
 
@@ -118,15 +121,9 @@ export class LicensePageComponent implements OnDestroy, OnInit {
         let scrollToContainer: ElementRef;
 
         switch (part) {
-            case 'overview':
-                scrollToContainer = this.overviewContainer;
-                break;
-            case 'information':
-                scrollToContainer = this.infoContainer;
-                break;
-            case 'users':
-                scrollToContainer = this.userContainer;
-                break;
+            case 'overview':    scrollToContainer = this.overviewContainer; break;
+            case 'information': scrollToContainer = this.infoContainer;     break;
+            case 'users':       scrollToContainer = this.userContainer;     break;
             default:
                 return;
         }

@@ -10,7 +10,7 @@ import { TriggerModel } from './trigger.model';
  * @export
  * @class TaskModel
  */
-export class TaskModel implements IModel {
+export class TaskModel implements IModel<IDataNode> {
 
     /**
      * task execution data

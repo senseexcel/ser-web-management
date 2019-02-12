@@ -20,6 +20,9 @@ import { SelectionComponent } from './components/edit/form/selections/selection.
 import { FormHelperModule, MaterialModule, SerModule, SmcCommonModule, SmcUiModule } from '@smc/modules';
 import { QrsModule } from '@smc/modules/qrs/qrs.module';
 import { AppsServiceModule } from './apps-service.module';
+import { TranslateService } from '@ngx-translate/core';
+
+import i18n_en from './i18n/en.json';
 
 @NgModule({
   imports: [
@@ -61,4 +64,8 @@ import { AppsServiceModule } from './apps-service.module';
   ],
   providers: []
 })
-export class AppsModule { }
+export class AppsModule {
+    public constructor(i18n: TranslateService) {
+        i18n.setTranslation('en', i18n_en, true);
+    }
+}
