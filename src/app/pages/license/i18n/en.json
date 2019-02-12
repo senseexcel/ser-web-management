@@ -52,7 +52,11 @@
         "INSERT": "Insert License"
       },
       "MODAL": {
-        "TITLE": "Edit License"
+        "TITLE": "Edit License",
+        "ERROR_CONNECTION_TITLE": "Connection Error",
+        "ERROR_CONNECTION_MESSAGE": "Please check your internet connection.",
+        "ERROR_REPONSE_TITLE": "Error load License",
+        "ERROR_RESPONSE_MESSAGE": "License could not loaded with following Reason: {{ERROR}} <br /> For more Informations please contact your sense excel reporting consultant"
       }
     },
 

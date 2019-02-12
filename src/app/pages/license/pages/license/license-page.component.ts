@@ -103,7 +103,7 @@ export class LicensePageComponent implements OnDestroy, OnInit {
             .subscribe(() => {
                 this.modal.openMessageModal(
                     'SMC_LICENSE.ACTIONS.SAVE.MODAL.SUCCESS_TITLE',
-                    'SMC_LICENSE.ACTIONS.SAVE.MODAL.SUCCESS_MESSAGE'
+                    {key: 'SMC_LICENSE.ACTIONS.SAVE.MODAL.SUCCESS_MESSAGE'}
                 );
             });
     }

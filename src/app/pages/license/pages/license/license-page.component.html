@@ -32,7 +32,9 @@
           <i class="ser-icon ser-icon--license"></i>
           <span>{{'SMC_LICENSE.USERS.LABEL' | translate}}</span>
         </div>
-        <smc-license-user></smc-license-user>
+        <ng-container *ngIf="licenseExists">
+          <smc-license-user></smc-license-user>
+        </ng-container>
         <ng-container *ngIf="!licenseExists">
           no license was found
         </ng-container> 
