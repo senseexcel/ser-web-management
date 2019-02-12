@@ -7,6 +7,7 @@ import { ListHeaderComponent } from './components/list/list-header.component';
 import { SmcPageComponent } from './components/page/page.component';
 import { SmcUiButtonComponent } from './components/button/button.component';
 import { SmcUiButtonNavbarComponent } from './components/button/navbar.component';
+import { ItemListComponent } from './components';
 
 @NgModule({
     imports: [
@@ -19,13 +20,17 @@ import { SmcUiButtonNavbarComponent } from './components/button/navbar.component
         SmcPageComponent,
         SmcUiButtonComponent,
         SmcUiButtonNavbarComponent,
+        ItemListComponent,
+        MaterialModule,
     ],
     declarations: [
         ListHeaderComponent,
         SmcPageComponent,
         SmcUiButtonComponent,
         SmcUiButtonNavbarComponent,
+        ItemListComponent
     ],
-    providers: [],
+    providers: [
+    ],
 })
 export class SmcUiModule { }

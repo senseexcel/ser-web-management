@@ -1,16 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, of, Subject } from 'rxjs';
+import { Observable, of, Subject, from } from 'rxjs';
 import { FormService } from '@smc/modules/form-helper';
-import { AppRepository, FilterFactory, FilterOperator, DataConverter, IApp, FilterConditionalOperator } from '@smc/modules/qrs';
+import { AppRepository, FilterFactory, IApp } from '@smc/modules/qrs';
 import { ReportModel } from '@smc/modules/ser';
-import { ITable } from '@smc/modules/qrs/api/request/table.interface';
-import { takeUntil, filter, map, switchMap, debounceTime, mergeMap, tap } from 'rxjs/operators';
-import { ITableData } from '@smc/modules/qrs/api/table.interface';
+import { takeUntil, map, switchMap, debounceTime, mergeMap, tap } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
-import { IDataNode } from '@smc/modules/smc-common';
+import { IDataNode, EnigmaService } from '@smc/modules/smc-common';
 import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
-import { CacheService } from '../../../../providers/cache.service';
+import { AppConnector } from '../../../../providers/connection';
 
 @Component({
     selector: 'smc-apps--edit-form-connection',
@@ -20,19 +18,21 @@ export class ConnectionComponent implements OnInit, OnDestroy {
 
     public connectionForm: FormGroup;
     public suggestedApps: any[] = [];
+    public selectedAppId: string;
+    public isConnected = false;
 
     private model: ReportModel;
     private updateHook: Observable<any>;
     private controlInput$: Subject<string> = new Subject();
     private isDestroyed: Subject<boolean> = new Subject();
-    private selectedAppId: string;
+    private availableApps: EngineAPI.IDocListEntry[];
 
     constructor(
         private formBuilder: FormBuilder,
         private formService: FormService<ReportModel, ISerFormResponse>,
         private appRepository: AppRepository,
-        private filterFactory: FilterFactory,
-        private cacheService: CacheService
+        private enigmaService: EnigmaService,
+        private appConnector: AppConnector,
     ) {
         this.formBuilder = formBuilder;
     }
@@ -45,12 +45,14 @@ export class ConnectionComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this.formService.unRegisterHook(FormService.HOOK_UPDATE, this.updateHook);
         this.isDestroyed.next(true);
+        this.appConnector.closeConnection();
 
         this.controlInput$.complete();
         this.isDestroyed.complete();
 
         this.controlInput$ = null;
         this.isDestroyed = null;
+
     }
 
     /**
@@ -65,6 +67,12 @@ export class ConnectionComponent implements OnInit, OnDestroy {
 
         this.registerModelLoadEvent();
         this.registerAppSearchEvent();
+
+        this.appConnector.connection
+            .pipe(takeUntil(this.isDestroyed))
+            .subscribe((connection: null | EngineAPI.IApp) => {
+                this.isConnected = connection !== null;
+            });
     }
 
     /**
@@ -77,43 +85,68 @@ export class ConnectionComponent implements OnInit, OnDestroy {
     }
 
     /**
+     * create connection to an app
+     *
+     * @memberof ConnectionComponent
+     */
+    public connectToApp() {
+        this.appConnector.createConnection(this.selectedAppId)
+            .subscribe();
+    }
+
+    /**
+     * close connection to an app
+     *
+     * @memberof ConnectionComponent
+     */
+    public disconnectFromApp() {
+        this.appConnector.closeConnection()
+            .subscribe();
+    }
+
+    /**
      *
      *
      * @param {MatAutocompleteSelectedEvent} event
      * @memberof ConnectionComponent
      */
     public onAppSelect(event: MatAutocompleteSelectedEvent) {
-        const app: { name: string, id: string } = event.option.value;
-        this.selectedAppId = app.id;
-        this.connectionForm.controls.app.setValue(app.name, { emitEvent: false });
+        const app: EngineAPI.IDocListEntry = event.option.value;
+        this.selectedAppId = app.qDocId;
+        this.connectionForm.controls.app.setValue(app.qDocName, { emitEvent: false });
     }
 
     /**
-     * load max 20 apps via autosuggester
+     * load apps we have access in qlik sense hub
      *
      * @private
-     * @param {ISerApp} app
-     * @returns {Observable<{app: ISerApp, apps: IApp[]}>}
+     * @param {string} searchValue
+     * @returns {Observable<EngineAPI.IDocListEntry[]>}
      * @memberof ConnectionComponent
      */
-    private loadAvailableApps(name: string): Observable<any> {
+    private loadAvailableApps(searchValue: string): Observable<EngineAPI.IDocListEntry[]> {
+        const filter = new RegExp(`^${searchValue}`, 'ig');
+        let app$: Observable<any>;
 
-        const tableData: ITable = {
-            entity: 'App',
-            columns: [
-                { name: 'id', columnType: 'Property', definition: 'id' },
-                { name: 'name', columnType: 'Property', definition: 'name' },
-            ]
-        };
+        if (this.availableApps) {
+            // load app list directly from cache
+            app$ = of(this.availableApps);
+        } else {
+            // load app list and cache it
+            app$ = from(this.enigmaService.fetchApps()).pipe(
+                tap((apps) => this.availableApps = apps)
+            );
+        }
 
-        const currentApp: string = this.cacheService.currentReportData.app;
-
-        /** create filters for search query */
-        const searchFor  = this.filterFactory.createFilter('name', `'${name}'`, FilterOperator.STARTS_WITH);
-        const exclude    = this.filterFactory.createFilter('id', currentApp, FilterOperator.NOT_EQUAL);
-        const appFilter  = this.filterFactory.createFilterGroup([searchFor, exclude], FilterConditionalOperator.AND);
-
-        return this.appRepository.fetchTable(tableData, 0, 20, appFilter);
+        app$ = app$.pipe(
+            map((apps: EngineAPI.IDocListEntry[]) => {
+                if (searchValue !== '') {
+                    apps = apps.filter((app) => app.qDocName.match(filter));
+                }
+                return apps;
+            })
+        );
+        return app$;
     }
 
     /**
@@ -171,7 +204,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
             )
             .subscribe((result: IDataNode) => {
                 this.model = result.report;
-                this.selectedAppId  = result.app.id;
+                this.selectedAppId = result.app.id;
                 this.connectionForm = this.buildFormGroup(result.app.name);
             });
     }
@@ -184,16 +217,10 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      */
     private registerAppSearchEvent() {
         this.controlInput$.pipe(
-            debounceTime(300),
-            tap(() => this.selectedAppId = null),
-            filter((result: string) => result.length > 2),
+            map((input) => input.replace(/(^\s*|\s*$)/g, '')),
             switchMap((input) => this.loadAvailableApps(input)),
-            map((response: ITableData) => DataConverter.convertQrsTableToJson(response)),
             takeUntil(this.isDestroyed)
         ).subscribe((apps) => {
-            if (apps.length === 1) {
-                this.selectedAppId = apps[0].id;
-            }
             this.suggestedApps = apps;
         });
     }

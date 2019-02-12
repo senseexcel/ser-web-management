@@ -1,15 +1,18 @@
 <h3 class="header header-secondary">App</h3>
 <ng-container *ngIf="connectionForm">
   <div [formGroup]="connectionForm">
-
     <mat-form-field class="form-control">
       <input type="text" matInput formControlName="app" [matAutocomplete]="auto" (input)="onSuggestInput($event)">
     </mat-form-field>
 
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onAppSelect($event)">
       <mat-option *ngFor="let app of suggestedApps" [value]="app">
-        {{app.name}}
+        {{app.qDocName}}
       </mat-option>
     </mat-autocomplete>
+  </div>
+  <div>
+    <smc-ui--button *ngIf="!isConnected" (click)="connectToApp()" [disabled]="!this.selectedAppId">Create Connection</smc-ui--button>
+    <smc-ui--button *ngIf="isConnected" (click)="disconnectFromApp()">Close Connection</smc-ui--button>
   </div>
 </ng-container>

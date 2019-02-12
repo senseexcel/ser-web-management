@@ -37,8 +37,8 @@ export class EnigmaService {
      */
     public async openApp(appId: string): Promise<EngineAPI.IApp> {
         if (!this.sessions.has(appId) ) {
-            const global  = await this.openSession() as any; /** cast as any since type is not valid */
-            const session = await global.openDoc(appId, '', '', '', true);
+            const global: EngineAPI.IGlobal  = await this.openSession(); /** cast as any since type is not valid */
+            const session = await global.openDoc(appId, '', '', '', false);
             this.sessions.set(appId, session);
         }
         return this.sessions.get(appId);
@@ -51,10 +51,10 @@ export class EnigmaService {
      * @returns {Promise<boolean>}
      * @memberof SessionService
      */
-    public async closeApp(app: EngineAPI.IApp): Promise<boolean> {
+    public async closeApp(app: EngineAPI.IApp): Promise<void> {
         const appId = app.id;
         await app.session.close();
-        return this.sessions.delete(appId);
+        this.sessions.delete(appId);
     }
 
     /**
@@ -87,6 +87,18 @@ export class EnigmaService {
     }
 
     /**
+     * fetch all apps we have access to in qlik sense
+     *
+     * @memberof EnigmaService
+     */
+    public async fetchApps() {
+        const global  = await this.openSession();
+        const appList = await global.getDocList();
+        await global.session.close();
+        return appList;
+    }
+
+    /**
      * create new session for app
      *
      * @private
@@ -113,7 +125,7 @@ export class EnigmaService {
         });
     }
 
-    private async openSession(): Promise<enigmaJS.IGeneratedAPI> {
+    private async openSession(): Promise<EngineAPI.IGlobal> {
         const session = await this.createSession();
         return session.open();
     }

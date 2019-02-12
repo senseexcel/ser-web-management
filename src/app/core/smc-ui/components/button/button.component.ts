@@ -1,11 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'smc-ui--button',
-    templateUrl: 'button.component.html'
+    templateUrl: 'button.component.html',
+    styleUrls: ['./button.component.scss']
 })
 
-export class SmcUiButtonComponent implements OnInit {
+export class SmcUiButtonComponent {
 
     @Input()
     public disabled: boolean;
@@ -13,7 +14,19 @@ export class SmcUiButtonComponent implements OnInit {
     @Input()
     public label: string;
 
-    constructor() { }
+    @Input()
+    public closeAble: boolean;
 
-    ngOnInit() { }
+    @Output()
+    public close: EventEmitter<void>;
+
+    constructor() {
+        this.close = new EventEmitter();
+    }
+
+    public triggerClose($event: MouseEvent) {
+        $event.stopPropagation();
+        $event.preventDefault();
+        this.close.emit();
+    }
 }

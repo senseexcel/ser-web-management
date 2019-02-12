@@ -1,0 +1,28 @@
+:host {
+
+    button {
+        outline: none;
+        border: 0;
+        box-shadow: none;
+    }
+
+    button:hover {
+        outline: none;
+        border: 0;
+        box-shadow: none;
+    }
+
+    i.ser-icon {
+        font-size:10px;
+        background: grey;
+        height: 1.2rem;
+        width: 1.2rem;
+        border-radius: 50%;
+        align-self: center;
+        font-weight: bold;
+        display: flex;
+        flex-direction: column;
+        margin: 0 0 0 .5rem;
+        justify-content: center;
+    }
+}

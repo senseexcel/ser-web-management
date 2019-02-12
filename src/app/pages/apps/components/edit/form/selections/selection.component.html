@@ -23,14 +23,11 @@
             </mat-form-field>
 
             <!-- selection name -->
-            <mat-form-field class="form-control">
-                <input matInput formControlName="name" placeholder="Name">
-            </mat-form-field>
+            <smc-ui--item-list [remoteSource]="appDimensionConnector" [items]="selectionSource"></smc-ui--item-list>
 
             <!-- selection value -->
-            <mat-form-field class="form-control">
-                <input matInput formControlName="values" placeholder="Value" >
-            </mat-form-field>
+            <smc-ui--item-list [remoteSource]="appValueConnector" [items]="selectedValues"></smc-ui--item-list>
+
         </ng-container>
     </div>
 </ng-container>

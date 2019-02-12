@@ -70,3 +70,7 @@
 .ser-icon--reload {
     &:before { content: "\0F4"; }
 }
+
+.ser-icon--close {
+    &:before { content: "\2030"; }
+}

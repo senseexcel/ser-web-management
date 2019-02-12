@@ -13,12 +13,13 @@ import { ReportModel } from '@smc/modules/ser';
 import { EnigmaService } from '@smc/modules/smc-common';
 import { ScriptService } from '@smc/modules/ser/provider';
 import { CacheService } from '../../providers/cache.service';
+import { AppConnector } from '../../providers/connection';
 
 @Component({
     selector: 'smc-qlik-edit',
     templateUrl: 'edit.component.html',
     styleUrls: ['edit.component.scss'],
-    providers: [FormService]
+    providers: [FormService, AppConnector]
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
