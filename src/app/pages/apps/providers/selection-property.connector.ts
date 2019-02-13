@@ -1,4 +1,4 @@
-import { RemoteSource } from '@smc/modules/smc-ui/api/remote-source.connector';
+import { RemoteSource } from '@smc/modules/smc-ui/api/item-list.interface';
 import { Observable, of, from, forkJoin } from 'rxjs';
 import { importData } from '@smc/modules/smc-common/utils';
 import { IDataNode } from '@smc/modules/smc-common';
@@ -46,8 +46,6 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
                     name: ISelection.TYPE.FIELD,
                     items: fields.filter((field) => regExp.test(field.title))
                 }];
-
-                console.dir(merged);
 
                 return {
                     type: RemoteSource.SourceType.GROUP,

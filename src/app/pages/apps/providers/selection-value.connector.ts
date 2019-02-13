@@ -1,4 +1,4 @@
-import { RemoteSource } from '@smc/modules/smc-ui/api/remote-source.connector';
+import { RemoteSource } from '@smc/modules/smc-ui/api/item-list.interface';
 import { Observable, from, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';
@@ -87,6 +87,7 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
 
         if (!this.valueSession) {
             this.valueSession = await this.connectedApp.createSessionObject(ISelection.VALUE_LIST);
+            isDirty = true;
         }
 
         if (this.patches.length) {

@@ -1,5 +1,4 @@
-import { RemoteSource } from '@smc/modules/smc-ui/api/remote-source.connector';
-import { IDataNode } from '@smc/modules/smc-common/api';
+import { ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
 
 export namespace ISelection {
 
@@ -63,7 +62,7 @@ export namespace ISelection {
         VALUE = 'value'
     }
 
-    export interface Item extends RemoteSource.Item {
+    export interface Item extends ItemList.Item {
         id?: string;
         type: TYPE;
     }

@@ -1,0 +1,30 @@
+:host {
+
+  .selections {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .mat-form-field {
+    width: 100%;
+  }
+
+  ::ng-deep {
+
+    button {
+      min-width: auto;
+      margin: 0 0.4rem 0.4rem 0;
+    }
+  }
+}
+
+::ng-deep {
+
+  .mat-autocomplete-panel {
+
+    .mat-optgroup-label {
+      text-transform: capitalize;
+    }
+  }
+}

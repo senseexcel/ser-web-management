@@ -1,4 +1,4 @@
-import { RemoteSource } from '../api/remote-source.connector';
+import { RemoteSource } from '../api/item-list.interface';
 import { of, Observable } from 'rxjs';
 import { IDataNode } from '@smc/modules/smc-common';
 

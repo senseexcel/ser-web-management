@@ -1,7 +1,5 @@
-<div>
   <mat-form-field>
-
-    <input type="text" matInput placeholder="foobar" #inputField (keyUp.enter)="addValue($event)" [matAutocomplete]="auto">
+    <input type="text" matInput placeholder="{{label}}" (keydown)="onKeyDown($event)" (keyUp.enter)="addValue($event)" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
 
       <!-- AUTO COMPLETE FOR GROUPS -->
@@ -22,7 +20,6 @@
 
     </mat-autocomplete>
   </mat-form-field>
-</div>
-<div class="selections">
-  <smc-ui--button *ngFor="let item of items; let i = index" [closeAble]="true" (close)="doRemove(i)">{{item.title}}</smc-ui--button>
+<div class="selections smcUi-theme--light">
+  <smc-ui--button class="btn-small" *ngFor="let item of items; let i = index" [closeAble]="true" (close)="doRemove(i)">{{item.title}}</smc-ui--button>
 </div>

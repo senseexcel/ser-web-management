@@ -9,7 +9,7 @@ import { AppConnector } from '@smc/pages/apps/providers/connection';
 import { SelectionPropertyConnector } from '@smc/pages/apps/providers/selection-property.connector';
 import { SelectionValueConnector } from '@smc/pages/apps/providers/selection-value.connector';
 import { EmptyRemoteSourceConnector } from '@smc/modules/smc-ui/provider';
-import { RemoteSource } from '@smc/modules/smc-ui/api/remote-source.connector';
+import { RemoteSource, ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
 import { ISelection } from '@smc/pages/apps/api/selections.interface';
 
 @Component({
@@ -20,7 +20,7 @@ import { ISelection } from '@smc/pages/apps/api/selections.interface';
 export class SelectionComponent implements OnInit {
 
     public selectionObjectTypes: SelectionObjectType;
-    public selectedValues: string[];
+    public selectedValues: ItemList.Item[];
     public selectionSource: string[];
     public selectionTypes: SelectionType;
     public selectionForm: FormGroup;
@@ -37,7 +37,7 @@ export class SelectionComponent implements OnInit {
         private formService: FormService<ReportModel, boolean>
     ) {
         this.selectionSource = [];
-        this.selectedValues  = [];
+        this.selectedValues = [];
     }
 
     /**
@@ -66,11 +66,13 @@ export class SelectionComponent implements OnInit {
      */
     private registerAppConnector() {
         this.appConnector.connection.subscribe((app: EngineAPI.IApp) => {
+
             if (!app) {
                 this.appDimensionConnector = new EmptyRemoteSourceConnector();
                 this.appValueConnector = new EmptyRemoteSourceConnector();
                 return;
             }
+
             this.appDimensionConnector = new SelectionPropertyConnector();
             this.appValueConnector = new SelectionValueConnector();
 
@@ -97,8 +99,13 @@ export class SelectionComponent implements OnInit {
             .subscribe((report: ReportModel) => {
                 this.report = report;
                 if (this.report) {
+
+                    const selectionValues = this.report.template.selections[0].values;
+
                     this.selectionForm = this.buildSelectionForm();
-                    this.selectedValues = this.report.template.selections[0].values;
+                    this.selectedValues = selectionValues.map<ItemList.Item>((title) => {
+                        return {title};
+                    });
                 }
             });
     }

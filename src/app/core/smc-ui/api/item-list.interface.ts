@@ -1,5 +1,21 @@
 import { Observable } from 'rxjs';
-import { IDataNode } from '@smc/modules/smc-common';
+
+export namespace ItemList {
+
+    export interface Item {
+        title: string;
+    }
+
+    export interface Group {
+        name: string;
+        items: Item[];
+    }
+
+    export enum MODE {
+        MULTI = 'multi',
+        SINGLE = 'single'
+    }
+}
 
 export namespace RemoteSource {
 
@@ -8,27 +24,14 @@ export namespace RemoteSource {
         LIST  = 'list'
     }
 
-    export interface Item {
-        title: string;
-    }
-
     export interface Source {
         type: SourceType;
-        data: Item[] | Group[];
-    }
-
-    export interface Group {
-        name: string;
-
-        items: Item[];
+        data: ItemList.Item[] | ItemList.Group[];
     }
 
     export interface Connector<T> {
-
         config?: T;
-
         close(): void;
-
         fetch(value: string): Observable<Source>;
     }
 }

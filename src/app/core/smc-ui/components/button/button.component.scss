@@ -1,28 +1,58 @@
 :host {
+  button {
+    outline: none;
+    border: 0;
+    box-shadow: none;
+  }
 
-    button {
-        outline: none;
-        border: 0;
-        box-shadow: none;
-    }
+  button:hover {
+    outline: none;
+    border: 0;
+    box-shadow: none;
+  }
 
-    button:hover {
-        outline: none;
-        border: 0;
-        box-shadow: none;
-    }
+  i.ser-icon {
+    font-size: 9px;
+    background: grey;
+    height: 1rem;
+    width: 1rem;
+    border-radius: 50%;
+    align-self: center;
+    font-weight: 500;
+    margin: 0 0 0 .5rem;
+    line-height: 1.1rem;
 
-    i.ser-icon {
-        font-size:10px;
-        background: grey;
-        height: 1.2rem;
-        width: 1.2rem;
-        border-radius: 50%;
-        align-self: center;
-        font-weight: bold;
-        display: flex;
-        flex-direction: column;
-        margin: 0 0 0 .5rem;
-        justify-content: center;
+    &:before {
+      display: inline;
     }
+  }
+}
+
+:host-context(.smcUi-theme--light) {
+
+  button {
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, #E6E6E6 100%);
+    color: #595959;
+    background: #E6E6E6;
+  }
+
+  i.ser-icon {
+    background: rgba(89, 89, 89, .6);
+    color: #FFF;
+  }
+}
+
+:host-context(.btn-small) {
+
+  button {
+    height: auto;
+    line-height: initial;
+  }
+
+  i.ser-icon {
+    font-size: 9px;
+    height: .9rem;
+    width: .9rem;
+    line-height: 1rem;
+  }
 }
