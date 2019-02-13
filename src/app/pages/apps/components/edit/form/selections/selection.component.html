@@ -23,7 +23,10 @@
       </mat-form-field>
 
       <!-- selection name -->
-      <smc-ui--item-list [remoteSource]="appDimensionConnector" [items]="selectionSource" [mode]="single" [label]="'Dimension,Field or something else'"></smc-ui--item-list>
+      <smc-ui--item-list 
+        [remoteSource]="appDimensionConnector" [items]="selectionSource" [mode]="single" [label]="'Dimension,Field or something else'"
+        (changed)="dimensionChanged($event)"
+      ></smc-ui--item-list>
 
       <!-- selection value -->
       <smc-ui--item-list [remoteSource]="appValueConnector" [items]="selectedValues" [label]="'Selection value'"></smc-ui--item-list>

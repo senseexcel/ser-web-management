@@ -20,10 +20,10 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
 
         if (config.selectFrom) {
             this.patches = this.createPatches(config.selectFrom);
-        }
 
-        this.selectFrom = config.selectFrom.value;
-        this.selectType = config.selectFrom.type;
+            this.selectFrom = config.selectFrom.value;
+            this.selectType = config.selectFrom.type;
+        }
     }
 
     public close() {

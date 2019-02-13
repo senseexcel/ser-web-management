@@ -15,6 +15,11 @@ export namespace ItemList {
         MULTI = 'multi',
         SINGLE = 'single'
     }
+
+    export interface ChangedEvent {
+        added: Item[];
+        removed: Item[];
+    }
 }
 
 export namespace RemoteSource {

@@ -8,7 +8,6 @@ import { IDataNode } from '@smc/modules/smc-common';
 import { AppConnector } from '@smc/pages/apps/providers/connection';
 import { SelectionPropertyConnector } from '@smc/pages/apps/providers/selection-property.connector';
 import { SelectionValueConnector } from '@smc/pages/apps/providers/selection-value.connector';
-import { EmptyRemoteSourceConnector } from '@smc/modules/smc-ui/provider';
 import { RemoteSource, ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
 import { ISelection } from '@smc/pages/apps/api/selections.interface';
 
@@ -38,6 +37,9 @@ export class SelectionComponent implements OnInit {
     ) {
         this.selectionSource = [];
         this.selectedValues = [];
+
+        this.appDimensionConnector = new SelectionPropertyConnector();
+        this.appValueConnector = new SelectionValueConnector();
     }
 
     /**
@@ -59,7 +61,38 @@ export class SelectionComponent implements OnInit {
     }
 
     /**
-     * if app has been connected
+     * dimension / field has been changed
+     *
+     * @param {ItemList.ChangedEvent} changedEvent
+     * @memberof SelectionComponent
+     */
+    public dimensionChanged(changedEvent: ItemList.ChangedEvent) {
+
+        const added: ISelection.Item[]   = changedEvent.added as ISelection.Item[];
+        const valueConnectionConfig: ISelection.ValueConnectorConfig = {};
+
+        if (added.length) {
+            switch (added[0].type) {
+                case ISelection.TYPE.DIMENSION:
+                    valueConnectionConfig.selectFrom = {
+                        type: ISelection.TYPE.DIMENSION,
+                        value: added[0].id
+                    };
+                    break;
+                case ISelection.TYPE.FIELD:
+                    valueConnectionConfig.selectFrom = {
+                        type: ISelection.TYPE.FIELD,
+                        value: added[0].title
+                    };
+                    break;
+            }
+        }
+        this.appValueConnector.config = valueConnectionConfig;
+    }
+
+    /**
+     * register to app connector to get notified we have
+     * create a connection to an app.
      *
      * @private
      * @memberof SelectionComponent
@@ -67,28 +100,16 @@ export class SelectionComponent implements OnInit {
     private registerAppConnector() {
         this.appConnector.connection.subscribe((app: EngineAPI.IApp) => {
 
-            if (!app) {
-                this.appDimensionConnector = new EmptyRemoteSourceConnector();
-                this.appValueConnector = new EmptyRemoteSourceConnector();
-                return;
+            if (app) {
+                this.appDimensionConnector.config = { app };
+                this.appValueConnector.config = { app };
             }
-
-            this.appDimensionConnector = new SelectionPropertyConnector();
-            this.appValueConnector = new SelectionValueConnector();
-
-            this.appDimensionConnector.config = { app };
-            this.appValueConnector.config = {
-                app,
-                selectFrom: {
-                    type: ISelection.TYPE.DIMENSION,
-                    value: 'jgxpDbw'
-                }
-            };
         });
     }
 
     /**
-     *
+     * register to form service to get notified if a model has
+     * been loaded
      *
      * @private
      * @memberof SelectionComponent
@@ -99,17 +120,25 @@ export class SelectionComponent implements OnInit {
             .subscribe((report: ReportModel) => {
                 this.report = report;
                 if (this.report) {
-
                     const selectionValues = this.report.template.selections[0].values;
-
                     this.selectionForm = this.buildSelectionForm();
                     this.selectedValues = selectionValues.map<ItemList.Item>((title) => {
-                        return {title};
+                        return { title };
                     });
                 }
             });
     }
 
+    /**
+     * convert enums to json
+     *
+     * @private
+     * @param {*} _enum
+     * @param {string} i18nPrefix
+     * @param {string} [i18nPostfix]
+     * @returns {*}
+     * @memberof SelectionComponent
+     */
     private convertEnumToJSON(_enum, i18nPrefix: string, i18nPostfix?: string): any {
         return Object.keys(_enum)
             .filter((key) => isNaN(Number(key)))

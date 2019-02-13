@@ -8,11 +8,23 @@ export class AppConnector {
 
     private appConnection: BehaviorSubject<EngineAPI.IApp>;
     private app: EngineAPI.IApp;
+    private connectionEstablished: boolean;
 
     constructor(
         private enigmaService: EnigmaService
     ) {
         this.appConnection = new BehaviorSubject(null);
+        this.connectionEstablished = false;
+    }
+
+    /**
+     * return true if a connection to an app exists
+     *
+     * @returns {boolean}
+     * @memberof AppConnector
+     */
+    public hasConnection(): boolean {
+        return this.connectionEstablished;
     }
 
     /**
@@ -37,6 +49,7 @@ export class AppConnector {
         return from(this.enigmaService.openApp(appId)).pipe(
             tap((app: EngineAPI.IApp) => {
                 this.app = app;
+                this.connectionEstablished = true;
                 this.appConnection.next(app);
             })
         );
@@ -50,6 +63,7 @@ export class AppConnector {
     public closeConnection(): Observable<void> {
         return from(this.enigmaService.closeApp(this.app)).pipe(
             tap(() => {
+                this.connectionEstablished = false;
                 this.app = null;
                 this.appConnection.next(this.app);
             })
