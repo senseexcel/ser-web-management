@@ -4,6 +4,7 @@ import { debounceTime, switchMap, takeUntil, distinctUntilChanged, map, tap } fr
 import { RemoteSource } from '../../api/remote-source.connector';
 import { EmptyRemoteSourceConnector } from '../../provider/empty-remote-source.connector';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
+import { IDataNode } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-ui--item-list',
@@ -13,7 +14,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material';
 export class ItemListComponent implements AfterViewInit, OnDestroy {
 
     @Input()
-    public remoteSource: RemoteSource.Connector = new EmptyRemoteSourceConnector();
+    public remoteSource: RemoteSource.Connector<IDataNode> = new EmptyRemoteSourceConnector();
 
     @Input()
     public items: string[] = new Array();

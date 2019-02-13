@@ -1,4 +1,5 @@
 import { RemoteSource } from '@smc/modules/smc-ui/api/remote-source.connector';
+import { IDataNode } from '@smc/modules/smc-common/api';
 
 export namespace ISelection {
 
@@ -37,7 +38,7 @@ export namespace ISelection {
         },
         qListObjectDef: {
             qStateName: '$',
-            qLibraryId: 'jgxpDbw',
+            qLibraryId: '',
             qDef: {
                 qFieldDefs: [],
                 qGrouping: 'N',
@@ -65,5 +66,15 @@ export namespace ISelection {
     export interface Item extends RemoteSource.Item {
         id?: string;
         type: TYPE;
+    }
+
+    export interface ValueConnectorConfig {
+        app?: EngineAPI.IApp;
+        selectFrom?: SelectionConfig;
+    }
+
+    export interface SelectionConfig {
+        type: ISelection.TYPE;
+        value: string;
     }
 }

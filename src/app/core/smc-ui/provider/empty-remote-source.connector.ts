@@ -1,7 +1,8 @@
 import { RemoteSource } from '../api/remote-source.connector';
 import { of, Observable } from 'rxjs';
+import { IDataNode } from '@smc/modules/smc-common';
 
-export class EmptyRemoteSourceConnector implements RemoteSource.Connector {
+export class EmptyRemoteSourceConnector implements RemoteSource.Connector<IDataNode> {
 
     public close() {
     }

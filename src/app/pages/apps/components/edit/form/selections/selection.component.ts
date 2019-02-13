@@ -10,6 +10,7 @@ import { SelectionPropertyConnector } from '@smc/pages/apps/providers/selection-
 import { SelectionValueConnector } from '@smc/pages/apps/providers/selection-value.connector';
 import { EmptyRemoteSourceConnector } from '@smc/modules/smc-ui/provider';
 import { RemoteSource } from '@smc/modules/smc-ui/api/remote-source.connector';
+import { ISelection } from '@smc/pages/apps/api/selections.interface';
 
 @Component({
     selector: 'smc-edit-form-selections',
@@ -24,8 +25,8 @@ export class SelectionComponent implements OnInit {
     public selectionTypes: SelectionType;
     public selectionForm: FormGroup;
 
-    public appDimensionConnector: RemoteSource.Connector;
-    public appValueConnector: RemoteSource.Connector;
+    public appDimensionConnector: RemoteSource.Connector<IDataNode>;
+    public appValueConnector: RemoteSource.Connector<ISelection.ValueConnectorConfig>;
 
     private updateHook: Observable<boolean>;
     private report: ReportModel;
@@ -73,8 +74,14 @@ export class SelectionComponent implements OnInit {
             this.appDimensionConnector = new SelectionPropertyConnector();
             this.appValueConnector = new SelectionValueConnector();
 
-            this.appDimensionConnector.config = {app};
-            this.appValueConnector.config     = {app};
+            this.appDimensionConnector.config = { app };
+            this.appValueConnector.config = {
+                app,
+                selectFrom: {
+                    type: ISelection.TYPE.DIMENSION,
+                    value: 'jgxpDbw'
+                }
+            };
         });
     }
 

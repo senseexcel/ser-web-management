@@ -23,9 +23,9 @@ export namespace RemoteSource {
         items: Item[];
     }
 
-    export interface Connector {
+    export interface Connector<T> {
 
-        config?: IDataNode;
+        config?: T;
 
         close(): void;
 

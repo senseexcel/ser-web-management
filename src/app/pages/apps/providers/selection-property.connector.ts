@@ -5,7 +5,7 @@ import { IDataNode } from '@smc/modules/smc-common';
 import { map } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';
 
-export class SelectionPropertyConnector implements RemoteSource.Connector {
+export class SelectionPropertyConnector implements RemoteSource.Connector<IDataNode> {
 
     private connectedApp: EngineAPI.IApp;
 
@@ -47,7 +47,7 @@ export class SelectionPropertyConnector implements RemoteSource.Connector {
                     items: fields.filter((field) => regExp.test(field.title))
                 }];
 
-                console.log(merged);
+                console.dir(merged);
 
                 return {
                     type: RemoteSource.SourceType.GROUP,
