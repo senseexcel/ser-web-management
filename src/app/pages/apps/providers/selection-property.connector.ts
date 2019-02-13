@@ -3,7 +3,7 @@ import { Observable, of, from, forkJoin } from 'rxjs';
 import { importData } from '@smc/modules/smc-common/utils';
 import { IDataNode } from '@smc/modules/smc-common';
 import { map } from 'rxjs/operators';
-import { DIMENSION_LIST, FIELD_LIST, SELECTION_TYPE, IDimensionSelectionItem, IFieldSelectionItem } from '../api/selections.interface';
+import { ISelection } from '../api/selections.interface';
 
 export class SelectionPropertyConnector implements RemoteSource.Connector {
 
@@ -12,8 +12,8 @@ export class SelectionPropertyConnector implements RemoteSource.Connector {
     private dimensionSession: EngineAPI.IGenericObject;
     private fieldSession: EngineAPI.IGenericObject;
 
-    private dimensionsCache: IDimensionSelectionItem[] = null;
-    private fieldCache: IFieldSelectionItem[] = null;
+    private dimensionsCache: ISelection.Item[] = null;
+    private fieldCache: ISelection.Item[] = null;
 
     /**
      * set connected app
@@ -40,10 +40,10 @@ export class SelectionPropertyConnector implements RemoteSource.Connector {
             map(([dimensions, fields]): RemoteSource.Source => {
                 const regExp = new RegExp(needle, 'i');
                 const merged = [{
-                    name: SELECTION_TYPE.DIMENSION,
+                    name: ISelection.TYPE.DIMENSION,
                     items: dimensions.filter((field) => regExp.test(field.title))
                 }, {
-                    name: SELECTION_TYPE.FIELD,
+                    name: ISelection.TYPE.FIELD,
                     items: fields.filter((field) => regExp.test(field.title))
                 }];
 
@@ -93,13 +93,13 @@ export class SelectionPropertyConnector implements RemoteSource.Connector {
             return this.dimensionsCache;
         }
 
-        this.dimensionSession = await this.connectedApp.createSessionObject(DIMENSION_LIST);
+        this.dimensionSession = await this.connectedApp.createSessionObject(ISelection.DIMENSION_LIST);
         const dimensions = await this.dimensionSession.getLayout() as EngineAPI.IGenericDimensionListLayout;
-        const selectionData = dimensions.qDimensionList.qItems.map<IDimensionSelectionItem>((item: EngineAPI.IDimensionItemLayout) => {
+        const selectionData = dimensions.qDimensionList.qItems.map<ISelection.Item>((item: EngineAPI.IDimensionItemLayout) => {
             return {
                 id: item.qInfo.qId,
                 title: item.qMeta.title,
-                type: SELECTION_TYPE.DIMENSION
+                type: ISelection.TYPE.DIMENSION
             };
         });
         this.dimensionsCache = selectionData;
@@ -123,14 +123,14 @@ export class SelectionPropertyConnector implements RemoteSource.Connector {
             return this.fieldCache;
         }
 
-        this.fieldSession = await this.connectedApp.createSessionObject(FIELD_LIST);
+        this.fieldSession = await this.connectedApp.createSessionObject(ISelection.FIELD_LIST);
         const fields = await this.fieldSession.getLayout() as any;
         const items = (fields.qFieldList as EngineAPI.IFieldList).qItems;
 
-        const fieldItems = items.map<IFieldSelectionItem>((item: EngineAPI.INxFieldDescription) => {
+        const fieldItems = items.map<ISelection.Item>((item: EngineAPI.INxFieldDescription) => {
             return {
                 title: item.qName,
-                type: SELECTION_TYPE.FIELD
+                type: ISelection.TYPE.FIELD
             };
         });
         this.fieldCache = fieldItems;

@@ -15,7 +15,7 @@
 
       <!-- AUTO COMPLETE LISTS -->
       <ng-container *ngIf="!isGrouped">
-        <mat-option *ngFor="let item of source.items" [value]="item">
+        <mat-option *ngFor="let item of source" [value]="item">
           {{item.title}}
         </mat-option>
       </ng-container>

@@ -74,6 +74,7 @@ export class SelectionComponent implements OnInit {
             this.appValueConnector = new SelectionValueConnector();
 
             this.appDimensionConnector.config = {app};
+            this.appValueConnector.config     = {app};
         });
     }
 

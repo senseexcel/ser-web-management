@@ -8,15 +8,19 @@ export namespace RemoteSource {
         LIST  = 'list'
     }
 
+    export interface Item {
+        title: string;
+    }
+
     export interface Source {
         type: SourceType;
-        data: string[] | Group[];
+        data: Item[] | Group[];
     }
 
     export interface Group {
         name: string;
 
-        items: string[];
+        items: Item[];
     }
 
     export interface Connector {
