@@ -1,7 +1,8 @@
+<div class="form-field--wrapper">
   <mat-form-field>
-    <input type="text" #input matInput placeholder="{{label}}" (keydown)="onKeyDown($event)" (keyUp.enter)="addValue($event)" [matAutocomplete]="auto">
+    <input type="text" #input matInput placeholder="{{label}}" (keydown)="onKeyDown($event)" (keyUp.enter)="addValue($event)"
+      [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
-
       <!-- AUTO COMPLETE FOR GROUPS -->
       <ng-container *ngIf="isGrouped">
         <mat-optgroup *ngFor="let group of source" [label]="group.name">
@@ -20,6 +21,10 @@
 
     </mat-autocomplete>
   </mat-form-field>
+  <smc-ui--button (click)="clearItems()" class="btn-lighten" [disabled]="items.length === 0">
+    Clear All
+  </smc-ui--button>
+</div>
 <div class="selections smcUi-theme--light">
   <smc-ui--button class="btn-small" *ngFor="let item of items; let i = index" [closeAble]="true" (close)="doRemove(i)">{{item.title}}</smc-ui--button>
 </div>

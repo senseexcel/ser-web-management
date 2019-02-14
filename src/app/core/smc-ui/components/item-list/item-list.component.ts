@@ -131,6 +131,17 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
     }
 
     /**
+     * remove all items at once
+     *
+     * @memberof ItemListComponent
+     */
+    public clearItems() {
+        const removed = this.items.slice();
+        this.changed.emit({added: [], removed});
+        this.items = [];
+    }
+
+    /**
      * on keydown on input field we submit the event
      * to an rxjs stream. After input wait for 200ms to fetch
      * data from remote sources, only if the user input value

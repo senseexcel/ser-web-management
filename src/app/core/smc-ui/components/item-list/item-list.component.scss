@@ -6,8 +6,20 @@
     flex-wrap: wrap;
   }
 
-  .mat-form-field {
-    width: 100%;
+  .form-field--wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+
+    .mat-form-field {
+      flex: 1
+    }
+
+    ::ng-deep {
+      button {
+        margin: 0 0 0 .8rem;
+      }
+    }
   }
 
   ::ng-deep {

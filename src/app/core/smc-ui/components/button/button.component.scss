@@ -42,6 +42,20 @@
   }
 }
 
+:host-context(.btn-lighten) {
+  button {
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, #E6E6E6 100%);
+    border: 1px solid #CCC;
+    color: #595959;
+    font-weight: 700;
+  }
+
+  button[disabled] {
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, #E6E6E6 100%);
+    color: rgba(89, 89, 89, 0.4);
+  }
+}
+
 :host-context(.btn-small) {
 
   button {
