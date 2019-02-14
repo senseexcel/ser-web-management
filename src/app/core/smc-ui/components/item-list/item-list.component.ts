@@ -1,5 +1,5 @@
-import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
-import { MatAutocompleteSelectedEvent, MatInput } from '@angular/material';
+import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy, ContentChild } from '@angular/core';
+import { MatAutocompleteSelectedEvent, MatInput, MatAutocomplete, MatAutocompleteTrigger } from '@angular/material';
 import { IDataNode } from '@smc/modules/smc-common';
 import { Subject } from 'rxjs';
 import { debounceTime, switchMap, takeUntil, distinctUntilChanged, map, tap, catchError } from 'rxjs/operators';
@@ -43,6 +43,9 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
 
     @ViewChild(MatInput)
     private textField: MatInput;
+
+    @ViewChild(MatAutocompleteTrigger)
+    private autoCompleteTrigger: MatAutocompleteTrigger;
 
     private isDestroyed$: Subject<boolean>;
     private keyDown$: Subject<string>;
@@ -170,7 +173,15 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
             removed = this.items.splice(0, 1, item);
         }
 
+        /** we need to hide panel, if we dont select an item and just press enter
+         * panel overlay still exists and block all events
+         */
+        this.autoCompleteTrigger.closePanel();
+
+        /** clear sources */
         this.textField.value = '';
+        this.source = [];
+
         this.changed.emit({added: [item], removed });
     }
 }

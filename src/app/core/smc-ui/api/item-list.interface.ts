@@ -36,6 +36,7 @@ export namespace RemoteSource {
 
     export interface Connector<T> {
         config?: T;
+        disable(state: boolean): void;
         close(): void;
         fetch(value: string): Observable<Source>;
     }

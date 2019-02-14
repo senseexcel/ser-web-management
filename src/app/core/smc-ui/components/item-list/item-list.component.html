@@ -1,5 +1,5 @@
   <mat-form-field>
-    <input type="text" matInput placeholder="{{label}}" (keydown)="onKeyDown($event)" (keyUp.enter)="addValue($event)" [matAutocomplete]="auto">
+    <input type="text" #input matInput placeholder="{{label}}" (keydown)="onKeyDown($event)" (keyUp.enter)="addValue($event)" [matAutocomplete]="auto">
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
 
       <!-- AUTO COMPLETE FOR GROUPS -->

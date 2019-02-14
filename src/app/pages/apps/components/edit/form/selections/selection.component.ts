@@ -71,6 +71,8 @@ export class SelectionComponent implements OnInit {
         const added: ISelection.Item[]   = changedEvent.added as ISelection.Item[];
         const valueConnectionConfig: ISelection.ValueConnectorConfig = {};
 
+        this.appValueConnector.disable(false);
+
         if (added.length) {
             switch (added[0].type) {
                 case ISelection.TYPE.DIMENSION:
@@ -85,8 +87,13 @@ export class SelectionComponent implements OnInit {
                         value: added[0].title
                     };
                     break;
+                default:
+                    this.appValueConnector.disable(true);
             }
+        } else {
+            this.appValueConnector.disable(true);
         }
+
         this.appValueConnector.config = valueConnectionConfig;
     }
 

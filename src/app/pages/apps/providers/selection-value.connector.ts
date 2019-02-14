@@ -11,6 +11,7 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
     private selectFrom: string;
     private selectType: ISelection.TYPE;
     private valueSession: EngineAPI.IGenericList;
+    private isDisabled: any;
 
     public set config(config: ISelection.ValueConnectorConfig) {
 
@@ -44,7 +45,7 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
      */
     public fetch(needle: string): Observable<RemoteSource.Source> {
 
-        if (!this.connectedApp || !this.selectFrom) {
+        if (!this.connectedApp || this.isDisabled || !this.selectFrom) {
             return of({
                 type: RemoteSource.SourceType.LIST,
                 data: []
@@ -52,7 +53,6 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
         }
 
         return from(this.fetchValues(needle)).pipe(
-            tap((res) => console.log(res)),
             map((dataPages) => {
                 const result: EngineAPI.INxCell[][] = dataPages[0].qMatrix;
                 const values = result.reduce<ISelection.Item[]>((current, cell) => {
@@ -72,6 +72,16 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
                 };
             })
         );
+    }
+
+    /**
+     *
+     *
+     * @param {boolean} state
+     * @memberof SelectionValueConnector
+     */
+    public disable(state: boolean): void {
+        this.isDisabled = state;
     }
 
     /**
@@ -125,6 +135,7 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
         }]);
     }
 
+
     /**
      * create patches
      *
@@ -138,17 +149,17 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
         const dimensionPatch: EngineAPI.INxPatch = {
             qOp: 'Replace',
             qPath: 'qListObjectDef/qLibraryId',
-            qValue: config.type === ISelection.TYPE.DIMENSION ? `"${config.value}"` : ''
+            qValue: config.type === ISelection.TYPE.DIMENSION ? `"${config.value}"` : '\"\"'
         };
 
         const fieldPatch: EngineAPI.INxPatch = {
             qOp: 'Replace',
             qPath: 'qListObjectDef/qDef/qFieldDefs',
-            qValue: config.type === ISelection.TYPE.FIELD ? `${[config.value]}` : ''
+            qValue: config.type === ISelection.TYPE.FIELD ? JSON.stringify([config.value]) : JSON.stringify([])
         };
 
         if (config.type !== this.selectType) {
-            patches.push(dimensionPatch /*, fieldPatch*/);
+            patches.push(dimensionPatch, fieldPatch);
         } else if (config.type === ISelection.TYPE.DIMENSION) {
             patches.push(dimensionPatch);
         } else {

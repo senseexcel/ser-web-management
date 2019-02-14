@@ -14,6 +14,7 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
 
     private dimensionsCache: ISelection.Item[] = null;
     private fieldCache: ISelection.Item[] = null;
+    private isDisabled: boolean;
 
     /**
      * set connected app
@@ -71,6 +72,10 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
         this.connectedApp = null;
     }
 
+    disable(state: boolean) {
+        this.isDisabled = state;
+    }
+
     /**
      * get dimensions from hypercube
      *
@@ -82,7 +87,7 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
     private async getDimensions(): Promise<any> {
 
         // no app no data
-        if (!this.connectedApp) {
+        if (!this.connectedApp || this.isDisabled) {
             return [];
         }
 

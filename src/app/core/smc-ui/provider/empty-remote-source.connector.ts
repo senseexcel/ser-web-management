@@ -4,6 +4,9 @@ import { IDataNode } from '@smc/modules/smc-common';
 
 export class EmptyRemoteSourceConnector implements RemoteSource.Connector<IDataNode> {
 
+    disable(state: boolean): void {
+    }
+
     public close() {
     }
 
