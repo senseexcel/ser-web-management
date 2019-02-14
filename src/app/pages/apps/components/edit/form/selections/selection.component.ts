@@ -18,9 +18,10 @@ import { ISelection } from '@smc/pages/apps/api/selections.interface';
 
 export class SelectionComponent implements OnInit {
 
-    public selectionObjectTypes: SelectionObjectType;
+    public selectedDimension: ItemList.Item[];
     public selectedValues: ItemList.Item[];
-    public selectionSource: string[];
+
+    public selectionObjectTypes: SelectionObjectType;
     public selectionTypes: SelectionType;
     public selectionForm: FormGroup;
 
@@ -30,12 +31,15 @@ export class SelectionComponent implements OnInit {
     private updateHook: Observable<boolean>;
     private report: ReportModel;
 
+    private selectionName = '';
+    private valueNames: string[]     = [];
+
     constructor(
         private appConnector: AppConnector,
         private formBuilder: FormBuilder,
         private formService: FormService<ReportModel, boolean>
     ) {
-        this.selectionSource = [];
+        this.selectedDimension = [];
         this.selectedValues = [];
 
         this.appDimensionConnector = new SelectionPropertyConnector();
@@ -66,7 +70,7 @@ export class SelectionComponent implements OnInit {
      * @param {ItemList.ChangedEvent} changedEvent
      * @memberof SelectionComponent
      */
-    public dimensionChanged(changedEvent: ItemList.ChangedEvent) {
+    public selectionNameChanged(changedEvent: ItemList.ChangedEvent) {
 
         const added: ISelection.Item[]   = changedEvent.added as ISelection.Item[];
         const valueConnectionConfig: ISelection.ValueConnectorConfig = {};
@@ -94,7 +98,21 @@ export class SelectionComponent implements OnInit {
             this.appValueConnector.disable(true);
         }
 
+        this.selectionName = changedEvent.items[0] ? changedEvent.items[0].title : '';
         this.appValueConnector.config = valueConnectionConfig;
+    }
+
+    /**
+     * selection values has been changed
+     *
+     * @param {ItemList.ChangedEvent} changedEvent
+     * @memberof SelectionComponent
+     */
+    public selectionValuesChanged(changedEvent: ItemList.ChangedEvent) {
+
+        this.valueNames = changedEvent.items.reduce<string[]>((itemNames: string[], selectedItem: ItemList.Item) => {
+            return [...itemNames, selectedItem.title];
+        }, []);
     }
 
     /**
@@ -129,6 +147,8 @@ export class SelectionComponent implements OnInit {
                 if (this.report) {
                     const selectionValues = this.report.template.selections[0].values;
                     this.selectionForm = this.buildSelectionForm();
+
+                    this.selectedDimension = [{title: this.report.template.selections[0].name}];
                     this.selectedValues = selectionValues.map<ItemList.Item>((title) => {
                         return { title };
                     });
@@ -211,8 +231,8 @@ export class SelectionComponent implements OnInit {
             const formData: IDataNode = this.selectionForm.getRawValue();
             const { objectType } = formData.selection;
             this.report.template.selections = [{
-                name,
-                values: [],
+                name: this.selectionName,
+                values: this.valueNames,
                 objectType, type: formData.type
             }];
             obs.next(true);

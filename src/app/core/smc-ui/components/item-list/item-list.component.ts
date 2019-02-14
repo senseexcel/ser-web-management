@@ -1,8 +1,8 @@
 import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy, ContentChild } from '@angular/core';
-import { MatAutocompleteSelectedEvent, MatInput, MatAutocomplete, MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteSelectedEvent, MatInput, MatAutocompleteTrigger } from '@angular/material';
 import { IDataNode } from '@smc/modules/smc-common';
 import { Subject } from 'rxjs';
-import { debounceTime, switchMap, takeUntil, distinctUntilChanged, map, tap, catchError } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil, distinctUntilChanged } from 'rxjs/operators';
 import { RemoteSource, ItemList } from '../../api/item-list.interface';
 import { EmptyRemoteSourceConnector } from '../../provider/empty-remote-source.connector';
 
@@ -66,7 +66,13 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
      */
     public doRemove(itemIndex: number) {
         const removed = this.items.splice(itemIndex, 1);
-        this.changed.emit({added: [], removed});
+        this.changed.emit({
+            added: [],
+            removed,
+            items: [
+                ...this.items
+            ]
+        });
     }
 
     /**
@@ -137,7 +143,11 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
      */
     public clearItems() {
         const removed = this.items.slice();
-        this.changed.emit({added: [], removed});
+        this.changed.emit({
+            added: [],
+            removed,
+            items: []
+        });
         this.items = [];
     }
 
@@ -193,6 +203,10 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
         this.textField.value = '';
         this.source = [];
 
-        this.changed.emit({added: [item], removed });
+        this.changed.emit({
+            added: [item],
+            removed,
+            items: [...this.items]
+        });
     }
 }

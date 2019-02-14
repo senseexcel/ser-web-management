@@ -19,6 +19,7 @@ export namespace ItemList {
     export interface ChangedEvent {
         added: Item[];
         removed: Item[];
+        items: Item[];
     }
 }
 

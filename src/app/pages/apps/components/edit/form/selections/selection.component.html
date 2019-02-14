@@ -23,13 +23,12 @@
       </mat-form-field>
 
       <!-- selection name -->
-      <smc-ui--item-list 
-        [remoteSource]="appDimensionConnector" [items]="selectionSource" [mode]="single" [label]="'Dimension,Field or something else'"
-        (changed)="dimensionChanged($event)"
-      ></smc-ui--item-list>
+      <smc-ui--item-list [remoteSource]="appDimensionConnector" [items]="selectedDimension" [mode]="single" [label]="'Dimension,Field or something else'"
+        (changed)="selectionNameChanged($event)"></smc-ui--item-list>
 
       <!-- selection value -->
-      <smc-ui--item-list [remoteSource]="appValueConnector" [items]="selectedValues" [label]="'Selection value'"></smc-ui--item-list>
+      <smc-ui--item-list [remoteSource]="appValueConnector" [items]="selectedValues" [label]="'Selection value'"
+        (changed)="selectionValuesChanged($event)"></smc-ui--item-list>
 
     </ng-container>
   </div>
