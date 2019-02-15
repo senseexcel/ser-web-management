@@ -97,8 +97,6 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
 
         let isDirty = false;
 
-        console.dir(this.valueSession);
-
         if (!this.valueSession) {
             this.valueSession = await this.connectedApp.createSessionObject(ISelection.VALUE_LIST);
             isDirty = true;

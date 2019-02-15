@@ -100,8 +100,6 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      */
     public connectToApp() {
 
-        console.log(this.selectedAppId);
-
         this.appConnector.createConnection(this.selectedAppId)
             .pipe(catchError((error) => {
                 const e = {
