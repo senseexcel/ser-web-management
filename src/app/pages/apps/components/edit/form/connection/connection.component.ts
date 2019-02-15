@@ -12,6 +12,7 @@ import { AppConnector } from '../../../../providers/connection';
 import { ModalService } from '@smc/modules/modal';
 
 @Component({
+    styleUrls: ['./connection.component.scss'],
     selector: 'smc-apps--edit-form-connection',
     templateUrl: 'connection.component.html'
 })

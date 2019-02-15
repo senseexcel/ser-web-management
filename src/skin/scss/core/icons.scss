@@ -74,3 +74,11 @@
 .ser-icon--close {
     &:before { content: "\2030"; }
 }
+
+.ser-icon--disconnect {
+    &:before { content: "\D5"; }
+}
+
+.ser-icon--clear-selections {
+    &:before { content: ":"; }
+}

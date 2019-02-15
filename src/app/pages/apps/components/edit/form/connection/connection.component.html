@@ -1,6 +1,6 @@
 <h3 class="header header-secondary">{{'SMC_APPS.EDIT.PROPERTIES.ITEM.APP' | translate}}</h3>
-<ng-container *ngIf="connectionForm">
-  <div [formGroup]="connectionForm">
+<div class="form-wrapper" *ngIf="connectionForm">
+  <div [formGroup]="connectionForm" class="form">
     <mat-form-field class="form-control">
       <input type="text" matInput formControlName="app" [matAutocomplete]="auto" (input)="onSuggestInput($event)">
     </mat-form-field>
@@ -11,8 +11,14 @@
       </mat-option>
     </mat-autocomplete>
   </div>
-  <div>
-    <smc-ui--button *ngIf="!isConnected" (click)="connectToApp()" [disabled]="!this.selectedAppId">Create Connection</smc-ui--button>
-    <smc-ui--button *ngIf="isConnected" (click)="disconnectFromApp()">Close Connection</smc-ui--button>
+  <div [ngClass]="{'connected': isConnected}">
+    <smc-ui--button class="btn-lighten" *ngIf="!isConnected" (click)="connectToApp()" [disabled]="!this.selectedAppId">
+      <i class="ser-icon ser-icon--disconnect"></i>
+      Connect to app
+    </smc-ui--button>
+    <smc-ui--button class="btn-lighten" *ngIf="isConnected" (click)="disconnectFromApp()">
+      <i class="ser-icon ser-icon--disconnect"></i>
+      Disconnect
+    </smc-ui--button>
   </div>
-</ng-container>
+</div>

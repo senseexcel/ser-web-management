@@ -64,10 +64,10 @@ export class AppConnector {
 
         if (this.app) {
             await this.enigmaService.closeApp(this.app);
+            this.appConnection.next(null);
         }
 
         this.connectionEstablished = false;
         this.app = null;
-        this.appConnection.next(null);
     }
 }

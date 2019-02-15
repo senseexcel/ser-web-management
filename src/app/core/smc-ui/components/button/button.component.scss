@@ -11,19 +11,25 @@
     box-shadow: none;
   }
 
-  i.ser-icon {
-    font-size: 9px;
-    background: grey;
-    height: 1rem;
-    width: 1rem;
-    border-radius: 50%;
-    align-self: center;
-    font-weight: 500;
-    margin: 0 0 0 .5rem;
-    line-height: 1.1rem;
+  ::ng-deep {
 
-    &:before {
-      display: inline;
+    i.ser-icon {
+      font-size: 13px;
+      height: 1rem;
+      width: 1rem;
+      border-radius: 50%;
+      align-self: center;
+      font-weight: 500;
+      margin: 0;
+      line-height: 1.1rem;
+
+      &:before {
+        display: inline;
+      }
+
+      &.ser-icon--close {
+        margin: 0 0 0 .3rem;
+      }
     }
   }
 }
