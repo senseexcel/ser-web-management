@@ -35,6 +35,7 @@ export class ReportService {
             }
 
             const value = data[key];
+
             if (value && Object.prototype.toString.apply(value).slice(8, -1) === 'Object') {
                 const cleaned = this.cleanReport(data[key]);
                 data[key] = Object.keys(cleaned).length ? cleaned : null;

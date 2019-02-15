@@ -5,7 +5,6 @@ export function importData(target, key = null, descriptor: PropertyDescriptor): 
     if (!descriptor) {
         descriptor = Object.getOwnPropertyDescriptor(target, key);
     }
-
     return {
         set: function (data: IDataNode) {
             // get all properties, exclude decorated property

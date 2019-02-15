@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReportService } from '@smc/modules/ser/provider/report.service';
 import { FormService } from '@smc/modules/form-helper/provider/form.service';
@@ -13,12 +12,13 @@ import { ReportModel } from '@smc/modules/ser';
 import { EnigmaService } from '@smc/modules/smc-common';
 import { ScriptService } from '@smc/modules/ser/provider';
 import { CacheService } from '../../providers/cache.service';
+import { AppConnector } from '../../providers/connection';
 
 @Component({
     selector: 'smc-qlik-edit',
     templateUrl: 'edit.component.html',
     styleUrls: ['edit.component.scss'],
-    providers: [FormService]
+    providers: [FormService, AppConnector]
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
@@ -55,7 +55,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
         private reportService: ReportService,
         private scriptService: ScriptService,
         private activeRoute: ActivatedRoute,
-        private location: Location,
         private modalService: ModalService,
         private router: Router,
         private breadcrumbService: BreadcrumbService,
@@ -72,7 +71,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
         this.modalService.openDialog(title, message)
             .switch.subscribe((confirm) => {
                 if (confirm) {
-                    // should go back
                     this.router.navigate(['../..'], { relativeTo: this.activeRoute });
                 }
             });

@@ -1,5 +1,8 @@
-<button type="button" [disabled]="disabled" class="nav-item">
-    <span class="button-label">
-        <ng-content></ng-content>
-    </span>
+<button type="button" [disabled]="disabled" class="nav-item" [ngClass]="{'closeable': closeAble}">
+  <span class="button-label">
+    <ng-content></ng-content>
+  </span>
+  <ng-container *ngIf="closeAble">
+    <i class="ser-icon ser-icon--close" (click)="triggerClose($event)"></i>
+  </ng-container>
 </button>
