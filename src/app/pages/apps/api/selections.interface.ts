@@ -2,7 +2,7 @@ import { ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
 
 export namespace ISelection {
 
-    export const DIMENSION_LIST = {
+    export const DIMENSION_LIST: EngineAPI.IGenericDimensionsListProperties = {
         qInfo: {
             qType: 'DimensionList'
         },

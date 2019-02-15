@@ -1,39 +1,109 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportModel } from '@smc/modules/ser';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { SelectionObjectType, SelectionType } from '@smc/modules/ser';
 import { FormService } from '@smc/modules/form-helper';
 import { IDataNode } from '@smc/modules/smc-common';
 import { AppConnector } from '@smc/pages/apps/providers/connection';
 import { SelectionPropertyConnector } from '@smc/pages/apps/providers/selection-property.connector';
 import { SelectionValueConnector } from '@smc/pages/apps/providers/selection-value.connector';
-import { RemoteSource, ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
+import { ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
 import { ISelection } from '@smc/pages/apps/api/selections.interface';
+import { tap, switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'smc-edit-form-selections',
     templateUrl: 'selection.component.html'
 })
-
 export class SelectionComponent implements OnInit {
 
+    /**
+     * name in report.template.selections mode,
+     * will passed as items to item-list
+     *
+     * @type {ItemList.Item[]}
+     * @memberof SelectionComponent
+     */
     public selectedDimension: ItemList.Item[];
+
+    /**
+     * selected values, all values in report.template.selections model
+     * passed as items to item-list
+     *
+     * @type {ItemList.Item[]}
+     * @memberof SelectionComponent
+     */
     public selectedValues: ItemList.Item[];
 
     public selectionObjectTypes: SelectionObjectType;
     public selectionTypes: SelectionType;
     public selectionForm: FormGroup;
 
-    public appDimensionConnector: RemoteSource.Connector<IDataNode>;
-    public appValueConnector: RemoteSource.Connector<ISelection.ValueConnectorConfig>;
+    /**
+     * connector to receive fields and dimensions from an app if we connected
+     * passed to item-list as source connector
+     *
+     * @type {RemoteSource.Connector<IDataNode>}
+     * @memberof SelectionComponent
+     */
+    public appDimensionConnector: SelectionPropertyConnector;
 
+    /**
+     * connector to receive values from connected app, depends on which value
+     * has been selected from appDimensionConnector
+     * will be disabled if no dimension or field is selected from auto complete
+     * field.
+     *
+     * @type {SelectionValueConnector}
+     * @memberof SelectionComponent
+     */
+    public appValueConnector: SelectionValueConnector;
+
+    /**
+     * update hook stream, will called if app save or preview is called
+     *
+     * @private
+     * @type {Observable<boolean>}
+     * @memberof SelectionComponent
+     */
     private updateHook: Observable<boolean>;
+
+    /**
+     * loaded report model
+     *
+     * @private
+     * @type {ReportModel}
+     * @memberof SelectionComponent
+     */
     private report: ReportModel;
 
+    /**
+     * selection name, will be set if we add a new value to item-list
+     * for dimensions / fields
+     *
+     * @private
+     * @memberof SelectionComponent
+     */
     private selectionName = '';
-    private valueNames: string[]     = [];
 
+    /**
+     * value names which has been set, will update if value item-list
+     * adds or remove new elements
+     *
+     * @private
+     * @type {string[]}
+     * @memberof SelectionComponent
+     */
+    private valueNames: string[] = [];
+
+    /**
+     * Creates an instance of SelectionComponent.
+     * @param {AppConnector} appConnector
+     * @param {FormBuilder} formBuilder
+     * @param {FormService<ReportModel, boolean>} formService
+     * @memberof SelectionComponent
+     */
     constructor(
         private appConnector: AppConnector,
         private formBuilder: FormBuilder,
@@ -72,7 +142,7 @@ export class SelectionComponent implements OnInit {
      */
     public selectionNameChanged(changedEvent: ItemList.ChangedEvent) {
 
-        const added: ISelection.Item[]   = changedEvent.added as ISelection.Item[];
+        const added: ISelection.Item[] = changedEvent.added as ISelection.Item[];
         const valueConnectionConfig: ISelection.ValueConnectorConfig = {};
 
         this.appValueConnector.disable(false);
@@ -109,7 +179,6 @@ export class SelectionComponent implements OnInit {
      * @memberof SelectionComponent
      */
     public selectionValuesChanged(changedEvent: ItemList.ChangedEvent) {
-
         this.valueNames = changedEvent.items.reduce<string[]>((itemNames: string[], selectedItem: ItemList.Item) => {
             return [...itemNames, selectedItem.title];
         }, []);
@@ -123,13 +192,42 @@ export class SelectionComponent implements OnInit {
      * @memberof SelectionComponent
      */
     private registerAppConnector() {
-        this.appConnector.connection.subscribe((app: EngineAPI.IApp) => {
+        this.appConnector.connection
+            .pipe(
+                tap((app: EngineAPI.IApp) => {
+                    this.appDimensionConnector.config = { app };
+                    this.appValueConnector.config = { app };
+                }),
+                switchMap(() => {
+                    const needle = this.selectedDimension.length ? this.selectedDimension[0].title : null;
+                    return forkJoin([
+                        this.appDimensionConnector.findDimensionByName(needle),
+                        this.appDimensionConnector.findFieldByName(needle)
+                    ]);
+                })
+            ).subscribe(([dimension, field]) => {
+                this.appValueConnector.disable(false);
+                if (dimension) {
+                    this.appValueConnector.config = {
+                        selectFrom: {
+                            type: ISelection.TYPE.DIMENSION,
+                            value: dimension.id
+                        }
+                    };
+                    return;
+                }
 
-            if (app) {
-                this.appDimensionConnector.config = { app };
-                this.appValueConnector.config = { app };
-            }
-        });
+                if (field) {
+                    this.appValueConnector.config = {
+                        selectFrom: {
+                            type: ISelection.TYPE.FIELD,
+                            value: field.title
+                        }
+                    };
+                    return;
+                }
+                this.appValueConnector.disable(true);
+            });
     }
 
     /**
@@ -148,7 +246,7 @@ export class SelectionComponent implements OnInit {
                     const selectionValues = this.report.template.selections[0].values;
                     this.selectionForm = this.buildSelectionForm();
 
-                    this.selectedDimension = [{title: this.report.template.selections[0].name}];
+                    this.selectedDimension = [{ title: this.report.template.selections[0].name }];
                     this.selectedValues = selectionValues.map<ItemList.Item>((title) => {
                         return { title };
                     });

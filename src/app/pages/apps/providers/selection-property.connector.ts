@@ -1,6 +1,5 @@
 import { RemoteSource } from '@smc/modules/smc-ui/api/item-list.interface';
-import { Observable, of, from, forkJoin } from 'rxjs';
-import { importData } from '@smc/modules/smc-common/utils';
+import { Observable, forkJoin } from 'rxjs';
 import { IDataNode } from '@smc/modules/smc-common';
 import { map } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';
@@ -9,7 +8,7 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
 
     private connectedApp: EngineAPI.IApp;
 
-    private dimensionSession: EngineAPI.IGenericObject;
+    private dimensionSession: EngineAPI.IDimensionListObject;
     private fieldSession: EngineAPI.IGenericObject;
 
     private dimensionsCache: ISelection.Item[] = null;
@@ -26,8 +25,9 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
         this.connectedApp = app;
     }
 
-    @importData
-    public set config(data: IDataNode) { }
+    public set config(data: IDataNode) {
+        this.connectedApp = data.app || null;
+    }
 
     /**
      * fetch dimensions and fields and merge the value
@@ -37,6 +37,7 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      * @memberof SelectionPropertyConnector
      */
     fetch(needle: string): Observable<RemoteSource.Source> {
+
         return forkJoin(this.getDimensions(), this.getFields()).pipe(
             map(([dimensions, fields]): RemoteSource.Source => {
                 const regExp = new RegExp(needle, 'i');
@@ -77,6 +78,48 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
     }
 
     /**
+     * find dimension by name
+     *
+     * @param {string} name
+     * @returns {(Observable<ISelection.Item | null>)}
+     * @memberof SelectionPropertyConnector
+     */
+    public async findDimensionByName(name: string): Promise<ISelection.Item | null> {
+
+        if (!name || name === '') {
+            return null;
+        }
+
+        const dimensions = await this.getDimensions();
+        const pattern    = new RegExp(`^${name}$`);
+        const dimension  = dimensions.find((item: ISelection.Item) => {
+            return pattern.test(item.title);
+        });
+        return dimension || null;
+    }
+
+    /**
+     * find field by name
+     *
+     * @param {string} name
+     * @returns {(Promise<ISelection.Item | null>)}
+     * @memberof SelectionPropertyConnector
+     */
+    public async findFieldByName(name: string): Promise<ISelection.Item | null> {
+
+        if (!name || name === '') {
+            return null;
+        }
+
+        const fields  = await this.getFields();
+        const pattern = new RegExp(`^${name}$`);
+        const field   = fields.find((item: ISelection.Item) => {
+            return pattern.test(item.title);
+        });
+        return field || null;
+    }
+
+    /**
      * get dimensions from hypercube
      *
      * @private
@@ -84,7 +127,7 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      * @returns {Promise<any>}
      * @memberof SelectionPropertyConnector
      */
-    private async getDimensions(): Promise<any> {
+    private async getDimensions(): Promise<ISelection.Item[]> {
 
         // no app no data
         if (!this.connectedApp || this.isDisabled) {
@@ -97,8 +140,8 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
         }
 
         this.dimensionSession = await this.connectedApp.createSessionObject(ISelection.DIMENSION_LIST);
-        const dimensions = await this.dimensionSession.getLayout() as EngineAPI.IGenericDimensionListLayout;
-        const selectionData = dimensions.qDimensionList.qItems.map<ISelection.Item>((item: EngineAPI.IDimensionItemLayout) => {
+        const dimensionList   = await this.dimensionSession.getLayout();
+        const selectionData   = dimensionList.qDimensionList.qItems.map<ISelection.Item>((item) => {
             return {
                 id: item.qInfo.qId,
                 title: item.qMeta.title,
