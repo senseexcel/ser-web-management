@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EnigmaService } from '@smc/modules/smc-common';
 import { BehaviorSubject, Observable, from } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { tap, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class AppConnector {
@@ -60,13 +60,14 @@ export class AppConnector {
      *
      * @memberof Connection
      */
-    public closeConnection(): Observable<void> {
-        return from(this.enigmaService.closeApp(this.app)).pipe(
-            tap(() => {
-                this.connectionEstablished = false;
-                this.app = null;
-                this.appConnection.next(this.app);
-            })
-        );
+    public async closeConnection(): Promise<void> {
+
+        if (this.app) {
+            await this.enigmaService.closeApp(this.app);
+        }
+
+        this.connectionEstablished = false;
+        this.app = null;
+        this.appConnection.next(null);
     }
 }

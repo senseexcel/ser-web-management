@@ -27,7 +27,9 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
     }
 
     public close() {
-        this.valueSession.session.close();
+        if (this.valueSession && this.valueSession.session) {
+            this.valueSession.session.close();
+        }
         this.valueSession = null;
         this.connectedApp = null;
         this.selectFrom = null;

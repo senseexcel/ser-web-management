@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ReportModel } from '@smc/modules/ser';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, forkJoin, of } from 'rxjs';
+import { Observable, forkJoin, of, Subject } from 'rxjs';
 import { SelectionObjectType, SelectionType } from '@smc/modules/ser';
 import { FormService } from '@smc/modules/form-helper';
 import { IDataNode } from '@smc/modules/smc-common';
@@ -10,13 +10,13 @@ import { SelectionPropertyConnector } from '@smc/pages/apps/providers/selection-
 import { SelectionValueConnector } from '@smc/pages/apps/providers/selection-value.connector';
 import { ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
 import { ISelection } from '@smc/pages/apps/api/selections.interface';
-import { tap, switchMap } from 'rxjs/operators';
+import { tap, switchMap, takeUntil, take } from 'rxjs/operators';
 
 @Component({
     selector: 'smc-edit-form-selections',
     templateUrl: 'selection.component.html'
 })
-export class SelectionComponent implements OnInit {
+export class SelectionComponent implements OnInit, OnDestroy {
 
     /**
      * name in report.template.selections mode,
@@ -39,6 +39,15 @@ export class SelectionComponent implements OnInit {
     public selectionObjectTypes: SelectionObjectType;
     public selectionTypes: SelectionType;
     public selectionForm: FormGroup;
+
+    /**
+     * emits true if component gets destroyed
+     *
+     * @private
+     * @type {Subject<boolean>}
+     * @memberof SelectionComponent
+     */
+    private onDestroyed$: Subject<boolean> = new Subject();
 
     /**
      * connector to receive fields and dimensions from an app if we connected
@@ -135,6 +144,22 @@ export class SelectionComponent implements OnInit {
     }
 
     /**
+     * component gets destroyed
+     *
+     * @memberof SelectionComponent
+     */
+    ngOnDestroy(): void {
+        this.onDestroyed$.next(true);
+        this.onDestroyed$.complete();
+
+        this.appDimensionConnector.close();
+        this.appValueConnector.close();
+
+        this.appDimensionConnector = null;
+        this.appValueConnector = null;
+    }
+
+    /**
      * dimension / field has been changed
      *
      * @param {ItemList.ChangedEvent} changedEvent
@@ -151,7 +176,7 @@ export class SelectionComponent implements OnInit {
             this.appValueConnector.disable(true);
         }
 
-        this.selectionName = changedEvent.items[0] ? changedEvent.items[0].title : '';
+        this.selectionName = changedEvent.items[0].title;
     }
 
     /**
@@ -195,6 +220,7 @@ export class SelectionComponent implements OnInit {
                         this.appDimensionConnector.findFieldByName(needle)
                     ]);
                 }),
+                takeUntil(this.onDestroyed$)
             ).subscribe(([dimension, field]) => {
                 this.updateValueConnector(dimension || field || { type: ISelection.TYPE.NONE, title: null });
             });
@@ -242,13 +268,17 @@ export class SelectionComponent implements OnInit {
     private registerFormService() {
         /** register on app has been loaded and model has been loaded to edit*/
         this.formService.editModel()
+            .pipe(takeUntil(this.onDestroyed$))
             .subscribe((report: ReportModel) => {
                 this.report = report;
                 if (this.report) {
-                    const selectionValues = this.report.template.selections[0].values;
+
+                    const selection = this.report.template.selections[0] || {values: [], name: ''};
+                    const selectionValues = selection.values;
+
                     this.selectionForm = this.buildSelectionForm();
 
-                    this.selectedDimension = [{ title: this.report.template.selections[0].name }];
+                    this.selectedDimension = selection.name && selection.name.length ? [{title: selection.name}] : [];
                     this.selectedValues = selectionValues.map<ItemList.Item>((title) => {
                         return { title };
                     });
@@ -331,11 +361,13 @@ export class SelectionComponent implements OnInit {
             const formData: IDataNode = this.selectionForm.getRawValue();
             const { objectType } = formData.selection;
             this.report.template.selections = [{
-                name: this.selectionName,
-                values: this.valueNames,
+                name: this.selectionName.length ? this.selectionName : undefined,
+                values: this.valueNames.length ? this.valueNames : undefined,
                 objectType, type: formData.type
             }];
             obs.next(true);
+
+            this.onDestroyed$.subscribe(() => obs.complete());
         });
         return observer;
     }

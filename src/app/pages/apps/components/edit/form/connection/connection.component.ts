@@ -100,8 +100,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      * @memberof ConnectionComponent
      */
     public disconnectFromApp() {
-        this.appConnector.closeConnection()
-            .subscribe();
+        this.appConnector.closeConnection();
     }
 
     /**

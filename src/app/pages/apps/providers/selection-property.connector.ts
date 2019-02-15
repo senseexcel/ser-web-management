@@ -24,7 +24,7 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
     protected set app(app: EngineAPI.IApp) {
         if (app && app !== this.connectedApp) {
             this.dimensionsCache = null;
-            this.fieldCache      = null;
+            this.fieldCache = null;
         }
         this.connectedApp = app;
     }
@@ -67,14 +67,18 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      * @memberof SelectionPropertyConnector
      */
     close() {
-        this.fieldSession.session.close();
-        this.dimensionSession.session.close();
+
+        if (this.fieldSession && this.dimensionSession) {
+            this.fieldSession.session.close();
+            this.dimensionSession.session.close();
+        }
 
         this.fieldCache = null;
         this.dimensionsCache = null;
         this.fieldSession = null;
         this.dimensionSession = null;
         this.connectedApp = null;
+        this.isDisabled = false;
     }
 
     disable(state: boolean) {
@@ -95,8 +99,8 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
         }
 
         const dimensions = await this.getDimensions();
-        const pattern    = new RegExp(`^${name}$`);
-        const dimension  = dimensions.find((item: ISelection.Item) => {
+        const pattern = new RegExp(`^${name}$`);
+        const dimension = dimensions.find((item: ISelection.Item) => {
             return pattern.test(item.title);
         });
         return dimension || null;
@@ -115,9 +119,9 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
             return null;
         }
 
-        const fields  = await this.getFields();
+        const fields = await this.getFields();
         const pattern = new RegExp(`^${name}$`);
-        const field   = fields.find((item: ISelection.Item) => {
+        const field = fields.find((item: ISelection.Item) => {
             return pattern.test(item.title);
         });
         return field || null;
@@ -144,8 +148,8 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
         }
 
         this.dimensionSession = await this.connectedApp.createSessionObject(ISelection.DIMENSION_LIST);
-        const dimensionList   = await this.dimensionSession.getLayout();
-        const selectionData   = dimensionList.qDimensionList.qItems.map<ISelection.Item>((item) => {
+        const dimensionList = await this.dimensionSession.getLayout();
+        const selectionData = dimensionList.qDimensionList.qItems.map<ISelection.Item>((item) => {
             return {
                 id: item.qInfo.qId,
                 title: item.qMeta.title,
