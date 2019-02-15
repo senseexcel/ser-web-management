@@ -2,7 +2,7 @@ import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDes
 import { MatAutocompleteSelectedEvent, MatInput, MatAutocompleteTrigger } from '@angular/material';
 import { IDataNode } from '@smc/modules/smc-common';
 import { Subject } from 'rxjs';
-import { debounceTime, switchMap, takeUntil, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil, distinctUntilChanged, debounce } from 'rxjs/operators';
 import { RemoteSource, ItemList } from '../../api/item-list.interface';
 import { EmptyRemoteSourceConnector } from '../../provider/empty-remote-source.connector';
 
@@ -81,24 +81,12 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
      * @memberof ItemListComponent
      */
     public addValue() {
-
         /** dont add empty values */
         if (this.textField.value === '') {
             return;
         }
-
         const newItem: ItemList.Item = { title: this.textField.value };
         this.addItem(newItem);
-    }
-
-    /**
-     * select item via material select box
-     *
-     * @param {MatAutocompleteSelectedEvent} event
-     * @memberof ItemListComponent
-     */
-    public onSelect(event: MatAutocompleteSelectedEvent) {
-        this.addItem(event.option.value);
     }
 
     /**
@@ -126,14 +114,19 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
      */
     ngAfterViewInit() {
         this.registerKeyDownStream();
-    }
-
-    public onKeyDown($event: KeyboardEvent) {
-        $event.stopPropagation();
-
-        if ($event.keyCode !== 13) {
-            this.keyDown$.next(this.textField.value);
-        }
+        /**
+         * override onChange method of angular matrial autoComplete
+         * but this will even trigger if we select an item from autocomplete
+         * list
+         */
+        this.autoCompleteTrigger.registerOnChange((value: string | ItemList.Item): null => {
+            if (typeof value === 'string') {
+                this.keyDown$.next(value as string);
+                return null;
+            }
+            this.addItem(value as ItemList.Item);
+            return null;
+        });
     }
 
     /**
@@ -162,8 +155,7 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
      */
     private registerKeyDownStream() {
         this.keyDown$.pipe(
-            debounceTime(200),
-            distinctUntilChanged(),
+            debounceTime(100),
             switchMap((value) => this.remoteSource.fetch(value)),
             takeUntil(this.isDestroyed$)
         ).subscribe((source: RemoteSource.Source) => {
@@ -185,7 +177,6 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
      * @memberof ItemListComponent
      */
     private addItem(item: ItemList.Item) {
-
         let removed: ItemList.Item[] = [];
 
         if (this.mode === ItemList.MODE.MULTI) {

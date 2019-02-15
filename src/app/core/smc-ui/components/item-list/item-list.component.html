@@ -1,8 +1,8 @@
 <div class="form-field--wrapper">
   <mat-form-field>
-    <input type="text" #input matInput placeholder="{{label}}" (keydown)="onKeyDown($event)" (keyUp.enter)="addValue($event)"
+    <input type="text" #input matInput placeholder="{{label}}" (keyUp.enter)="addValue()"
       [matAutocomplete]="auto">
-    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onSelect($event)">
+    <mat-autocomplete #auto="matAutocomplete">
       <!-- AUTO COMPLETE FOR GROUPS -->
       <ng-container *ngIf="isGrouped">
         <mat-optgroup *ngFor="let group of source" [label]="group.name">
