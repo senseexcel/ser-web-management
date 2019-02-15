@@ -176,7 +176,7 @@ export class SelectionComponent implements OnInit, OnDestroy {
             this.appValueConnector.disable(true);
         }
 
-        this.selectionName = changedEvent.items[0].title;
+        this.selectionName = changedEvent.items[0] ? changedEvent.items[0].title : '';
     }
 
     /**

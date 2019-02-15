@@ -103,8 +103,8 @@ export class ConnectionComponent implements OnInit, OnDestroy {
                 };
 
                 if (error.code === 403) {
-                    e.title = 'SMC_APPS.EDIT.CONNECTION.FORBIDDEN_TITLE',
-                    e.message.key = 'SMC_APPS.EDIT.CONNECTION.FORBIDDEN_MESSAGE',
+                    e.title = 'SMC_APPS.EDIT.CONNECTION.FORBIDDEN_TITLE';
+                    e.message.key = 'SMC_APPS.EDIT.CONNECTION.FORBIDDEN_MESSAGE';
                 }
 
                 this.modalService.openMessageModal(e.title, e.message);
@@ -123,7 +123,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
     }
 
     /**
-     *
+     * app has been selected via autocomplete list
      *
      * @param {MatAutocompleteSelectedEvent} event
      * @memberof ConnectionComponent
