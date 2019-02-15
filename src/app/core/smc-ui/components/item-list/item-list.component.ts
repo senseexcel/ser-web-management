@@ -52,8 +52,8 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
 
     constructor() {
         this.changed = new EventEmitter();
-        this.input   = new EventEmitter();
-        this.isDestroyed$  = new Subject();
+        this.input = new EventEmitter();
+        this.isDestroyed$ = new Subject();
         this.remoteSource$ = new Subject();
     }
 
@@ -99,10 +99,10 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
 
         // delete events
         this.changed = null;
-        this.input   = null;
+        this.input = null;
 
         // delete
-        this.items   = null;
+        this.items = null;
         this.textField = null;
         this.remoteSource = null;
     }
@@ -118,16 +118,13 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
     }
 
     /**
-     *
+     * override onChange method of angular matrial autoComplete
+     * but this will even trigger if we select an item from autocomplete
+     * list
      *
      * @memberof SelectionListComponent
      */
     ngAfterViewInit() {
-        /**
-         * override onChange method of angular matrial autoComplete
-         * but this will even trigger if we select an item from autocomplete
-         * list
-         */
         this.autoCompleteTrigger.registerOnChange((value: string | ItemList.Item): null => {
             if (typeof value === 'string') {
                 this.remoteSource$.next(value as string);

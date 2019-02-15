@@ -14,11 +14,11 @@
   <div [ngClass]="{'connected': isConnected}">
     <smc-ui--button class="btn-lighten" *ngIf="!isConnected" (click)="connectToApp()" [disabled]="!this.selectedAppId">
       <i class="ser-icon ser-icon--disconnect"></i>
-      Connect to app
+      {{'SMC_APPS.EDIT.FORM.CONNECTION.CONNECT' | translate}}
     </smc-ui--button>
     <smc-ui--button class="btn-lighten" *ngIf="isConnected" (click)="disconnectFromApp()">
       <i class="ser-icon ser-icon--disconnect"></i>
-      Disconnect
+      {{'SMC_APPS.EDIT.FORM.CONNECTION.DISCONNECT' | translate}}
     </smc-ui--button>
   </div>
 </div>

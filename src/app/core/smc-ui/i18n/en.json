@@ -11,6 +11,9 @@
                 "TOTAL": "Total: {{COUNT}}",
                 "VISIBLE": "Showing: {{COUNT}}"
             }
-        } 
+        },
+        "ITEM_LIST" : {
+            "CLEAR_ALL": "Clear all"
+        }
     }
 }

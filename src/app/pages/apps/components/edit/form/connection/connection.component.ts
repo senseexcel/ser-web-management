@@ -99,19 +99,25 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      * @memberof ConnectionComponent
      */
     public connectToApp() {
+
+        console.log(this.selectedAppId);
+
         this.appConnector.createConnection(this.selectedAppId)
             .pipe(catchError((error) => {
                 const e = {
-                    title: 'SMC_APPS.EDIT.CONNECTION.ERROR_TITLE',
+                    title: 'SMC_APPS.EDIT.FORM.CONNECTION.ERROR_TITLE',
                     message: {
-                        key: 'SMC_APPS.EDIT.CONNECTION.ERROR_MESSAGE',
-                        value: {APP: this.selectedAppId}
+                        key: 'SMC_APPS.EDIT.FORM.CONNECTION.ERROR_MESSAGE',
+                        param: {
+                            APP_ID: this.selectedAppId,
+                            ERROR: error.message
+                        }
                     }
                 };
 
                 if (error.code === 403) {
-                    e.title = 'SMC_APPS.EDIT.CONNECTION.FORBIDDEN_TITLE';
-                    e.message.key = 'SMC_APPS.EDIT.CONNECTION.FORBIDDEN_MESSAGE';
+                    e.title = 'SMC_APPS.EDIT.FORM.CONNECTION.FORBIDDEN_TITLE';
+                    e.message.key = 'SMC_APPS.EDIT.FORM.CONNECTION.FORBIDDEN_MESSAGE';
                 }
 
                 this.modalService.openMessageModal(e.title, e.message);

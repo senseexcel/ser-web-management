@@ -18,6 +18,15 @@
 
       "FORM": {
 
+        "CONNECTION": {
+          "CONNECT": "Connect",
+          "DISCONNECT": "Disconnect",
+          "ERROR_TITLE": "Could not connect to app",
+          "ERROR_MESSAGE": "App {{APP}} could not opened <br /><br /> {{ERROR}}",
+          "FORBIDDEN_TITLE": "Could not connect to app",
+          "FORBIDDEN_MESSAGE": "Missing access rights for following App: <br /><br /><b>{{APP_ID}}</b>. <br /><br />Select other app or contact your administrator for further informations."
+        },
+
         "DISTRIBUTION": {
 
           "TAB": {
@@ -65,9 +74,9 @@
 
         "SELECTIONS": {
 
-          "FIELD": {
-            "NAME": "Name",
-            "VALUE": "Value"
+          "LABEL": {
+            "SELECTION_NAME": "Dimension / Field / Qlik Script",
+            "SELECTION_VALUE": "Value"
           },
 
           "TYPE": {

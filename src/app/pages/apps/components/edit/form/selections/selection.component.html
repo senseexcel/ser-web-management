@@ -23,11 +23,11 @@
       </mat-form-field>
 
       <!-- selection name -->
-      <smc-ui--item-list [remoteSource]="appDimensionConnector" [items]="selectedDimension" [mode]="single" [label]="'Dimension,Field or something else'"
+      <smc-ui--item-list [remoteSource]="appDimensionConnector" [items]="selectedDimension" [mode]="single" [label]="'SMC_APPS.EDIT.FORM.SELECTIONS.LABEL.SELECTION_NAME' | translate"
         (changed)="selectionNameChanged($event)"></smc-ui--item-list>
 
       <!-- selection value -->
-      <smc-ui--item-list [remoteSource]="appValueConnector" [items]="selectedValues" [label]="'Selection value'"
+      <smc-ui--item-list [remoteSource]="appValueConnector" [items]="selectedValues" [label]="'SMC_APPS.EDIT.FORM.SELECTIONS.LABEL.SELECTION_VALUE' | translate"
         (changed)="selectionValuesChanged($event)"></smc-ui--item-list>
 
     </ng-container>
