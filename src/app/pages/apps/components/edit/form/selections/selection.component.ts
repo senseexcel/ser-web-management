@@ -199,20 +199,12 @@ export class SelectionComponent implements OnInit, OnDestroy {
      * @memberof SelectionComponent
      */
     private registerAppConnector() {
-        this.appConnector.connection
-            .pipe(
-                tap((app: EngineAPI.IApp) => {
-                    this.appDimensionConnector.disable(app === null);
-                    this.appValueConnector.disable(app === null);
 
+        this.appConnector.connect
+            .pipe(
+                switchMap((app: EngineAPI.IApp) => {
                     this.appDimensionConnector.config = { app };
                     this.appValueConnector.config = { app };
-                }),
-                switchMap((app) => {
-
-                    if (!app) {
-                        return of([]);
-                    }
 
                     const needle = this.selectedDimension.length ? this.selectedDimension[0].title : null;
                     return forkJoin([
@@ -223,6 +215,13 @@ export class SelectionComponent implements OnInit, OnDestroy {
                 takeUntil(this.onDestroyed$)
             ).subscribe(([dimension, field]) => {
                 this.updateValueConnector(dimension || field || { type: ISelection.TYPE.NONE, title: null });
+            });
+
+        this.appConnector.disconnect
+            .pipe(takeUntil(this.onDestroyed$))
+            .subscribe(() => {
+                this.appDimensionConnector.close();
+                this.appValueConnector.close();
             });
     }
 
@@ -273,12 +272,12 @@ export class SelectionComponent implements OnInit, OnDestroy {
                 this.report = report;
                 if (this.report) {
 
-                    const selection = this.report.template.selections[0] || {values: [], name: ''};
+                    const selection = this.report.template.selections[0] || { values: [], name: '' };
                     const selectionValues = selection.values;
 
                     this.selectionForm = this.buildSelectionForm();
 
-                    this.selectedDimension = selection.name && selection.name.length ? [{title: selection.name}] : [];
+                    this.selectedDimension = selection.name && selection.name.length ? [{ title: selection.name }] : [];
                     this.selectedValues = selectionValues.map<ItemList.Item>((title) => {
                         return { title };
                     });

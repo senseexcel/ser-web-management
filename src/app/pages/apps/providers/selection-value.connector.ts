@@ -26,10 +26,11 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
         }
     }
 
-    public close() {
+    public async close() {
         if (this.valueSession && this.valueSession.session) {
-            this.valueSession.session.close();
+            await this.valueSession.session.close();
         }
+
         this.valueSession = null;
         this.connectedApp = null;
         this.selectFrom = null;
@@ -96,6 +97,8 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
 
         let isDirty = false;
 
+        console.dir(this.valueSession);
+
         if (!this.valueSession) {
             this.valueSession = await this.connectedApp.createSessionObject(ISelection.VALUE_LIST);
             isDirty = true;
@@ -110,7 +113,6 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
         if (isDirty) {
             await this.valueSession.getLayout();
         }
-
         return this.valueSession;
     }
 
@@ -128,12 +130,13 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
         await session.searchListObjectFor('/qListObjectDef', searchFor);
         await session.getLayout();
 
-        return await session.getListObjectData('/qListObjectDef', [{
+        const result = await session.getListObjectData('/qListObjectDef', [{
             qTop: 0,
             qLeft: 0,
             qHeight: 20,
             qWidth: 1
         }]);
+        return result;
     }
 
 

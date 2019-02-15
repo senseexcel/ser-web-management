@@ -1,19 +1,22 @@
 import { Injectable } from '@angular/core';
 import { EnigmaService } from '@smc/modules/smc-common';
-import { BehaviorSubject, Observable, from } from 'rxjs';
-import { tap, catchError } from 'rxjs/operators';
+import { Observable, from, Subject } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class AppConnector {
 
-    private appConnection: BehaviorSubject<EngineAPI.IApp>;
+    public readonly disconnect: Subject<void>        = new Subject();
+    public readonly connect: Subject<EngineAPI.IApp> = new Subject();
+
+    private appConnection: Subject<EngineAPI.IApp>;
     private app: EngineAPI.IApp;
     private connectionEstablished: boolean;
 
     constructor(
         private enigmaService: EnigmaService
     ) {
-        this.appConnection = new BehaviorSubject(null);
+        this.appConnection = new Subject();
         this.connectionEstablished = false;
     }
 
@@ -28,17 +31,6 @@ export class AppConnector {
     }
 
     /**
-     * get current connection
-     *
-     * @readonly
-     * @type {Observable<EngineAPI.IApp>}
-     * @memberof Connection
-     */
-    public get connection(): Observable<EngineAPI.IApp> {
-        return this.appConnection.asObservable();
-    }
-
-    /**
      * create connection to app
      *
      * @param {string} appId
@@ -50,7 +42,7 @@ export class AppConnector {
             tap((app: EngineAPI.IApp) => {
                 this.app = app;
                 this.connectionEstablished = true;
-                this.appConnection.next(app);
+                this.connect.next(app);
             })
         );
     }
@@ -64,7 +56,7 @@ export class AppConnector {
 
         if (this.app) {
             await this.enigmaService.closeApp(this.app);
-            this.appConnection.next(null);
+            this.disconnect.next();
         }
 
         this.connectionEstablished = false;

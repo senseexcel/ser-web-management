@@ -71,10 +71,16 @@ export class ConnectionComponent implements OnInit, OnDestroy {
         this.registerModelLoadEvent();
         this.registerAppSearchEvent();
 
-        this.appConnector.connection
+        this.appConnector.connect
             .pipe(takeUntil(this.isDestroyed))
-            .subscribe((connection: null | EngineAPI.IApp) => {
-                this.isConnected = connection !== null;
+            .subscribe(() => {
+                this.isConnected = true;
+            });
+
+        this.appConnector.disconnect
+            .pipe(takeUntil(this.isDestroyed))
+            .subscribe(() => {
+                this.isConnected = false;
             });
     }
 
