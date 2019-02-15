@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ReportModel } from '@smc/modules/ser';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, forkJoin } from 'rxjs';
+import { Observable, forkJoin, of } from 'rxjs';
 import { SelectionObjectType, SelectionType } from '@smc/modules/ser';
 import { FormService } from '@smc/modules/form-helper';
 import { IDataNode } from '@smc/modules/smc-common';
@@ -143,33 +143,15 @@ export class SelectionComponent implements OnInit {
     public selectionNameChanged(changedEvent: ItemList.ChangedEvent) {
 
         const added: ISelection.Item[] = changedEvent.added as ISelection.Item[];
-        const valueConnectionConfig: ISelection.ValueConnectorConfig = {};
-
         this.appValueConnector.disable(false);
 
         if (added.length) {
-            switch (added[0].type) {
-                case ISelection.TYPE.DIMENSION:
-                    valueConnectionConfig.selectFrom = {
-                        type: ISelection.TYPE.DIMENSION,
-                        value: added[0].id
-                    };
-                    break;
-                case ISelection.TYPE.FIELD:
-                    valueConnectionConfig.selectFrom = {
-                        type: ISelection.TYPE.FIELD,
-                        value: added[0].title
-                    };
-                    break;
-                default:
-                    this.appValueConnector.disable(true);
-            }
+            this.updateValueConnector(added[0]);
         } else {
             this.appValueConnector.disable(true);
         }
 
         this.selectionName = changedEvent.items[0] ? changedEvent.items[0].title : '';
-        this.appValueConnector.config = valueConnectionConfig;
     }
 
     /**
@@ -195,40 +177,60 @@ export class SelectionComponent implements OnInit {
         this.appConnector.connection
             .pipe(
                 tap((app: EngineAPI.IApp) => {
+                    this.appDimensionConnector.disable(app === null);
+                    this.appValueConnector.disable(app === null);
+
                     this.appDimensionConnector.config = { app };
                     this.appValueConnector.config = { app };
                 }),
-                switchMap(() => {
+                switchMap((app) => {
+
+                    if (!app) {
+                        return of([]);
+                    }
+
                     const needle = this.selectedDimension.length ? this.selectedDimension[0].title : null;
                     return forkJoin([
                         this.appDimensionConnector.findDimensionByName(needle),
                         this.appDimensionConnector.findFieldByName(needle)
                     ]);
-                })
+                }),
             ).subscribe(([dimension, field]) => {
-                this.appValueConnector.disable(false);
-                if (dimension) {
-                    this.appValueConnector.config = {
-                        selectFrom: {
-                            type: ISelection.TYPE.DIMENSION,
-                            value: dimension.id
-                        }
-                    };
-                    return;
-                }
-
-                if (field) {
-                    this.appValueConnector.config = {
-                        selectFrom: {
-                            type: ISelection.TYPE.FIELD,
-                            value: field.title
-                        }
-                    };
-                    return;
-                }
-                this.appValueConnector.disable(true);
+                this.updateValueConnector(dimension || field || { type: ISelection.TYPE.NONE, title: null });
             });
     }
+
+    /**
+     * update value connector
+     *
+     * @private
+     * @param {ISelection.Item} item
+     * @memberof SelectionComponent
+     */
+    private updateValueConnector(item: ISelection.Item) {
+        this.appValueConnector.disable(false);
+        switch (item.type) {
+            case ISelection.TYPE.DIMENSION:
+                this.appValueConnector.config = {
+                    selectFrom: {
+                        type: ISelection.TYPE.DIMENSION,
+                        value: item.id
+                    }
+                };
+                break;
+            case ISelection.TYPE.FIELD:
+                this.appValueConnector.config = {
+                    selectFrom: {
+                        type: ISelection.TYPE.FIELD,
+                        value: item.title
+                    }
+                };
+                break;
+            default:
+                this.appValueConnector.disable(true);
+        }
+    }
+
 
     /**
      * register to form service to get notified if a model has

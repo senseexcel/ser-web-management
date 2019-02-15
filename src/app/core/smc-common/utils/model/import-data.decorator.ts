@@ -7,7 +7,6 @@ export function importData(target, key = null, descriptor: PropertyDescriptor): 
     }
     return {
         set: function (data: IDataNode) {
-            console.log(target);
             // get all properties, exclude decorated property
             const properties = Object.keys(target).filter((prop) => prop !== key);
             properties.forEach((property) => {

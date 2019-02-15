@@ -22,11 +22,15 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      * @memberof SelectionPropertyConnector
      */
     protected set app(app: EngineAPI.IApp) {
+        if (app && app !== this.connectedApp) {
+            this.dimensionsCache = null;
+            this.fieldCache      = null;
+        }
         this.connectedApp = app;
     }
 
     public set config(data: IDataNode) {
-        this.connectedApp = data.app || null;
+        this.app = data.app;
     }
 
     /**

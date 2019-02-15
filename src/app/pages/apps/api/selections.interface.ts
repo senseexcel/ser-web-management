@@ -59,7 +59,8 @@ export namespace ISelection {
     export enum TYPE {
         DIMENSION = 'dimension',
         FIELD = 'field',
-        VALUE = 'value'
+        VALUE = 'value',
+        NONE  = 'undefined'
     }
 
     export interface Item extends ItemList.Item {

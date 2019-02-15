@@ -1,8 +1,7 @@
 import { RemoteSource } from '@smc/modules/smc-ui/api/item-list.interface';
 import { Observable, from, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';
-
 
 export class SelectionValueConnector implements RemoteSource.Connector<ISelection.ValueConnectorConfig> {
 

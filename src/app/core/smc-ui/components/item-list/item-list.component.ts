@@ -1,8 +1,8 @@
-import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy, ContentChild } from '@angular/core';
-import { MatAutocompleteSelectedEvent, MatInput, MatAutocompleteTrigger } from '@angular/material';
+import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
+import { MatInput, MatAutocompleteTrigger } from '@angular/material';
 import { IDataNode } from '@smc/modules/smc-common';
 import { Subject } from 'rxjs';
-import { debounceTime, switchMap, takeUntil, distinctUntilChanged, debounce } from 'rxjs/operators';
+import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { RemoteSource, ItemList } from '../../api/item-list.interface';
 import { EmptyRemoteSourceConnector } from '../../provider/empty-remote-source.connector';
 
@@ -11,7 +11,7 @@ import { EmptyRemoteSourceConnector } from '../../provider/empty-remote-source.c
     templateUrl: 'item-list.component.html',
     styleUrls: ['./item-list.component.scss']
 })
-export class ItemListComponent implements AfterViewInit, OnDestroy {
+export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
 
     @Input()
     public remoteSource: RemoteSource.Connector<IDataNode> = new EmptyRemoteSourceConnector();
@@ -48,13 +48,13 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
     private autoCompleteTrigger: MatAutocompleteTrigger;
 
     private isDestroyed$: Subject<boolean>;
-    private keyDown$: Subject<string>;
+    private remoteSource$: Subject<string>;
 
     constructor() {
         this.changed = new EventEmitter();
         this.input   = new EventEmitter();
-        this.isDestroyed$ = new Subject();
-        this.keyDown$  = new Subject();
+        this.isDestroyed$  = new Subject();
+        this.remoteSource$ = new Subject();
     }
 
     /**
@@ -108,12 +108,21 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
     }
 
     /**
+     * componente gets initialized, register
+     * remoteSource stream to handle change event
+     *
+     * @memberof ItemListComponent
+     */
+    ngOnInit(): void {
+        this.registerKeyDownStream();
+    }
+
+    /**
      *
      *
      * @memberof SelectionListComponent
      */
     ngAfterViewInit() {
-        this.registerKeyDownStream();
         /**
          * override onChange method of angular matrial autoComplete
          * but this will even trigger if we select an item from autocomplete
@@ -121,7 +130,7 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
          */
         this.autoCompleteTrigger.registerOnChange((value: string | ItemList.Item): null => {
             if (typeof value === 'string') {
-                this.keyDown$.next(value as string);
+                this.remoteSource$.next(value as string);
                 return null;
             }
             this.addItem(value as ItemList.Item);
@@ -145,16 +154,13 @@ export class ItemListComponent implements AfterViewInit, OnDestroy {
     }
 
     /**
-     * on keydown on input field we submit the event
-     * to an rxjs stream. After input wait for 200ms to fetch
-     * data from remote sources, only if the user input value
-     * has been changed.
+     * register stream to fetch data from remote source
      *
      * @private
      * @memberof ItemListComponent
      */
     private registerKeyDownStream() {
-        this.keyDown$.pipe(
+        this.remoteSource$.pipe(
             debounceTime(100),
             switchMap((value) => this.remoteSource.fetch(value)),
             takeUntil(this.isDestroyed$)
