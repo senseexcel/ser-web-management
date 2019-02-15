@@ -4,11 +4,12 @@ import { Observable, of, Subject, from } from 'rxjs';
 import { FormService } from '@smc/modules/form-helper';
 import { AppRepository, FilterFactory, IApp } from '@smc/modules/qrs';
 import { ReportModel } from '@smc/modules/ser';
-import { takeUntil, map, switchMap, debounceTime, mergeMap, tap } from 'rxjs/operators';
+import { takeUntil, map, switchMap, debounceTime, mergeMap, tap, catchError } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { IDataNode, EnigmaService } from '@smc/modules/smc-common';
 import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
 import { AppConnector } from '../../../../providers/connection';
+import { ModalService } from '@smc/modules/modal';
 
 @Component({
     selector: 'smc-apps--edit-form-connection',
@@ -33,6 +34,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
         private appRepository: AppRepository,
         private enigmaService: EnigmaService,
         private appConnector: AppConnector,
+        private modalService: ModalService
     ) {
         this.formBuilder = formBuilder;
     }
@@ -91,6 +93,23 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      */
     public connectToApp() {
         this.appConnector.createConnection(this.selectedAppId)
+            .pipe(catchError((error) => {
+                const e = {
+                    title: 'SMC_APPS.EDIT.CONNECTION.ERROR_TITLE',
+                    message: {
+                        key: 'SMC_APPS.EDIT.CONNECTION.ERROR_MESSAGE',
+                        value: {APP: this.selectedAppId}
+                    }
+                };
+
+                if (error.code === 403) {
+                    e.title = 'SMC_APPS.EDIT.CONNECTION.FORBIDDEN_TITLE',
+                    e.message.key = 'SMC_APPS.EDIT.CONNECTION.FORBIDDEN_MESSAGE',
+                }
+
+                this.modalService.openMessageModal(e.title, e.message);
+                return of();
+            }))
             .subscribe();
     }
 
