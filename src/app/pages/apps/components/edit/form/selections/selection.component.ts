@@ -10,7 +10,7 @@ import { SelectionPropertyConnector } from '@smc/pages/apps/providers/selection-
 import { SelectionValueConnector } from '@smc/pages/apps/providers/selection-value.connector';
 import { ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
 import { ISelection } from '@smc/pages/apps/api/selections.interface';
-import { tap, switchMap, takeUntil, take } from 'rxjs/operators';
+import { switchMap, takeUntil, take } from 'rxjs/operators';
 
 @Component({
     selector: 'smc-edit-form-selections',
@@ -271,14 +271,15 @@ export class SelectionComponent implements OnInit, OnDestroy {
             .subscribe((report: ReportModel) => {
                 this.report = report;
                 if (this.report) {
-
                     const selection = this.report.template.selections[0] || { values: [], name: '' };
-                    const selectionValues = selection.values;
+
+                    this.selectionName = selection.name;
+                    this.valueNames = selection.values;
 
                     this.selectionForm = this.buildSelectionForm();
 
                     this.selectedDimension = selection.name && selection.name.length ? [{ title: selection.name }] : [];
-                    this.selectedValues = selectionValues.map<ItemList.Item>((title) => {
+                    this.selectedValues = this.valueNames.map<ItemList.Item>((title) => {
                         return { title };
                     });
                 }
