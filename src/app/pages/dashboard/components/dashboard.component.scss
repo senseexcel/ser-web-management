@@ -104,9 +104,8 @@ disabled: #E4E4E4,
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin: 0 $grid-gap * -1;
-    max-width: 50vw;
   }
 
   .page-tile {
@@ -114,9 +113,10 @@ disabled: #E4E4E4,
     flex-direction: column;
     color: map-get($colors, 'text');
     padding: 0 $grid-gap;
-    flex: 0 0 50%;
+    flex: 0 0 100%;
     margin-bottom: $grid-gap * 3;
     min-height: 150px;
+    max-width: 360px;
 
     &:nth-child(2n+2) {
       padding-left: 0;
@@ -155,6 +155,12 @@ disabled: #E4E4E4,
 
     .ser-icon {
       font-size: 20px;
+    }
+  }
+
+  @media (min-width: 1024px) { 
+    .page-tile {
+      flex: 0 0 50%;
     }
   }
 }
