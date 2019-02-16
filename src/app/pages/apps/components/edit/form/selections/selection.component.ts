@@ -10,7 +10,7 @@ import { SelectionPropertyConnector } from '@smc/pages/apps/providers/selection-
 import { SelectionValueConnector } from '@smc/pages/apps/providers/selection-value.connector';
 import { ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
 import { ISelection } from '@smc/pages/apps/api/selections.interface';
-import { switchMap, takeUntil, take } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 @Component({
     selector: 'smc-edit-form-selections',

@@ -4,7 +4,7 @@ import { Observable, of, Subject, from } from 'rxjs';
 import { FormService } from '@smc/modules/form-helper';
 import { AppRepository, FilterFactory, IApp } from '@smc/modules/qrs';
 import { ReportModel } from '@smc/modules/ser';
-import { takeUntil, map, switchMap, debounceTime, mergeMap, tap, catchError } from 'rxjs/operators';
+import { takeUntil, map, switchMap, debounceTime, mergeMap, tap, catchError, finalize } from 'rxjs/operators';
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { IDataNode, EnigmaService } from '@smc/modules/smc-common';
 import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
@@ -22,6 +22,7 @@ export class ConnectionComponent implements OnInit, OnDestroy {
     public suggestedApps: any[] = [];
     public selectedAppId: string;
     public isConnected = false;
+    public connecting = false;
 
     private model: ReportModel;
     private updateHook: Observable<any>;
@@ -100,28 +101,33 @@ export class ConnectionComponent implements OnInit, OnDestroy {
      */
     public connectToApp() {
 
+        this.connecting = true;
         this.appConnector.createConnection(this.selectedAppId)
-            .pipe(catchError((error) => {
-                const e = {
-                    title: 'SMC_APPS.EDIT.FORM.CONNECTION.ERROR_TITLE',
-                    message: {
-                        key: 'SMC_APPS.EDIT.FORM.CONNECTION.ERROR_MESSAGE',
-                        param: {
-                            APP_ID: this.selectedAppId,
-                            ERROR: error.message
+            .pipe(
+                catchError((error) => {
+                    const e = {
+                        title: 'SMC_APPS.EDIT.FORM.CONNECTION.ERROR_TITLE',
+                        message: {
+                            key: 'SMC_APPS.EDIT.FORM.CONNECTION.ERROR_MESSAGE',
+                            param: {
+                                APP_ID: this.selectedAppId,
+                                ERROR: error.message
+                            }
                         }
+                    };
+
+                    if (error.code === 403) {
+                        e.title = 'SMC_APPS.EDIT.FORM.CONNECTION.FORBIDDEN_TITLE';
+                        e.message.key = 'SMC_APPS.EDIT.FORM.CONNECTION.FORBIDDEN_MESSAGE';
                     }
-                };
 
-                if (error.code === 403) {
-                    e.title = 'SMC_APPS.EDIT.FORM.CONNECTION.FORBIDDEN_TITLE';
-                    e.message.key = 'SMC_APPS.EDIT.FORM.CONNECTION.FORBIDDEN_MESSAGE';
-                }
-
-                this.modalService.openMessageModal(e.title, e.message);
-                return of();
-            }))
-            .subscribe();
+                    const ctrl = this.modalService.openMessageModal(e.title, e.message);
+                    return ctrl.onClose;
+                }),
+            )
+            .subscribe(() => {
+                this.connecting = false;
+            });
     }
 
     /**

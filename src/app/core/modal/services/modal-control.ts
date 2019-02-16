@@ -17,6 +17,7 @@ export class ModalControl implements IControl {
     public close() {
         this.overlayRef.dispose();
         this.onClose$.next();
+        this.onClose$.complete();
     }
 
     public get onClose(): Subject<boolean> {
