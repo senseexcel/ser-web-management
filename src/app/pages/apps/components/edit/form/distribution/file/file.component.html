@@ -1,0 +1,14 @@
+<form [formGroup]="fileForm" *ngIf="fileForm">
+
+    <mat-checkbox formControlName="active">{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.FILE.FIELD.ACTIVE' | translate}}</mat-checkbox>
+
+    <mat-form-field class="form-control">
+        <input matInput formControlName="target" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.FILE.FIELD.TARGET' | translate}}" >
+    </mat-form-field>
+
+    <mat-radio-group formControlName="mode">
+        <mat-radio-button *ngFor="let mode of distributionModes" [value]="mode.value">
+            {{mode.label | translate}}
+        </mat-radio-button>
+    </mat-radio-group>
+</form>

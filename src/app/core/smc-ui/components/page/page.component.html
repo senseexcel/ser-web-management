@@ -1,0 +1,31 @@
+<div class="smc-ui--page--sidebar sidebar-left" [hidden]="hide.sectionLeft">
+    <div #sectionLeft>
+        <ng-content select="[page-sidebar--left]"></ng-content>
+    </div>
+</div>
+
+
+<div class="smc-ui--page--content">
+
+    <div #sectionHeader class="header smc-ui--page--content-header" [hidden]="hide.sectionHeader">
+        <ng-content select="[page-content--header]"></ng-content>
+    </div>
+
+    <div class="smc-ui--page--content-body" [ngClass]="{'no-padding': disablePadding}">
+        <mat-spinner *ngIf="loading"></mat-spinner> 
+        <div class="content-body--wrapper" *ngIf="!loading">
+            <ng-content select="[page-content--body]"></ng-content>
+        </div>
+    </div>
+
+    <div class="smc-ui--page--content-footer">
+        <ng-content select="[page-content--footer]"></ng-content>
+    </div>
+</div>
+
+<!-- display only if sidebar right content exists -->
+<div class="smc-ui--page--sidebar sidebar-right" [hidden]="hide.sectionRight">
+    <div #sectionRight>
+        <ng-content select="[page-sidebar--right]"></ng-content>
+    </div>
+</div>

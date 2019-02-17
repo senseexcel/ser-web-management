@@ -1,0 +1,18 @@
+<h3 class="header header-secondary">{{'SMC_TASKS.EDIT.PROPERTIES.ITEM.IDENTIFICATION' | translate}}</h3>
+<ng-container *ngIf="identificationForm">
+    <div [formGroup]="identificationForm">
+        <!-- task name -->
+        <mat-form-field class="form-control">
+            <input matInput formControlName="name" placeholder="{{'SMC_TASKS.EDIT.FIELDSET.IDENTIFICATION.TASK_NAME' | translate}}">
+        </mat-form-field>
+
+        <!-- possible apps -->
+        <mat-form-field class="form-control">
+            <mat-select formControlName="app" placeholder="{{'SMC_TASKS.EDIT.FIELDSET.IDENTIFICATION.ASSOCIATED_RESOURCE' | translate}}">
+                <mat-option *ngFor="let app of apps" [value]="app.id">
+                    {{app.name}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+    </div>
+</ng-container>

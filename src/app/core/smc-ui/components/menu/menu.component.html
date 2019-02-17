@@ -1,0 +1,48 @@
+<!-- disabled menu item-->
+<ng-template #disabledMenuItem let-item="item">
+  <span class="lui-list--text">
+    <i *ngIf="item.icon" class="ser-icon ser-icon--{{item.icon}}"></i>
+    <span translate="{{item.label}}"></span>
+  </span>
+</ng-template>
+
+<!-- router page item-->
+<ng-template #routerLink let-item="item">
+  <a routerLink="/{{item.route}}" routerLinkActive="router-link-active" translate="{{item.label}}"></a>
+</ng-template>
+
+<!-- link menu item -->
+<ng-template #uriLink let-item="item">
+  <a href="{{item.uri}}" translate="{{item.label}}"></a>
+</ng-template>
+
+<!-- enabled menu item-->
+<ng-template #enabledMenuItem let-item="item">
+  <span class="lui-list--text">
+    <i *ngIf="item.icon" class="ser-icon ser-icon--{{item.icon}}"></i>
+    <ng-container [ngTemplateOutlet]="item.route ? routerLink : uriLink" [ngTemplateOutletContext]="{item:item}">
+    </ng-container>
+  </span>
+</ng-template>
+
+<!-- menu group item -->
+<ng-template #menuGroup let-group="group">
+  <ul>
+    <ng-container *ngFor="let child of group.children" [ngTemplateOutlet]="menuItem" [ngTemplateOutletContext]="{item:child}">
+    </ng-container>
+  </ul>
+</ng-template>
+
+<ng-template #menuItem let-item="item">
+  <li class="lui-list--item" [ngClass]="{'lui-list--header lui-list--group': item.children && item.children.length, 'disabled': item.disabled}">
+    <ng-container [ngTemplateOutlet]="item.disabled || (!item.route && !item.uri) ? disabledMenuItem : enabledMenuItem"
+      [ngTemplateOutletContext]="{item:item}"></ng-container>
+    <ng-container *ngIf="item.children" [ngTemplateOutlet]="menuGroup" [ngTemplateOutletContext]="{group:item}"></ng-container>
+  </li>
+</ng-template>
+
+<div class="menu-wrapper lui-bg-inverse">
+  <ul class="lui-list lui-list--inverse">
+    <ng-container *ngFor="let item of menuItems" [ngTemplateOutlet]="menuItem" [ngTemplateOutletContext]="{item:item}"></ng-container>
+  </ul>
+</div>

@@ -1,0 +1,15 @@
+<div class="distribution-form">
+    <h3 class="header header-secondary">{{'SMC_APPS.EDIT.PROPERTIES.ITEM.DISTRIBUTION' | translate}}</h3>
+    <!-- complete form -->
+    <mat-tab-group [@.disabled]="true" [dynamicHeight]=true>
+        <mat-tab label="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.LABEL' | translate}}">
+            <smc-apps--edit-form-distribution-mail></smc-apps--edit-form-distribution-mail>
+        </mat-tab>
+        <mat-tab label="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.FILE.LABEL' | translate}}">
+            <smc-apps--edit-form-distribution-file></smc-apps--edit-form-distribution-file>
+        </mat-tab>
+        <mat-tab label="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.HUB.LABEL' | translate}}">
+            <smc-apps--edit-form-distribution-hub></smc-apps--edit-form-distribution-hub>
+        </mat-tab>
+    </mat-tab-group>
+</div>

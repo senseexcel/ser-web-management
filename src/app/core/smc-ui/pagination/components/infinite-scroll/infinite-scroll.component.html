@@ -1,0 +1,6 @@
+<div class="pagination infinite-scroll" #infiniteWrap>
+  <ng-content></ng-content>
+</div>
+<nav class="navbar navbar-light bg-faded infinite-navbar" *ngIf="showMore">
+    <button (click)="loadNextPage()" class="mx-center" >load moar ...</button>
+</nav> 

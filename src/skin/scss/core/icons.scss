@@ -1,66 +1,165 @@
 .ser-icon {
-    display: inline-block;
-    font-family: "LUI icons";
-    font-size: inherit;
-    font-weight: normal;
-    font-style: normal;
-    text-decoration: inherit;
-    text-transform: none;
-    direction: ltr;
-    margin-right: 10px;
+  display: inline-block;
+  font-family: "LUI icons";
+  font-size: inherit;
+  font-weight: normal;
+  font-style: normal;
+  text-decoration: inherit;
+  text-transform: none;
+  direction: ltr;
+  margin-right: 10px;
 }
 
 .ser-icon--left {
-    margin-right: 0;
-    margin-left: 10px;
+  margin-right: 0;
+  margin-left: 10px;
 }
 
 .ser-icon--apps {
-    &:before { content: "\077"; }
+  &:before {
+    content: "\077";
+  }
 }
 
 .ser-icon--tasks {
-    &:before { content: "\078"; }
+  &:before {
+    content: "\078";
+  }
 }
 
 .ser-icon--streams {
-    &:before { content: "\0E3"; }
+  &:before {
+    content: "\0E3";
+  }
 }
 
 .ser-icon--license {
-    &:before { content: "\0E4"; }
+  &:before {
+    content: "\0E4";
+  }
 }
 
 .ser-icon--load {
-    &:before { content: "\0F4"; }
+  &:before {
+    content: "\0F4";
+  }
 }
 
 .ser-icon--engines {
-    &:before { content: "\07B"; }
+  &:before {
+    content: "\07B";
+  }
 }
 
 .ser-icon--arrow-up {
-    &:before { content: "\052"; }
+  &:before {
+    content: "\052";
+  }
 }
 
 .ser-icon--arrow-down {
-    &:before { content: "\053"; }
+  &:before {
+    content: "\053";
+  }
 }
 
 .ser-icon--home {
-    &:before { content: "\0FC"; }
+  &:before {
+    content: "\0FC";
+  }
 }
 
 .ser-icon--user {
-    &:before { content: "\079"; }
+  &:before {
+    content: "\079";
+  }
 }
 
 .ser-icon--warning {
-    &:before { content: "\0E8"; }
+  &:before {
+    content: "\0E8";
+  }
 }
 
 .ser-icon--check {
-    &:before { content: "\06D"; }
+  &:before {
+    content: "\06D";
+  }
+}
+
+.ser-icon--folder {
+  &:before {
+    content: "\F1";
+  }
+}
+
+.ser-icon--reload {
+  &:before {
+    content: "\0F4";
+  }
+}
+
+.ser-icon--close {
+  &:before {
+    content: "\2030";
+  }
+}
+
+.ser-icon--disconnect {
+  &:before {
+    content: "\D5";
+  }
+}
+
+.ser-icon--clear-selections {
+  &:before {
+    content: ":";
+  }
+}
+
+/** safari chrome */
+@-webkit-keyframes rotating {
+  from {
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes rotating {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+.ser-icon--loading {
+  -webkit-animation: rotating 2s linear infinite;
+  -moz-animation: rotating 2s linear infinite;
+  -ms-animation: rotating 2s linear infinite;
+  -o-animation: rotating 2s linear infinite;
+  animation: rotating 2s linear infinite;
+
+  &:before {
+    content: "\0F4";
+  }
 }
 
 .ser-icon--remove {

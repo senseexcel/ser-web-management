@@ -1,0 +1,45 @@
+<smc-ui--page>
+
+  <!-- CONTENT HEADER -->
+  <div page-content--header>
+    <i class="ser-icon ser-icon--apps"></i>
+    <span>Create new</span>
+  </div>
+
+  <!-- CONTENT BODY -->
+  <div page-content--body>
+    <ng-container>
+      <mat-form-field class="form-control">
+        <input matInput [formControl]="formNameControl" placeholder="Enter reporting app name here">
+      </mat-form-field>
+    </ng-container>
+  </div>
+
+  <!-- CONTENT FOOTER -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="apply()">Apply</smc-ui--button>
+      <smc-ui--button (click)="cancel()">Cancel</smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+
+  <!-- SIDEBAR LEFT -->
+  <div page-sidebar--left>
+    <div class="header sidebar-content">
+      <a (click)="navigateBack()">
+        <i class="lui-icon lui-icon--arrow-up"></i>
+        <span>Applications</span>
+      </a>
+    </div>
+
+    <ul class="lui-list overview">
+      <li class="lui-item">
+        New Report
+      </li>
+    </ul>
+  </div>
+
+  <!-- SIDEBAR RIGHT -->
+  <div page-sidebar--right>
+  </div>
+</smc-ui--page>

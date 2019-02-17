@@ -165,5 +165,43 @@
             margin-bottom: 10px;
         }
     }
+}
 
+.smc-ui--page--sidebar {
+
+    &.sidebar-left {
+
+        line-height: 1rem;
+
+        .header {
+            padding: 0 0 0 5px;
+            height: 36px;
+            box-sizing: border-box;
+            background: #595959;
+            border-bottom: 1px solid #333333;
+            padding: 0 0 0 5px;
+
+            &:hover {
+                background-color: #8C8C8C;
+                cursor: pointer;
+            }
+
+            a {
+                line-height: 36px;
+                
+                i {
+                    margin: 0 10px 0 5px;
+                }
+            }
+        }
+
+        ul.overview {
+            line-height: 1rem;
+            .lui-item {
+                padding: 5px 0 5px 20px;
+                background: #737373;
+                font-size: 13px;
+            }
+        }
+    }
 }

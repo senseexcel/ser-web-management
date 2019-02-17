@@ -1,0 +1,119 @@
+:host {
+  /** smc PAGE GENERAL */
+  display: flex;
+  height: 100%;
+  width: 100%;
+  font-family: inherit;
+
+  .header {
+    margin: 0;
+    font-weight: bold;
+  }
+
+  .smc-ui--page--sidebar,
+  .smc-ui--page--content {
+    header: {
+      font-size: 14px;
+      padding: 12px 0;
+    }
+  }
+
+  /** smc PAGE SIDEBAR */
+  .smc-ui--page--sidebar {
+
+    color: #FFF;
+    background: #595959;
+    flex: 0 0 20%;
+
+    &.sidebar-right {
+      padding-top: 40px;
+      align-self: stretch;
+    }
+
+    &.sidebar-left {
+      align-self: flex-start;
+      margin: 0 .4rem 0 0;
+
+      .header {
+        padding: 9px 0;
+      }
+
+      .lui-list li {
+        padding: 5px 0 5px 20px;
+        background: #737373;
+        border-top: 1px solid #333;
+      }
+    }
+
+    .sidebar-content {
+      padding: 0 1rem;
+    }
+
+    .header {
+      box-sizing: border-box;
+
+      a {
+        display: block;
+        padding: 0 0 0 5px;
+      }
+    }
+  }
+
+  /* smc PAGE CONTENT */
+  .smc-ui--page--content {
+
+    color: #FFF;
+    background: #595959;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    >.header {
+      padding: .57rem 1rem;
+      border-bottom: 4px solid #60BF9F;
+    }
+  }
+
+  .smc-ui--page--content-body {
+    background: #FFF;
+    color: #000;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    >.content-body--wrapper {
+      overflow-y: auto;
+      height: 100%;
+      padding: 0 1rem;
+    }
+
+    &.no-padding >.content-body--wrapper {
+      padding: 0;
+    }
+  }
+
+  .smc-ui--page--content-footer {
+    background: #8C8C8C;
+
+    &::ng-deep {
+      .navbar {
+        height: 48px;
+      }
+    }
+  }
+}
+
+/** 
+ * theme for page
+ */
+:host-context(.page-layout.home) {
+
+    .smc-ui--page--sidebar.sidebar-left {
+      flex: 0 0 200px;
+      margin: 0;
+    }
+
+    .smc-ui--page--content-body > .content-body--wrapper {
+      padding: 1.3rem;
+    }
+}

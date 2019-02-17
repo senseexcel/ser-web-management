@@ -1,0 +1,14 @@
+<form [formGroup]="hubForm" *ngIf="hubForm">
+
+    <mat-checkbox formControlName="active">{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.HUB.FIELD.ACTIVE' | translate}}</mat-checkbox>
+
+    <mat-form-field class="form-control">
+        <input matInput formControlName="owner" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.HUB.FIELD.OWNER' | translate}}" >
+    </mat-form-field>
+
+    <mat-radio-group formControlName="mode">
+        <mat-radio-button *ngFor="let mode of distributeModes" [value]="mode.value">
+            {{mode.label | translate}}
+        </mat-radio-button>
+    </mat-radio-group>
+</form>

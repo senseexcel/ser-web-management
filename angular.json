@@ -7,7 +7,7 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
-      "prefix": "app",
+      "prefix": "smc",
       "schematics": {
         "@schematics/angular:component": {
           "styleext": "scss"
@@ -30,8 +30,7 @@
               "src/assets/favicon.ico",
               "src/assets"
             ],
-            "styles": [
-              {
+            "styles": [{
                 "input": "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
               },
               "src/skin/scss/main.scss"
@@ -40,14 +39,12 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
+              "fileReplacements": [{
+                "replace": "src/environments/environment.ts",
+                "with": "src/environments/environment.prod.ts"
+              }],
               "optimization": true,
-              "outputHashing": "all",
+              "outputHashing": "none",
               "sourceMap": false,
               "extractCss": true,
               "namedChunks": false,
@@ -55,16 +52,36 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true
+            },
+            "en": {
+              "aot": true,
+              "outputPath": "dist/smc/en",
+              "i18nFile": "src/i18n/en_i18n.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "en"
+            },
+            "de": {
+              "aot": true,
+              "outputPath": "dist/smc/de",
+              "i18nFile": "src/i18n/de_i18n.xlf",
+              "i18nFormat": "xlf",
+              "i18nLocale": "de"
             }
           }
         },
         "serve": {
-        "builder": "@angular-builders/dev-server:generic",
+          "builder": "@angular-builders/dev-server:generic",
           "options": {
             "browserTarget": "serWebManagement:build",
             "baseHref": "/extensions/ser-web-management/"
           },
           "configurations": {
+            "en": {
+              "browserTarget": "serWebManagement:build:en"
+            },
+            "de": {
+              "browserTarget": "serWebManagement:build:de"
+            },
             "production": {
               "browserTarget": "serWebManagement:build:production"
             }
@@ -83,8 +100,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "styles": [
-              {
+            "styles": [{
                 "input": "node_modules/@angular/material/prebuilt-themes/indigo-pink.css"
               },
               "src/styles.scss"

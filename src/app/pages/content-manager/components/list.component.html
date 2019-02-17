@@ -1,0 +1,55 @@
+<smc-ui--page [disablePadding]="true">
+  <!-- page header -->
+  <div page-content--header>
+    <smc-ui--list-header
+      [selected]=selections.selected.length [showing]=visible [total]=total 
+      (reload)="reloadList()" (selectAll)="selectAll()" (deselectAll)="deselectAll()"
+    >
+
+      <ng-container list-header--title>
+        <span>
+            <i class="ser-icon ser-icon--folder"></i>
+            Shared Content
+        </span>
+      </ng-container>
+
+      <ng-container list-header--actions>
+        <smc-pagination--navigation></smc-pagination--navigation>
+      </ng-container>
+
+    </smc-ui--list-header>
+  </div>
+
+  <!-- page content -->
+  <div page-content--body>
+
+    <div class="smc-shared-content--list">
+      <table class="table" mat-table [dataSource]="tableData">
+
+        <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
+          <th mat-header-cell *matHeaderCellDef>{{'SMC_CONTENT_MANAGER.LIST.COLUMN.' + column.toUpperCase() | translate}}</th>
+          <ng-container *matCellDef="let col">
+            <ng-container [ngSwitch]="column">
+              <td *ngSwitchCase="'MetaData'" mat-cell matTooltipClass="tooltip-pre" matTooltip="{{col[column][0] | hjson}}" [matTooltipShowDelay]="500">...</td>
+              <td *ngSwitchCase="'CreatedDate'" mat-cell>{{col[column] | momentFormat}}</td>
+              <td *ngSwitchCase="'ModifiedDate'" mat-cell>{{col[column] | momentFormat}}</td>
+              <td *ngSwitchCase="'Owner'" mat-cell>{{col[column].userDirectory}}\{{col[column].userId}}</td>
+              <td *ngSwitchDefault mat-cell>{{col[column]}}</td>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columns"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;" (click)="selectSharedContent(row)" [ngClass]="{'selected': selections.isSelected(row)}"></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- page footer -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button *ngIf="selections.selected.length <= 1" (click)="deleteSharedContent()" [disabled]="selections.isEmpty()">{{'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE' | translate}}</smc-ui--button>
+      <smc-ui--button *ngIf="selections.selected.length > 1"  (click)="deleteSharedContent()">{{'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE_MULTI' | translate:translateParamSelected}}</smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+</smc-ui--page>

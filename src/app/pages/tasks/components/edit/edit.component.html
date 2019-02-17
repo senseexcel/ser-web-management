@@ -1,0 +1,58 @@
+<smc-ui--page [loading]="!formDataLoaded">
+  <!-- content header -->
+  <div page-content--header>
+      <i class="ser-icon ser-icon--tasks"></i>
+      <span>{{'SMC_TASKS.EDIT.HEADER' | translate}}</span>
+  </div>
+
+  <!-- content body -->
+  <div page-content--body>
+      <ng-container *ngIf="formDataLoaded">
+        <div #identification class="edit-group">
+          <smc-task-form-identification></smc-task-form-identification>
+        </div>
+        <div #execution class="edit-group">
+          <smc-task-form-execution #execution></smc-task-form-execution>
+        </div>
+        <div #trigger class="edit-group">
+          <smc-task-form-trigger #trigger></smc-task-form-trigger>
+        </div>
+      </ng-container>
+  </div>
+
+  <!-- content footer -->
+  <div page-content--footer>
+      <smc-ui--button-navbar>
+          <smc-ui--button (click)="onApply()">{{'SMC_TASKS.EDIT.ACTIONS.APPLY' | translate}}</smc-ui--button>
+          <smc-ui--button (click)="onCancel()">{{'SMC_TASKS.EDIT.ACTIONS.CANCEL' | translate}}</smc-ui--button>
+      </smc-ui--button-navbar>
+  </div>
+
+  <!-- sidebar left -->
+  <div page-sidebar--left>
+    <div class="header sidebar-content">
+      <a (click)="navigateBack()">
+        <i class="lui-icon lui-icon--arrow-up"></i>
+        <span>{{'SMC_TASKS.EDIT.OVERVIEW.GO_BACK' | translate}}</span>
+      </a>
+    </div>
+
+    <ul class="lui-list overview">
+      <li class="lui-item" *ngFor="let task of tasks">
+        {{task.name}}
+      </li>
+    </ul>
+  </div>
+
+  <!-- sidebar right -->
+  <div page-sidebar--right>
+    <div class="header">
+      {{'SMC_TASKS.EDIT.PROPERTIES.LABEL' | translate}}
+    </div>
+    <ul class="lui-list">
+      <li class="lui-item" (click)="showForm(property)" *ngFor="let property of properties" [ngClass]="{'active': property == selectedProperty}">
+        {{'SMC_TASKS.EDIT.PROPERTIES.ITEM.' + property.label.toUpperCase() | translate}}
+      </li>
+    </ul>
+  </div>
+</smc-ui--page>

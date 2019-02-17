@@ -1,0 +1,36 @@
+/* BOX SHADOW
+- usage: @include box-shadow; or @include box-shadow(0, 2px, 2px, #333);
+*/
+@mixin box-shadow($x-axis: 0, $y-axis: 1px, $blur: 2px, $color: $default) {
+    box-shadow: $x-axis $y-axis $blur $color;
+}
+
+:host {
+
+    border-radius: 12px;
+    background: #595959;
+    border: 2px solid #898b8c;
+    width: 20vw;
+    font-size: 13px;
+
+    .ser-modal--header {
+        font-weight: 700;
+        color: #FFF;
+
+        .navbar {
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+    }
+    .ser-modal--body {
+        background: #FFF;
+    }
+
+    .ser-modal--footer {
+        padding: .5rem 20px;
+
+        .btn {
+            margin-top: 0;
+        }
+    }
+}

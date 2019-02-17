@@ -1,0 +1,40 @@
+<smc-ui--page [disablePadding]="true" [loading]="isLoading">
+
+  <!-- page header -->
+  <div page-content--header>
+    <smc-ui--list-header [selected]=selection.selected.length [showing]=tasks.length [total]=tasks.length
+      [disableActions]="true" (reload)="reloadList()">
+      <span list-header--title>
+        <i class="ser-icon ser-icon--tasks"></i>
+        {{'SMC_TASKS.LIST.TITLE' | translate}}
+      </span>
+    </smc-ui--list-header>
+  </div>
+
+  <!-- page content -->
+  <div page-content--body>
+    <table class="table" mat-table [dataSource]="tasks">
+      <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
+        <th mat-header-cell *matHeaderCellDef>{{ 'SMC_TASKS.LIST.COLUMN.' + column.toUpperCase() | translate}}</th>
+        <ng-container *matCellDef="let col" [ngSwitch]="column">
+          <td mat-cell *ngSwitchCase="'associated_resource'">{{col.app.name}}</td>
+          <td mat-cell *ngSwitchDefault>{{col[column]}}</td>
+        </ng-container>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns;" [ngClass]="{'selected': selection.isSelected(row)}"
+        smcMouseDblClick (click)="selectTask(row)" (dblClick)="editTask()">
+      </tr>
+    </table>
+  </div>
+
+  <!-- page footer -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="editTask()" [disabled]="isLoading || selection.isEmpty()">{{'SMC_TASKS.LIST.ACTIONS.EDIT' | translate}}</smc-ui--button>
+      <smc-ui--button (click)="createNew()" [disabled]="isLoading">{{'SMC_TASKS.LIST.ACTIONS.CREATE' | translate}}</smc-ui--button>
+      <smc-ui--button (click)="syncTasks()" [disabled]="isLoading" *ngIf="hasSerTag">{{'SMC_TASKS.LIST.ACTIONS.SYNC' | translate}}</smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+
+</smc-ui--page>

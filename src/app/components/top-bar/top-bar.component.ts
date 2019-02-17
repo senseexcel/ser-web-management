@@ -1,41 +1,21 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { PageService } from '../../services';
-import { IMenuItem } from '@core/modules/menu/api/menu-item.interface';
-import { DropDownOverlay } from '@core/modules/drop-down/model/drop-down-overlay';
-import { AppData } from '@core/model/app-data';
-import { ISessionUser } from '@core/api/session-user.interface';
+import { DropDownOverlay } from '@smc/modules/drop-down/model/drop-down-overlay';
 import { Router } from '@angular/router';
+import { ISessionUser } from '@smc/modules/qrs';
+import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
+import { ISettings, SmcCache, IDataNode } from '@smc/modules/smc-common';
+import { IMenuItem } from '@smc/modules/smc-ui/api';
+import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({
-    selector: 'app-top-bar',
+    selector: 'smc-top-bar',
     templateUrl: 'top-bar.component.html',
     styleUrls: ['./top-bar.component.scss']
 })
-
 export class TopBarComponent implements OnInit {
 
-    /**
-     * main menu
-     *
-     * @type {IMenuGroup[]}
-     * @memberof TopBarComponent
-     */
     public mainMenu: IMenuItem[];
-
-    /**
-     * help menu
-     *
-     * @type {IMenuItem[]}
-     * @memberof TopBarComponent
-     */
     public helpMenu: IMenuItem[];
-
-    /**
-     * user menu
-     *
-     * @type {IMenuItem[]}
-     * @memberof TopBarComponent
-     */
     public userMenu: IMenuItem[];
 
     public loggedInUser: ISessionUser;
@@ -50,29 +30,16 @@ export class TopBarComponent implements OnInit {
      */
     private dropDownOverlay: DropDownOverlay;
 
-    /**
-     * page service to fetch main menu
-     *
-     * @private
-     * @type {PageService}
-     * @memberof TopBarComponent
-     */
-    private pageService: PageService;
-
-    private appData: AppData;
-
     constructor(
-        @Inject('AppData') appData,
+        @Inject(SMC_SESSION)  private session: ISettings,
+        private settings: SettingsService,
         private router: Router,
-        pageService: PageService,
     ) {
-        this.pageService = pageService;
-        this.appData = appData;
     }
 
     ngOnInit() {
-        this.loggedInUser = this.appData.user;
-        this.mainMenu = this.pageService.pageData;
+        this.loggedInUser = this.session.loggedInUser;
+        this.mainMenu = this.settings.menu;
         this.helpMenu = this.createHelpMenu();
         this.userMenu = this.createUserMenu();
     }
@@ -104,11 +71,11 @@ export class TopBarComponent implements OnInit {
      */
     private createHelpMenu(): IMenuItem[] {
         return [{
-            name: 'Setup after Installation',
+            label: 'Setup after Installation',
             disabled: true,
             show: true
         }, {
-            name: 'Keyboard Shortcuts',
+            label: 'Keyboard Shortcuts',
             disabled: true,
             show: true
         }];
@@ -123,7 +90,7 @@ export class TopBarComponent implements OnInit {
      */
     private createUserMenu(): IMenuItem[] {
         return [{
-            name: 'Logout',
+            label: 'Logout',
             disabled: false,
             show: true,
             route: 'user/logout'

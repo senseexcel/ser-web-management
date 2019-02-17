@@ -1,0 +1,48 @@
+<div *ngIf="isReady">
+
+    <h3 class="header header-secondary">{{'SMC_APPS.EDIT.PROPERTIES.ITEM.SETTINGS' | translate}}</h3>
+
+    <mat-tab-group [@.disabled]="true" [dynamicHeight]="true">
+        <mat-tab label="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.GENERAL.LABEL' | translate}}">
+            <div [formGroup]="generalForm">
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="cleanupTimeOut" placeholder="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.GENERAL.FIELD.CLEANUP_TIMEOUT' | translate}}">
+                </mat-form-field>
+
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="timeout" placeholder="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.GENERAL.FIELD.TIMEOUT' | translate}}">
+                </mat-form-field>
+
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="errorRepeatCount" placeholder="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.GENERAL.FIELD.ERROR_REPEAT_COUNT' | translate}}">
+                </mat-form-field>
+            </div>
+        </mat-tab>
+
+        <mat-tab label="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.EMAIL_SERVER.LABEL' | translate}}">
+            <div [formGroup]="mailServerSettingsForm">
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="host" placeholder="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.EMAIL_SERVER.FIELD.HOST' | translate}}">
+                </mat-form-field>
+
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="from" placeholder="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.EMAIL_SERVER.FIELD.FROM' | translate}}">
+                </mat-form-field>
+
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="port" placeholder="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.EMAIL_SERVER.FIELD.PORT' | translate}}">
+                </mat-form-field>
+
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="username" placeholder="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.EMAIL_SERVER.FIELD.USERNAME' | translate}}">
+                </mat-form-field>
+
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="password" placeholder="{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.EMAIL_SERVER.FIELD.PASSWORD' | translate}}">
+                </mat-form-field>
+
+                <mat-checkbox formControlName="useSsl">{{'SMC_APPS.EDIT.FORM.SETTINGS.TAB.EMAIL_SERVER.FIELD.SSL' | translate}}</mat-checkbox>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+</div>

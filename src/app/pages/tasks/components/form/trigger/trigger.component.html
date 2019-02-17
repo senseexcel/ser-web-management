@@ -1,0 +1,10 @@
+<h3 class="header header-secondary">{{'SMC_TASKS.EDIT.PROPERTIES.ITEM.TRIGGER' | translate}}</h3>
+<ng-container *ngIf="triggerForm">
+    <div [formGroup]="triggerForm">
+        <!-- task name -->
+        <mat-form-field class="form-control">
+            <input matInput formControlName="hour" placeholder="{{'SMC_TASKS.EDIT.FIELDSET.TRIGGER.EXECUTION_TIME' | translate}}">
+        </mat-form-field>
+        <span>{{'SMC_TASKS.EDIT.FIELDSET.TRIGGER.EXECUTION_TIME_NOTE' | translate}}</span>
+    </div>
+</ng-container>

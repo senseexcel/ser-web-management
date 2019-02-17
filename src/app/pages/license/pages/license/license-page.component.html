@@ -1,0 +1,88 @@
+<smc-ui--page [loading]="!ready">
+
+  <!-- CONTENT HEADER -->
+  <div page-content--header>
+    <i class="ser-icon ser-icon--license"></i>
+    <span>{{'SMC_LICENSE.HEADER' | translate}}</span>
+  </div>
+
+  <!-- CONTENT BODY -->
+  <div page-content--body *ngIf="ready">
+
+    <!-- INSTALLATION VALID -->
+    <ng-container *ngIf="!isInstallationInvalid">
+      <div class="license-block" #licenseInfo>
+        <div class="header qmc-page--content-header">
+          <i class="ser-icon ser-icon--license"></i>
+          <span>{{'SMC_LICENSE.INFORMATIONS.LABEL' | translate}}</span>
+        </div>
+        <smc-license-info></smc-license-info>
+      </div>
+
+      <div class="license-block" #licenseOverview>
+        <div class="header qmc-page--content-header">
+          <i class="ser-icon ser-icon--license"></i>
+          <span>{{'SMC_LICENSE.OVERVIEW.LABEL' | translate}}</span>
+        </div>
+        <smc-license-overview></smc-license-overview>
+      </div>
+
+      <div class="license-block" #licensedUsers>
+        <div class="header qmc-page--content-header">
+          <i class="ser-icon ser-icon--license"></i>
+          <span>{{'SMC_LICENSE.USERS.LABEL' | translate}}</span>
+        </div>
+        <ng-container *ngIf="licenseExists">
+          <smc-license-user></smc-license-user>
+        </ng-container>
+        <ng-container *ngIf="!licenseExists">
+          no license was found
+        </ng-container> 
+      </div>
+    </ng-container>
+
+    <!-- INSTALLATION INVALID -->
+    <ng-container *ngIf="isInstallationInvalid">
+        <smc-license-error [progress]="installationProgress"></smc-license-error>
+    </ng-container>
+  </div>
+
+  <!-- CONTENT FOOTER -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="saveLicense()" *ngIf="!isInstallationInvalid">{{'SMC_LICENSE.ACTIONS.SAVE.BUTTON_LABEL' | translate}}</smc-ui--button>
+      <smc-ui--button (click)="reload()" *ngIf="isInstallationInvalid">{{'SMC_LICENSE.ACTIONS.RELOAD' | translate}}</smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+
+  <!-- SIDEBAR LEFT -->
+  <div page-sidebar--left>
+    <div class="header sidebar-content">
+      <a (click)="navigateBack()">
+        <i class="lui-icon lui-icon--arrow-up"></i>
+        <span>{{'SMC_LICENSE.ACTIONS.GO_BACK' | translate}}</span>
+      </a>
+    </div>
+
+    <ul class="lui-list overview">
+      <li class="lui-item">
+        {{'SMC_LICENSE.LABEL.LICENSE' | translate}}
+      </li>
+    </ul>
+  </div>
+
+  <!-- SIDEBAR RIGHT -->
+  <div page-sidebar--right>
+    <div class="header">
+        {{'SMC_LICENSE.LABEL.PROPERTIES' | translate}}
+    </div>
+
+    <ul class="lui-list">
+      <li class="lui-item" (click)="showPagePart(property, property.key)" *ngFor="let property of properties"
+        [ngClass]="{'active': property == selectedProperty}">
+        {{property.label | translate}}
+      </li>
+    </ul>
+  </div>
+
+</smc-ui--page>

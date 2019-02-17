@@ -1,61 +1,69 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { BreadcrumbModule } from '@breadcrumb/breadcrumb.module';
-import { AppsModule } from '@apps/apps.module';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { BreadcrumbModule, DropDownModule, ModalModule, QrsModule, SmcUiModule } from '@smc/modules';
 
-import { DropDownModule } from '@core/modules/drop-down/drop-down.module';
-import { MenuModule } from '@core/modules/menu/menu.module';
-import { SerEngineModule } from '@core/modules/ser-engine/ser-engine.module';
+import { AppsPage, ContentManagerPage, DashboardPage, LicensePage, TasksPage } from '@smc/pages';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PageService } from './services';
-import { configServiceFactory } from './services/config/config-service.factory';
-import { ConfigFactory } from './services/config/config-factory';
-import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
-import { CoreModule } from '@core/core.module';
-import { CommonModule } from '@angular/common';
-import { UserModule } from '@core/modules/user/user.module';
-import { LicenseModule } from './modules/ser-license/license.module';
-import { ModalModule } from '@core/modules/modal/modal.module';
-import { MonitoringModule } from './modules/ser-monitoring/monitoring.module';
+import { MonitoringModule } from './pages/ser-monitoring/monitoring.module';
+import { BootstrapService } from './services/bootstrap.service';
+import { IBootstrap } from './api/bootstrap.interface';
+import i18n_en from './i18n/en.json';
 
 @NgModule({
   declarations: [
     AppComponent,
-    DashboardComponent,
-    TopBarComponent
+    TopBarComponent,
   ],
-  entryComponents: [DashboardComponent],
+  entryComponents: [],
   imports: [
+
+    TranslateModule.forRoot(),
+
     AppRoutingModule,
-    AppsModule,
-    BreadcrumbModule,
     BrowserAnimationsModule,
     BrowserModule,
     CommonModule,
-    CoreModule,
+    HttpClientModule,
+
+    /** smc modules */
+    QrsModule,
+    BreadcrumbModule,
     DropDownModule,
-    LicenseModule,
-    MenuModule,
     ModalModule,
-    MonitoringModule,
-    SerEngineModule,
-    UserModule
+    SmcUiModule,
+
+    /** pages */
+    AppsPage,
+    ContentManagerPage,
+    DashboardPage,
+    LicensePage,
+    TasksPage,
+    MonitoringModule
   ],
   providers: [
-    PageService,
-    ConfigFactory,
+    BootstrapService,
     {
-      provide: 'SerEngineConfig',
-      useFactory: configServiceFactory,
-      deps: [ConfigFactory],
-      multi: false
+      provide: APP_INITIALIZER,
+      useFactory: (bootstrapService: IBootstrap) => {
+        return () => bootstrapService.bootstrap();
+      },
+      deps: [BootstrapService],
+      multi: true
     }
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
+  public constructor(i18n: TranslateService) {
+    i18n.setTranslation('en', i18n_en, true);
+    i18n.setDefaultLang('en');
+  }
 }
