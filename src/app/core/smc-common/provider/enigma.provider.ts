@@ -8,6 +8,7 @@ import { AppCreatedResponse } from '../api';
 export class EnigmaService {
 
     private sessions: Map<string, EngineAPI.IApp>;
+    private appCache: EngineAPI.IDocListEntry[];
 
     constructor() {
         this.sessions = new Map();
@@ -91,11 +92,17 @@ export class EnigmaService {
      *
      * @memberof EnigmaService
      */
-    public async fetchApps() {
-        const global  = await this.openSession();
-        const appList = await global.getDocList();
-        await global.session.close();
-        return appList;
+    public async fetchApps(): Promise<EngineAPI.IDocListEntry[]> {
+
+        if (!this.appCache) {
+            const global  = await this.openSession();
+            /** typings are wrong, we got an array of doclist entries and not 1 doclist entry */
+            const appList = await global.getDocList() as any;
+            await global.session.close();
+            this.appCache = appList as EngineAPI.IDocListEntry[];
+        }
+
+        return this.appCache;
     }
 
     /**
@@ -107,7 +114,6 @@ export class EnigmaService {
      * @memberof SerAppService
      */
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
-
         return new Promise<enigmaJS.ISession>((resolve) => {
             const url = buildUrl({
                 host: window.location.host,
