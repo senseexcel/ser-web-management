@@ -120,7 +120,7 @@ export class AppListComponent implements OnInit, OnDestroy {
 
         const dialogCtrl = this.dialogService.openDialog(
             'SMC_APPS.LIST.DIALOG.SYNC_APPS_TITLE',
-            {key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS.MESSAGE'}
+            {key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS_MESSAGE'}
         );
 
         dialogCtrl.switch
