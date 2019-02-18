@@ -8,7 +8,6 @@ import { ListHeaderComponent } from './components/list/list-header.component';
 import { SmcPageComponent } from './components/page/page.component';
 import { SmcUiButtonComponent } from './components/button/button.component';
 import { SmcUiButtonNavbarComponent } from './components/button/navbar.component';
-import { ItemListComponent } from './components';
 import { MenuComponent } from './components/menu/menu.component';
 
 // translation files
@@ -25,11 +24,12 @@ import { RouterModule } from '@angular/router';
         RouterModule
     ],
     exports: [
+        CommonModule,
+        SmcCommonModule,
         ListHeaderComponent,
         SmcPageComponent,
         SmcUiButtonComponent,
         SmcUiButtonNavbarComponent,
-        ItemListComponent,
         MaterialModule,
         SmcCommonModule,
         MenuComponent
@@ -39,7 +39,6 @@ import { RouterModule } from '@angular/router';
         SmcPageComponent,
         SmcUiButtonComponent,
         SmcUiButtonNavbarComponent,
-        ItemListComponent,
         MenuComponent
     ],
     providers: [

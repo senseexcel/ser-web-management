@@ -1,4 +1,4 @@
-import { RemoteSource } from '@smc/modules/smc-ui/api/item-list.interface';
+import { RemoteSource } from '@smc/modules/item-list/api/item-list.interface';
 import { Observable, from, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';

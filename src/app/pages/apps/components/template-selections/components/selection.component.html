@@ -1,0 +1,31 @@
+<ng-container *ngIf="selectionForm">
+  <div [formGroup]="selectionForm">
+
+    <!-- selection type -->
+    <mat-form-field class="form-control">
+      <mat-select formControlName="type">
+        <mat-option *ngFor="let type of selectionTypes" [value]="type.value">
+          {{type.label | translate}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <ng-container formGroupName="selection">
+
+      <!-- selection object type -->
+      <mat-form-field class="form-control" [hidden]="selectionForm.controls.selection.controls.objectType.disabled">
+        <mat-select formControlName="objectType">
+          <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
+            {{type.label | translate}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- selection name -->
+      <smc-template-selections--name [items]="selectedDimension"></smc-template-selections--name>
+
+      <!-- selection value -->
+      <smc-template-selections--value [items]="selectedValues" ></smc-template-selections--value>
+    </ng-container>
+  </div>
+</ng-container>

@@ -1,4 +1,4 @@
-import { ItemList } from '@smc/modules/smc-ui/api/item-list.interface';
+import { ItemList } from '@smc/modules/item-list/api/item-list.interface';
 
 export namespace ISelection {
 

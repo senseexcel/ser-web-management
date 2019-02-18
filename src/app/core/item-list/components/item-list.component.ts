@@ -1,10 +1,11 @@
-import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy, OnInit, Inject, Optional } from '@angular/core';
 import { MatInput, MatAutocompleteTrigger } from '@angular/material';
 import { IDataNode } from '@smc/modules/smc-common';
 import { Subject } from 'rxjs';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
-import { RemoteSource, ItemList } from '../../api/item-list.interface';
-import { EmptyRemoteSourceConnector } from '../../provider/empty-remote-source.connector';
+import { RemoteSource, ItemList } from '../api/item-list.interface';
+import { ITEM_LIST_SOURCE, ITEM_LIST_MODE, ITEM_LIST_VIEW } from '../provider/tokens';
+import { EmptyRemoteSourceConnector } from '../provider/empty-remote-source.connector';
 
 @Component({
     selector: 'smc-ui--item-list',
@@ -14,23 +15,10 @@ import { EmptyRemoteSourceConnector } from '../../provider/empty-remote-source.c
 export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
 
     @Input()
-    public remoteSource: RemoteSource.Connector<IDataNode> = new EmptyRemoteSourceConnector();
-
-    @Input()
     public items: ItemList.Item[] = [];
 
     @Input()
     public label = '';
-
-    /**
-     * default mode multi, so multiple elements could added to list
-     * if mode is set to single there could be only one item at the same time
-     *
-     * @type {ItemList.MODE}
-     * @memberof ItemListComponent
-     */
-    @Input()
-    public mode: ItemList.MODE = ItemList.MODE.MULTI;
 
     @Output()
     public changed: EventEmitter<ItemList.ChangedEvent>;
@@ -39,6 +27,7 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
     public input: EventEmitter<string>;
 
     public isGrouped: boolean;
+
     public source = [];
 
     @ViewChild(MatInput)
@@ -47,10 +36,19 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
     @ViewChild(MatAutocompleteTrigger)
     private autoCompleteTrigger: MatAutocompleteTrigger;
 
+    private mode: ItemList.MODE;
+    private remoteSource: RemoteSource.Connector<IDataNode> | EmptyRemoteSourceConnector;
     private isDestroyed$: Subject<boolean>;
     private remoteSource$: Subject<string>;
 
-    constructor() {
+    constructor(
+        @Inject(ITEM_LIST_SOURCE) @Optional() remoteSource: RemoteSource.Connector<IDataNode>,
+        @Inject(ITEM_LIST_MODE) @Optional() mode: ItemList.MODE,
+    ) {
+
+        this.remoteSource = remoteSource || new EmptyRemoteSourceConnector();
+        this.mode         = mode || ItemList.MODE.MULTI;
+
         this.changed = new EventEmitter();
         this.input = new EventEmitter();
         this.isDestroyed$ = new Subject();
@@ -81,10 +79,12 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
      * @memberof ItemListComponent
      */
     public addValue() {
+
         /** dont add empty values */
         if (this.textField.value === '') {
             return;
         }
+
         const newItem: ItemList.Item = { title: this.textField.value };
         this.addItem(newItem);
     }
@@ -125,6 +125,7 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
      * @memberof SelectionListComponent
      */
     ngAfterViewInit() {
+        console.log(this.mode);
         this.autoCompleteTrigger.registerOnChange((value: string | ItemList.Item): null => {
             if (typeof value === 'string') {
                 this.remoteSource$.next(value as string);
@@ -149,6 +150,7 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
         });
         this.items = [];
     }
+
 
     /**
      * register stream to fetch data from remote source
