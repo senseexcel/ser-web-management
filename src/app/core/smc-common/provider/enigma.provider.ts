@@ -37,12 +37,21 @@ export class EnigmaService {
      * @memberof SessionService
      */
     public async openApp(appId: string): Promise<EngineAPI.IApp> {
-        if (!this.sessions.has(appId) ) {
-            const global: EngineAPI.IGlobal  = await this.openSession(); /** cast as any since type is not valid */
+
+        if (this.sessions.has(appId)) {
+            return this.sessions.get(appId);
+        }
+
+        let global: EngineAPI.IGlobal;
+        try {
+            global = await this.openSession(); /** cast as any since type is not valid */
             const session = await global.openDoc(appId, '', '', '', false);
             this.sessions.set(appId, session);
+            return session;
+        } catch (error) {
+            global.session.close();
+            throw error;
         }
-        return this.sessions.get(appId);
     }
 
     /**
@@ -66,7 +75,7 @@ export class EnigmaService {
      * @memberof SessionService
      */
     public async getAppScript(appId: string): Promise<string> {
-        const app    = await this.openApp(appId);
+        const app = await this.openApp(appId);
         const script = await app.getScript();
         await this.closeApp(app);
         return script;
@@ -95,7 +104,7 @@ export class EnigmaService {
     public async fetchApps(): Promise<EngineAPI.IDocListEntry[]> {
 
         if (!this.appCache) {
-            const global  = await this.openSession();
+            const global = await this.openSession();
             /** typings are wrong, we got an array of doclist entries and not 1 doclist entry */
             const appList = await global.getDocList() as any;
             await global.session.close();
@@ -125,7 +134,7 @@ export class EnigmaService {
             const session: enigmaJS.ISession = create({
                 schema: qixSchema,
                 url
-             });
+            });
 
             resolve(session);
         });
