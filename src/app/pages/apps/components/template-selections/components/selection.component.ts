@@ -82,8 +82,27 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
         this.dimensionSource.close();
     }
 
+    /**
+     * completly deletes a selection
+     * this will cause ngOnDestroy is triggered
+     *
+     * @memberof TemplateSelectionComponent
+     */
     public deleteSelection() {
         this.delete.emit(this.templateSelection);
+    }
+
+    public dimensionChanged(event: ItemList.ChangedEvent) {
+        if (event.added.length) {
+            this.updateValueConnector(event.added[0] as ISelection.Item);
+            return;
+        }
+        // could only be removed now so disable connector
+        this.valueSource.disable(true);
+    }
+
+    public valueChanged(event: ItemList.ChangedEvent) {
+        throw new Error('@todo implement');
     }
 
     /**
@@ -98,7 +117,6 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
                 switchMap((app: EngineAPI.IApp) => {
                     this.dimensionSource.config = { app };
                     this.valueSource.config = { app };
-
                     const needle = this.selectedDimension.length ? this.selectedDimension[0].title : null;
                     return forkJoin([
                         this.dimensionSource.findDimensionByName(needle),

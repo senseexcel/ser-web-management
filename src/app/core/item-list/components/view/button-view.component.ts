@@ -16,6 +16,7 @@ export class ButtonListComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.items = this.controller.items;
         this.controller.update$.subscribe((update: ItemList.ChangedEvent) => {
             this.items = update.items;
         });

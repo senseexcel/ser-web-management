@@ -1,23 +1,24 @@
 import { ItemList } from '../api/item-list.interface';
-import { BehaviorSubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 
 export class ItemListController {
 
     private listItems: ItemList.Item[];
 
-    public update$: BehaviorSubject<ItemList.ChangedEvent>;
+    public update$: ReplaySubject<ItemList.ChangedEvent>;
 
     public constructor() {
-        this.update$ = new BehaviorSubject({
-            added: [],
-            removed: [],
-            items: []
-        });
+        this.update$ = new ReplaySubject(1);
     }
 
     public set items(items: ItemList.Item[]) {
         this.listItems = items;
         this.update(items);
+    }
+
+    public destroy() {
+        this.update$.complete();
+        this.update$ = null;
     }
 
     /**

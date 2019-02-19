@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy, OnInit, Inject, Optional, Self } from '@angular/core';
+import { Component, Input, ViewChild, AfterViewInit, OnDestroy, OnInit, Inject, Optional, Host } from '@angular/core';
 import { MatInput, MatAutocompleteTrigger } from '@angular/material';
 import { IDataNode } from '@smc/modules/smc-common';
 import { Subject } from 'rxjs';
@@ -12,7 +12,6 @@ import { ItemListController } from '../provider/item-list.controller';
     selector: 'smc-ui--item-list',
     templateUrl: 'item-list.component.html',
     styleUrls: ['./item-list.component.scss'],
-    providers: [{provide: ITEM_LIST_CONTROLLER, useClass: ItemListController}]
 })
 export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
 
@@ -25,12 +24,6 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
 
     @Input()
     public label = '';
-
-    @Output()
-    public changed: EventEmitter<ItemList.ChangedEvent>;
-
-    @Output()
-    public input: EventEmitter<string>;
 
     public isGrouped: boolean;
 
@@ -48,15 +41,13 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
     private remoteSource$: Subject<string>;
 
     constructor(
+        @Inject(ITEM_LIST_CONTROLLER) @Host() private controller: ItemListController,
         @Inject(ITEM_LIST_SOURCE) @Optional() remoteSource: RemoteSource.Connector<IDataNode>,
         @Inject(ITEM_LIST_MODE) @Optional() mode: ItemList.MODE,
-        @Inject(ITEM_LIST_CONTROLLER) @Self() private controller: ItemListController,
     ) {
         this.remoteSource = remoteSource || new EmptyRemoteSourceConnector();
         this.mode         = mode || ItemList.MODE.MULTI;
 
-        this.changed = new EventEmitter();
-        this.input = new EventEmitter();
         this.isDestroyed$ = new Subject();
         this.remoteSource$ = new Subject();
     }
@@ -82,10 +73,6 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
      */
     ngOnDestroy() {
         this.isDestroyed$.next(true);
-
-        // delete events
-        this.changed = null;
-        this.input = null;
 
         // delete
         this.textField = null;
