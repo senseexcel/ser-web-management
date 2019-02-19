@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { EnigmaService } from '@smc/modules/smc-common';
+import { EnigmaService } from '@smc/modules/smc-common/provider/enigma.provider';
 import { Observable, from, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -9,14 +9,12 @@ export class AppConnector {
     public readonly disconnect: Subject<void>        = new Subject();
     public readonly connect: Subject<EngineAPI.IApp> = new Subject();
 
-    private appConnection: Subject<EngineAPI.IApp>;
     private app: EngineAPI.IApp;
     private connectionEstablished: boolean;
 
     constructor(
         private enigmaService: EnigmaService
     ) {
-        this.appConnection = new Subject();
         this.connectionEstablished = false;
     }
 

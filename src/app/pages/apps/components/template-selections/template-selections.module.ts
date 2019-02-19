@@ -6,6 +6,7 @@ import { TemplateSelectionsNameComponent } from './components/name-selection.com
 import { TemplateSelectionValueComponent } from './components/value-selection.component';
 import { TemplateSelectionValueListViewComponent } from './components/value-list-view.component';
 import { TemplateSelectionComponent } from './components/selection.component';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 @NgModule({
     declarations: [
@@ -21,6 +22,7 @@ import { TemplateSelectionComponent } from './components/selection.component';
         TemplateSelectionComponent,
     ],
     imports: [
+        ScrollingModule,
         SmcUiModule,
         ItemListModule,
         ReactiveFormsModule

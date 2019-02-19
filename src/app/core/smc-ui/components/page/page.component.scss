@@ -67,6 +67,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 
     >.header {
       padding: .57rem 1rem;

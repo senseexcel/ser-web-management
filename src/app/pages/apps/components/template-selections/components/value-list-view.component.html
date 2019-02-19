@@ -1,2 +1,5 @@
-<h3>value list view component</h3>
-<h1>add some awesome content here</h1>
+<cdk-virtual-scroll-viewport class="list-container lg" [itemSize]="30">
+    <div *cdkVirtualFor="let item of items" class="list-group-item">
+        <div class="list-item">{{item.title}}</div>
+    </div>
+</cdk-virtual-scroll-viewport>

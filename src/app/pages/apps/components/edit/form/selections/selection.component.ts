@@ -7,7 +7,8 @@ import { ISerSenseSelection } from 'ser.api';
 
 @Component({
     selector: 'smc-edit-form-selections',
-    templateUrl: 'selection.component.html'
+    templateUrl: 'selection.component.html',
+    styleUrls: ['selection.component.scss']
 })
 export class SelectionComponent implements OnInit, OnDestroy {
 

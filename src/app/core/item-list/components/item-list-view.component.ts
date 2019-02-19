@@ -8,7 +8,8 @@ import { ItemList } from '../api/item-list.interface';
 
 @Component({
     selector: 'smc-item-list--view',
-    template: '<div #portalHost></div>'
+    template: '<div #portalHost class="item-list--view-wrapper"></div>',
+    styleUrls: ['item-list-view.component.scss']
 })
 export class ItemListViewComponent implements AfterViewInit {
 

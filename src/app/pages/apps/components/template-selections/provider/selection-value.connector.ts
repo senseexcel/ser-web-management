@@ -47,6 +47,7 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
      */
     public fetch(needle: string): Observable<RemoteSource.Source> {
 
+
         if (!this.connectedApp || this.isDisabled || !this.selectFrom) {
             return of({
                 type: RemoteSource.SourceType.LIST,

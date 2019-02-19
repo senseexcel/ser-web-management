@@ -1,0 +1,17 @@
+:host {
+
+  .selections-wrapper {
+    display: flex;
+    flex-wrap: no-wrap;
+    overflow-x: auto;
+
+    & > * {
+        flex: 0 0 calc(25% - 1rem);
+        margin: 0 1rem 0 0;
+
+        &:nth-last-child() {
+            margin: 0;
+        }
+    }
+  }
+}

@@ -1,14 +1,26 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Host, Inject, OnDestroy } from '@angular/core';
 import { ISerSenseSelection } from 'ser.api';
 import { SelectionType, SelectionObjectType } from '@smc/modules/ser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ItemList } from '@smc/modules/item-list/api/item-list.interface';
+import { AppConnector } from '@smc/modules/smc-common/provider/connection';
+import { DIMENSION_SOURCE, VALUE_SOURCE } from '../provider/tokens';
+import { SelectionPropertyConnector } from '../provider/selection-property.connector';
+import { SelectionValueConnector } from '../provider/selection-value.connector';
+import { switchMap, takeUntil } from 'rxjs/operators';
+import { forkJoin, Subject } from 'rxjs';
+import { ISelection } from '../api/selections.interface';
 
 @Component({
     selector: 'smc-template--selection',
-    templateUrl: 'selection.component.html'
+    templateUrl: 'selection.component.html',
+    styleUrls: ['selection.component.scss'],
+    providers: [
+        { provide: DIMENSION_SOURCE, useClass: SelectionPropertyConnector },
+        { provide: VALUE_SOURCE, useClass: SelectionValueConnector }
+    ]
 })
-export class TemplateSelectionComponent implements OnInit {
+export class TemplateSelectionComponent implements OnInit, OnDestroy {
 
     public selectionForm: FormGroup;
     public selectionTypes: SelectionType;
@@ -20,7 +32,12 @@ export class TemplateSelectionComponent implements OnInit {
     selectionName: string;
     valueNames: string[];
 
+    private destroyed$: Subject<boolean> = new Subject();
+
     constructor(
+        private connector: AppConnector,
+        @Inject(DIMENSION_SOURCE) private dimensionSource: SelectionPropertyConnector,
+        @Inject(VALUE_SOURCE) private valueSource: SelectionValueConnector,
         private formBuilder: FormBuilder,
     ) {
     }
@@ -45,12 +62,83 @@ export class TemplateSelectionComponent implements OnInit {
         const selection = this.templateSelection || { values: [], name: '' };
 
         this.selectionName = selection.name;
-        this.valueNames    = selection.values;
+        this.valueNames = selection.values;
 
         this.selectedDimension = selection.name && selection.name.length ? [{ title: selection.name }] : [];
-        this.selectedValues    = this.valueNames.map<ItemList.Item>((title) => {
+        this.selectedValues = this.valueNames.map<ItemList.Item>((title) => {
             return { title };
         });
+
+        this.registerAppConnector();
+    }
+
+    ngOnDestroy() {
+        this.destroyed$.next(true);
+
+        this.valueSource.close();
+        this.dimensionSource.close();
+    }
+
+    private registerAppConnector() {
+
+        this.connector.connect
+            .pipe(
+                switchMap((app: EngineAPI.IApp) => {
+
+                    console.log('ich sollte hier sein');
+
+                    this.dimensionSource.config = { app };
+                    this.valueSource.config = { app };
+
+                    const needle = this.selectedDimension.length ? this.selectedDimension[0].title : null;
+                    console.log(needle);
+                    return forkJoin([
+                        this.dimensionSource.findDimensionByName(needle),
+                        this.dimensionSource.findFieldByName(needle)
+                    ]);
+                }),
+                takeUntil(this.destroyed$)
+            ).subscribe(([dimension, field]) => {
+                this.updateValueConnector(dimension || field || { type: ISelection.TYPE.NONE, title: null });
+            });
+
+        this.connector.disconnect
+            .pipe(takeUntil(this.destroyed$))
+            .subscribe(() => {
+                this.valueSource.close();
+                this.dimensionSource.close();
+            });
+    }
+
+    /**
+     * update value connector
+     *
+     * @private
+     * @param {ISelection.Item} item
+     * @memberof SelectionComponent
+     */
+    private updateValueConnector(item: ISelection.Item) {
+        this.valueSource.disable(false);
+        switch (item.type) {
+            case ISelection.TYPE.DIMENSION:
+                this.valueSource.config = {
+                    selectFrom: {
+                        type: ISelection.TYPE.DIMENSION,
+                        value: item.id
+                    }
+                };
+                break;
+            case ISelection.TYPE.FIELD:
+                this.valueSource.config = {
+                    selectFrom: {
+                        type: ISelection.TYPE.FIELD,
+                        value: item.title
+                    }
+                };
+                break;
+            default:
+                this.valueSource.disable(true);
+        }
     }
 
     /**
@@ -109,12 +197,4 @@ export class TemplateSelectionComponent implements OnInit {
                 };
             });
     }
-
-    /*
-    selection imported
-
-
-    this.selectionForm = this.buildSelectionForm();
-
-    */
 }

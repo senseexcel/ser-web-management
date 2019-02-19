@@ -1,17 +1,17 @@
 import { Component, OnInit, Inject, Input } from '@angular/core';
 import { ITEM_LIST_SOURCE, ITEM_LIST_MODE } from '@smc/modules/item-list/provider/tokens';
 import { ItemList } from '@smc/modules/item-list/api/item-list.interface';
-import { AppConnector } from '@smc/pages/apps/providers/connection';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
 import { SelectionPropertyConnector } from '../provider/selection-property.connector';
 import { ISelection } from '../api/selections.interface';
+import { DIMENSION_SOURCE } from '../provider/tokens';
 
 @Component({
     selector: 'smc-template-selections--name',
     templateUrl: 'name-selection.component.html',
     viewProviders: [
-        {provide: ITEM_LIST_SOURCE, useClass: SelectionPropertyConnector},
+        {provide: ITEM_LIST_SOURCE, useExisting: DIMENSION_SOURCE},
         {provide: ITEM_LIST_MODE, useValue: ItemList.MODE.SINGLE}
     ]
 })
@@ -21,8 +21,7 @@ export class TemplateSelectionsNameComponent implements OnInit {
     public items = [];
 
     constructor(
-        @Inject(ITEM_LIST_SOURCE) private connector: SelectionPropertyConnector,
-        private appConnector: AppConnector
+        @Inject(ITEM_LIST_SOURCE) private connector: SelectionPropertyConnector
     ) {}
 
     ngOnInit() { }
