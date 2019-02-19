@@ -1,21 +1,27 @@
-import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy, OnInit, Inject, Optional } from '@angular/core';
+import { Component, Output, EventEmitter, Input, ViewChild, AfterViewInit, OnDestroy, OnInit, Inject, Optional, Self } from '@angular/core';
 import { MatInput, MatAutocompleteTrigger } from '@angular/material';
 import { IDataNode } from '@smc/modules/smc-common';
 import { Subject } from 'rxjs';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
 import { RemoteSource, ItemList } from '../api/item-list.interface';
-import { ITEM_LIST_SOURCE, ITEM_LIST_MODE, ITEM_LIST_VIEW } from '../provider/tokens';
+import { ITEM_LIST_SOURCE, ITEM_LIST_MODE, ITEM_LIST_CONTROLLER } from '../provider/tokens';
 import { EmptyRemoteSourceConnector } from '../provider/empty-remote-source.connector';
+import { ItemListController } from '../provider/item-list.controller';
 
 @Component({
     selector: 'smc-ui--item-list',
     templateUrl: 'item-list.component.html',
-    styleUrls: ['./item-list.component.scss']
+    styleUrls: ['./item-list.component.scss'],
+    providers: [{provide: ITEM_LIST_CONTROLLER, useClass: ItemListController}]
 })
 export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
 
+    public itemSize = 0;
+
     @Input()
-    public items: ItemList.Item[] = [];
+    public set items(items: ItemList.Item[]) {
+        this.controller.items = items;
+    }
 
     @Input()
     public label = '';
@@ -44,8 +50,8 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
     constructor(
         @Inject(ITEM_LIST_SOURCE) @Optional() remoteSource: RemoteSource.Connector<IDataNode>,
         @Inject(ITEM_LIST_MODE) @Optional() mode: ItemList.MODE,
+        @Inject(ITEM_LIST_CONTROLLER) @Self() private controller: ItemListController,
     ) {
-
         this.remoteSource = remoteSource || new EmptyRemoteSourceConnector();
         this.mode         = mode || ItemList.MODE.MULTI;
 
@@ -56,35 +62,15 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
     }
 
     /**
-     * removed value from item list
-     *
-     * @emits ChangedEvent
-     * @param {number} itemIndex
-     * @memberof ItemListComponent
-     */
-    public doRemove(itemIndex: number) {
-        const removed = this.items.splice(itemIndex, 1);
-        this.changed.emit({
-            added: [],
-            removed,
-            items: [
-                ...this.items
-            ]
-        });
-    }
-
-    /**
      * add value if user pressed enter
      *
      * @memberof ItemListComponent
      */
     public addValue() {
-
         /** dont add empty values */
         if (this.textField.value === '') {
             return;
         }
-
         const newItem: ItemList.Item = { title: this.textField.value };
         this.addItem(newItem);
     }
@@ -115,6 +101,9 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
      */
     ngOnInit(): void {
         this.registerKeyDownStream();
+        this.controller.update$.subscribe((changed: ItemList.ChangedEvent) => {
+            this.itemSize = changed.items.length;
+        });
     }
 
     /**
@@ -125,7 +114,6 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
      * @memberof SelectionListComponent
      */
     ngAfterViewInit() {
-        console.log(this.mode);
         this.autoCompleteTrigger.registerOnChange((value: string | ItemList.Item): null => {
             if (typeof value === 'string') {
                 this.remoteSource$.next(value as string);
@@ -135,22 +123,6 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
             return null;
         });
     }
-
-    /**
-     * remove all items at once
-     *
-     * @memberof ItemListComponent
-     */
-    public clearItems() {
-        const removed = this.items.slice();
-        this.changed.emit({
-            added: [],
-            removed,
-            items: []
-        });
-        this.items = [];
-    }
-
 
     /**
      * register stream to fetch data from remote source
@@ -182,12 +154,11 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
      * @memberof ItemListComponent
      */
     private addItem(item: ItemList.Item) {
-        let removed: ItemList.Item[] = [];
 
         if (this.mode === ItemList.MODE.MULTI) {
-            this.items.push(item);
+            this.controller.add(item);
         } else {
-            removed = this.items.splice(0, 1, item);
+            this.controller.items = [item];
         }
 
         /** we need to hide panel, if we dont select an item and just press enter
@@ -198,11 +169,5 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
         /** clear sources */
         this.textField.value = '';
         this.source = [];
-
-        this.changed.emit({
-            added: [item],
-            removed,
-            items: [...this.items]
-        });
     }
 }

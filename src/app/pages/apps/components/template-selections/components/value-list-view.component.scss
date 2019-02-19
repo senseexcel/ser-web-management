@@ -5,8 +5,9 @@
         height: 150px;
     }
 
-    .list-item {
-        line-height: 30px;
-        background: lightblue;
+    .list-group-item {
+        line-height: 40px;
+        display: flex;
+        justify-content: space-between;
     }
 }

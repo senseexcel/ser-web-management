@@ -1,8 +1,8 @@
 
 // tslint:disable-next-line:max-line-length
-import { Component, ApplicationRef, Injector, ComponentFactoryResolver, ViewChild, ElementRef, Input, AfterViewInit, Inject, Optional } from '@angular/core';
+import { Component, ApplicationRef, Injector, ComponentFactoryResolver, ViewChild, ElementRef, Input, AfterViewInit, Inject, Optional, Output, EventEmitter } from '@angular/core';
 import { ButtonListComponent } from './view/button-view.component';
-import { ITEM_LIST_CONTROLLER, ITEM_LIST_DATA, ITEM_LIST_VIEW } from '../provider/tokens';
+import { ITEM_LIST_VIEW } from '../provider/tokens';
 import { ComponentPortal, DomPortalHost, PortalInjector } from '@angular/cdk/portal';
 import { ItemList } from '../api/item-list.interface';
 
@@ -34,9 +34,6 @@ export class ItemListViewComponent implements AfterViewInit {
         window.setTimeout(() => this.createListViewPortal(), 0);
     }
 
-    public doRemove() {
-    }
-
     /**
      *
      *
@@ -45,18 +42,11 @@ export class ItemListViewComponent implements AfterViewInit {
      */
     private createListViewPortal() {
 
-        const tokens = new WeakMap();
-        tokens.set(ITEM_LIST_DATA, this.items);
-        tokens.set(ITEM_LIST_CONTROLLER, {
-            remove: this.doRemove
-        });
-
-        const injector = new PortalInjector(this.injector, tokens);
         const portalHost = new DomPortalHost(
             this.listViewPortal.nativeElement,
             this.componentFactoryResolver,
             this.appRef,
-            injector
+            this.injector
         );
 
         const portal = new ComponentPortal(this.view);

@@ -1,4 +1,4 @@
-<div class="form-field--wrapper" [hidden]="mode === 'single' && items.length">
+<div class="form-field--wrapper" [hidden]="mode === 'single' && itemSize > 0">
   <mat-form-field>
     <input type="text" #input matInput placeholder="{{label}}" (keyUp.enter)="addValue()" [matAutocomplete]="auto">
 
@@ -23,5 +23,5 @@
   </mat-form-field>
 </div>
 <div class="selections">
-  <smc-item-list--view [items]="items"></smc-item-list--view>
+  <smc-item-list--view></smc-item-list--view>
 </div>

@@ -5,13 +5,32 @@
     flex-wrap: no-wrap;
     overflow-x: auto;
 
-    & > * {
-        flex: 0 0 calc(25% - 1rem);
-        margin: 0 1rem 0 0;
+    &>* {
+      flex: 0 0 300px;
+      margin: 0 1rem 1rem 0;
+      border: 1px solid #595959;
+      border-radius: .5rem;
+      box-shadow: 1px 4px 2px rgba(200, 200, 200, .5);
 
-        &:nth-last-child() {
-            margin: 0;
-        }
+      &:nth-last-child() {
+        margin: 0;
+      }
+    }
+
+    ::ng-deep {
+
+      .selection-header {
+        border-radius: 5px 5px 0 0;
+        background: #595959;
+        padding: .5rem;
+      }
+
+      .selection-name, 
+      .selection-form,
+      .selection-values 
+      {
+        padding: 0 .5rem .5rem;
+      }
     }
   }
 }

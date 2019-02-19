@@ -1,5 +1,7 @@
-<cdk-virtual-scroll-viewport class="list-container lg" [itemSize]="30">
-    <div *cdkVirtualFor="let item of items" class="list-group-item">
-        <div class="list-item">{{item.title}}</div>
-    </div>
+<cdk-virtual-scroll-viewport class="list-container lg" [itemSize]="40">
+  <div *cdkVirtualFor="let item of items" class="list-group-item">
+    {{item.title}}
+    <i class="ser-icon ser-icon--remove" (click)="controller.remove(item)"></i>
+  </div>
 </cdk-virtual-scroll-viewport>
+<smc-ui--button>Remove all values</smc-ui--button>
