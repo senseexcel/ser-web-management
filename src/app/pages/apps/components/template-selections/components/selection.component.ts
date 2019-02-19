@@ -25,13 +25,10 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
     public selectionForm: FormGroup;
     public selectionTypes: SelectionType;
     public selectionObjectTypes: SelectionObjectType;
+    public selectedDimension: { title: any; }[];
+    public selectedValues: any;
 
     private templateSelection: ISerSenseSelection;
-    selectedDimension: { title: any; }[];
-    selectedValues: any;
-    selectionName: string;
-    valueNames: string[];
-
     private destroyed$: Subject<boolean> = new Subject();
 
     @Input()
@@ -64,13 +61,11 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
 
         const selection = this.templateSelection || { values: [], name: '' };
 
-        this.selectionName = selection.name;
-        this.valueNames = selection.values;
-
         this.selectedDimension = selection.name && selection.name.length ? [{ title: selection.name }] : [];
-        this.selectedValues = this.valueNames.map<ItemList.Item>((title) => {
-            return { title };
-        });
+        this.selectedValues = selection.values
+            .map<ItemList.Item>((title) => {
+                return { title };
+            });
 
         this.registerAppConnector();
     }
@@ -93,16 +88,21 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
     }
 
     public dimensionChanged(event: ItemList.ChangedEvent) {
+
         if (event.added.length) {
             this.updateValueConnector(event.added[0] as ISelection.Item);
+            this.templateSelection.name = event.added[0].title;
             return;
         }
-        // could only be removed now so disable connector
+
+        this.templateSelection.name = null;
         this.valueSource.disable(true);
     }
 
     public valueChanged(event: ItemList.ChangedEvent) {
-        throw new Error('@todo implement');
+        this.templateSelection.values = event.items.map((item: ItemList.Item) => {
+            return item.title;
+        });
     }
 
     /**
@@ -135,9 +135,6 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
                 this.valueSource.close();
                 this.dimensionSource.close();
             });
-    }
-
-    private registerSourceStream(stream$) {
     }
 
     /**

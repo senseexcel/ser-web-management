@@ -122,16 +122,8 @@ export class SelectionComponent implements OnInit, OnDestroy {
      */
     private buildUpdateHook(): Observable<boolean> {
         const observer = new Observable<boolean>((obs) => {
-
-            /*
-            this.report.template.selections = [{
-                name: this.selectionName.length ? this.selectionName : undefined,
-                values: this.valueNames.length ? this.valueNames : undefined,
-                objectType, type: formData.type
-            }];
-            */
+            this.report.template.selections = this.selections;
             obs.next(true);
-
             this.onDestroyed$.subscribe(() => obs.complete());
         });
         return observer;
