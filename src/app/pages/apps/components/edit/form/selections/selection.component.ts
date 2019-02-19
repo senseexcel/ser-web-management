@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ReportModel } from '@smc/modules/ser';
+import { ReportModel, SelectionModel } from '@smc/modules/ser';
 import { Observable, Subject } from 'rxjs';
 import { FormService } from '@smc/modules/form-helper';
 import { takeUntil } from 'rxjs/operators';
@@ -77,6 +77,23 @@ export class SelectionComponent implements OnInit, OnDestroy {
     }
 
     /**
+     *
+     *
+     * @param {SelectionModel} selection
+     * @memberof SelectionComponent
+     */
+    public createSelection(selection: SelectionModel) {
+        this.selections.push(selection);
+    }
+
+    public removeSelection(selection: SelectionModel) {
+        const index = this.selections.indexOf(selection);
+        if (index > -1) {
+            this.selections.splice(index, 1);
+        }
+    }
+
+    /**
      * register to form service to get notified if a model has
      * been loaded
      *
@@ -90,7 +107,6 @@ export class SelectionComponent implements OnInit, OnDestroy {
             .subscribe((report: ReportModel) => {
                 const s = report.template.selections;
                 this.report = report;
-                console.log('das sollte erstmal volle kanne failen');
                 if (this.report) {
                     this.selections = this.report.template.selections || [];
                 }

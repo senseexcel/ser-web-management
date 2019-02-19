@@ -123,6 +123,12 @@
   }
 }
 
+.ser-icon--add {
+  &:before {
+    content: "\FA";
+  }
+}
+
 .ser-icon--trash {
   &:before {
     content: "\D6";

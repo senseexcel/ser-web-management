@@ -88,7 +88,6 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
         this.input = null;
 
         // delete
-        this.items = null;
         this.textField = null;
         this.remoteSource = null;
     }

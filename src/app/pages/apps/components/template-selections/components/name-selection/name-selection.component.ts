@@ -3,9 +3,9 @@ import { ITEM_LIST_SOURCE, ITEM_LIST_MODE } from '@smc/modules/item-list/provide
 import { ItemList } from '@smc/modules/item-list/api/item-list.interface';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { forkJoin } from 'rxjs';
-import { SelectionPropertyConnector } from '../provider/selection-property.connector';
-import { ISelection } from '../api/selections.interface';
-import { DIMENSION_SOURCE } from '../provider/tokens';
+import { SelectionPropertyConnector } from '../../provider/selection-property.connector';
+import { ISelection } from '../../api/selections.interface';
+import { DIMENSION_SOURCE } from '../../provider/tokens';
 
 @Component({
     selector: 'smc-template-selections--name',

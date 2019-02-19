@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Host, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Inject, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { ISerSenseSelection } from 'ser.api';
 import { SelectionType, SelectionObjectType } from '@smc/modules/ser';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -34,17 +34,20 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
 
     private destroyed$: Subject<boolean> = new Subject();
 
+    @Input()
+    public set selection(selection: ISerSenseSelection) {
+        this.templateSelection = selection;
+    }
+
+    @Output()
+    public delete: EventEmitter<ISerSenseSelection> = new EventEmitter();
+
     constructor(
         private connector: AppConnector,
         @Inject(DIMENSION_SOURCE) private dimensionSource: SelectionPropertyConnector,
         @Inject(VALUE_SOURCE) private valueSource: SelectionValueConnector,
         private formBuilder: FormBuilder,
     ) {
-    }
-
-    @Input()
-    public set selection(selection: ISerSenseSelection) {
-        this.templateSelection = selection;
     }
 
     /**
@@ -79,19 +82,24 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
         this.dimensionSource.close();
     }
 
-    private registerAppConnector() {
+    public deleteSelection() {
+        this.delete.emit(this.templateSelection);
+    }
 
+    /**
+     * register app connector
+     *
+     * @private
+     * @memberof TemplateSelectionComponent
+     */
+    private registerAppConnector() {
         this.connector.connect
             .pipe(
                 switchMap((app: EngineAPI.IApp) => {
-
-                    console.log('ich sollte hier sein');
-
                     this.dimensionSource.config = { app };
                     this.valueSource.config = { app };
 
                     const needle = this.selectedDimension.length ? this.selectedDimension[0].title : null;
-                    console.log(needle);
                     return forkJoin([
                         this.dimensionSource.findDimensionByName(needle),
                         this.dimensionSource.findFieldByName(needle)

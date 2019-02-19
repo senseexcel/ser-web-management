@@ -1,5 +1,6 @@
 <h3 class="header header-secondary">{{'SMC_APPS.EDIT.PROPERTIES.ITEM.SELECTIONS' | translate}}</h3>
 
 <div class="selections-wrapper">
-  <smc-template--selection [selection]="selection" *ngFor="let selection of selections"></smc-template--selection>
+  <smc-template--selection [selection]="selection" *ngFor="let selection of selections" (delete)="removeSelection($event)"></smc-template--selection>
+  <smc-template-selections--create (created)="createSelection($event)"></smc-template-selections--create>
 </div>

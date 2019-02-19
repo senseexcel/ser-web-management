@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ITEM_LIST_SOURCE, ITEM_LIST_VIEW } from '@smc/modules/item-list/provider/tokens';
 import { TemplateSelectionValueListViewComponent } from './value-list-view.component';
-import { VALUE_SOURCE } from '../provider/tokens';
+import { VALUE_SOURCE } from '../../provider/tokens';
 
 @Component({
     selector: 'smc-template-selections--value',

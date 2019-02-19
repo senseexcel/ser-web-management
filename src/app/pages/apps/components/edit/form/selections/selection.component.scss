@@ -1,19 +1,32 @@
 :host {
 
   .selections-wrapper {
+
     display: flex;
-    flex-wrap: no-wrap;
+    flex-wrap: nowrap;
     overflow-x: auto;
 
-    &>* {
-      flex: 0 0 300px;
-      margin: 0 1rem 1rem 0;
-      border: 1px solid #595959;
-      border-radius: .5rem;
-      box-shadow: 1px 4px 2px rgba(200, 200, 200, .5);
+    &::ng-deep {
+      .selection-tile {
 
-      &:nth-last-child() {
-        margin: 0;
+        width: 300px;
+        margin: 0 1rem 1rem 0;
+        border: 1px solid #595959;
+        border-radius: .5rem;
+        box-shadow: 1px 4px 2px rgba(200, 200, 200, .5);
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+
+        &:nth-last-child() {
+          margin: 0;
+        }
+      }
+
+      .selection-tile.create {
+        width: 100px;
+        box-shadow: none;
+        border: 1px dashed #E6E6E6;
       }
     }
 
@@ -25,10 +38,9 @@
         padding: .5rem;
       }
 
-      .selection-name, 
+      .selection-name,
       .selection-form,
-      .selection-values 
-      {
+      .selection-values {
         padding: 0 .5rem .5rem;
       }
     }

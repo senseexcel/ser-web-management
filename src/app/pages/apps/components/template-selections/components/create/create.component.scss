@@ -1,0 +1,21 @@
+:host {
+    display: flex;
+    flex-direction: column;
+
+
+    .create {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        i {
+            line-height: 5rem;
+            font-size: 4rem;
+            color: #E6E6E6;
+            text-align: center;
+            margin: 0;
+        }
+    }
+}

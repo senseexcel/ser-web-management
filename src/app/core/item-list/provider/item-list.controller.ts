@@ -1,5 +1,5 @@
 import { ItemList } from '../api/item-list.interface';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 export class ItemListController {
 
@@ -17,12 +17,7 @@ export class ItemListController {
 
     public set items(items: ItemList.Item[]) {
         this.listItems = items;
-
-        this.update$.next({
-            added: items,
-            removed: [],
-            items: [...items]
-        });
+        this.update(items);
     }
 
     /**
@@ -33,11 +28,7 @@ export class ItemListController {
      */
     public add(item: ItemList.Item) {
         this.listItems.push(item);
-        this.update$.next({
-            added: [item],
-            removed: [],
-            items: [...this.listItems]
-        });
+        this.update([item]);
     }
 
     /**
@@ -46,12 +37,8 @@ export class ItemListController {
      * @memberof ItemListController
      */
     public removeAll() {
-        this.update$.next({
-            added: [],
-            removed: this.listItems.splice(0, -1),
-            items: []
-        });
         this.listItems = [];
+        this.update();
     }
 
     /**
@@ -66,11 +53,11 @@ export class ItemListController {
         if (index > -1) {
             removed = this.listItems.splice(index, 1);
         }
+        this.update([], removed);
 
-        this.update$.next({
-            added: [],
-            removed,
-            items: [...this.listItems]
-        });
+    }
+
+    private update(added = [], removed = []) {
+        this.update$.next({added, removed, items: [...this.listItems]});
     }
 }

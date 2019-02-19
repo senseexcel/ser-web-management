@@ -1,37 +1,39 @@
 <ng-container *ngIf="selectionForm">
+  <div class="selection-tile">
 
-  <div class="selection-header">
-    button close me
-  </div>
+    <div class="selection-tile--header" (click)="deleteSelection()">
+        <i class="ser-icon ser-icon--remove"></i>
+    </div>
 
-  <div [formGroup]="selectionForm" class="selection-form">
-    <!-- selection type -->
-    <mat-form-field class="form-control">
-      <mat-select formControlName="type">
-        <mat-option *ngFor="let type of selectionTypes" [value]="type.value">
-          {{type.label | translate}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <ng-container formGroupName="selection">
-      <!-- selection object type -->
-      <mat-form-field class="form-control" [hidden]="selectionForm.controls.selection.controls.objectType.disabled">
-        <mat-select formControlName="objectType">
-          <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
+    <div [formGroup]="selectionForm" class="selection-form">
+      <!-- selection type -->
+      <mat-form-field class="form-control">
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let type of selectionTypes" [value]="type.value">
             {{type.label | translate}}
           </mat-option>
         </mat-select>
       </mat-form-field>
-    </ng-container>
 
-  </div>
+      <ng-container formGroupName="selection">
+        <!-- selection object type -->
+        <mat-form-field class="form-control" [hidden]="selectionForm.controls.selection.controls.objectType.disabled">
+          <mat-select formControlName="objectType">
+            <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
+              {{type.label | translate}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </ng-container>
 
-  <div class="selection-name">
-    <smc-template-selections--name [items]="selectedDimension"></smc-template-selections--name>
-  </div>
+    </div>
 
-  <div class="selection-values">
-    <smc-template-selections--value [items]="selectedValues" ></smc-template-selections--value>
+    <div class="selection-name">
+      <smc-template-selections--name [items]="selectedDimension"></smc-template-selections--name>
+    </div>
+
+    <div class="selection-values">
+      <smc-template-selections--value [items]="selectedValues"></smc-template-selections--value>
+    </div>
   </div>
 </ng-container>
