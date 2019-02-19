@@ -7,7 +7,7 @@ import { AppConnector } from '@smc/modules/smc-common/provider/connection';
 import { DIMENSION_SOURCE, VALUE_SOURCE } from '../provider/tokens';
 import { SelectionPropertyConnector } from '../provider/selection-property.connector';
 import { SelectionValueConnector } from '../provider/selection-value.connector';
-import { switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil, filter } from 'rxjs/operators';
 import { forkJoin, Subject } from 'rxjs';
 import { ISelection } from '../api/selections.interface';
 
@@ -112,21 +112,22 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
      * @memberof TemplateSelectionComponent
      */
     private registerAppConnector() {
-        this.connector.connect
-            .pipe(
-                switchMap((app: EngineAPI.IApp) => {
-                    this.dimensionSource.config = { app };
-                    this.valueSource.config = { app };
-                    const needle = this.selectedDimension.length ? this.selectedDimension[0].title : null;
-                    return forkJoin([
-                        this.dimensionSource.findDimensionByName(needle),
-                        this.dimensionSource.findFieldByName(needle)
-                    ]);
-                }),
-                takeUntil(this.destroyed$)
-            ).subscribe(([dimension, field]) => {
-                this.updateValueConnector(dimension || field || { type: ISelection.TYPE.NONE, title: null });
-            });
+
+        this.connector.connect.pipe(
+            filter(() => this.connector.hasConnection()),
+            switchMap((app: EngineAPI.IApp) => {
+                this.dimensionSource.config = { app };
+                this.valueSource.config = { app };
+                const needle = this.selectedDimension.length ? this.selectedDimension[0].title : null;
+                return forkJoin([
+                    this.dimensionSource.findDimensionByName(needle),
+                    this.dimensionSource.findFieldByName(needle)
+                ]);
+            }),
+            takeUntil(this.destroyed$)
+        ).subscribe(([dimension, field]) => {
+            this.updateValueConnector(dimension || field || { type: ISelection.TYPE.NONE, title: null });
+        });
 
         this.connector.disconnect
             .pipe(takeUntil(this.destroyed$))
@@ -134,6 +135,9 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
                 this.valueSource.close();
                 this.dimensionSource.close();
             });
+    }
+
+    private registerSourceStream(stream$) {
     }
 
     /**
