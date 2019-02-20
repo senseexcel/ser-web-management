@@ -188,6 +188,9 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
         });
 
         formGroup.controls.type.valueChanges.subscribe((value) => {
+
+            this.templateSelection.type = value;
+
             const selectionFormGroup = formGroup.controls.selection as FormGroup;
             if (value === SelectionType.Dynamic) {
                 selectionFormGroup.controls.objectType.setValue(SelectionObjectType.DEFAULT);
@@ -195,6 +198,11 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
             } else {
                 selectionFormGroup.controls.objectType.enable({ onlySelf: true, emitEvent: false });
             }
+        });
+
+        formGroup.controls.selection.valueChanges.subscribe((value) => {
+            console.log(value);
+            this.templateSelection.objectType = value.objectType;
         });
 
         // set type one time to trigger change event
