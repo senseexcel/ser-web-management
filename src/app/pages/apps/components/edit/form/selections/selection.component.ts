@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { FormService } from '@smc/modules/form-helper';
 import { takeUntil } from 'rxjs/operators';
 import { ISerSenseSelection } from 'ser.api';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'smc-edit-form-selections',
@@ -97,6 +98,10 @@ export class SelectionComponent implements OnInit, OnDestroy {
         if (index > -1) {
             this.selections.splice(index, 1);
         }
+    }
+
+    public moveSelection(drop: CdkDragDrop<any>) {
+        moveItemInArray(this.selections, drop.previousIndex, drop.currentIndex);
     }
 
     /**

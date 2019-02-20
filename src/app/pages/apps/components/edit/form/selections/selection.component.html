@@ -1,6 +1,10 @@
 <h3 class="header header-secondary">{{'SMC_APPS.EDIT.PROPERTIES.ITEM.SELECTIONS' | translate}}</h3>
 
 <div class="selections-wrapper">
-  <smc-template--selection [selection]="selection" *ngFor="let selection of selections" (delete)="removeSelection($event)"></smc-template--selection>
+  <div cdkDropList cdkDropListOrientation="horizontal" class="selections-list" (cdkDropListDropped)="moveSelection($event)">
+    <smc-template--selection [selection]="selection" *ngFor="let selection of selections" (delete)="removeSelection($event)" cdkDrag>
+        <div class="dd-selection--placeholder" *cdkDragPlaceholder></div>
+    </smc-template--selection>
+  </div>
   <smc-template-selections--create (created)="createSelection($event)"></smc-template-selections--create>
 </div>

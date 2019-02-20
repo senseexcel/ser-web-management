@@ -3,8 +3,12 @@
   .selections-wrapper {
 
     display: flex;
-    flex-wrap: nowrap;
     overflow-x: auto;
+
+    .selections-list {
+      display: flex;
+      flex-wrap: nowrap;
+    }
 
     &::ng-deep {
       .selection-tile {
@@ -18,9 +22,18 @@
         flex-direction: column;
         flex: 1;
 
-        &:nth-last-child() {
+        &:nth-last-child():not(.dd-selection--placeholder) {
           margin: 0;
         }
+      }
+
+      .dd-selection--placeholder {
+        border-radius: .5rem;
+        box-shadow: 2px 2px 8px rgba(200, 200, 200, .5);
+        width: 300px;
+        background: #FFFF;
+        border: 1px dashed #E6E6E6;
+        margin: 1rem;
       }
 
       .selection-tile.create {

@@ -1,6 +1,9 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
+import { FormHelperModule, MaterialModule, SerModule, SmcUiModule } from '@smc/modules';
+import { QrsModule } from '@smc/modules/qrs/qrs.module';
 import { AppsRoutingModule } from './apps-routing.module';
 
 import { AppEditComponent, AppListComponent, AppsComponent, AppNewComponent } from './components';
@@ -16,8 +19,6 @@ import { TasksComponent } from './components/tasks/task.component';
 import { ReportPreviewComponent } from './components/preview/preview.component';
 import { SelectionComponent } from './components/edit/form/selections/selection.component';
 
-import { FormHelperModule, MaterialModule, SerModule, SmcUiModule } from '@smc/modules';
-import { QrsModule } from '@smc/modules/qrs/qrs.module';
 import { AppsServiceModule } from './apps-service.module';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -34,7 +35,8 @@ import { TemplateSelectionsModule } from './components/template-selections/templ
     QrsModule,
     SerModule,
     SmcUiModule,
-    TemplateSelectionsModule
+    TemplateSelectionsModule,
+    DragDropModule
   ],
   exports: [MaterialModule],
   declarations: [
