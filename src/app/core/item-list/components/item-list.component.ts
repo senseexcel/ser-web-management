@@ -15,8 +15,6 @@ import { ItemListController } from '../provider/item-list.controller';
 })
 export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
 
-    public itemSize = 0;
-
     @Input()
     public set items(items: ItemList.Item[]) {
         this.controller.items = items;
@@ -25,8 +23,9 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
     @Input()
     public label = '';
 
+    public itemSize = 0;
     public isGrouped: boolean;
-
+    public mode: ItemList.MODE;
     public source = [];
 
     @ViewChild(MatInput)
@@ -35,7 +34,6 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
     @ViewChild(MatAutocompleteTrigger)
     private autoCompleteTrigger: MatAutocompleteTrigger;
 
-    private mode: ItemList.MODE;
     private remoteSource: RemoteSource.Connector<IDataNode> | EmptyRemoteSourceConnector;
     private isDestroyed$: Subject<boolean>;
     private remoteSource$: Subject<string>;

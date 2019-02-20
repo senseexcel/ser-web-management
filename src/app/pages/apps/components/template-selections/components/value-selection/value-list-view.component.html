@@ -4,4 +4,6 @@
     <i class="ser-icon ser-icon--remove" (click)="controller.remove(item)"></i>
   </div>
 </cdk-virtual-scroll-viewport>
-<smc-ui--button *ngIf="items.length">Remove all values</smc-ui--button>
+<smc-ui--button [disabled]="!items.length" class="clear-all" [label]="'Clear all'">
+  <i btn-icon--right class="ser-icon ser-icon--trash"></i>
+</smc-ui--button>
