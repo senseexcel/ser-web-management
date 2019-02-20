@@ -1,22 +1,24 @@
 import { Component, Inject, Input, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
-import { ITEM_LIST_SOURCE, ITEM_LIST_MODE, ITEM_LIST_CONTROLLER } from '@smc/modules/item-list/provider/tokens';
+import { ITEM_LIST_SOURCE, ITEM_LIST_MODE, ITEM_LIST_CONTROLLER, ITEM_LIST_VIEW } from '@smc/modules/item-list/provider/tokens';
 import { ItemList } from '@smc/modules/item-list/api/item-list.interface';
 import { skip } from 'rxjs/internal/operators/skip';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DIMENSION_SOURCE } from '../../provider/tokens';
 import { SelectionListController } from '../../provider/selection-list.controllter';
+import { TemplateSelectionNameViewComponent } from './name-selection-item.component';
 
 @Component({
     selector: 'smc-template-selections--name',
     templateUrl: 'name-selection.component.html',
     viewProviders: [
-        { provide: ITEM_LIST_SOURCE, useExisting: DIMENSION_SOURCE },
+        { provide: ITEM_LIST_CONTROLLER, useClass: SelectionListController},
         { provide: ITEM_LIST_MODE, useValue: ItemList.MODE.SINGLE },
-        { provide: ITEM_LIST_CONTROLLER, useClass: SelectionListController }
+        { provide: ITEM_LIST_SOURCE, useExisting: DIMENSION_SOURCE },
+        { provide: ITEM_LIST_VIEW, useValue: TemplateSelectionNameViewComponent },
     ]
 })
-export class TemplateSelectionsNameComponent implements OnInit, OnDestroy {
+export class TemplateSelectionNameComponent implements OnInit, OnDestroy {
 
     @Input()
     public items = [];
