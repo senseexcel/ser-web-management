@@ -77,7 +77,7 @@ export class SelectionComponent implements OnInit, OnDestroy {
     }
 
     /**
-     *
+     * creates a new selection
      *
      * @param {SelectionModel} selection
      * @memberof SelectionComponent
@@ -86,6 +86,12 @@ export class SelectionComponent implements OnInit, OnDestroy {
         this.selections.push(selection);
     }
 
+    /**
+     * remove a selection
+     *
+     * @param {SelectionModel} selection
+     * @memberof SelectionComponent
+     */
     public removeSelection(selection: SelectionModel) {
         const index = this.selections.indexOf(selection);
         if (index > -1) {

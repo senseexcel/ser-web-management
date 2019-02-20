@@ -1,11 +1,11 @@
 import { Component, Inject, Input, OnInit, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { ITEM_LIST_SOURCE, ITEM_LIST_MODE, ITEM_LIST_CONTROLLER } from '@smc/modules/item-list/provider/tokens';
-import { ItemListController } from '@smc/modules/item-list/provider/item-list.controller';
 import { ItemList } from '@smc/modules/item-list/api/item-list.interface';
-import { DIMENSION_SOURCE } from '../../provider/tokens';
 import { skip } from 'rxjs/internal/operators/skip';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { DIMENSION_SOURCE } from '../../provider/tokens';
+import { SelectionListController } from '../../provider/selection-list.controllter';
 
 @Component({
     selector: 'smc-template-selections--name',
@@ -13,7 +13,7 @@ import { takeUntil } from 'rxjs/operators';
     viewProviders: [
         { provide: ITEM_LIST_SOURCE, useExisting: DIMENSION_SOURCE },
         { provide: ITEM_LIST_MODE, useValue: ItemList.MODE.SINGLE },
-        { provide: ITEM_LIST_CONTROLLER, useClass: ItemListController }
+        { provide: ITEM_LIST_CONTROLLER, useClass: SelectionListController }
     ]
 })
 export class TemplateSelectionsNameComponent implements OnInit, OnDestroy {
@@ -27,7 +27,7 @@ export class TemplateSelectionsNameComponent implements OnInit, OnDestroy {
     private destroyed$: Subject<boolean>;
 
     constructor(
-        @Inject(ITEM_LIST_CONTROLLER) private listController: ItemListController,
+        @Inject(ITEM_LIST_CONTROLLER) private listController: SelectionListController,
     ) {
         this.destroyed$ = new Subject();
     }

@@ -3,7 +3,7 @@ import { ReplaySubject } from 'rxjs';
 
 export class ItemListController {
 
-    private listItems: ItemList.Item[];
+    protected listItems: ItemList.Item[];
 
     public update$: ReplaySubject<ItemList.ChangedEvent>;
 
@@ -58,7 +58,7 @@ export class ItemListController {
 
     }
 
-    private update(added = [], removed = []) {
+    protected update(added = [], removed = []) {
         this.update$.next({added, removed, items: [...this.listItems]});
     }
 }
