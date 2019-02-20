@@ -101,9 +101,9 @@ export class EnigmaService {
      *
      * @memberof EnigmaService
      */
-    public async fetchApps(): Promise<EngineAPI.IDocListEntry[]> {
+    public async fetchApps(force = false): Promise<EngineAPI.IDocListEntry[]> {
 
-        if (!this.appCache) {
+        if (!this.appCache || force) {
             const global = await this.openSession();
             /** typings are wrong, we got an array of doclist entries and not 1 doclist entry */
             const appList = await global.getDocList() as any;
@@ -112,6 +112,10 @@ export class EnigmaService {
         }
 
         return this.appCache;
+    }
+
+    public async reloadApps(): Promise<void> {
+        await this.fetchApps(true);
     }
 
     /**

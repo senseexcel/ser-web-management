@@ -17,11 +17,8 @@ import { AppRepository } from '@smc/modules/ser/provider/app.repository';
 export class AppListComponent implements OnInit, OnDestroy {
 
     public apps: IApp[] = [];
-
     public tableHeaders: string[] = ['name', 'id'];
-
     public isLoading = true;
-
     public selection: SelectionModel<IApp>;
 
     private router: Router;
