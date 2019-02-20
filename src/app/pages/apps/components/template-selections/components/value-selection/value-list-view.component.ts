@@ -22,6 +22,10 @@ export class TemplateSelectionValueListViewComponent implements OnInit, OnDestro
         this.destroyed$ = new Subject();
     }
 
+    public clearAll() {
+        this.controller.removeAll();
+    }
+
     ngOnDestroy(): void {
         this.destroyed$.next(true);
     }
