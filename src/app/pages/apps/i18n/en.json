@@ -88,7 +88,7 @@
             "STATIC": {
               "TYPE": {
                 "BOOKMARK": "Bookmark",
-                "DEFAULT": "DEFAULT",
+                "DEFAULT": "Field",
                 "HIDDEN_BOOKMARK": "Hidden Bookmark"
               },
               "LABEL": "Static"

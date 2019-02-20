@@ -201,7 +201,6 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
         });
 
         formGroup.controls.selection.valueChanges.subscribe((value) => {
-            console.log(value);
             this.templateSelection.objectType = value.objectType;
         });
 
