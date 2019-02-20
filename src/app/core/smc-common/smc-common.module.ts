@@ -6,7 +6,7 @@ import { ConvertEnumPipe } from './pipes/convert-enum.pipe';
 import { HJSonPipe } from './pipes/hsjon.pipe';
 import { Nl2Br } from './pipes/nl2br.pipe';
 import { MomentFormatPipe } from './pipes/moment-format.pipe';
-import { EnigmaService, StorageService, SmcCache } from './provider';
+import { EnigmaService, StorageService, SmcCache, AppConnector } from './provider';
 
 @NgModule({
     imports: [
@@ -29,7 +29,8 @@ import { EnigmaService, StorageService, SmcCache } from './provider';
     providers: [
         EnigmaService,
         StorageService,
-        SmcCache
+        SmcCache,
+        AppConnector
     ],
 })
 export class SmcCommonModule { }

@@ -1,22 +1,20 @@
 import { Injectable } from '@angular/core';
-import { EnigmaService } from '@smc/modules/smc-common';
-import { Observable, from, Subject } from 'rxjs';
+import { EnigmaService } from '@smc/modules/smc-common/provider/enigma.provider';
+import { Observable, from, Subject, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 @Injectable()
 export class AppConnector {
 
-    public readonly disconnect: Subject<void>        = new Subject();
-    public readonly connect: Subject<EngineAPI.IApp> = new Subject();
+    public readonly disconnect: Subject<void> = new Subject();
+    public readonly connect: ReplaySubject<EngineAPI.IApp> = new ReplaySubject(1);
 
-    private appConnection: Subject<EngineAPI.IApp>;
     private app: EngineAPI.IApp;
     private connectionEstablished: boolean;
 
     constructor(
         private enigmaService: EnigmaService
     ) {
-        this.appConnection = new Subject();
         this.connectionEstablished = false;
     }
 
@@ -28,6 +26,19 @@ export class AppConnector {
      */
     public hasConnection(): boolean {
         return this.connectionEstablished;
+    }
+
+    /**
+     * return connection if a connection is established
+     *
+     * @returns {EngineAPI.IApp}
+     * @memberof AppConnector
+     */
+    public getConnection(): EngineAPI.IApp | null {
+        if (this.hasConnection()) {
+            return this.app;
+        }
+        return null;
     }
 
     /**

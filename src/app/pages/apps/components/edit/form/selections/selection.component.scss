@@ -1,0 +1,49 @@
+:host {
+
+  .selections-wrapper {
+
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+
+    &::ng-deep {
+      .selection-tile {
+
+        width: 300px;
+        margin: 0 1rem 1rem 0;
+        border: 1px solid #E6E6E6;
+        border-radius: .5rem;
+        box-shadow: 2px 2px 8px rgba(200, 200, 200, .5);
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+
+        &:nth-last-child() {
+          margin: 0;
+        }
+      }
+
+      .selection-tile.create {
+        width: 80px;
+        height: 80px;
+        box-shadow: none;
+        border: 1px dashed #E6E6E6;
+      }
+    }
+
+    ::ng-deep {
+
+      .selection-header {
+        border-radius: 5px 5px 0 0;
+        background: #595959;
+        padding: .5rem;
+      }
+
+      .selection-name,
+      .selection-form,
+      .selection-values {
+        padding: 0 .5rem .5rem;
+      }
+    }
+  }
+}

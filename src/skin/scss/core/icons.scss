@@ -117,6 +117,24 @@
   }
 }
 
+.ser-icon--remove {
+  &:before {
+    content: "E";
+  }
+}
+
+.ser-icon--add {
+  &:before {
+    content: "\FA";
+  }
+}
+
+.ser-icon--trash {
+  &:before {
+    content: "\D6";
+  }
+}
+
 /** safari chrome */
 @-webkit-keyframes rotating {
   from {

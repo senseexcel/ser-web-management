@@ -1,4 +1,4 @@
-import { RemoteSource } from '@smc/modules/smc-ui/api/item-list.interface';
+import { RemoteSource } from '@smc/modules/item-list/api/item-list.interface';
 import { Observable, forkJoin } from 'rxjs';
 import { IDataNode } from '@smc/modules/smc-common';
 import { map } from 'rxjs/operators';
