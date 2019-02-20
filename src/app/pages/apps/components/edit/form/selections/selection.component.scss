@@ -11,20 +11,14 @@
     }
 
     &::ng-deep {
-      .selection-tile {
 
-        width: 300px;
-        margin: 0 1rem 1rem 0;
-        border: 1px solid #E6E6E6;
-        border-radius: .5rem;
+      smc-template--selection {
         box-shadow: 2px 2px 8px rgba(200, 200, 200, .5);
-        display: flex;
-        flex-direction: column;
-        flex: 1;
+        margin: 0 1rem 1rem 0;
+      }
 
-        &:nth-last-child():not(.dd-selection--placeholder) {
-          margin: 0;
-        }
+      .selection-tile {
+        width: 300px;
       }
 
       .dd-selection--placeholder {
@@ -33,7 +27,8 @@
         width: 300px;
         background: #FFFF;
         border: 1px dashed #E6E6E6;
-        margin: 1rem;
+        outline-color: #FFFF;
+        margin: 0 1rem 1rem 0;
       }
 
       .selection-tile.create {
@@ -41,21 +36,6 @@
         height: 80px;
         box-shadow: none;
         border: 1px dashed #E6E6E6;
-      }
-    }
-
-    ::ng-deep {
-
-      .selection-header {
-        border-radius: 5px 5px 0 0;
-        background: #595959;
-        padding: .5rem;
-      }
-
-      .selection-name,
-      .selection-form,
-      .selection-values {
-        padding: 0 .5rem .5rem;
       }
     }
   }
