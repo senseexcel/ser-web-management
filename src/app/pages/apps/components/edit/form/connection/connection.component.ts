@@ -8,8 +8,8 @@ import { takeUntil, map, switchMap, debounceTime, mergeMap, tap, catchError, fin
 import { MatAutocompleteSelectedEvent } from '@angular/material';
 import { IDataNode, EnigmaService } from '@smc/modules/smc-common';
 import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
-import { AppConnector } from '../../../../providers/connection';
 import { ModalService } from '@smc/modules/modal';
+import { AppConnector } from '@smc/modules/smc-common/provider/connection';
 
 @Component({
     styleUrls: ['./connection.component.scss'],

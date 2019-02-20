@@ -9,16 +9,16 @@ import { BreadcrumbService } from '@smc/modules/breadcrumb/provider/breadcrumb.s
 import { IBreadCrumb } from '@smc/modules/breadcrumb/api/breadcrumb.interface';
 import { ModalService } from '@smc/modules/modal';
 import { ReportModel } from '@smc/modules/ser';
-import { EnigmaService } from '@smc/modules/smc-common';
+import { EnigmaService, AppConnector } from '@smc/modules/smc-common';
 import { ScriptService } from '@smc/modules/ser/provider';
 import { CacheService } from '../../providers/cache.service';
-import { AppConnector } from '../../providers/connection';
 
 @Component({
     selector: 'smc-qlik-edit',
     templateUrl: 'edit.component.html',
     styleUrls: ['edit.component.scss'],
-    providers: [FormService, AppConnector]
+    providers: [FormService],
+    viewProviders: [AppConnector]
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 

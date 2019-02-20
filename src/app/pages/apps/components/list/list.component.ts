@@ -17,11 +17,8 @@ import { AppRepository } from '@smc/modules/ser/provider/app.repository';
 export class AppListComponent implements OnInit, OnDestroy {
 
     public apps: IApp[] = [];
-
     public tableHeaders: string[] = ['name', 'id'];
-
     public isLoading = true;
-
     public selection: SelectionModel<IApp>;
 
     private router: Router;
@@ -120,7 +117,7 @@ export class AppListComponent implements OnInit, OnDestroy {
 
         const dialogCtrl = this.dialogService.openDialog(
             'SMC_APPS.LIST.DIALOG.SYNC_APPS_TITLE',
-            {key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS.MESSAGE'}
+            {key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS_MESSAGE'}
         );
 
         dialogCtrl.switch

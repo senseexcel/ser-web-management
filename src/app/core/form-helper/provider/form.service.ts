@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, forkJoin, of, from } from 'rxjs';
-import { reduce, tap, combineAll, switchMap, bufferCount, catchError, filter } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of, from } from 'rxjs';
+import { switchMap, bufferCount, filter } from 'rxjs/operators';
 
 @Injectable()
 export class FormService<T, R> {

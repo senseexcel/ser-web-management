@@ -114,7 +114,7 @@ export class AppRepository {
      * @returns
      * @memberof AppRepository
      */
-    public async createApp(name: string): Promise<string> {
+    public async createApp(name: string): Promise<IApp> {
 
         const app = await this.enigmaService.createApp(name);
         await app.setScript(this.initialScript);
@@ -123,10 +123,10 @@ export class AppRepository {
         if (this.session.serTag) {
             return this.qrsAppRepository
                 .update(app.id, { tags: [this.session.serTag] })
-                .pipe(map((qrsApp: IApp) => qrsApp.id))
                 .toPromise();
         }
-        return app.id;
+
+        return this.qrsAppRepository.fetchApp(app.id).toPromise();
     }
 
     /**

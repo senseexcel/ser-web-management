@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
+import { FormHelperModule, MaterialModule, SerModule, SmcUiModule } from '@smc/modules';
+import { QrsModule } from '@smc/modules/qrs/qrs.module';
 import { AppsRoutingModule } from './apps-routing.module';
 
 import { AppEditComponent, AppListComponent, AppsComponent, AppNewComponent } from './components';
@@ -17,25 +19,24 @@ import { TasksComponent } from './components/tasks/task.component';
 import { ReportPreviewComponent } from './components/preview/preview.component';
 import { SelectionComponent } from './components/edit/form/selections/selection.component';
 
-import { FormHelperModule, MaterialModule, SerModule, SmcCommonModule, SmcUiModule } from '@smc/modules';
-import { QrsModule } from '@smc/modules/qrs/qrs.module';
 import { AppsServiceModule } from './apps-service.module';
 import { TranslateService } from '@ngx-translate/core';
 
 import i18n_en from './i18n/en.json';
 
+import { TemplateSelectionsModule } from './components/template-selections/template-selections.module';
+
 @NgModule({
   imports: [
     AppsServiceModule,
-    CommonModule,
     FormHelperModule,
-    MaterialModule,
     ReactiveFormsModule,
     AppsRoutingModule,
     QrsModule,
     SerModule,
-    SmcCommonModule,
-    SmcUiModule
+    SmcUiModule,
+    TemplateSelectionsModule,
+    DragDropModule
   ],
   exports: [MaterialModule],
   declarations: [
@@ -60,7 +61,7 @@ import i18n_en from './i18n/en.json';
     AppListComponent,
     AppEditComponent,
     ReportPreviewComponent,
-    TasksComponent
+    TasksComponent,
   ],
   providers: []
 })

@@ -11,6 +11,11 @@ export function mapDataTo<T>(constructor: ModelConstructor<T>) {
         }
 
         function mapDataToModel(modelData: IDataNode) {
+
+            if (modelData instanceof constructor) {
+                return modelData;
+            }
+
             const model = new constructor();
             const modelProperties: string[] = Object.getOwnPropertyNames(constructor.prototype);
             Object.keys(modelData).forEach((prop) => {
