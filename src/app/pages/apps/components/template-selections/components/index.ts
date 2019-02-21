@@ -4,8 +4,10 @@ import { TemplateSelectionValueComponent } from './value-selection/value-selecti
 import { TemplateSelectionValueListViewComponent } from './value-selection/value-list-view.component';
 import { TemplateSelectionsCreateComponent } from './create/create.component';
 import { TemplateSelectionNameViewComponent } from './name-selection/name-selection-item.component';
+import { TemplateSelectionBookmarkComponent } from './bookmark-selection/bookmark-selection.component';
 
 export const COMPONENTS = [
+    TemplateSelectionBookmarkComponent,
     TemplateSelectionComponent,
     TemplateSelectionsCreateComponent,
     TemplateSelectionNameComponent,

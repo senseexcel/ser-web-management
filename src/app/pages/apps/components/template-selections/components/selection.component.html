@@ -2,7 +2,7 @@
   <div class="selection-tile">
 
     <div class="selection-tile--header" (click)="deleteSelection()">
-        <i class="ser-icon ser-icon--remove"></i>
+      <i class="ser-icon ser-icon--remove"></i>
     </div>
 
     <div [formGroup]="selectionForm" class="selection-form">
@@ -27,12 +27,24 @@
       </ng-container>
     </div>
 
-    <div class="selection-name">
-      <smc-template-selections--name [items]="selectedDimension" (changed)="dimensionChanged($event)"></smc-template-selections--name>
-    </div>
+    <!-- bookmark -->
+    <ng-container [ngSwitch]="selectionType">
 
-    <div class="selection-values">
-      <smc-template-selections--value [items]="selectedValues" (changed)="valueChanged($event)"></smc-template-selections--value>
-    </div>
+      <div *ngSwitchCase="'bookmark'" class="selection-bookmark">
+        <smc-template-selections--bookmark [items]="[]" (changed)="bookmarkChanged($event)">
+        </smc-template-selections--bookmark>
+      </div>
+
+      <ng-container *ngSwitchDefault>
+        <div class="selection-name">
+          <smc-template-selections--name [items]="selectedDimension" (changed)="dimensionChanged($event)"></smc-template-selections--name>
+        </div>
+
+        <div class="selection-values">
+          <smc-template-selections--value [items]="selectedValues" (changed)="valueChanged($event)"></smc-template-selections--value>
+        </div>
+      </ng-container>
+    </ng-container>
+
   </div>
 </ng-container>

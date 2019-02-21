@@ -4,7 +4,8 @@ import { SelectionType, SelectionObjectType } from '@smc/modules/ser';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ItemList } from '@smc/modules/item-list/api/item-list.interface';
 import { AppConnector } from '@smc/modules/smc-common/provider/connection';
-import { DIMENSION_SOURCE, VALUE_SOURCE } from '../provider/tokens';
+import { DIMENSION_SOURCE, VALUE_SOURCE, BOOKMARK_SOURCE } from '../provider/tokens';
+import { SelectionBookmarkConnector } from '../provider/selection-bookmark.connector';
 import { SelectionPropertyConnector } from '../provider/selection-property.connector';
 import { SelectionValueConnector } from '../provider/selection-value.connector';
 import { switchMap, takeUntil, filter } from 'rxjs/operators';
@@ -16,6 +17,7 @@ import { ISelection } from '../api/selections.interface';
     templateUrl: 'selection.component.html',
     styleUrls: ['selection.component.scss'],
     providers: [
+        { provide: BOOKMARK_SOURCE, useClass: SelectionBookmarkConnector },
         { provide: DIMENSION_SOURCE, useClass: SelectionPropertyConnector },
         { provide: VALUE_SOURCE, useClass: SelectionValueConnector }
     ]
@@ -27,6 +29,7 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
     public selectionObjectTypes: SelectionObjectType;
     public selectedDimension: { title: any; }[];
     public selectedValues: any;
+    public selectionType = 'field';
 
     private templateSelection: ISerSenseSelection;
     private destroyed$: Subject<boolean> = new Subject();
@@ -202,6 +205,7 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
 
         formGroup.controls.selection.valueChanges.subscribe((value) => {
             this.templateSelection.objectType = value.objectType;
+            this.selectionType = this.templateSelection.objectType;
         });
 
         // set type one time to trigger change event
