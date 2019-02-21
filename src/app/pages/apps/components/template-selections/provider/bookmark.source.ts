@@ -5,7 +5,7 @@ import { IDataNode } from '@smc/modules/smc-common';
 import { map } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';
 
-export class SelectionBookmarkConnector implements RemoteSource.Connector<IDataNode> {
+export class BookmarkSource implements RemoteSource.Connector<IDataNode> {
 
     private connectedApp: EngineAPI.IApp;
     private bookmarkCache: ISelection.Item[] = null;

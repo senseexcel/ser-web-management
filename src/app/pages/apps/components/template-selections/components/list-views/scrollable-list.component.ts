@@ -1,4 +1,3 @@
-
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { ITEM_LIST_CONTROLLER } from '@smc/modules/item-list/provider/tokens';
 import { ItemList } from '@smc/modules/item-list/api/item-list.interface';
@@ -7,13 +6,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-    selector: 'smc-template-selections--name-view',
-    templateUrl: 'name-selection-item.component.html',
-    styleUrls: ['name-selection-item.component.scss']
+    selector: 'smc-template-selections--scrollable-list',
+    templateUrl: 'scrollable-list.component.html',
+    styleUrls: ['./scrollable-list.component.scss']
 })
-export class TemplateSelectionNameViewComponent implements OnInit, OnDestroy {
+export class ScrollableListComponent implements OnInit, OnDestroy {
 
-    public item: ItemList.Item;
+    public items: ItemList.Item[];
 
     private destroyed$: Subject<boolean>;
 
@@ -21,6 +20,10 @@ export class TemplateSelectionNameViewComponent implements OnInit, OnDestroy {
         @Inject(ITEM_LIST_CONTROLLER) public controller: ItemListController
     ) {
         this.destroyed$ = new Subject();
+    }
+
+    public clearAll() {
+        this.controller.removeAll();
     }
 
     ngOnDestroy(): void {
@@ -31,11 +34,7 @@ export class TemplateSelectionNameViewComponent implements OnInit, OnDestroy {
         this.controller.update$
             .pipe(takeUntil(this.destroyed$))
             .subscribe((changed: ItemList.ChangedEvent) => {
-                if (changed.added.length) {
-                    this.item = changed.added[0];
-                    return;
-                }
-                this.item = null;
+                this.items = changed.items;
             });
     }
 }

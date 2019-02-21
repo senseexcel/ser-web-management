@@ -4,7 +4,7 @@ import { IDataNode } from '@smc/modules/smc-common';
 import { map } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';
 
-export class SelectionPropertyConnector implements RemoteSource.Connector<IDataNode> {
+export class DimensionFieldSource implements RemoteSource.Connector<IDataNode> {
 
     private connectedApp: EngineAPI.IApp;
 

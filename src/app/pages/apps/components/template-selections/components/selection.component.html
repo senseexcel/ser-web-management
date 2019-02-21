@@ -28,21 +28,14 @@
     </div>
 
     <!-- bookmark -->
-    <ng-container [ngSwitch]="selectionType">
+    <ng-container [ngSwitch]="templateSelection.objectType">
 
       <div *ngSwitchCase="'bookmark'" class="selection-bookmark">
-        <smc-template-selections--bookmark [items]="[]" (changed)="bookmarkChanged($event)">
-        </smc-template-selections--bookmark>
+        <smc-template-selections--bookmark [selection]="templateSelection"> </smc-template-selections--bookmark>
       </div>
 
       <ng-container *ngSwitchDefault>
-        <div class="selection-name">
-          <smc-template-selections--name [items]="selectedDimension" (changed)="dimensionChanged($event)"></smc-template-selections--name>
-        </div>
-
-        <div class="selection-values">
-          <smc-template-selections--value [items]="selectedValues" (changed)="valueChanged($event)"></smc-template-selections--value>
-        </div>
+        <smc-template-selections--field [selection]="templateSelection"></smc-template-selections--field>
       </ng-container>
     </ng-container>
 
