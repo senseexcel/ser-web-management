@@ -41,8 +41,6 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      * @memberof SelectionPropertyConnector
      */
     fetch(needle: string): Observable<RemoteSource.Source> {
-
-
         return forkJoin(this.getDimensions(), this.getFields()).pipe(
             map(([dimensions, fields]): RemoteSource.Source => {
                 const regExp = new RegExp(needle, 'i');
@@ -67,7 +65,12 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      *
      * @memberof SelectionPropertyConnector
      */
-    close() {
+    async close() {
+
+        await Promise.all([
+            this.dimensionSession ? this.connectedApp.destroySessionObject(this.dimensionSession.id) : true,
+            this.fieldSession ? this.connectedApp.destroySessionObject(this.fieldSession.id) : true
+        ]);
 
         this.fieldCache = null;
         this.dimensionsCache = null;
