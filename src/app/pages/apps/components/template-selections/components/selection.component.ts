@@ -44,6 +44,9 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
         this.selectionObjectTypes = this.convertEnumToJSON(SelectionObjectType, 'SMC_APPS.EDIT.FORM.SELECTIONS.TYPE.STATIC.TYPE');
 
         this.selectionForm = this.buildSelectionForm();
+
+        this.registerTypeChangedEvent();
+        this.registerObjectTypeChangedEvent();
     }
 
     ngOnDestroy() {
@@ -68,37 +71,10 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
      * @memberof ConnectionComponent
      */
     private buildSelectionForm(): FormGroup {
-
-        // const selectionSettings: IDataNode = this.report.template.selections[0] || {};
-        const selectionType = this.templateSelection.type || SelectionType.Dynamic;
-
         const formGroup: FormGroup = this.formBuilder.group({
-            type: this.formBuilder.control(null),
-            selection: this.formBuilder.group({
-                objectType: this.formBuilder.control(this.templateSelection.objectType || SelectionObjectType.DEFAULT)
-            })
+            type: this.formBuilder.control(this.templateSelection.type || SelectionType.Dynamic),
+            objectType: this.formBuilder.control(this.templateSelection.objectType || SelectionObjectType.DEFAULT)
         });
-
-        formGroup.controls.type.valueChanges.subscribe((value) => {
-
-            this.templateSelection.type = value;
-
-            const selectionFormGroup = formGroup.controls.selection as FormGroup;
-            if (value === SelectionType.Dynamic) {
-                selectionFormGroup.controls.objectType.setValue(SelectionObjectType.DEFAULT);
-                selectionFormGroup.controls.objectType.disable({ onlySelf: true, emitEvent: false });
-            } else {
-                selectionFormGroup.controls.objectType.enable({ onlySelf: true, emitEvent: false });
-            }
-        });
-
-        formGroup.controls.selection.valueChanges.subscribe((value) => {
-            this.templateSelection.objectType = value.objectType;
-            this.selectionType = this.templateSelection.objectType;
-        });
-
-        // set type one time to trigger change event
-        formGroup.controls.type.setValue(selectionType);
         return formGroup;
     }
 
@@ -123,5 +99,31 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
                     value: _enum[key]
                 };
             });
+    }
+
+    private registerTypeChangedEvent() {
+
+        this.selectionForm.controls.type.valueChanges.subscribe((value) => {
+            this.templateSelection.type = value;
+            if (value === SelectionType.Dynamic) {
+                this.selectionForm.controls.objectType.setValue(SelectionObjectType.DEFAULT);
+                this.selectionForm.controls.objectType.disable({ onlySelf: true, emitEvent: false });
+            } else {
+                this.selectionForm.controls.objectType.enable({ onlySelf: true, emitEvent: false });
+            }
+        });
+    }
+
+    private registerObjectTypeChangedEvent() {
+
+        this.selectionForm.controls.objectType.valueChanges.subscribe((value) => {
+            this.templateSelection.objectType = value;
+            this.selectionType = this.templateSelection.objectType;
+
+            /** clear values after selection has been changed */
+            /** @todo cache old values so we can switch back */
+            this.templateSelection.name = '';
+            this.templateSelection.values = [];
+        });
     }
 }

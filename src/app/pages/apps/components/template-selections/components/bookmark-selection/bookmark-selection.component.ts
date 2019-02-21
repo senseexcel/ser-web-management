@@ -25,7 +25,7 @@ export class TemplateSelectionBookmarkComponent implements OnInit, OnDestroy {
     @Input()
     public selection: ISerSenseSelection;
 
-    public selectedBookmark: ItemList.Item[];
+    public selectedBookmark: ItemList.Item[] = [];
 
     private destroyed$: Subject<boolean>;
 
@@ -45,6 +45,9 @@ export class TemplateSelectionBookmarkComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.registerAppConnectorEvents();
         this.registerListcontrollerEvents();
+
+        /** @todo fix bug name could be null */
+        this.selection.name = undefined;
 
         if (this.selection.values.length > 0) {
             this.selectedBookmark = [{title: this.selection.values[0]}];
@@ -85,7 +88,6 @@ export class TemplateSelectionBookmarkComponent implements OnInit, OnDestroy {
                 takeUntil(this.destroyed$)
             )
             .subscribe((event: ItemList.ChangedEvent) => {
-                this.selection.name = null;
                 this.selection.values = [...event.items.map((item) => item.title)];
             });
     }

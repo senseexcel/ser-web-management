@@ -15,16 +15,14 @@
         </mat-select>
       </mat-form-field>
 
-      <ng-container formGroupName="selection">
-        <!-- selection object type -->
-        <mat-form-field class="form-control">
-          <mat-select formControlName="objectType">
-            <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
-              {{type.label | translate}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </ng-container>
+      <!-- selection object type -->
+      <mat-form-field class="form-control">
+        <mat-select formControlName="objectType">
+          <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
+            {{type.label | translate}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
     </div>
 
     <!-- bookmark -->
