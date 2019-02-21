@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { AppRepository, TaskRepository, FilterFactory } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
-import { ISettings, IDataNode } from '@smc/modules/smc-common';
+import { ISettings, IDataNode, EnigmaService } from '@smc/modules/smc-common';
 import { SettingsService } from 'src/app/services/settings.service';
 import { ITile } from '../api/tile.interface';
 import { map } from 'rxjs/operators';
@@ -24,6 +24,7 @@ export class DashboardComponent implements OnInit {
     public static readonly hostClass = true;
     public mainMenu: IMenuItem[];
     public pageTiles: ITile[];
+    public senseExcelEngineVersion: string;
 
     /**
      *Creates an instance of DashboardComponent.
@@ -31,6 +32,7 @@ export class DashboardComponent implements OnInit {
      */
     constructor(
         @Inject(SMC_SESSION) private session: ISettings,
+        private enigmaService: EnigmaService,
         private settings: SettingsService,
         private router: Router,
         private appRepository: AppRepository,
@@ -46,15 +48,18 @@ export class DashboardComponent implements OnInit {
      */
     ngOnInit() {
 
-        const taskCountSource$   = this.fetchTaskCount();
+        const taskCountSource$ = this.fetchTaskCount();
         const serAppCountSource$ = this.fetchSerApps();
 
         forkJoin(taskCountSource$, serAppCountSource$)
             .pipe(map((counts) => this.createPageTiles(counts)))
             .subscribe((tiles: ITile[]) => {
-                this.mainMenu  = this.settings.menu;
+                this.mainMenu = this.settings.menu;
                 this.pageTiles = tiles;
             });
+
+        this.loadSenseExcelVersion();
+
     }
 
     /**
@@ -64,6 +69,20 @@ export class DashboardComponent implements OnInit {
      */
     public displayPage(page: IAppPage) {
         this.router.navigate([`/${page.route}`]);
+    }
+
+    private async loadSenseExcelVersion() {
+        const app      = await this.enigmaService.createSessionApp();
+        const response = JSON.parse( await app.evaluate(`SER.STATUS('versions: all')`));
+
+        const sensePkg = response.versions.reduce((current, pkg) => {
+            if (pkg.name === 'ser-engine') {
+                return pkg;
+            }
+            return current;
+        }, {});
+
+        this.senseExcelEngineVersion = sensePkg.version.match(/^[^\+]*/)[0];
     }
 
     /**
@@ -82,7 +101,7 @@ export class DashboardComponent implements OnInit {
             const i18nParams: IDataNode = {};
 
             switch (item.id) {
-                case 'apps':  i18nParams.COUNT = appCount; break;
+                case 'apps': i18nParams.COUNT = appCount; break;
                 case 'tasks': i18nParams.COUNT = taskCount; break;
             }
 
