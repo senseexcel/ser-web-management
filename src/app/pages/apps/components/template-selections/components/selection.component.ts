@@ -40,9 +40,9 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
     public delete: EventEmitter<ISerSenseSelection> = new EventEmitter();
 
     constructor(
-        private connector: AppConnector,
         @Inject(DIMENSION_SOURCE) private dimensionSource: SelectionPropertyConnector,
         @Inject(VALUE_SOURCE) private valueSource: SelectionValueConnector,
+        private connector: AppConnector,
         private formBuilder: FormBuilder,
     ) {
     }

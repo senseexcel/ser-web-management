@@ -42,6 +42,7 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      */
     fetch(needle: string): Observable<RemoteSource.Source> {
 
+
         return forkJoin(this.getDimensions(), this.getFields()).pipe(
             map(([dimensions, fields]): RemoteSource.Source => {
                 const regExp = new RegExp(needle, 'i');
@@ -67,11 +68,6 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      * @memberof SelectionPropertyConnector
      */
     close() {
-
-        if (this.fieldSession && this.dimensionSession) {
-            this.fieldSession.session.close();
-            this.dimensionSession.session.close();
-        }
 
         this.fieldCache = null;
         this.dimensionsCache = null;

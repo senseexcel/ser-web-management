@@ -13,24 +13,17 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
     private isDisabled: any;
 
     public set config(config: ISelection.ValueConnectorConfig) {
-
         if (config.app) {
             this.connectedApp = config.app;
         }
-
         if (config.selectFrom) {
             this.patches = this.createPatches(config.selectFrom);
-
             this.selectFrom = config.selectFrom.value;
             this.selectType = config.selectFrom.type;
         }
     }
 
     public async close() {
-        if (this.valueSession && this.valueSession.session) {
-            await this.valueSession.session.close();
-        }
-
         this.valueSession = null;
         this.connectedApp = null;
         this.selectFrom = null;
@@ -46,7 +39,6 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
      * @memberof SelectionValueConnector
      */
     public fetch(needle: string): Observable<RemoteSource.Source> {
-
 
         if (!this.connectedApp || this.isDisabled || !this.selectFrom) {
             return of({

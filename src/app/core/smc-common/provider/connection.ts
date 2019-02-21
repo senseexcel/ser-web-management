@@ -64,7 +64,6 @@ export class AppConnector {
      * @memberof Connection
      */
     public async closeConnection(): Promise<void> {
-
         if (this.app) {
             await this.enigmaService.closeApp(this.app);
             this.disconnect.next();
