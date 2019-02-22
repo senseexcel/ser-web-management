@@ -29,14 +29,6 @@ export class EnigmaService {
         return session;
     }
 
-    public async createSessionApp(): Promise<EngineAPI.IApp> {
-        const global = await this.openSession();
-        const sessionApp =  await global.createSessionApp();
-        console.dir(sessionApp);
-        this.sessions.set(sessionApp.id, sessionApp);
-        return sessionApp;
-    }
-
     /**
      * open a new websocket connection to qlik app
      *
