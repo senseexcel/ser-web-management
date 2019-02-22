@@ -10,6 +10,12 @@
     margin: 0;
   }
 
+  .selection-tile {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
   .selection-tile--header {
 
     display: inline-block;
@@ -27,15 +33,31 @@
     }
   }
 
-  .selection-tile {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-  }
-
   .selection-name,
   .selection-form,
-  .selection-values {
+  .selection-view {
     padding: 0 .5rem .5rem;
+  }
+
+  .selection-view {
+    height: 320px;
+  }
+
+  smc-template-selections--field,
+  smc-template-selections--bookmark {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    ::ng-deep {
+
+      smc-template-selections--name {
+        flex: 0 0 60px;
+      }
+
+      .selection-values {
+        flex: 1
+      }
+    }
   }
 }

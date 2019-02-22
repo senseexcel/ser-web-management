@@ -3,7 +3,7 @@ import { Observable, from, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';
 
-export class SelectionValueConnector implements RemoteSource.Connector<ISelection.ValueConnectorConfig> {
+export class ValueSource implements RemoteSource.Connector<ISelection.ValueConnectorConfig> {
 
     private connectedApp: EngineAPI.IApp;
     private patches: EngineAPI.INxPatch[];
@@ -13,22 +13,20 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
     private isDisabled: any;
 
     public set config(config: ISelection.ValueConnectorConfig) {
-
         if (config.app) {
             this.connectedApp = config.app;
         }
-
         if (config.selectFrom) {
             this.patches = this.createPatches(config.selectFrom);
-
             this.selectFrom = config.selectFrom.value;
             this.selectType = config.selectFrom.type;
         }
     }
 
     public async close() {
-        if (this.valueSession && this.valueSession.session) {
-            await this.valueSession.session.close();
+
+        if (this.valueSession) {
+            this.connectedApp.destroySessionObject(this.valueSession.id);
         }
 
         this.valueSession = null;
@@ -46,7 +44,6 @@ export class SelectionValueConnector implements RemoteSource.Connector<ISelectio
      * @memberof SelectionValueConnector
      */
     public fetch(needle: string): Observable<RemoteSource.Source> {
-
 
         if (!this.connectedApp || this.isDisabled || !this.selectFrom) {
             return of({

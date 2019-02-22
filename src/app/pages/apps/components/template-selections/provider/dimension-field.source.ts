@@ -4,7 +4,7 @@ import { IDataNode } from '@smc/modules/smc-common';
 import { map } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';
 
-export class SelectionPropertyConnector implements RemoteSource.Connector<IDataNode> {
+export class DimensionFieldSource implements RemoteSource.Connector<IDataNode> {
 
     private connectedApp: EngineAPI.IApp;
 
@@ -41,7 +41,6 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      * @memberof SelectionPropertyConnector
      */
     fetch(needle: string): Observable<RemoteSource.Source> {
-
         return forkJoin(this.getDimensions(), this.getFields()).pipe(
             map(([dimensions, fields]): RemoteSource.Source => {
                 const regExp = new RegExp(needle, 'i');
@@ -66,12 +65,12 @@ export class SelectionPropertyConnector implements RemoteSource.Connector<IDataN
      *
      * @memberof SelectionPropertyConnector
      */
-    close() {
+    async close() {
 
-        if (this.fieldSession && this.dimensionSession) {
-            this.fieldSession.session.close();
-            this.dimensionSession.session.close();
-        }
+        await Promise.all([
+            this.dimensionSession ? this.connectedApp.destroySessionObject(this.dimensionSession.id) : true,
+            this.fieldSession ? this.connectedApp.destroySessionObject(this.fieldSession.id) : true
+        ]);
 
         this.fieldCache = null;
         this.dimensionsCache = null;

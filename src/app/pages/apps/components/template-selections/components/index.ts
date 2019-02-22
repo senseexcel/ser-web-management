@@ -1,17 +1,21 @@
 import { TemplateSelectionNameComponent } from './name-selection/name-selection.component';
 import { TemplateSelectionComponent } from './selection.component';
 import { TemplateSelectionValueComponent } from './value-selection/value-selection.component';
-import { TemplateSelectionValueListViewComponent } from './value-selection/value-list-view.component';
 import { TemplateSelectionsCreateComponent } from './create/create.component';
-import { TemplateSelectionNameViewComponent } from './name-selection/name-selection-item.component';
+import { TemplateSelectionBookmarkComponent } from './bookmark-selection/bookmark-selection.component';
+import { SingleItemComponent } from './list-views/single-item.component';
+import { ScrollableListComponent } from './list-views/scrollable-list.component';
+import { TemplateSelectionFieldComponent } from './field-selection/field-selection.component';
 
 export const COMPONENTS = [
+    TemplateSelectionBookmarkComponent,
     TemplateSelectionComponent,
     TemplateSelectionsCreateComponent,
+    TemplateSelectionFieldComponent,
     TemplateSelectionNameComponent,
-    TemplateSelectionNameViewComponent,
     TemplateSelectionValueComponent,
-    TemplateSelectionValueListViewComponent,
+    SingleItemComponent,
+    ScrollableListComponent,
 ];
 
 export const EXPORT_COMPONENTS = [
@@ -20,6 +24,6 @@ export const EXPORT_COMPONENTS = [
 ];
 
 export const ENTRY_COMPONENTS = [
-    TemplateSelectionNameViewComponent,
-    TemplateSelectionValueListViewComponent,
+    SingleItemComponent,
+    ScrollableListComponent,
 ];

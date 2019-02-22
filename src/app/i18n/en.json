@@ -22,5 +22,10 @@
       "SER_TAG_MISSING_TITLE": "SER Tag not found",
       "SER_TAG_MISSING_MESSAGE": "SER Tag for Apps was not found, this will increase loading times for app and task lists.<br /><br /> To add a SER Tag please contact your Administrator or Akquinet Qlik Consultant."
     }
+  },
+  "SENSE_EXCEL_REPORTING": {
+    "ENGINE": {
+      "VERSION": "Sense Excel Reporting: {{VERSION}}"
+    }
   }
 }

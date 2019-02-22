@@ -22,9 +22,7 @@ import * as i18n_en from './i18n/i18n_en.json';
         SmcUiModule,
         ItemListModule,
         ReactiveFormsModule
-    ],
-    providers: [
-    ],
+    ]
 })
 export class TemplateSelectionsModule {
     public constructor(i18n: TranslateService) {

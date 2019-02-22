@@ -2,23 +2,12 @@ import { Component, OnInit, Input, Inject, OnDestroy, EventEmitter, Output } fro
 import { ISerSenseSelection } from 'ser.api';
 import { SelectionType, SelectionObjectType } from '@smc/modules/ser';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ItemList } from '@smc/modules/item-list/api/item-list.interface';
-import { AppConnector } from '@smc/modules/smc-common/provider/connection';
-import { DIMENSION_SOURCE, VALUE_SOURCE } from '../provider/tokens';
-import { SelectionPropertyConnector } from '../provider/selection-property.connector';
-import { SelectionValueConnector } from '../provider/selection-value.connector';
-import { switchMap, takeUntil, filter } from 'rxjs/operators';
-import { forkJoin, Subject } from 'rxjs';
-import { ISelection } from '../api/selections.interface';
+import { Subject } from 'rxjs';
 
 @Component({
     selector: 'smc-template--selection',
     templateUrl: 'selection.component.html',
     styleUrls: ['selection.component.scss'],
-    providers: [
-        { provide: DIMENSION_SOURCE, useClass: SelectionPropertyConnector },
-        { provide: VALUE_SOURCE, useClass: SelectionValueConnector }
-    ]
 })
 export class TemplateSelectionComponent implements OnInit, OnDestroy {
 
@@ -27,6 +16,7 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
     public selectionObjectTypes: SelectionObjectType;
     public selectedDimension: { title: any; }[];
     public selectedValues: any;
+    public selectionType = 'field';
 
     private templateSelection: ISerSenseSelection;
     private destroyed$: Subject<boolean> = new Subject();
@@ -40,12 +30,8 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
     public delete: EventEmitter<ISerSenseSelection> = new EventEmitter();
 
     constructor(
-        private connector: AppConnector,
-        @Inject(DIMENSION_SOURCE) private dimensionSource: SelectionPropertyConnector,
-        @Inject(VALUE_SOURCE) private valueSource: SelectionValueConnector,
         private formBuilder: FormBuilder,
-    ) {
-    }
+    ) { }
 
     /**
      * component gets initialized
@@ -59,22 +45,12 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
 
         this.selectionForm = this.buildSelectionForm();
 
-        const selection = this.templateSelection || { values: [], name: '' };
-
-        this.selectedDimension = selection.name && selection.name.length ? [{ title: selection.name }] : [];
-        this.selectedValues = selection.values
-            .map<ItemList.Item>((title) => {
-                return { title };
-            });
-
-        this.registerAppConnector();
+        this.registerTypeChangedEvent();
+        this.registerObjectTypeChangedEvent();
     }
 
     ngOnDestroy() {
         this.destroyed$.next(true);
-
-        this.valueSource.close();
-        this.dimensionSource.close();
     }
 
     /**
@@ -87,87 +63,6 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
         this.delete.emit(this.templateSelection);
     }
 
-    public dimensionChanged(event: ItemList.ChangedEvent) {
-
-        if (event.added.length) {
-            this.updateValueConnector(event.added[0] as ISelection.Item);
-            this.templateSelection.name = event.added[0].title;
-            return;
-        }
-
-        this.templateSelection.name = null;
-        this.valueSource.disable(true);
-    }
-
-    public valueChanged(event: ItemList.ChangedEvent) {
-        this.templateSelection.values = event.items.map((item: ItemList.Item) => {
-            return item.title;
-        });
-    }
-
-    /**
-     * register app connector
-     *
-     * @private
-     * @memberof TemplateSelectionComponent
-     */
-    private registerAppConnector() {
-
-        this.connector.connect.pipe(
-            filter(() => this.connector.hasConnection()),
-            switchMap((app: EngineAPI.IApp) => {
-                this.dimensionSource.config = { app };
-                this.valueSource.config = { app };
-                const needle = this.selectedDimension.length ? this.selectedDimension[0].title : null;
-                return forkJoin([
-                    this.dimensionSource.findDimensionByName(needle),
-                    this.dimensionSource.findFieldByName(needle)
-                ]);
-            }),
-            takeUntil(this.destroyed$)
-        ).subscribe(([dimension, field]) => {
-            this.updateValueConnector(dimension || field || { type: ISelection.TYPE.NONE, title: null });
-        });
-
-        this.connector.disconnect
-            .pipe(takeUntil(this.destroyed$))
-            .subscribe(() => {
-                this.valueSource.close();
-                this.dimensionSource.close();
-            });
-    }
-
-    /**
-     * update value connector
-     *
-     * @private
-     * @param {ISelection.Item} item
-     * @memberof SelectionComponent
-     */
-    private updateValueConnector(item: ISelection.Item) {
-        this.valueSource.disable(false);
-        switch (item.type) {
-            case ISelection.TYPE.DIMENSION:
-                this.valueSource.config = {
-                    selectFrom: {
-                        type: ISelection.TYPE.DIMENSION,
-                        value: item.id
-                    }
-                };
-                break;
-            case ISelection.TYPE.FIELD:
-                this.valueSource.config = {
-                    selectFrom: {
-                        type: ISelection.TYPE.FIELD,
-                        value: item.title
-                    }
-                };
-                break;
-            default:
-                this.valueSource.disable(true);
-        }
-    }
-
     /**
      * build form for templates
      *
@@ -176,36 +71,18 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
      * @memberof ConnectionComponent
      */
     private buildSelectionForm(): FormGroup {
-
-        // const selectionSettings: IDataNode = this.report.template.selections[0] || {};
         const selectionType = this.templateSelection.type || SelectionType.Dynamic;
+        const objectType    = this.templateSelection.objectType || SelectionObjectType.DEFAULT;
 
         const formGroup: FormGroup = this.formBuilder.group({
-            type: this.formBuilder.control(null),
-            selection: this.formBuilder.group({
-                objectType: this.formBuilder.control(this.templateSelection.objectType || SelectionObjectType.DEFAULT)
-            })
+            type: this.formBuilder.control(selectionType),
+            objectType: this.formBuilder.control(objectType)
         });
 
-        formGroup.controls.type.valueChanges.subscribe((value) => {
+        if (selectionType === SelectionType.Dynamic) {
+            formGroup.controls.objectType.disable({ onlySelf: true, emitEvent: false });
+        }
 
-            this.templateSelection.type = value;
-
-            const selectionFormGroup = formGroup.controls.selection as FormGroup;
-            if (value === SelectionType.Dynamic) {
-                selectionFormGroup.controls.objectType.setValue(SelectionObjectType.DEFAULT);
-                selectionFormGroup.controls.objectType.disable({ onlySelf: true, emitEvent: false });
-            } else {
-                selectionFormGroup.controls.objectType.enable({ onlySelf: true, emitEvent: false });
-            }
-        });
-
-        formGroup.controls.selection.valueChanges.subscribe((value) => {
-            this.templateSelection.objectType = value.objectType;
-        });
-
-        // set type one time to trigger change event
-        formGroup.controls.type.setValue(selectionType);
         return formGroup;
     }
 
@@ -230,5 +107,31 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
                     value: _enum[key]
                 };
             });
+    }
+
+    private registerTypeChangedEvent() {
+
+        this.selectionForm.controls.type.valueChanges.subscribe((value) => {
+            this.templateSelection.type = value;
+            if (value === SelectionType.Dynamic) {
+                this.selectionForm.controls.objectType.setValue(SelectionObjectType.DEFAULT);
+                this.selectionForm.controls.objectType.disable({ onlySelf: true, emitEvent: false });
+            } else {
+                this.selectionForm.controls.objectType.enable({ onlySelf: true, emitEvent: false });
+            }
+        });
+    }
+
+    private registerObjectTypeChangedEvent() {
+
+        this.selectionForm.controls.objectType.valueChanges.subscribe((value) => {
+            this.templateSelection.objectType = value;
+            this.selectionType = this.templateSelection.objectType;
+
+            /** clear values after selection has been changed */
+            /** @todo cache old values so we can switch back */
+            this.templateSelection.name = '';
+            this.templateSelection.values = [];
+        });
     }
 }

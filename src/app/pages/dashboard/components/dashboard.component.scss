@@ -25,7 +25,6 @@ disabled: #E4E4E4,
 
       .lui-list {
 
-
         .ser-icon {
           font-size: 12px;
           margin: 0px 5px 0 0;
@@ -99,6 +98,16 @@ disabled: #E4E4E4,
     text-align: right;
     padding: $grid-gap/2 $grid-gap;
     color: lighten(map-get($colors, 'text'), 20);
+
+    &>* {
+      &:after {
+        content: ", "
+      }
+
+      &:last-child:after {
+        content: ""
+      }
+    }
   }
 
   .page-tile--grid {
