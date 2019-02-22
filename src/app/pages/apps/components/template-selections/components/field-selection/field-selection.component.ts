@@ -11,6 +11,7 @@ import { ISerSenseSelection } from 'ser.api';
 
 @Component({
     selector: 'smc-template-selections--field',
+    styleUrls: ['field-selection.component.scss'],
     templateUrl: 'field-selection.component.html',
     providers: [
         { provide: DIMENSION_SOURCE, useClass: DimensionFieldSource },

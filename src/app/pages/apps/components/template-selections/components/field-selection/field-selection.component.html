@@ -1,7 +1,2 @@
-<div class="selection-name">
-  <smc-template-selections--name [items]="selectedDimension" (changed)="dimensionChanged($event)"></smc-template-selections--name>
-</div>
-
-<div class="selection-values">
-  <smc-template-selections--value [items]="selectedValues" (changed)="valueChanged($event)"></smc-template-selections--value>
-</div>
+<smc-template-selections--name [items]="selectedDimension" (changed)="dimensionChanged($event)"></smc-template-selections--name>
+<smc-template-selections--value [items]="selectedValues" (changed)="valueChanged($event)"></smc-template-selections--value>

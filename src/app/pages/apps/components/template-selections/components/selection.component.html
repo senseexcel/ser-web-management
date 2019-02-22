@@ -26,16 +26,12 @@
     </div>
 
     <!-- bookmark -->
-    <ng-container [ngSwitch]="templateSelection.objectType">
-
-      <div *ngSwitchCase="'bookmark'" class="selection-bookmark">
-        <smc-template-selections--bookmark [selection]="templateSelection"> </smc-template-selections--bookmark>
-      </div>
-
-      <ng-container *ngSwitchDefault>
-        <smc-template-selections--field [selection]="templateSelection"></smc-template-selections--field>
+    <div class="selection-view">
+      <ng-container [ngSwitch]="templateSelection.objectType">
+        <smc-template-selections--bookmark *ngSwitchCase="'bookmark'" [selection]="templateSelection"></smc-template-selections--bookmark>
+        <smc-template-selections--field *ngSwitchDefault [selection]="templateSelection"></smc-template-selections--field>
       </ng-container>
-    </ng-container>
+    </div>
 
   </div>
 </ng-container>

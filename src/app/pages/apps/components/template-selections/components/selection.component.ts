@@ -71,10 +71,18 @@ export class TemplateSelectionComponent implements OnInit, OnDestroy {
      * @memberof ConnectionComponent
      */
     private buildSelectionForm(): FormGroup {
+        const selectionType = this.templateSelection.type || SelectionType.Dynamic;
+        const objectType    = this.templateSelection.objectType || SelectionObjectType.DEFAULT;
+
         const formGroup: FormGroup = this.formBuilder.group({
-            type: this.formBuilder.control(this.templateSelection.type || SelectionType.Dynamic),
-            objectType: this.formBuilder.control(this.templateSelection.objectType || SelectionObjectType.DEFAULT)
+            type: this.formBuilder.control(selectionType),
+            objectType: this.formBuilder.control(objectType)
         });
+
+        if (selectionType === SelectionType.Dynamic) {
+            formGroup.controls.objectType.disable({ onlySelf: true, emitEvent: false });
+        }
+
         return formGroup;
     }
 
