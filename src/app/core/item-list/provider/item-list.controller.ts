@@ -59,6 +59,6 @@ export class ItemListController {
     }
 
     protected update(added = [], removed = []) {
-        this.update$.next({added, removed, items: [...this.listItems]});
+        this.update$.next({ added, removed, items: [...this.listItems] });
     }
 }

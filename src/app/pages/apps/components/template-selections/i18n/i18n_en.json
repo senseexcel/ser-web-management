@@ -2,7 +2,10 @@
   "SER": {
     "TEMPLATE": {
       "SELECTIONS": {
-          "CLEAR_VALUES": "Clear values"
+          "CLEAR_VALUES": "Clear values",
+          "BOOKMARK": {
+            "FIELD_LABEL": "Bookmark Name"
+          }
       }
     }
   }

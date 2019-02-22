@@ -1,9 +1,14 @@
 :host {
 
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
   .selections {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    flex:  1
   }
 
   .form-field--wrapper {

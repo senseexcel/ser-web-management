@@ -31,6 +31,11 @@ export namespace ISelection {
         }
     };
 
+    export const BOOKMARK_LIST: EngineAPI.INxGetBookmarkOptions = {
+        qTypes: ['bookmark'],
+        qData: {}
+    };
+
     export const VALUE_LIST: EngineAPI.IGenericListProperties = {
         qInfo: {
             qType: 'ListObject'
@@ -57,6 +62,7 @@ export namespace ISelection {
     };
 
     export enum TYPE {
+        BOOKMARK = 'bookmark',
         DIMENSION = 'dimension',
         FIELD = 'field',
         VALUE = 'value',
@@ -76,5 +82,9 @@ export namespace ISelection {
     export interface SelectionConfig {
         type: ISelection.TYPE;
         value: string;
+    }
+
+    export interface BookmarkEntry extends EngineAPI.INxContainerEntry<EngineAPI.INxBookmark> {
+        qMeta: EngineAPI.INxMetaTitleDescription;
     }
 }

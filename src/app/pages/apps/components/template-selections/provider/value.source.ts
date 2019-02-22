@@ -3,7 +3,7 @@ import { Observable, from, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ISelection } from '../api/selections.interface';
 
-export class SelectionValueConnector implements RemoteSource.Connector<ISelection.ValueConnectorConfig> {
+export class ValueSource implements RemoteSource.Connector<ISelection.ValueConnectorConfig> {
 
     private connectedApp: EngineAPI.IApp;
     private patches: EngineAPI.INxPatch[];

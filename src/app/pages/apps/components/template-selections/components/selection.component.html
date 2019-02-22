@@ -2,7 +2,7 @@
   <div class="selection-tile">
 
     <div class="selection-tile--header" (click)="deleteSelection()">
-        <i class="ser-icon ser-icon--remove"></i>
+      <i class="ser-icon ser-icon--remove"></i>
     </div>
 
     <div [formGroup]="selectionForm" class="selection-form">
@@ -15,24 +15,23 @@
         </mat-select>
       </mat-form-field>
 
-      <ng-container formGroupName="selection">
-        <!-- selection object type -->
-        <mat-form-field class="form-control">
-          <mat-select formControlName="objectType">
-            <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
-              {{type.label | translate}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+      <!-- selection object type -->
+      <mat-form-field class="form-control">
+        <mat-select formControlName="objectType">
+          <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
+            {{type.label | translate}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- bookmark -->
+    <div class="selection-view">
+      <ng-container [ngSwitch]="templateSelection.objectType">
+        <smc-template-selections--bookmark *ngSwitchCase="'bookmark'" [selection]="templateSelection"></smc-template-selections--bookmark>
+        <smc-template-selections--field *ngSwitchDefault [selection]="templateSelection"></smc-template-selections--field>
       </ng-container>
     </div>
 
-    <div class="selection-name">
-      <smc-template-selections--name [items]="selectedDimension" (changed)="dimensionChanged($event)"></smc-template-selections--name>
-    </div>
-
-    <div class="selection-values">
-      <smc-template-selections--value [items]="selectedValues" (changed)="valueChanged($event)"></smc-template-selections--value>
-    </div>
   </div>
 </ng-container>

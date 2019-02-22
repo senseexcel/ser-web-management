@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DIMENSION_SOURCE } from '../../provider/tokens';
 import { SelectionListController } from '../../provider/selection-list.controllter';
-import { TemplateSelectionNameViewComponent } from './name-selection-item.component';
+import { SingleItemComponent } from '../list-views/single-item.component';
 
 @Component({
     selector: 'smc-template-selections--name',
@@ -15,7 +15,7 @@ import { TemplateSelectionNameViewComponent } from './name-selection-item.compon
         { provide: ITEM_LIST_CONTROLLER, useClass: SelectionListController},
         { provide: ITEM_LIST_MODE, useValue: ItemList.MODE.SINGLE },
         { provide: ITEM_LIST_SOURCE, useExisting: DIMENSION_SOURCE },
-        { provide: ITEM_LIST_VIEW, useValue: TemplateSelectionNameViewComponent },
+        { provide: ITEM_LIST_VIEW, useValue: SingleItemComponent },
     ]
 })
 export class TemplateSelectionNameComponent implements OnInit, OnDestroy {
