@@ -82,7 +82,7 @@ export class DashboardComponent implements OnInit {
             return current;
         }, {});
 
-        this.senseExcelEngineVersion = sensePkg.version.match(/^[^\+]*/)[0];
+        this.senseExcelEngineVersion = sensePkg.version;
     }
 
     /**

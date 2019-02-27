@@ -101,7 +101,8 @@ disabled: #E4E4E4,
 
     &>* {
       &:after {
-        content: ", "
+        content: "\A";
+        white-space: pre; ;
       }
 
       &:last-child:after {
