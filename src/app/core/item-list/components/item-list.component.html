@@ -1,0 +1,27 @@
+<div class="form-field--wrapper" [hidden]="mode === 'single' && itemSize > 0">
+  <mat-form-field>
+    <input type="text" #input matInput placeholder="{{label}}" (keyUp.enter)="addValue()" [matAutocomplete]="auto">
+
+    <mat-autocomplete #auto="matAutocomplete">
+      <!-- AUTO COMPLETE FOR GROUPS -->
+      <ng-container *ngIf="isGrouped">
+        <mat-optgroup *ngFor="let group of source" [label]="group.name">
+          <mat-option *ngFor="let item of group.items" [value]="item">
+            {{item.title}}
+          </mat-option>
+        </mat-optgroup>
+      </ng-container>
+
+      <!-- AUTO COMPLETE LISTS -->
+      <ng-container *ngIf="!isGrouped">
+        <mat-option *ngFor="let item of source" [value]="item">
+          {{item.title}}
+        </mat-option>
+      </ng-container>
+
+    </mat-autocomplete>
+  </mat-form-field>
+</div>
+<div class="selections">
+  <smc-item-list--view></smc-item-list--view>
+</div>

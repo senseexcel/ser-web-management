@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
 import { empty } from 'rxjs';
@@ -14,24 +14,19 @@ import { AppRepository } from '@smc/modules/ser/provider/app.repository';
     templateUrl: 'list.component.html',
     styleUrls: ['./list.component.scss'],
 })
-export class AppListComponent implements OnInit {
+export class AppListComponent implements OnInit, OnDestroy {
 
     public apps: IApp[] = [];
-
     public tableHeaders: string[] = ['name', 'id'];
-
     public isLoading = true;
-
     public selection: SelectionModel<IApp>;
 
     private router: Router;
-
     private route: ActivatedRoute;
-
     private dialogService: ModalService;
 
     constructor(
-        @Inject(SMC_SESSION) public settings: ISettings,
+        @Inject(SMC_SESSION) public session: ISettings,
         private appRepository: AppRepository,
         private smcCache: SmcCache,
         dialog: ModalService,
@@ -54,6 +49,10 @@ export class AppListComponent implements OnInit {
         }
     }
 
+    public ngOnDestroy() {
+        this.selection.clear();
+    }
+
     /**
      * delete existing app
      *
@@ -70,7 +69,14 @@ export class AppListComponent implements OnInit {
      * @memberof AppListComponent
      */
     public editApp() {
-        this.router.navigate([`edit/${this.selection.selected[0].id}`], { relativeTo: this.route });
+
+        this.router
+            .navigate([`edit/${this.selection.selected[0].id}`], { relativeTo: this.route })
+            .then((routeChange: boolean) => {
+                if (!routeChange) {
+                    this.selection.clear();
+                }
+            });
     }
 
     /**
@@ -110,8 +116,8 @@ export class AppListComponent implements OnInit {
     public syncApps() {
 
         const dialogCtrl = this.dialogService.openDialog(
-            'Synchronize SER Apps',
-            'This will Synchronize Sense Excel Reporting Apps and add SER Tag to App. This can take a while...'
+            'SMC_APPS.LIST.DIALOG.SYNC_APPS_TITLE',
+            {key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS_MESSAGE'}
         );
 
         dialogCtrl.switch
@@ -124,7 +130,13 @@ export class AppListComponent implements OnInit {
                     return empty();
                 }),
             ).subscribe((apps) => {
-                this.dialogService.openMessageModal('Apps Synchronized', `${apps.length} App(s) where synchronized.`);
+                this.dialogService.openMessageModal(
+                    'SMC_APPS.LIST.DIALOG.SYNC_APPS_TITLE_SUCCESS',
+                    {
+                        key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS_MESSAGE_SUCCESS',
+                        param: { COUNT: apps.length }
+                    }
+                );
                 this.loadApps();
             });
     }

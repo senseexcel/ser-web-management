@@ -1,40 +1,38 @@
 <!-- page tile wrapper link if page is enabled -->
 <ng-template #pageTile let-page="pageData">
-    <a class="page-tile" (click)="displayPage(page)" *ngIf="!page.disabled" >
-        <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
-    </a>
-    <div class="page-tile disabled" *ngIf="page.disabled">
-        <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
-    </div>
+  <a class="page-tile" (click)="displayPage(page)" *ngIf="!page.disabled">
+    <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
+  </a>
+  <div class="page-tile disabled" *ngIf="page.disabled">
+    <ng-container [ngTemplateOutlet]="pageTileContent" [ngTemplateOutletContext]="{pageData: page}"></ng-container>
+  </div>
 </ng-template>
 
 <!-- page tile content -->
 <ng-template #pageTileContent let-page="pageData">
-    <span class="page-tile--header">
-        <i *ngIf="page.icon" class="ser-icon ser-icon--{{page.icon}}"></i>
-        <span>{{page.title}}</span>
-    </span>
-    <span class="page-tile--body">
-        {{page.description}}
-    </span>
+  <span class="page-tile--header">
+    <i *ngIf="page.icon" class="ser-icon ser-icon--{{page.icon}}"></i>
+    <span translate="{{page.title.key}}" [translateParams]="page.title.param"></span>
+  </span>
+  <span translate="{{page.description.key}}" class="page-tile--body">
+  </span>
 </ng-template>
 
 <smc-ui--page class="page-layout home">
 
-    <div page-sidebar--left>
-        <app-menu [menuItems]="mainMenu"></app-menu>
-    </div>
+  <div page-sidebar--left>
+    <smc-ui-menu [menuItems]="mainMenu"></smc-ui-menu>
+  </div>
 
-    <div page-content--body>
-        <div class="page-tile--grid">
-            <ng-container *ngFor="let page of pageTiles"
-                    [ngTemplateOutlet]="pageTile"
-                    [ngTemplateOutletContext]="{pageData: page}">
-            </ng-container>
-        </div>
+  <div page-content--body>
+    <div class="page-tile--grid">
+      <ng-container *ngFor="let page of pageTiles" [ngTemplateOutlet]="pageTile" [ngTemplateOutletContext]="{pageData: page}">
+      </ng-container>
     </div>
+  </div>
 
-    <div page-content--footer>
-        Sense Excel Reporting Webmanager Console: Version 1.2.1
-    </div>
+  <div page-content--footer>
+    <span translate="SMC_DASHBOARD.VERSION" [translateParams]="{VERSION: '1.3.0'}"></span>
+    <span translate="SENSE_EXCEL_REPORTING.ENGINE.VERSION" [translateParams]="{VERSION: senseExcelEngineVersion}"></span>
+  </div>
 </smc-ui--page>

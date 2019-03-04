@@ -1,1 +1,1 @@
-<div class="modal-dialog--message" [innerHtml]="dialogData.message | nl2br"></div>
+<div class="modal-dialog--message" [innerHtml]="dialogData.message.key | translate:(dialogData.message.param || null)"></div>

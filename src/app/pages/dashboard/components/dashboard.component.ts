@@ -1,14 +1,16 @@
 import { Component, OnInit, HostBinding, Inject } from '@angular/core';
 import { Observable, forkJoin, of } from 'rxjs';
 import { Router } from '@angular/router';
-import { IMenuItem, IPage, IPageInformation } from '@smc/modules/menu';
 
-/** @deprecated in next version this is general app information */
-import { PAGE_SETTINGS } from '../../../model/page.model';
-import { AppRepository, TaskRepository, FilterFactory } from '@smc/modules/qrs';
+import { AppRepository, TaskRepository, FilterFactory, SharedContentRepository } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
-import { ISettings } from '@smc/modules/smc-common';
-import { CacheService } from '@smc/pages/apps/providers/cache.service';
+import { ISettings, IDataNode, EnigmaService } from '@smc/modules/smc-common';
+import { SettingsService } from 'src/app/services/settings.service';
+import { ITile } from '../api/tile.interface';
+import { map } from 'rxjs/operators';
+import { PageModel } from 'src/app/model/page.model';
+import { IMenuItem } from '@smc/modules/smc-ui/api';
+import { IAppPage } from '@api/app-page.interface';
 
 @Component({
     selector: 'smc-dashboard',
@@ -20,33 +22,24 @@ export class DashboardComponent implements OnInit {
 
     @HostBinding('class.dashboard')
     public static readonly hostClass = true;
-
-    /**
-     * main menu data
-     *
-     * @type {IMenuItem[]}
-     * @memberof DashboardComponent
-     */
     public mainMenu: IMenuItem[];
-
-    private router: Router;
-
-    public pageTiles;
+    public pageTiles: ITile[];
+    public senseExcelEngineVersion: string;
 
     /**
      *Creates an instance of DashboardComponent.
      * @memberof DashboardComponent
      */
     constructor(
-        @Inject(SMC_SESSION) private settings: ISettings,
-        @Inject(PAGE_SETTINGS) private pages,
-        router: Router,
+        @Inject(SMC_SESSION) private session: ISettings,
+        private enigmaService: EnigmaService,
+        private settings: SettingsService,
+        private router: Router,
         private appRepository: AppRepository,
         private taskRepository: TaskRepository,
         private filterFactory: FilterFactory,
-        private cache: CacheService
+        private sharendContentRepository: SharedContentRepository
     ) {
-        this.router = router;
     }
 
     /**
@@ -58,12 +51,17 @@ export class DashboardComponent implements OnInit {
 
         const taskCountSource$ = this.fetchTaskCount();
         const serAppCountSource$ = this.fetchSerApps();
+        const sharedContentSource$ = this.fetchSharedContentCount();
 
-        forkJoin(taskCountSource$, serAppCountSource$)
-            .subscribe((counts: number[]) => {
-                this.mainMenu = this.pages;
-                this.pageTiles = this.createPageTileData(counts, this.pages);
+        forkJoin(taskCountSource$, serAppCountSource$, sharedContentSource$)
+            .pipe(map((counts) => this.createPageTiles(counts)))
+            .subscribe((tiles: ITile[]) => {
+                this.mainMenu = this.settings.menu;
+                this.pageTiles = tiles;
             });
+
+        this.loadSenseExcelVersion();
+
     }
 
     /**
@@ -71,8 +69,22 @@ export class DashboardComponent implements OnInit {
      *
      * @memberof DashboardComponent
      */
-    public displayPage(page: IPage) {
+    public displayPage(page: IAppPage) {
         this.router.navigate([`/${page.route}`]);
+    }
+
+    private async loadSenseExcelVersion() {
+        const app      = await this.enigmaService.createSessionApp();
+        const response = JSON.parse( await app.evaluate(`SER.STATUS('versions: all')`));
+
+        const sensePkg = response.versions.reduce((current, pkg) => {
+            if (pkg.name === 'ser-engine') {
+                return pkg;
+            }
+            return current;
+        }, {});
+
+        this.senseExcelEngineVersion = sensePkg.version;
     }
 
     /**
@@ -84,29 +96,42 @@ export class DashboardComponent implements OnInit {
      * @returns {IPageInformation[]}
      * @memberof DashboardComponent
      */
-    private createPageTileData(counts: number[], pageData: IPage[]): IPageInformation[] {
-        // flatten menu data to get pages directly
-        return pageData.reduce((current: IPage[] | null, previous: IPage) => {
-            const children = <IPage[]>previous.children || [];
-            if (!current) {
-                return children || [previous];
+    private createPageTiles(counts: number[]): ITile[] {
+        const [taskCount, appCount, sharedContentCount] = counts;
+
+        return this.settings.pages.map((item: PageModel): ITile => {
+            const i18nParams: IDataNode = {};
+
+            switch (item.id) {
+                case 'apps': i18nParams.COUNT = appCount; break;
+                case 'tasks': i18nParams.COUNT = taskCount; break;
+                case 'sharedcontent': i18nParams.COUNT = sharedContentCount; break;
             }
 
-            return current.concat(
-                children || previous
-            );
-        }, null)
-        // add title
-        .map((item: IPage): IPageInformation => {
-            let title: string;
-            switch (item.name) {
-                case 'Reporting Apps' : title = `${item.name} (${counts[1]})`; break;
-                case 'Reporting Tasks': title = `${item.name} (${counts[0]})`; break;
-                default               : title = item.name;
-            }
-
-            return { ...item, title };
+            return {
+                ...item.raw,
+                ...{
+                    description: {
+                        key: `SMC_DASHBOARD.TILE.${item.id.toUpperCase()}.DESCRIPTION`,
+                    },
+                    title: {
+                        key: `SMC_DASHBOARD.TILE.${item.id.toUpperCase()}.TITLE`,
+                        param: Object.keys(i18nParams).length === 0 ? null : i18nParams
+                    }
+                }
+            };
         });
+    }
+
+    /**
+     * fetch shared content count
+     *
+     * @private
+     * @returns {Observable<number>}
+     * @memberof DashboardComponent
+     */
+    private fetchSharedContentCount(): Observable<number> {
+        return this.sharendContentRepository.count();
     }
 
     /**
@@ -118,12 +143,12 @@ export class DashboardComponent implements OnInit {
      */
     private fetchTaskCount(): Observable<number> {
 
-        if (!this.settings.serTag) {
+        if (!this.session.serTag) {
             return of(0);
         }
 
         const taskFilter = this.filterFactory.createFilter(
-            'tags.id', this.settings.serTag.id);
+            'tags.id', this.session.serTag.id);
 
         return this.taskRepository.fetchTaskCount(taskFilter);
     }
@@ -136,11 +161,11 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     private fetchSerApps(): Observable<number> {
-        if (!this.settings.serTag) {
+        if (!this.session.serTag) {
             return of(0);
         }
         const appFilter = this.filterFactory.createFilter(
-            'tags.id', this.settings.serTag.id
+            'tags.id', this.session.serTag.id
         );
         return this.appRepository.fetchAppCount(appFilter);
     }

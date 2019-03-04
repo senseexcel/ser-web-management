@@ -1,0 +1,35 @@
+{
+  "SMC_DASHBOARD": {
+    "TILE": {
+      "APPS": {
+        "TITLE": "Reporting Apps ({{COUNT}})",
+        "DESCRIPTION": "Overview of all your available apps to edit delete, publish or duplicate apps. Adjustment of apps to be reused, modified and shared with others."
+      },
+      "TASKS": {
+        "TITLE": "Reporting Tasks ({{COUNT}})",
+        "DESCRIPTION": "Manage the status of your tasks. Edit, Reload, Synchronize and Create new tasks and modify the properties of reporting tasks. Reporting Tasks are used to reload the data in an app or to import users from a user directory."
+      },
+      "SHAREDCONTENT": {
+        "TITLE": "Sharedcontent Manager ({{COUNT}})",
+        "DESCRIPTION": "Show and delete shared content like reports."
+      },
+      "MONITORING_APPS": {
+        "TITLE": "Monitoring Apps",
+        "DESCRIPTION": "Montioring Apps"
+      },
+      "LICENSE": {
+        "TITLE": "License Manager",
+      "DESCRIPTION": "The License Enable File (LEF) defines the terms and usage of your license. Access types can be allocated to users. On the Licence usage summary page, you can see the distribution of all access types"
+      },
+      "INSTALLATION_WIZARD": {
+        "TITLE": "Installation Wizard",
+        "DESCRIPTION": "Installation Wizard"
+      },
+      "AUTO_UPDATE": {
+        "TITLE": "Auto Update",
+        "DESCRIPTION": "Auto Update"
+      }
+    },
+    "VERSION": "SMC Version: {{VERSION}}"
+  }
+}

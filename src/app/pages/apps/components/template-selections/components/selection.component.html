@@ -1,0 +1,37 @@
+<ng-container *ngIf="selectionForm">
+  <div class="selection-tile">
+
+    <div class="selection-tile--header" (click)="deleteSelection()">
+      <i class="ser-icon ser-icon--remove"></i>
+    </div>
+
+    <div [formGroup]="selectionForm" class="selection-form">
+      <!-- selection type -->
+      <mat-form-field class="form-control">
+        <mat-select formControlName="type">
+          <mat-option *ngFor="let type of selectionTypes" [value]="type.value">
+            {{type.label | translate}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- selection object type -->
+      <mat-form-field class="form-control">
+        <mat-select formControlName="objectType">
+          <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
+            {{type.label | translate}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- bookmark -->
+    <div class="selection-view">
+      <ng-container [ngSwitch]="templateSelection.objectType">
+        <smc-template-selections--bookmark *ngSwitchCase="'bookmark'" [selection]="templateSelection"></smc-template-selections--bookmark>
+        <smc-template-selections--field *ngSwitchDefault [selection]="templateSelection"></smc-template-selections--field>
+      </ng-container>
+    </div>
+
+  </div>
+</ng-container>

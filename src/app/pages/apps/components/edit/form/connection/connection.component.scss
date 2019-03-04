@@ -1,0 +1,32 @@
+:host {
+
+  .form-wrapper {
+    display: flex;
+    align-items: baseline;
+
+    .form {
+      flex: 1;
+    }
+
+    ::ng-deep {
+      button {
+        margin: 0 0 0 .8rem;
+
+        i {
+          margin: 0 .3rem 0 0;
+          color: green;
+        }
+      }
+    }
+  }
+
+  .connected {
+    ::ng-deep {
+      button {
+        i {
+          color: red;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,42 @@
+:host {
+
+  .selections-wrapper {
+
+    display: flex;
+    overflow-x: auto;
+
+    .selections-list {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    &::ng-deep {
+
+      smc-template--selection {
+        box-shadow: 2px 2px 8px rgba(200, 200, 200, .5);
+        margin: 0 1rem 1rem 0;
+      }
+
+      .selection-tile {
+        width: 300px;
+      }
+
+      .dd-selection--placeholder {
+        border-radius: .5rem;
+        box-shadow: 2px 2px 8px rgba(200, 200, 200, .5);
+        width: 300px;
+        background: #FFFF;
+        border: 1px dashed #E6E6E6;
+        outline-color: #FFFF;
+        margin: 0 1rem 1rem 0;
+      }
+
+      .selection-tile.create {
+        width: 80px;
+        height: 80px;
+        box-shadow: none;
+        border: 1px dashed #E6E6E6;
+      }
+    }
+  }
+}

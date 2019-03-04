@@ -1,0 +1,23 @@
+:host {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+
+    .label {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .label + smc-ui--button {
+        margin-left: .5rem;
+    }
+
+    ::ng-deep {
+
+        button i.ser-icon {
+            font-size: 1rem;
+        }
+    }
+}

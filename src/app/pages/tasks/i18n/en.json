@@ -1,0 +1,73 @@
+{
+    "SMC_TASKS": {
+        "EDIT": {
+            "HEADER": "Edit Reload Task",
+            "ACTIONS": {
+                "APPLY": "Save Task",
+                "CANCEL": "Cancel"
+            },
+            "DIALOG": {
+                "CANCEL_TITLE": "Cancel edit task",
+                "CANCEL_MESSAGE": "Cancel current process will discard all current changes.<br /><br />Continue ",
+                "SAVE_ERROR_TITLE": "An error occured",
+                "SAVE_ERROR_MESSAGE": "Task <b>{{NAME}}</b> could not saved.",
+                "SAVE_SUCCESS_CREATED": "Task created",
+                "SAVE_SUCCESS_UPDATED": "Task updated",
+                "SAVE_SUCCESS_MESSAGE": "Task <b>{{NAME}}</b> was successfully saved.",
+                "OPEN_ERROR_TITLE": "Could not open task",
+                "OPEN_ERROR_MESSAGE": "An error occured on open the task. Please check logs for detailed informations.",
+                "OPEN_ERROR_INCOMPATIBLE_TITLE": "Task incompatible",
+                "OPEN_ERROR_INCOMPATIBLE_MESSAGE": "It seems the task was created or modified by qmc and could not edited with webmanagement app."
+            },
+            "FIELDSET": {
+                "EXECUTION": {
+                    "ENABLED": "Enabled",
+                    "SESSION_TIMEOUT": "Session Timeout",
+                    "MAX_RETRIES": "Max Retries (between 1 - 20)"
+                },
+                "IDENTIFICATION": {
+                    "TASK_NAME": "Task Name",
+                    "ASSOCIATED_RESOURCE": "Sense Excel Reporting App"
+                },
+                "TRIGGER": {
+                    "EXECUTION_TIME": "Task Execution Time",
+                    "EXECUTION_TIME_NOTE": "Daily Time task will triggered (0 - 23)"
+                }
+            },
+            "OVERVIEW": {
+                "GO_BACK": "Reporting Tasks"
+            },
+            "PROPERTIES": {
+                "LABEL": "Properties",
+                "ITEM": {
+                    "IDENTIFICATION": "Identification",
+                    "EXECUTION": "Execution",
+                    "TRIGGER": "Trigger"
+                }
+            }
+        },
+        "LIST": {
+            "ACTIONS": {
+                "EDIT": "Edit",
+                "CREATE": "Create New",
+                "SYNC": "Synchronize Tasks"
+            },
+            "COLUMN": {
+                "ID": "Id",
+                "NAME": "Name",
+                "ASSOCIATED_RESOURCE": "Associated Resource",
+                "ENABLED": "Enabled",
+                "STATUS": "Status",
+                "LAST_EXECUTION": "Last Execution",
+                "NEXT_EXECUTION": "Next Execution"
+            },
+            "DIALOG": {
+                "SYNC_TASKS_TITLE": "Synchronize Tasks",
+                "SYNC_TASKS_MESSAGE": "This will synchronize Sense Excel Reporting task and add \"SER\" Tag to tasks for Sense Excel Reporting Apps.<br /><br />This can take some time, continue ?",
+                "SYNC_TASKS_DONE_TITLE": "Tasks synchronized",
+                "SYNC_TASKS_DONE_MESSAGE": "{{COUNT}} Tasks synchronized."
+            },
+            "TITLE": "Tasks"
+        }
+    }
+}

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { IApp, ReportModel } from '@smc/modules/ser';
+import { ReportModel } from '@smc/modules/ser';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormService } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';

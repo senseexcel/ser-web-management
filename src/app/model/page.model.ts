@@ -1,78 +1,79 @@
-import { InjectionToken } from '@angular/core';
+import { IAppPage } from '@api/app-page.interface';
+import { IModel, IDataNode } from '@smc/modules/smc-common';
 
-export const Pages = [
-    {
-        name: 'manage content',
-        children: [{
-            name: 'Reporting Apps',
-            show: true,
-            description: 'Overview of all your available apps to edit delete, publish or duplicate apps. \
-            Adjustment of apps to be reused, modified and shared with others.',
-            disabled: false,
-            icon: 'apps',
-            route: 'apps'
-        },
-        {
-            name: 'Reporting Tasks',
-            show: true,
-            description: 'Manage the status of your tasks. Edit, Reload, Synchronize and Create new tasks and \
-            modify the properties of reporting tasks. Reporting Tasks are used to reload the data in an app or \
-            to import users from a user directory.',
-            disabled: false,
-            icon: 'tasks',
-            route: 'tasks'
-        },
-        {
-            name: 'Shared Content',
-            show: true,
-            description: 'Shared Content',
-            disabled: false,
-            icon: 'folder',
-            route: 'sharedcontent'
-        }]
-    },
-    {
-        name: 'manage resources',
-        children: [{
-            name: 'License Management',
-            show: true,
-            description: 'The License Enable File (LEF) defines the terms and usage of your license. \
-            Access types can be allocated to users. On the Licence usage summary page, you can see the distribution of all access types',
-            disabled: false,
-            icon: 'license',
-            route: 'license'
+export class PageModel implements IAppPage, IModel<IAppPage> {
 
-        }]
-    },
-    {
-        name: 'Governance',
-        children: [{
-            name: 'Monitoring Report Apps',
-            show: true,
-            description: 'Monitoring Report Apps',
-            disabled: true,
-            icon: 'streams'
-        }]
-    },
-    {
-        name: 'configure system',
-        children: [{
-            name: 'Installation Wizzard',
-            show: true,
-            description: 'Install Wizzard helps to install an app.',
-            disabled: true,
-            icon: 'engines'
-        }, {
-            name: 'Auto Update',
-            show: true,
-            description: 'Auto Update',
-            disabled: true,
-            icon: 'load'
-        }]
+    private pageId: string;
+    private pageShow: boolean;
+    private pageTitle: string;
+    private pageIcon: string;
+    private pageVisible: boolean;
+    private pageDisabled: boolean;
+    private pageRoute: string;
+
+    public set title(title: string) {
+        this.pageTitle = title;
     }
-];
 
-/** @deprecated use SmcCache.get('smc.settings.pages') instead */
-export const PAGE_SETTINGS = new InjectionToken('Pages', {
-    factory: () => Pages
-});
+    public set icon(icon: string) {
+        this.pageIcon = icon;
+    }
+
+    public set visible(visible: boolean) {
+        this.pageVisible = visible;
+    }
+
+    public set disabled(disabled: boolean) {
+        this.pageDisabled = disabled;
+    }
+
+    public set route(route: string) {
+        this.pageRoute = route;
+    }
+
+    public get title(): string {
+        return this.pageTitle;
+    }
+
+    public get icon(): string {
+        return this.pageIcon;
+    }
+
+    public get visible(): boolean {
+        return this.pageVisible;
+    }
+
+    public get disabled(): boolean {
+        return this.pageDisabled;
+    }
+
+    public get route(): string {
+        return this.pageRoute;
+    }
+
+    public set id(id: string) {
+        this.pageId = id;
+    }
+
+    public get id() {
+        return this.pageId;
+    }
+
+    public set show(show: boolean) {
+        this.pageShow = show;
+    }
+
+    public get show(): boolean {
+        return this.pageShow;
+    }
+
+    public get raw(): IAppPage {
+        return {
+            disabled: this.pageDisabled,
+            icon: this.pageIcon,
+            id: this.pageId,
+            route: this.pageRoute,
+            show: this.pageShow,
+        };
+    }
+}

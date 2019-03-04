@@ -8,6 +8,7 @@ import { AppCreatedResponse } from '../api';
 export class EnigmaService {
 
     private sessions: Map<string, EngineAPI.IApp>;
+    private appCache: EngineAPI.IDocListEntry[];
 
     constructor() {
         this.sessions = new Map();
@@ -28,6 +29,14 @@ export class EnigmaService {
         return session;
     }
 
+    public async createSessionApp(): Promise<EngineAPI.IApp> {
+        const global = await this.openSession();
+        const sessionApp =  await global.createSessionApp();
+        console.dir(sessionApp);
+        this.sessions.set(sessionApp.id, sessionApp);
+        return sessionApp;
+    }
+
     /**
      * open a new websocket connection to qlik app
      *
@@ -36,12 +45,21 @@ export class EnigmaService {
      * @memberof SessionService
      */
     public async openApp(appId: string): Promise<EngineAPI.IApp> {
-        if (!this.sessions.has(appId) ) {
-            const global  = await this.openSession() as any; /** cast as any since type is not valid */
-            const session = await global.openDoc(appId, '', '', '', true);
-            this.sessions.set(appId, session);
+
+        if (this.sessions.has(appId)) {
+            return this.sessions.get(appId);
         }
-        return this.sessions.get(appId);
+
+        let global: EngineAPI.IGlobal;
+        try {
+            global = await this.openSession(); /** cast as any since type is not valid */
+            const session = await global.openDoc(appId, '', '', '', false);
+            this.sessions.set(appId, session);
+            return session;
+        } catch (error) {
+            global.session.close();
+            throw error;
+        }
     }
 
     /**
@@ -51,10 +69,10 @@ export class EnigmaService {
      * @returns {Promise<boolean>}
      * @memberof SessionService
      */
-    public async closeApp(app: EngineAPI.IApp): Promise<boolean> {
+    public async closeApp(app: EngineAPI.IApp): Promise<void> {
         const appId = app.id;
         await app.session.close();
-        return this.sessions.delete(appId);
+        this.sessions.delete(appId);
     }
 
     /**
@@ -65,7 +83,7 @@ export class EnigmaService {
      * @memberof SessionService
      */
     public async getAppScript(appId: string): Promise<string> {
-        const app    = await this.openApp(appId);
+        const app = await this.openApp(appId);
         const script = await app.getScript();
         await this.closeApp(app);
         return script;
@@ -87,6 +105,28 @@ export class EnigmaService {
     }
 
     /**
+     * fetch all apps we have access to in qlik sense
+     *
+     * @memberof EnigmaService
+     */
+    public async fetchApps(force = false): Promise<EngineAPI.IDocListEntry[]> {
+
+        if (!this.appCache || force) {
+            const global = await this.openSession();
+            /** typings are wrong, we got an array of doclist entries and not 1 doclist entry */
+            const appList = await global.getDocList() as any;
+            await global.session.close();
+            this.appCache = appList as EngineAPI.IDocListEntry[];
+        }
+
+        return this.appCache;
+    }
+
+    public async reloadApps(): Promise<void> {
+        await this.fetchApps(true);
+    }
+
+    /**
      * create new session for app
      *
      * @private
@@ -95,7 +135,6 @@ export class EnigmaService {
      * @memberof SerAppService
      */
     private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
-
         return new Promise<enigmaJS.ISession>((resolve) => {
             const url = buildUrl({
                 host: window.location.host,
@@ -107,13 +146,13 @@ export class EnigmaService {
             const session: enigmaJS.ISession = create({
                 schema: qixSchema,
                 url
-             });
+            });
 
             resolve(session);
         });
     }
 
-    private async openSession(): Promise<enigmaJS.IGeneratedAPI> {
+    private async openSession(): Promise<EngineAPI.IGlobal> {
         const session = await this.createSession();
         return session.open();
     }

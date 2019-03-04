@@ -3,11 +3,11 @@
         'ser-icon--warning': !step.value.isValid,
         'ser-icon--check': step.value.isValid
     }"></i>
-    {{step.key}}
+    {{step.key | translate}}
 </ng-template>
 
 <div class="header">
-    installation invalid
+    {{'SMC_LICENSE.INSTALLATION.INVALID' | translate}}
 </div>
 <div class="body">
     <ul class="lui-list">
@@ -23,6 +23,6 @@
         </li> 
     </ul>
     <div class="notification">
-        Please contact your system adminstrator or qlik consultant.
+        {{'SMC_CORE.CONTACT_CONSULTANT' | translate}}
     </div>
 </div>

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { LicenseModel } from '../model/license.model';
-import { Observable, of, BehaviorSubject, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
+import { map, switchMap, mergeMap  } from 'rxjs/operators';
 import { LicenseReader } from './license-reader';
 import { LicenseRepository } from './license-repository';
 import { LicenseWriter } from './license-writer';
+import { LicenseValidator } from './license-validator';
 import { ILicenseUser } from '../api/license-user.interface';
 import { LICENSE_PROPERTIES } from '../api/license-data.interface';
 import { SerLicenseResponseException } from '../api/exceptions';
@@ -12,60 +13,17 @@ import { SerLicenseResponseException } from '../api/exceptions';
 @Injectable()
 export class License {
 
-    /**
-     * license has been loaded/updated
-     *
-     * @type {BehaviorSubject<LicenseModel>}
-     * @memberof License
-     */
     public onload$: BehaviorSubject<LicenseModel>;
-
     public update$: Subject<LicenseModel>;
 
-    /**
-     * read data and create/update license model
-     *
-     * @private
-     * @type {LicenseReader}
-     * @memberof License
-     */
-    private reader: LicenseReader;
-
-    /**
-     * prepare data and write to repository
-     *
-     * @private
-     * @type {LicenseWriter}
-     * @memberof License
-     */
-    private writer: LicenseWriter;
-
-    /**
-     * repository to fetch license data
-     *
-     * @private
-     * @type {LicenseRepository}
-     * @memberof License
-     */
-    private repository: LicenseRepository;
-
-    /**
-     *
-     *
-     * @private
-     * @type {LicenseModel}
-     * @memberof License
-     */
     private model: LicenseModel;
 
     constructor(
-        reader: LicenseReader,
-        repository: LicenseRepository,
-        writer: LicenseWriter
+        private reader: LicenseReader,
+        private repository: LicenseRepository,
+        private writer: LicenseWriter,
+        private validator: LicenseValidator
     ) {
-        this.reader     = reader;
-        this.writer     = writer;
-        this.repository = repository;
         this.model      = new LicenseModel();
         this.onload$    = new BehaviorSubject(this.model);
         this.update$    = new Subject();
@@ -83,6 +41,15 @@ export class License {
                 const license = this.reader.read(licenseContent, this.model);
                 this.onload$.next(license);
                 return license;
+            }),
+            mergeMap((license: LicenseModel) => {
+                return this.validator.validateLicense(license)
+                    .pipe(
+                        map((validationResult) => {
+                            license.validationResult = validationResult;
+                            return license;
+                        })
+                    );
             })
         );
     }
@@ -112,7 +79,7 @@ export class License {
                     }
                     return excelLicense;
                 }),
-                map((licenseContent: string) => this.updateLicense(licenseContent))
+                switchMap((licenseContent: string) => this.updateLicense(licenseContent))
             );
     }
 
@@ -126,7 +93,7 @@ export class License {
      * @param {string} content
      * @memberof License
      */
-    public updateLicense(content: string | LicenseModel): LicenseModel {
+    public updateLicense(content: string | LicenseModel): Observable<LicenseModel> {
 
         let license;
         if (content instanceof LicenseModel) {
@@ -134,8 +101,15 @@ export class License {
         } else {
             license = this.reader.read(content, this.model);
         }
-        this.onload$.next(license);
-        return this.model;
+
+        return this.validator.validateLicense(license)
+            .pipe(
+                map((validationResult) => {
+                    license.validationResult = validationResult;
+                    this.onload$.next(license);
+                    return license;
+                })
+            );
     }
 
     /**

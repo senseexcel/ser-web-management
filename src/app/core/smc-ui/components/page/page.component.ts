@@ -16,10 +16,10 @@ export class SmcPageComponent implements AfterContentInit {
     @ViewChild('sectionHeader')
     private sectionHeader: ElementRef;
 
-    @Input('disablePadding')
+    @Input()
     public disablePadding = false;
 
-    @Input('loading')
+    @Input()
     public loading = false;
 
     public hide = {

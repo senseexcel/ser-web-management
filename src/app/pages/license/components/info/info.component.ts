@@ -6,7 +6,7 @@ import { Subject, forkJoin, of } from 'rxjs';
 import { ILicenseValidationResult } from '../../api/validation-result.interface';
 
 @Component({
-    selector: 'app-license-info',
+    selector: 'smc-license-info',
     styleUrls: ['info.component.scss'],
     templateUrl: 'info.component.html'
 })
@@ -136,31 +136,17 @@ export class InfoComponent implements OnDestroy, OnInit {
             : this.repository.fetchQlikSerialNumber();
 
        this.license.onload$.pipe(
-            mergeMap((license: LicenseModel) => {
-                return forkJoin([
-                    this.validator.validateLicense(license),
-                    qlikSerial$
-                ]).pipe(
-                    map(([validationResult, serial]) => {
-
-                        this.validationErrors = validationResult.errors;
-
-                        return {
-                            license,
-                            qlikSerial: serial,
-                            valid: validationResult.isValid
-                        };
-                    }),
-                );
+            switchMap((license: LicenseModel) => {
+                this.licenseModel = license;
+                return qlikSerial$;
             }),
             takeUntil(this.isDestroyed$)
         )
-        .subscribe((result) => {
-            this.isValid       = result.valid;
-            this.licenseModel  = result.license;
-            this.licenseStatus = this.isValid ? 'valid' : 'invalid';
-            this.qlikLicense   = result.qlikSerial;
-            this.ready         = true;
+        .subscribe((qlikSerial: string) => {
+            this.licenseStatus    = this.licenseModel.validationResult.isValid ? 'valid' : 'invalid';
+            this.validationErrors = this.licenseModel.validationResult.errors;
+            this.qlikLicense      = qlikSerial;
+            this.ready            = true;
         });
     }
 }

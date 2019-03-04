@@ -83,8 +83,7 @@ export class TemplateModel implements ISerTemplate {
         this.templateScriptArgs = args;
     }
 
-    @Validate([Validators.isArray])
-    @mapDataTo<SelectionModel[]>(SelectionModel)
+    @mapDataTo<SelectionModel>(SelectionModel)
     public set selections(selections: ISerSenseSelection[]) {
         this.templateSelections = selections;
     }
@@ -95,7 +94,7 @@ export class TemplateModel implements ISerTemplate {
 
     public get raw(): ISerTemplate {
 
-        let selections = this.templateSelections as IModel[];
+        let selections = this.templateSelections as IModel<any>[];
 
         if (!selections) {
             selections = [new SelectionModel()];
@@ -109,7 +108,7 @@ export class TemplateModel implements ISerTemplate {
             keepFormula: this.templateKeepFormula,
             scriptKeys: this.templateScriptKeys,
             scriptArgs: this.templateScriptArgs,
-            selections: selections[0] ? [selections[0].raw] : []
+            selections: selections.map((selection) => selection.raw)
         };
     }
 }

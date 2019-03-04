@@ -3,9 +3,10 @@ $colors: (text: #595959,
 hover: #F2F2F2,
 disabled: #E4E4E4,
 );
-  .smc-ui--page--sidebar.sidebar-left {
-    flex: 0 0 200px;
-  }
+
+.smc-ui--page--sidebar.sidebar-left {
+  flex: 0 0 200px;
+}
 
 :host {
 
@@ -24,7 +25,6 @@ disabled: #E4E4E4,
 
       .lui-list {
 
-
         .ser-icon {
           font-size: 12px;
           margin: 0px 5px 0 0;
@@ -37,7 +37,6 @@ disabled: #E4E4E4,
         }
 
         .lui-list--item {
-          padding: 0;
           padding: 0 10px;
           font-size: 13px;
           border: none;
@@ -93,30 +92,41 @@ disabled: #E4E4E4,
   }
 
   [page-content--footer] {
-      background: #FFF;
-      font-size: .7rem;
-      text-align: right;
-      padding: $grid-gap/2 $grid-gap;
-      color: lighten(map-get($colors, 'text'), 20);
+    background: #FFF;
+    font-size: .7rem;
+    text-align: right;
+    padding: $grid-gap/2 $grid-gap;
+    color: lighten(map-get($colors, 'text'), 20);
+
+    &>* {
+      &:after {
+        content: "\A";
+        white-space: pre; ;
+      }
+
+      &:last-child:after {
+        content: ""
+      }
+    }
   }
 
   .page-tile--grid {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: flex-start;
     margin: 0 $grid-gap * -1;
-    max-width: 50vw;
   }
 
   .page-tile {
     display: flex;
     flex-direction: column;
     color: map-get($colors, 'text');
-    padding: 0 $grid-gap;
-    flex: 0 0 50%;
+    flex: 0 0 100%;
     margin-bottom: $grid-gap * 3;
     min-height: 150px;
+    max-width: 360px;
+    margin: 0 0 15px 20px;
 
     &:nth-child(2n+2) {
       padding-left: 0;
@@ -155,6 +165,17 @@ disabled: #E4E4E4,
 
     .ser-icon {
       font-size: 20px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+
+    .page-tile--grid {
+      max-width: 1100px;
+    }
+
+    .page-tile {
+      flex: 0 0 50%;
     }
   }
 }

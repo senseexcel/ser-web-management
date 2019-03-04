@@ -1,4 +1,4 @@
-import { IModel } from '@smc/modules/smc-common';
+import { IModel, IDataNode } from '@smc/modules/smc-common';
 
 /**
  * model for task excution data
@@ -6,7 +6,7 @@ import { IModel } from '@smc/modules/smc-common';
  * @export
  * @class ExecutionModel
  */
-export class ExecutionModel implements IModel {
+export class ExecutionModel implements IModel<IDataNode> {
 
     /**
      * task is eanbled
@@ -95,7 +95,7 @@ export class ExecutionModel implements IModel {
         this.executionMaxRetries = maxRetries;
     }
 
-    public get raw() {
+    public get raw(): IDataNode {
         return {
             enabled: this.enabled,
             maxRetries: this.maxRetries,

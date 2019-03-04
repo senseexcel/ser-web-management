@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { AppRepository as QrsAppRepository, FilterFactory, IApp, IQrsFilter, IAppFull } from '@smc/modules/qrs';
+import { AppRepository as QrsAppRepository, FilterFactory, IApp, IQrsFilter, IAppFull, IQrsFilterGroup } from '@smc/modules/qrs';
 import { EnigmaService, SmcCache, ISettings } from '@smc/modules/smc-common';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { switchMap, map, tap, mergeMap, concatMap, bufferCount } from 'rxjs/operators';
@@ -34,7 +34,7 @@ export class AppRepository {
     public fetchApp(appid: string): Observable<IApp> {
 
         const qrsFilter = this.filterFactory.createFilter('id', `${appid}`);
-        return this.qrsAppRepository.fetchApps(qrsFilter).pipe(
+        return this.fetchOwnedApps(qrsFilter).pipe(
             switchMap((apps: IApp[]): Observable<IApp[]> => this.filterApps(apps)),
             map((apps: IApp[]) => apps[0])
         );
@@ -53,7 +53,7 @@ export class AppRepository {
         } else {
             const tagFilter = this.filterFactory.createFilter('tags.id', `${this.session.serTag.id}`);
             const _filter = appFilter ? this.filterFactory.createFilterGroup([tagFilter, appFilter]) : tagFilter;
-            return this.qrsAppRepository.fetchApps(_filter)
+            return this.fetchOwnedApps(_filter)
                 .pipe(
                     tap((apps: IApp[]) => {
                         this.cache.set('ser.apps', apps, true);
@@ -73,7 +73,8 @@ export class AppRepository {
      * @memberof AppRepository
      */
     public fetchAppsByScript(appFilter?: IQrsFilter): Observable<IApp[]> {
-        return this.qrsAppRepository.fetchApps(appFilter).pipe(
+
+        return this.fetchOwnedApps(appFilter).pipe(
             switchMap((apps: IApp[]): Observable<IApp[]> => this.filterApps(apps)),
             tap((apps: IApp[]) => {
                 this.cache.set('ser.apps', apps, true);
@@ -89,18 +90,19 @@ export class AppRepository {
      */
     public fetchUntaggedApps(): Observable<IAppFull[]> {
 
+        const app$ = this.fetchOwnedApps();
+
         if (!this.session.serTag) {
-            return this.qrsAppRepository.fetchApps();
+            return app$;
         }
 
-        return this.qrsAppRepository.fetchApps()
-            .pipe(
-                map((apps: IAppFull[]) =>
-                    apps.filter((app: IAppFull) =>
-                        app.tags.every(tag => tag.id !== this.session.serTag.id)
-                    )
+        return app$.pipe(
+            map((apps: IAppFull[]) =>
+                apps.filter((app: IAppFull) =>
+                    app.tags.every(tag => tag.id !== this.session.serTag.id)
                 )
-            );
+            )
+        );
     }
 
     /**
@@ -112,7 +114,7 @@ export class AppRepository {
      * @returns
      * @memberof AppRepository
      */
-    public async createApp(name: string): Promise<string> {
+    public async createApp(name: string): Promise<IApp> {
 
         const app = await this.enigmaService.createApp(name);
         await app.setScript(this.initialScript);
@@ -121,10 +123,10 @@ export class AppRepository {
         if (this.session.serTag) {
             return this.qrsAppRepository
                 .update(app.id, { tags: [this.session.serTag] })
-                .pipe(map((qrsApp: IApp) => qrsApp.id))
                 .toPromise();
         }
-        return app.id;
+
+        return this.qrsAppRepository.fetchApp(app.id).toPromise();
     }
 
     /**
@@ -181,5 +183,19 @@ export class AppRepository {
                 return forkJoin(...toUpdate);
             })
         );
+    }
+
+    private fetchOwnedApps(filter?: IQrsFilter | IQrsFilterGroup) {
+        const app$ = forkJoin([
+            this.qrsAppRepository.fetchApps(filter),
+            this.enigmaService.fetchApps()
+        ]).pipe(
+            map(([qrsApps, qmcApps]) => {
+                return qrsApps.filter((app: IAppFull) => {
+                    return qmcApps.some((qmcApp) => qmcApp.qDocId === app.id);
+                });
+            })
+        );
+        return app$;
     }
 }

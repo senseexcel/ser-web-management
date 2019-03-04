@@ -1,36 +1,10 @@
-<h3 class="header header-secondary">Selections</h3>
-<ng-container *ngIf="selectionForm">
-    <div [formGroup]="selectionForm">
+<h3 class="header header-secondary">{{'SMC_APPS.EDIT.PROPERTIES.ITEM.SELECTIONS' | translate}}</h3>
 
-        <!-- selection type -->
-        <mat-form-field class="form-control">
-            <mat-select formControlName="type">
-                <mat-option *ngFor="let type of selectionTypes" [value]="type.value">
-                    {{type.label}}
-                </mat-option>
-            </mat-select>
-        </mat-form-field>
-
-        <ng-container formGroupName="selection">
-
-            <!-- selection object type -->
-            <mat-form-field class="form-control" [hidden]="selectionForm.controls.selection.controls.objectType.disabled">
-                <mat-select formControlName="objectType">
-                    <mat-option *ngFor="let type of selectionObjectTypes" [value]="type.value">
-                        {{type.label}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-
-            <!-- selection name -->
-            <mat-form-field class="form-control">
-                <input matInput formControlName="name" placeholder="Name">
-            </mat-form-field>
-
-            <!-- selection value -->
-            <mat-form-field class="form-control">
-                <input matInput formControlName="values" placeholder="Value" >
-            </mat-form-field>
-        </ng-container>
-    </div>
-</ng-container>
+<div class="selections-wrapper">
+  <div cdkDropList cdkDropListOrientation="horizontal" class="selections-list" (cdkDropListDropped)="moveSelection($event)">
+    <smc-template--selection [selection]="selection" *ngFor="let selection of selections" (delete)="removeSelection($event)" cdkDrag>
+        <div class="dd-selection--placeholder" *cdkDragPlaceholder></div>
+    </smc-template--selection>
+  </div>
+  <smc-template-selections--create (created)="createSelection($event)"></smc-template-selections--create>
+</div>

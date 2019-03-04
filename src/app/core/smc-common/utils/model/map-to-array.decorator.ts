@@ -12,7 +12,7 @@ export function mapToArray<T>() {
             set: function (data: IDataNode[]|IDataNode) {
                 let value = data;
                 if (!Array.isArray(value)) {
-                    value = [value];
+                    value = value !== null && value !== undefined ? [value] : [];
                 }
                 return descriptor.set.call(this, value);
             },
@@ -21,3 +21,4 @@ export function mapToArray<T>() {
         };
     };
 }
+

@@ -1,10 +1,8 @@
 import { IDataNode, IModel } from '../../api';
 
- interface ModelConstructor<T> {
-    new (...args: any[]): T;
-}
+type ModelConstructor<T> = new (...args: any[]) => T;
 
-export function mapDataTo<T>(constructor: ModelConstructor<IModel>) {
+export function mapDataTo<T>(constructor: ModelConstructor<T>) {
 
     return (target, key = null, descriptor: PropertyDescriptor): PropertyDescriptor => {
 
@@ -13,6 +11,11 @@ export function mapDataTo<T>(constructor: ModelConstructor<IModel>) {
         }
 
         function mapDataToModel(modelData: IDataNode) {
+
+            if (modelData instanceof constructor) {
+                return modelData;
+            }
+
             const model = new constructor();
             const modelProperties: string[] = Object.getOwnPropertyNames(constructor.prototype);
             Object.keys(modelData).forEach((prop) => {

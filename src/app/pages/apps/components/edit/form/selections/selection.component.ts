@@ -1,148 +1,127 @@
-import { Component, OnInit } from '@angular/core';
-import { ReportModel } from '@smc/modules/ser';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { SelectionObjectType, SelectionType } from '@smc/modules/ser';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ReportModel, SelectionModel } from '@smc/modules/ser';
+import { Observable, Subject } from 'rxjs';
 import { FormService } from '@smc/modules/form-helper';
-import { IDataNode } from '@smc/modules/smc-common';
+import { takeUntil } from 'rxjs/operators';
+import { ISerSenseSelection } from 'ser.api';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
     selector: 'smc-edit-form-selections',
-    templateUrl: 'selection.component.html'
+    templateUrl: 'selection.component.html',
+    styleUrls: ['selection.component.scss']
 })
+export class SelectionComponent implements OnInit, OnDestroy {
 
-export class SelectionComponent implements OnInit {
-
-    /**
-     * sense excel selection object types
-     *
-     * @type {SelectionObjectType}
-     * @memberof SelectionComponent
-     */
-    public selectionObjectTypes: SelectionObjectType;
+    public selections: ISerSenseSelection[] = [];
 
     /**
-     * sense excel selection types static or dynamic
-     *
-     * @type {SelectionType}
-     * @memberof SelectionComponent
-     */
-    public selectionTypes: SelectionType;
-
-    /**
-     * update hook which is called by formService on update form values
-     * this should write current form data into model
+     * emits true if component gets destroyed
      *
      * @private
-     * @type {Observable<ISerFormResponse>}
+     * @type {Subject<boolean>}
+     * @memberof SelectionComponent
+     */
+    private onDestroyed$: Subject<boolean> = new Subject();
+
+    /**
+     * update hook stream, will called if app save or preview is called
+     *
+     * @private
+     * @type {Observable<boolean>}
      * @memberof SelectionComponent
      */
     private updateHook: Observable<boolean>;
+
+    /**
+     * loaded report model
+     *
+     * @private
+     * @type {ReportModel}
+     * @memberof SelectionComponent
+     */
     private report: ReportModel;
 
     /**
-     * formgroup for template selections
-     *
-     * @private
-     * @type {FormGroup}
+     * Creates an instance of SelectionComponent.
+     * @param {AppConnector} appConnector
+     * @param {FormBuilder} formBuilder
+     * @param {FormService<ReportModel, boolean>} formService
      * @memberof SelectionComponent
      */
-    public selectionForm: FormGroup;
-
     constructor(
-        private formBuilder: FormBuilder,
         private formService: FormService<ReportModel, boolean>
     ) {
     }
 
+    /**
+     * component gets initialized
+     *
+     * @memberof SelectionComponent
+     */
     ngOnInit() {
-
-        /** convert enums to json object */
-        this.selectionTypes = this.convertEnumToJSON(SelectionType);
-        this.selectionObjectTypes = this.convertEnumToJSON(SelectionObjectType);
-
         /** create / register update hook if form should be updated */
         this.updateHook = this.buildUpdateHook();
         this.formService.registerHook(FormService.HOOK_UPDATE, this.updateHook);
 
-        /** register on app has been loaded and model has been loaded to edit*/
-        this.formService.editModel()
-            .subscribe((report: ReportModel) => {
-                this.report = report;
-                if (this.report) {
-                    this.selectionForm = this.buildSelectionForm();
-                }
-            });
-    }
-
-    private convertEnumToJSON(data): any {
-        return Object.keys(data)
-            .filter((key) => {
-                return isNaN(Number(key));
-            })
-            .map((key) => {
-                return {
-                    label: key,
-                    value: data[key]
-                };
-            });
+        this.registerFormService();
     }
 
     /**
-     * build form for templates
+     * component gets destroyed
      *
-     * @private
-     * @returns {FormGroup}
-     * @memberof ConnectionComponent
+     * @memberof SelectionComponent
      */
-    private buildSelectionForm(): FormGroup {
-
-        const selectionSettings: IDataNode = this.report.template.selections[0] || {};
-        const selectionType = selectionSettings.type || SelectionType.Dynamic;
-
-        const formGroup: FormGroup = this.formBuilder.group({
-            type: this.formBuilder.control(null),
-            selection: this.formBuilder.group({
-                name: this.formBuilder.control(
-                    selectionSettings.name
-                ),
-                objectType: this.formBuilder.control(selectionSettings.objectType || SelectionObjectType.DEFAULT),
-                values: this.formBuilder.control(
-                    selectionSettings.values ? selectionSettings.values.join(' ,') : ''
-                )
-            })
-        });
-
-        formGroup.controls.type.valueChanges.subscribe((value) => {
-            const selectionFormGroup = formGroup.controls.selection as FormGroup;
-            if (value === SelectionType.Dynamic) {
-                selectionFormGroup.controls.objectType.setValue(SelectionObjectType.DEFAULT);
-                selectionFormGroup.controls.objectType.disable({ onlySelf: true, emitEvent: false });
-            } else {
-                selectionFormGroup.controls.objectType.enable({ onlySelf: true, emitEvent: false });
-            }
-        });
-
-        // set type one time to trigger change event
-        formGroup.controls.type.setValue(selectionType);
-        return formGroup;
+    ngOnDestroy(): void {
+        this.onDestroyed$.next(true);
+        this.onDestroyed$.complete();
     }
 
     /**
-     * dynamic form group
+     * creates a new selection
+     *
+     * @param {SelectionModel} selection
+     * @memberof SelectionComponent
+     */
+    public createSelection(selection: SelectionModel) {
+        this.selections.push(selection);
+    }
+
+    /**
+     * remove a selection
+     *
+     * @param {SelectionModel} selection
+     * @memberof SelectionComponent
+     */
+    public removeSelection(selection: SelectionModel) {
+        const index = this.selections.indexOf(selection);
+        if (index > -1) {
+            this.selections.splice(index, 1);
+        }
+    }
+
+    public moveSelection(drop: CdkDragDrop<any>) {
+        moveItemInArray(this.selections, drop.previousIndex, drop.currentIndex);
+    }
+
+    /**
+     * register to form service to get notified if a model has
+     * been loaded
      *
      * @private
      * @memberof SelectionComponent
      */
-    private buildDynamicSelectionFormGroup(): FormGroup {
-        return this.buildSelectionForm();
-    }
-
-    /**
-     * static form group
-     */
-    private buildStaticSelectionFormGroup(): FormGroup {
-        return this.buildSelectionForm();
+    private registerFormService() {
+        /** register on app has been loaded and model has been loaded to edit*/
+        this.formService.editModel()
+            .pipe(takeUntil(this.onDestroyed$))
+            .subscribe((report: ReportModel) => {
+                const s = report.template.selections;
+                this.report = report;
+                if (this.report) {
+                    this.selections = this.report.template.selections || [];
+                }
+            });
     }
 
     /**
@@ -154,19 +133,9 @@ export class SelectionComponent implements OnInit {
      */
     private buildUpdateHook(): Observable<boolean> {
         const observer = new Observable<boolean>((obs) => {
-
-            if (this.selectionForm.invalid) {
-                obs.next(false);
-                return;
-            }
-            const formData: IDataNode = this.selectionForm.getRawValue();
-            const {name, values, objectType} = formData.selection;
-            this.report.template.selections = [{
-                name,
-                values: values.split(',').map(val => val.replace(/(^\s*|\s*$)/g, '')),
-                objectType, type: formData.type
-            }];
+            this.report.template.selections = this.selections;
             obs.next(true);
+            this.onDestroyed$.subscribe(() => obs.complete());
         });
         return observer;
     }

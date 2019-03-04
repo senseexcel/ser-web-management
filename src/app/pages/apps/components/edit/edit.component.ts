@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReportService } from '@smc/modules/ser/provider/report.service';
 import { FormService } from '@smc/modules/form-helper/provider/form.service';
@@ -10,7 +9,7 @@ import { BreadcrumbService } from '@smc/modules/breadcrumb/provider/breadcrumb.s
 import { IBreadCrumb } from '@smc/modules/breadcrumb/api/breadcrumb.interface';
 import { ModalService } from '@smc/modules/modal';
 import { ReportModel } from '@smc/modules/ser';
-import { EnigmaService } from '@smc/modules/smc-common';
+import { EnigmaService, AppConnector } from '@smc/modules/smc-common';
 import { ScriptService } from '@smc/modules/ser/provider';
 import { CacheService } from '../../providers/cache.service';
 
@@ -18,7 +17,8 @@ import { CacheService } from '../../providers/cache.service';
     selector: 'smc-qlik-edit',
     templateUrl: 'edit.component.html',
     styleUrls: ['edit.component.scss'],
-    providers: [FormService]
+    providers: [FormService],
+    viewProviders: [AppConnector]
 })
 export class AppEditComponent implements OnInit, OnDestroy {
 
@@ -55,7 +55,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
         private reportService: ReportService,
         private scriptService: ScriptService,
         private activeRoute: ActivatedRoute,
-        private location: Location,
         private modalService: ModalService,
         private router: Router,
         private breadcrumbService: BreadcrumbService,
@@ -66,13 +65,13 @@ export class AppEditComponent implements OnInit, OnDestroy {
     }
 
     public cancel() {
-        const title = `Warning`;
-        const message = `Cancel current process will discard all changes.\n\nContinue ?`;
+        const title = `SMC_APPS.EDIT.MODAL.CANCEL_TITLE`;
+        const message = {key: `SMC_APPS.EDIT.MODAL.CANCEL_MESSAGE`};
 
         this.modalService.openDialog(title, message)
             .switch.subscribe((confirm) => {
                 if (confirm) {
-                    this.location.back();
+                    this.router.navigate(['../..'], { relativeTo: this.activeRoute });
                 }
             });
     }
@@ -95,11 +94,11 @@ export class AppEditComponent implements OnInit, OnDestroy {
 
         this.isLoading = true;
         this.properties = [
-            { label: 'App' },
-            { label: 'Template' },
-            { label: 'Selections' },
-            { label: 'Distribution' },
-            { label: 'Settings' }
+            { key: 'app'         , label: 'SMC_APPS.EDIT.PROPERTIES.ITEM.APP' },
+            { key: 'template'    , label: 'SMC_APPS.EDIT.PROPERTIES.ITEM.TEMPLATE' },
+            { key: 'selections'  , label: 'SMC_APPS.EDIT.PROPERTIES.ITEM.SELECTIONS' },
+            { key: 'distribution', label: 'SMC_APPS.EDIT.PROPERTIES.ITEM.DISTRIBUTION' },
+            { key: 'settings'    , label: 'SMC_APPS.EDIT.PROPERTIES.ITEM.SETTINGS' }
         ];
 
         const data = this.cacheService.currentReportData;
@@ -123,7 +122,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
             .subscribe(count => {
                 this.formService.loadModel(this.report);
                 this.associatedItems = [{
-                    label: 'Tasks',
+                    label: 'SMC_APPS.EDIT.ASSOCIATED_ITEMS.ITEM.TASKS',
                     items: 'tasks',
                     route: 'tasks',
                     count
@@ -157,12 +156,11 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe(() => {
-                const title = `Success`;
-                const message = `App was successfully saved.`;
+                const title = 'SMC_APPS.EDIT.MODAL.SUCCESS_SAVE_TITLE';
+                const message = {key: `SMC_APPS.EDIT.MODAL.SUCCESS_SAVE_MESSAGE`};
                 this.modalService.openMessageModal(title, message);
             }, (e: Error) => {
-                const title = `Error`;
-                this.modalService.openMessageModal(title, e.message);
+                console.error(e.message);
             });
     }
 
@@ -189,7 +187,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public showForm(property) {
         let scrollToContainer: ElementRef;
 
-        switch (property.label.toLowerCase()) {
+        switch (property.key) {
             case 'app': scrollToContainer = this.connectionsContainer; break;
             case 'template': scrollToContainer = this.templateContainer; break;
             case 'selections': scrollToContainer = this.selectionContainer; break;

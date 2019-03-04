@@ -9,6 +9,7 @@ import { InsertOverlayComponent } from '../insert-overlay/insert-overlay.compone
 import { InsertOverlayFooterComponent } from '../insert-overlay/insert-overlay-footer.component';
 import { SerLicenseResponseException } from '../../api/exceptions';
 import { HttpErrorResponse } from '@angular/common/http';
+import { I18nTranslation } from '@smc/modules/smc-common';
 
 @Component({
     selector: 'smc-license-overview',
@@ -65,15 +66,16 @@ export class OverviewComponent implements OnDestroy, OnInit {
      * @memberof OverviewComponent
      */
     public insertLicense() {
+        this.openModal('SMC_LICENSE.OVERVIEW.ACTIONS.INSERT');
+    }
 
-        const modalData: IModalData<InsertOverlayComponent> = {
-            bodyComponent: InsertOverlayComponent,
-            control: InsertOverlayControl,
-            footerComponent: InsertOverlayFooterComponent,
-            title: 'Insert License',
-        };
-
-        this.modal.open(modalData, { panelClass: ['license-modal--insert']});
+    /**
+     * Edit License
+     *
+     * @memberof OverviewComponent
+     */
+    public editLicense() {
+        this.openModal('SMC_LICENSE.OVERVIEW.ACTIONS.EDIT');
     }
 
     public loadFromServer() {
@@ -94,12 +96,24 @@ export class OverviewComponent implements OnDestroy, OnInit {
                  */
                 (error) => {
                     if (error.constructor === HttpErrorResponse && error.status === 0) {
-                        const title = 'Connection Error';
-                        const msg   = `Please check your internet connection.`;
+                        const title = 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_CONNECTION_TITLE';
+                        const msg: I18nTranslation = {
+                            key: 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_CONNECTION_MESSAGE',
+                        };
                         this.modal.openMessageModal(title, msg);
                     }
                 }
             );
+    }
+
+    private openModal(title: string) {
+        const modalData: IModalData<InsertOverlayComponent> = {
+            bodyComponent: InsertOverlayComponent,
+            control: InsertOverlayControl,
+            footerComponent: InsertOverlayFooterComponent,
+            title,
+        };
+        this.modal.open(modalData, { panelClass: ['license-modal--insert']});
     }
 
     private handleResponseError(error: Error) {
@@ -107,10 +121,11 @@ export class OverviewComponent implements OnDestroy, OnInit {
             case SerLicenseResponseException:
 
                 const responseError = <SerLicenseResponseException>error;
-                const title = 'Error load License';
-                const msg   = `License could not loaded with following Reason: ${responseError.response.error}\n
-                For more Informations please contact your sense excel reporting consultant.
-                `;
+                const title = 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_RESPONSE_TITLE';
+                const msg: I18nTranslation = {
+                    key: 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_RESPONSE_MESSAGE',
+                    param: {ERROR: responseError.response.error}
+                };
 
                 this.modal.openMessageModal(title, msg);
             break;

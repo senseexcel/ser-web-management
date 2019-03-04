@@ -1,6 +1,6 @@
-import { IModel } from '@smc/modules/smc-common';
+import { IModel, IDataNode } from '@smc/modules/smc-common';
 
-export class IdentificationModel implements IModel {
+export class IdentificationModel implements IModel<IDataNode> {
 
     /**
      * name for the task
@@ -62,7 +62,7 @@ export class IdentificationModel implements IModel {
      * @readonly
      * @memberof IdentificationModel
      */
-    public get raw() {
+    public get raw(): IDataNode {
         return {
             app: this.app,
             name: this.name

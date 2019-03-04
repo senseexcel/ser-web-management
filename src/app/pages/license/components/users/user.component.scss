@@ -12,7 +12,6 @@
     }
     
     .user-table--row {
-
         &.selected {
             background: #737373;
             color: #FFF;
@@ -21,56 +20,28 @@
 
     .user-table--row.edit {
         background: #FFF;
-        
         &.selected {
             color: inherit;
         }
     }
 
     .user-list--table {
-
         table.mat-table {
             margin-bottom: 0;
         }
     }
 
-    .user-list--header {
-
-        @include display-flex;
-        align-items: baseline;
-        background: #595959;
-        color: #FFF;
-        justify-content: space-between;
-        padding: .4rem .7rem;
-
-        button, ul {
-            margin: 0;
-        }
+    smc-ui--list-header {
+        padding: 7px 10px;
     }
 
-    .user-list--footer {
-
-        @include display-flex;
-        align-items: baseline;
+    smc-ui--button-navbar {
+        display: block;
         background: #595959;
-        color: #FFF;
-        justify-content: space-between;
-        padding: .4rem .7rem;
 
-        button {
-            background-image: linear-gradient(to bottom, #4D4D4D, #333333);
-            border: 1px solid #333333;
-            margin: 0 1rem 0 0;
-
-            &:last-child {
-                margin: 0;
-            }
-
-            &[disabled] {
-                color: darken($color: #FFF, $amount: 30);
-                background-image: linear-gradient(to bottom, lighten(#4D4D4D, 7), lighten(#333333, 7));
-                border: 1px solid lighten(#333333, 7);
-                cursor: not-allowed;
+        ::ng-deep {
+            .action-bar-bottom {
+                padding: 6px 10px;
             }
         }
     }

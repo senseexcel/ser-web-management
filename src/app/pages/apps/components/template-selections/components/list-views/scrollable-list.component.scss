@@ -1,0 +1,32 @@
+:host {
+
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .list-container {
+    width: 100%;
+    flex: 1;
+  }
+
+  .list-group-item {
+    line-height: 40px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .clear-all {
+
+    ::ng-deep {
+      button {
+        width: 100%;
+        justify-content: space-between;
+        margin: 1rem 0 0 0;
+
+        i {
+            font-size: 1rem;
+        }
+      }
+    }
+  }
+}

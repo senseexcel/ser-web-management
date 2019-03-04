@@ -92,7 +92,7 @@ export class LicenseValidator {
                             case ContentLibNotExistsException:
                                 const vResult  = validationResults.get(ValidationStep.STEP_CONTENT_LIBRARY_EXISTS);
                                 vResult.isValid = false;
-                                vResult.errors.push('Content Library senseexcel does not exists');
+                                vResult.errors.push('CONTENTLIB_NOT_EXISTS');
                                 break;
                             default:
                                 throw error;
@@ -130,14 +130,14 @@ export class LicenseValidator {
 
                             case QlikLicenseInvalidException:
                                 res = validationResults.get(ValidationStep.STEP_QLIK_LICENSE_VALID);
-                                res.errors.push('No Access: Qlik License');
+                                res.errors.push('NO_ACCESS_QLIK_LICENSE');
                                 res.isValid = false;
                                 break;
 
                             case QlikLicenseNoAccessException:
                                 validationResults.delete(ValidationStep.STEP_QLIK_LICENSE_VALID);
                                 res = validationResults.get(ValidationStep.STEP_QLIK_LICENSE_ACCESS);
-                                res.errors.push('No Access: Qlik License');
+                                res.errors.push('NO_ACCESS_QLIK_LICENSE');
                                 res.isValid = false;
                                 break;
 
@@ -173,7 +173,7 @@ export class LicenseValidator {
                     const errors  = [];
 
                     if (!isValid) {
-                        errors.push('Sense Excel Reporting Serial not equal Qlik Serial.');
+                        errors.push('SER_QLIK_NOT_EQUAL');
                     }
 
                     return { isValid, errors };
@@ -189,6 +189,14 @@ export class LicenseValidator {
      * @memberof LicenseValidator
      */
     public validateLicense(license: LicenseModel): Observable<ILicenseValidationResult> {
+
+        if (license.raw.replace(/(^\s*|\s*$)/g, '') === '') {
+            return of({
+                isValid: false,
+                errors: ['No license found']
+            });
+        }
+
         return forkJoin(
             this.validateLicenseKey(license.key),
             this.validateUsers(license)
@@ -235,7 +243,7 @@ export class LicenseValidator {
             const activeUsers = this.getActiveUsersOnDate(today.add(1, 'day'), license.users);
             if (activeUsers.length > license.userLimit) {
                 userValidationResult.isValid = false;
-                userValidationResult.errors  = ['too many users activated'];
+                userValidationResult.errors  = ['TO_MANY_USERS'];
                 break;
             }
         }

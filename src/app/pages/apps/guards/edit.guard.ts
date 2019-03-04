@@ -6,6 +6,7 @@ import { Observable, of, from } from 'rxjs';
 import { AppRepository } from '@smc/modules/qrs';
 import { tap, catchError, mergeMap, map } from 'rxjs/operators';
 import { CacheService } from '../providers/cache.service';
+import { ModalService } from '@smc/modules/modal';
 
 @Injectable()
 export class EditGuard implements CanActivate {
@@ -15,7 +16,8 @@ export class EditGuard implements CanActivate {
         private enigmaService: EnigmaService,
         private scriptService: ScriptService,
         private reportService: ReportService,
-        private cacheService: CacheService
+        private cacheService: CacheService,
+        private modalService: ModalService
     ) { }
 
     /**
@@ -52,7 +54,13 @@ export class EditGuard implements CanActivate {
                     return true;
                 })
             )),
-            catchError((e) => of(false))
+            catchError((e) => {
+                this.modalService.openMessageModal(
+                    'SMC_APPS.EDIT_GUARD.DIALOG.NO_VALID_SCRIPT.TITLE',
+                    {key: 'SMC_APPS.EDIT_GUARD.DIALOG.NO_VALID_SCRIPT.MESSAGE'}
+                );
+                return of(false);
+            })
         );
     }
 }

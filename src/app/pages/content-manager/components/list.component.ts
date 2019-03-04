@@ -23,6 +23,8 @@ export class ListComponent implements OnInit, OnDestroy {
     public visible: number;
     public selections: SelectionModel<IDataNode>;
 
+    public translateParamSelected = {COUNT: 0};
+
     private listSettings: IDataNode;
     private ctrlKeyDown: boolean;
     private isDestroyed: Subject<boolean> = new Subject();
@@ -33,7 +35,7 @@ export class ListComponent implements OnInit, OnDestroy {
         private smcCache: SmcCache,
     ) {
         this.selections = new SelectionModel(true);
-        this.tableData  = [];
+        this.tableData = [];
 
         try {
             this.listSettings = this.smcCache.get('smc.settings.list');
@@ -73,6 +75,7 @@ export class ListComponent implements OnInit, OnDestroy {
             this.selections.clear();
         }
         this.selections.select(content);
+        this.translateParamSelected = {COUNT: this.selections.selected.length};
     }
 
     /**
@@ -82,6 +85,7 @@ export class ListComponent implements OnInit, OnDestroy {
      * @memberof ListComponent
      */
     public deleteSharedContent() {
+
         if (this.selections.isEmpty()) {
             return;
         }
@@ -93,14 +97,16 @@ export class ListComponent implements OnInit, OnDestroy {
 
         this.sharedContentRepository.delete(contentToDelete)
             .subscribe((success: boolean) => {
+
+                this.deselectAll();
+
                 /* on success all delete requests was successful
                  * if this was the last page and we removed all items on last page we have to go one page back
                  */
                 if (success &&
                     this.visible === contentToDelete.length &&
                     this.pagination.isLastPage() &&
-                    this.pagination.getCurrentPage() !== 1)
-                {
+                    this.pagination.getCurrentPage() !== 1) {
                     this.pagination.showPrevPage();
                     return;
                 }
@@ -117,10 +123,12 @@ export class ListComponent implements OnInit, OnDestroy {
 
     public selectAll() {
         this.selections.select(...this.tableData);
+        this.translateParamSelected = {COUNT: this.selections.selected.length};
     }
 
     public deselectAll() {
         this.selections.clear();
+        this.translateParamSelected = {COUNT: 0};
     }
 
     /**
@@ -167,9 +175,9 @@ export class ListComponent implements OnInit, OnDestroy {
                 });
 
                 /** update properties */
-                this.columns   = tableData.columnNames;
+                this.columns = tableData.columnNames;
                 this.tableData = DataConverter.convertQrsTableToJson(tableData);
-                this.visible   = this.tableData.length;
+                this.visible = this.tableData.length;
 
                 this.isLoading = false;
             });
