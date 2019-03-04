@@ -1,8 +1,13 @@
 :host {
   button {
     outline: none;
-    border: 0;
     box-shadow: none;
+    border: 1px solid #333;
+  }
+
+  button[disabled] {
+    color: rgba(0, 0, 0, 0.4);
+    border-color: rgba(0, 0, 0, .2);
   }
 
   button:hover {
