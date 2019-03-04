@@ -59,7 +59,7 @@ export class ProcessService {
         this.enigmaService = enigmaService;
 
         this.processList$ = new BehaviorSubject([]);
-        this.processMap   = new Map();
+        this.processMap = new Map();
         this.processStop$ = new Subject();
     }
 
@@ -81,39 +81,11 @@ export class ProcessService {
                 }),
                 map((response: string) => {
                     const result: IProcessListResponse = JSON.parse(response);
-                    if (result.status === ResponseStatus.FAILURE ) {
+                    console.log(result);
+                    if (result.status === ResponseStatus.FAILURE) {
                         throw new ProcessStatusException('Could not fetch processes.');
                     }
-                    /** @todo uncomment line but since we get allways an empty result this
-                     * will not be very helpfull for development
-                     */
-                    // return this.mergeProcessesToMap(result.tasks);
-                    return result.tasks;
-                }),
-                /** @todo remove mocked response */
-                map(() => {
-                    const mockResponse: IProcess[] = [
-                        ...((): IProcess[] => {
-                            const length = Math.ceil(Math.random() * 10);
-                            const processes = [];
-                            for (let i = 0; i < length; i++) {
-                                processes.push({
-                                    processId: i,
-                                    status: Math.round(Math.random() * 4),
-                                    id: `5d514ce0-1cf2-4b37-a687-6b53e679435${i}`,
-                                    startTime: '2018-11-29T10:55:45.8066955+01:00',
-                                    appId: '5d514ce0-1cf2-4b37-a687-6b53e6794357',
-                                    userId: {
-                                        // change user id
-                                        UserId: Math.random().toString(32).substr(2),
-                                        UserDirectory: 'AZUREAD'
-                                    }
-                                });
-                            }
-                            return processes;
-                        })(),
-                    ];
-                    return this.mergeProcessesToMap(mockResponse);
+                    return this.mergeProcessesToMap(result.tasks);
                 }),
                 tap((processes: IProcess[]) => this.processList$.next(processes))
             );
@@ -171,12 +143,13 @@ export class ProcessService {
         return this.getSessionApp().pipe(
             switchMap((app: EngineAPI.IApp) => {
                 const requestData = JSON.stringify({
-                    processId: process.id
+                    taskId: process.taskId
                 });
+                console.log(`${SerCommands.STOP}('${requestData}')`);
                 return app.evaluate(`${SerCommands.STOP}('${requestData}')`);
             }),
             tap(() => {
-                this.processMap.delete(process.id);
+                this.processMap.delete(process.taskId);
                 this.processList$.next(
                     Array.from(this.processMap.values())
                 );
@@ -216,17 +189,12 @@ export class ProcessService {
     private mergeProcessesToMap(processes: IProcess[]): IProcess[] {
         const mergedMap: Map<string, IProcess> = new Map();
         processes.forEach((process: IProcess) => {
-            if (this.processMap.has(process.id)) {
-                /**
-                 * dont use object spread since this creates a new Object
-                 * but we want to modify existing object this can be do better
-                 * with Object.assign.
-                 */
-                const mergedProcess = Object.assign(this.processMap.get(process.id), process);
-                mergedMap.set(process.id, mergedProcess);
+            if (this.processMap.has(process.taskId)) {
+                const mergedProcess = Object.assign(this.processMap.get(process.taskId), process);
+                mergedMap.set(process.taskId, mergedProcess);
                 return;
             }
-            mergedMap.set(process.id, process);
+            mergedMap.set(process.taskId, process);
         });
         this.processMap = mergedMap;
         return Array.from(this.processMap.values());

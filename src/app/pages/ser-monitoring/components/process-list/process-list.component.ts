@@ -17,7 +17,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      *
      * @memberof UserComponent
      */
-    public tableHeaderFields = ['processId', 'user', 'appName', 'stop'];
+    public tableHeaderFields = ['processId', 'stop'];
 
     /**
      * process list

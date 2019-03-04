@@ -198,6 +198,8 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
             takeUntil(this.isDestroyed$),
         ).subscribe();
 
+        console.log(control);
+
         return control;
     }
 }
