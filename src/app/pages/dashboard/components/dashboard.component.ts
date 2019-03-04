@@ -2,7 +2,7 @@ import { Component, OnInit, HostBinding, Inject } from '@angular/core';
 import { Observable, forkJoin, of } from 'rxjs';
 import { Router } from '@angular/router';
 
-import { AppRepository, TaskRepository, FilterFactory } from '@smc/modules/qrs';
+import { AppRepository, TaskRepository, FilterFactory, SharedContentRepository } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings, IDataNode, EnigmaService } from '@smc/modules/smc-common';
 import { SettingsService } from 'src/app/services/settings.service';
@@ -38,6 +38,7 @@ export class DashboardComponent implements OnInit {
         private appRepository: AppRepository,
         private taskRepository: TaskRepository,
         private filterFactory: FilterFactory,
+        private sharendContentRepository: SharedContentRepository
     ) {
     }
 
@@ -50,8 +51,9 @@ export class DashboardComponent implements OnInit {
 
         const taskCountSource$ = this.fetchTaskCount();
         const serAppCountSource$ = this.fetchSerApps();
+        const sharedContentSource$ = this.fetchSharedContentCount();
 
-        forkJoin(taskCountSource$, serAppCountSource$)
+        forkJoin(taskCountSource$, serAppCountSource$, sharedContentSource$)
             .pipe(map((counts) => this.createPageTiles(counts)))
             .subscribe((tiles: ITile[]) => {
                 this.mainMenu = this.settings.menu;
@@ -95,7 +97,7 @@ export class DashboardComponent implements OnInit {
      * @memberof DashboardComponent
      */
     private createPageTiles(counts: number[]): ITile[] {
-        const [taskCount, appCount] = counts;
+        const [taskCount, appCount, sharedContentCount] = counts;
 
         return this.settings.pages.map((item: PageModel): ITile => {
             const i18nParams: IDataNode = {};
@@ -103,6 +105,7 @@ export class DashboardComponent implements OnInit {
             switch (item.id) {
                 case 'apps': i18nParams.COUNT = appCount; break;
                 case 'tasks': i18nParams.COUNT = taskCount; break;
+                case 'sharedcontent': i18nParams.COUNT = sharedContentCount; break;
             }
 
             return {
@@ -118,6 +121,17 @@ export class DashboardComponent implements OnInit {
                 }
             };
         });
+    }
+
+    /**
+     * fetch shared content count
+     *
+     * @private
+     * @returns {Observable<number>}
+     * @memberof DashboardComponent
+     */
+    private fetchSharedContentCount(): Observable<number> {
+        return this.sharendContentRepository.count();
     }
 
     /**

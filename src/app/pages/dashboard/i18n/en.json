@@ -10,7 +10,7 @@
         "DESCRIPTION": "Manage the status of your tasks. Edit, Reload, Synchronize and Create new tasks and modify the properties of reporting tasks. Reporting Tasks are used to reload the data in an app or to import users from a user directory."
       },
       "SHAREDCONTENT": {
-        "TITLE": "Sharedcontent Manager",
+        "TITLE": "Sharedcontent Manager ({{COUNT}})",
         "DESCRIPTION": "Show and delete shared content like reports."
       },
       "MONITORING_APPS": {
