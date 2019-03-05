@@ -1,23 +1,16 @@
 import { Injectable } from '@angular/core';
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
-import { Observable, of, Subject, BehaviorSubject, from } from 'rxjs';
+import { Observable, of, from, forkJoin, BehaviorSubject } from 'rxjs';
 import { SerCommands } from '../api/ser-commands.interface';
 import { IProcessListResponse, ResponseStatus } from '../api/process-status-response.interface';
 import { IProcess } from '../api/process.interface';
 import { ProcessStatusException } from '../api';
 import { ILicenseValidationResult } from '@smc/pages/license/api/validation-result.interface';
 import { EnigmaService } from '@smc/modules/smc-common';
+import { AppRepository } from '@smc/modules/qrs';
 
 @Injectable()
 export class ProcessService {
-
-    /**
-     * observable for process has been stopped
-     *
-     * @type {Subject<IProcess>}
-     * @memberof ProcessService
-     */
-    public processStop$: Subject<IProcess>;
 
     /**
      * observable for process list has been updated
@@ -25,7 +18,7 @@ export class ProcessService {
      * @type {Subject<IProcess[]>}
      * @memberof ProcessService
      */
-    public processList$: BehaviorSubject<IProcess[]>;
+    private _processList$: BehaviorSubject<IProcess[]>;
 
     /**
      * process which holds loaded processes
@@ -48,19 +41,22 @@ export class ProcessService {
      * @memberof TasksComponent
      */
     private sessionApp: EngineAPI.IApp;
-    private enigmaService: EnigmaService;
 
     /**
      * Creates an instance of ProcessService.
      * @param {QlikSessionService} session
      * @memberof ProcessService
      */
-    constructor(enigmaService: EnigmaService) {
-        this.enigmaService = enigmaService;
-
-        this.processList$ = new BehaviorSubject([]);
+    constructor(
+        private enigmaService: EnigmaService,
+        private appRepository: AppRepository,
+    ) {
+        this._processList$ = new BehaviorSubject([]);
         this.processMap = new Map();
-        this.processStop$ = new Subject();
+    }
+
+    public get processList$(): Observable<IProcess[]> {
+        return this._processList$.asObservable();
     }
 
     /**
@@ -71,24 +67,32 @@ export class ProcessService {
      */
     public fetchProcesses(): Observable<IProcess[]> {
 
-        return this.getSessionApp()
-            .pipe(
-                switchMap((app: EngineAPI.IApp) => {
-                    const requestData = JSON.stringify({
-                        tasks: 'all'
-                    });
-                    return app.evaluate(`${SerCommands.STATUS}('${requestData}')`);
-                }),
-                map((response: string) => {
-                    const result: IProcessListResponse = JSON.parse(response);
-                    console.log(result);
-                    if (result.status === ResponseStatus.FAILURE) {
-                        throw new ProcessStatusException('Could not fetch processes.');
-                    }
-                    return this.mergeProcessesToMap(result.tasks);
-                }),
-                tap((processes: IProcess[]) => this.processList$.next(processes))
-            );
+        return this.getSessionApp().pipe(
+            switchMap((app: EngineAPI.IApp) => {
+                const requestData = JSON.stringify({
+                    tasks: 'all'
+                });
+                return app.evaluate(`${SerCommands.STATUS}('${requestData}')`);
+            }),
+            map((response: string) => {
+                const result: IProcessListResponse = JSON.parse(response);
+                if (result.status === ResponseStatus.FAILURE) {
+                    throw new ProcessStatusException('Could not fetch processes.');
+                }
+                return result.tasks;
+            }),
+            switchMap((processes: IProcess[]) => {
+                const appName$ = processes.map((process) => {
+                    const app$ = this.appRepository.fetchApp(process.appId);
+                    return app$.pipe( map(app => {
+                        process.appId = app.name;
+                        return process;
+                    }));
+                });
+                return forkJoin(...appName$);
+            }),
+            tap((processes: IProcess[]) => this._processList$.next(processes))
+        );
     }
 
     /**
@@ -127,9 +131,7 @@ export class ProcessService {
      * @memberof ProcessService
      */
     public refreshProcessList(): Observable<IProcess[]> {
-        return this.fetchProcesses().pipe(
-            tap((response: IProcess[]) => this.processList$.next(response))
-        );
+        return this.fetchProcesses();
     }
 
     /**
@@ -145,17 +147,38 @@ export class ProcessService {
                 const requestData = JSON.stringify({
                     taskId: process.taskId
                 });
-                console.log(`${SerCommands.STOP}('${requestData}')`);
                 return app.evaluate(`${SerCommands.STOP}('${requestData}')`);
             }),
             tap(() => {
                 this.processMap.delete(process.taskId);
-                this.processList$.next(
+                this._processList$.next(
                     Array.from(this.processMap.values())
                 );
             }),
             map(() => {
                 return true;
+            })
+        );
+    }
+
+    /**
+     * stop all running processes
+     *
+     * @returns {Observable<string>}
+     * @memberof ProcessService
+     */
+    public stopAllProcesses(): Observable<string> {
+        return this.getSessionApp().pipe(
+            switchMap((app: EngineAPI.IApp) => {
+                const requestData = JSON.stringify({
+                    tasks: 'all'
+                });
+                return app.evaluate(`${SerCommands.STOP}('${requestData}')`);
+            }),
+            tap(() => {
+                console.log(Array.from(this.processMap.values())[0].appId);
+                this.processMap.clear();
+                this._processList$.next([]);
             })
         );
     }
@@ -174,29 +197,5 @@ export class ProcessService {
                 );
         }
         return of(this.sessionApp);
-    }
-
-    /**
-     * merge loaded / updated processes into map we want to modify
-     * existing objects if they are allready loaded and not create
-     * every time a new object. This will help the angular renderer
-     * to render only things wo have changed and not all.
-     *
-     * @private
-     * @param {IProcess[]} processes
-     * @memberof ProcessService
-     */
-    private mergeProcessesToMap(processes: IProcess[]): IProcess[] {
-        const mergedMap: Map<string, IProcess> = new Map();
-        processes.forEach((process: IProcess) => {
-            if (this.processMap.has(process.taskId)) {
-                const mergedProcess = Object.assign(this.processMap.get(process.taskId), process);
-                mergedMap.set(process.taskId, mergedProcess);
-                return;
-            }
-            mergedMap.set(process.taskId, process);
-        });
-        this.processMap = mergedMap;
-        return Array.from(this.processMap.values());
     }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ProcessService } from '../../services';
 import { takeUntil, map } from 'rxjs/operators';
-import { IProcess } from '../../api';
+import { IProcess, ProcessStatus } from '../../api';
 
 @Component({
     selector: 'smc-monitoring-process-list',
@@ -17,7 +17,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      *
      * @memberof UserComponent
      */
-    public tableHeaderFields = ['processId', 'stop'];
+    public tableHeaderFields = ['processId', 'user', 'app', 'startTime', 'status', 'stop'];
 
     /**
      * process list
@@ -26,7 +26,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @type {IProcess[]}
      * @memberof ProcessListComponent
      */
-    public processes: IProcess[];
+    public myProcesses: IProcess[] = [];
 
     /**
      * true if all data has been loaded
@@ -34,7 +34,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @type {boolean}
      * @memberof ProcessListComponent
      */
-    public ready: boolean;
+    public ready = false;
 
     /**
      * emits true if component gets destroyed
@@ -73,15 +73,10 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof TasksComponent
      */
     ngOnInit(): void {
-
         this.processService.processList$
             .pipe(takeUntil(this.isDestroyed$))
-            .subscribe((processes) => {
-                this.processes = processes;
-                this.ready     = true;
-
-                // register for further events
-                this.processes = [...processes];
+            .subscribe((p) => {
+                this.myProcesses = p;
             });
     }
 

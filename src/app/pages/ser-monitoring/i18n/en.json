@@ -1,0 +1,30 @@
+{
+  "SMC_MONITORING": {
+
+    "TITLE": "Monitoring",
+
+    "PROCESS": {
+      "STATE": {
+        "DELIVER": "Deliver",
+        "PROCESSING": "Processing",
+        "COMPLETED": "Completed",
+        "ERROR": "Error",
+        "IDLE": "Idle"
+      }
+    },
+
+    "PROCESS_LIST": {
+      "ID": "Process Id",
+      "START_TIME": "Start Time",
+      "STATUS": "Status",
+      "USER": "User Id",
+      "APPNAME": "Appname"
+    },
+
+    "ACTIONS": {
+        "REFRESH": "Refresh",
+        "AUTO_REFRESH": "Auto refresh",
+        "STOP_ALL": "Stop all"
+    }
+  }
+}

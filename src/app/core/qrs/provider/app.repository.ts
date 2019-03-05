@@ -99,8 +99,8 @@ export class AppRepository {
      * @returns {Observable<IQrsApp>}
      * @memberof SerAppService
      */
-    public fetchApp(id: string): Observable<any> {
-        return this.http.get(`/qrs/app/${id}`);
+    public fetchApp(id: string): Observable<IAppFull> {
+        return this.http.get<IAppFull>(`/qrs/app/${id}`);
     }
 
     /**

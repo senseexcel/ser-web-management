@@ -8,19 +8,13 @@ export const enum ProcessStatus {
 
 export interface IProcess {
 
-    asposseVersion: string;
+    userId: string;
 
-    count: number;
+    appId: string;
 
-    engineVersion: string;
-
-    reports: any[];
+    taskId: string;
 
     startTime: string;
 
-    runTime: string;
-
-    status: 'ABORT' | 'ERROR' | 'SUCCESS' | 'RETRYERROR';
-
-    taskId: string;
+    status: number;
 }

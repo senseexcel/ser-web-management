@@ -4,24 +4,23 @@
 
         th, td {
             vertical-align: middle;
-            width: 33%;
+            width: 20%;
         }
 
         /** action column */
-        th:nth-child(4),
-        td:nth-child(4) {
+        th:last-child,
+        td:last-child {
             width: 1%;
         }
 
         /** action column */
-        td:nth-child(4) button {
+        td:last-child button {
             margin: 0;
             background: none;
             border: none;
             border-radius: unset;
             min-width: 50px;
             height: auto;
-            margin: 0;
             padding:0;
             outline: none;
 

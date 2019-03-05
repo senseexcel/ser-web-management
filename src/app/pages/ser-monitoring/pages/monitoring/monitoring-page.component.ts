@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { finalize, takeUntil, switchMap, concatMap, reduce, tap } from 'rxjs/operators';
+import { finalize, takeUntil, switchMap, reduce } from 'rxjs/operators';
 import { Subject, interval, empty, merge } from 'rxjs';
 import { ProcessService } from '../../services';
 import { FormBuilder, FormControl } from '@angular/forms';
@@ -130,20 +130,18 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
                     errors: [...a.errors, ...b.errors]
                 };
             }),
-            tap((result: ILicenseValidationResult) => {
+            switchMap((result: ILicenseValidationResult) => {
                 this.hasError = !result.isValid;
                 this.errors   = result.errors;
+                return this.hasError ? empty() : this.processService.fetchProcesses();
             }),
-            switchMap(() => this.hasError ? empty() : this.processService.fetchProcesses()),
             finalize(() => {
+                this.autoRefreshControl = this.createAutoRefreshControl();
                 this.ready = true;
                 this.isLoading = false;
             }),
             takeUntil(this.isDestroyed$),
-        )
-        .subscribe(() => {
-            this.autoRefreshControl = this.createAutoRefreshControl();
-        });
+        ).subscribe();
     }
 
     /**
@@ -176,7 +174,8 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
      * @memberof MonitoringPageComponent
      */
     public stopAll() {
-        /** @todo implement */
+        this.processService.stopAllProcesses()
+            .subscribe();
     }
 
     /**
@@ -190,15 +189,13 @@ export class MonitoringPageComponent implements OnDestroy, OnInit {
 
         const control   = this.formBuilder.control('');
         const interval$ = interval(5000).pipe(
-            concatMap(() => this.processService.refreshProcessList())
+            switchMap(() => this.processService.refreshProcessList())
         );
 
         control.valueChanges.pipe(
             switchMap((val) => val ? interval$ : empty()),
             takeUntil(this.isDestroyed$),
         ).subscribe();
-
-        console.log(control);
 
         return control;
     }

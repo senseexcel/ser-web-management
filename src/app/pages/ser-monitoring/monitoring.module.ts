@@ -7,12 +7,18 @@ import { MonitoringRoutingModule } from './monitoring-routing.module';
 import { pages } from './pages';
 import { services } from './services';
 import { LicenseModule } from '../license/license.module';
+import { SmcCommonModule } from '@smc/modules';
+import { pipes } from './pipes';
+import { TranslateService } from '@ngx-translate/core';
+
+import i18n_en from './i18n/en.json';
 
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
         LicenseModule,
+        SmcCommonModule,
         MatProgressSpinnerModule,
         MonitoringRoutingModule,
         MatTableModule,
@@ -20,7 +26,8 @@ import { LicenseModule } from '../license/license.module';
     ],
     declarations: [
         ...components,
-        ...pages
+        ...pages,
+        ...pipes
     ],
     entryComponents: [
         ...pages
@@ -29,4 +36,9 @@ import { LicenseModule } from '../license/license.module';
         ...services
     ]
 })
-export class MonitoringModule {}
+export class MonitoringModule {
+
+    public constructor(translate: TranslateService) {
+        translate.setTranslation('en', i18n_en, true);
+    }
+}

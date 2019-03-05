@@ -46,7 +46,6 @@ import i18n_en from './i18n/en.json';
     ]
 })
 export class LicenseModule {
-
     public constructor(translate: TranslateService) {
         translate.setTranslation('en', i18n_en, true);
     }
