@@ -1,57 +1,59 @@
-<h1>{{myProcesses[0].appId}}</h1>
-<table class="table" mat-table [dataSource]="myProcesses">
+<smc-ui--page [disablePadding]="true">
 
-    <!-- user domain / id column -->
-    <ng-container matColumnDef="processId">
-        <th mat-header-cell *matHeaderCellDef>{{'SMC_MONITORING.PROCESS_LIST.ID' | translate}}</th>
-        <td mat-cell *matCellDef="let process">
-            {{process.taskId}}
-        </td>
-    </ng-container>
+  <!-- page header -->
+  <div page-content--header>
+    <smc-ui--list-header (reload)="doReload()" [disableActions]="true">
 
-    <ng-container matColumnDef="user">
-        <th mat-header-cell *matHeaderCellDef>{{'SMC_MONITORING.PROCESS_LIST.USER' | translate}}</th>
-        <td mat-cell *matCellDef="let process">
-            {{process.userId}}
-        </td>
-    </ng-container>
+      <ng-container list-header--title>
+        <i class="ser-icon ser-icon--streams"></i>
+        <span> {{'SMC_MONITORING.TITLE' | translate}} </span>
+      </ng-container>
 
-    <ng-container matColumnDef="app">
-        <th mat-header-cell *matHeaderCellDef>{{'SMC_MONITORING.PROCESS_LIST.APPNAME' | translate}}</th>
-        <td mat-cell *matCellDef="let abc">
-            {{abc.appId}}
-        </td>
-    </ng-container>
+      <ng-container list-header--counts>
+          <span [translate]="'SMC_MONITORING.LIST.ACTIVE'" [translateParams]="{COUNT: tasks.length}"></span>
+      </ng-container>
 
-    <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>{{'SMC_MONITORING.PROCESS_LIST.STATUS' | translate}}</th>
-        <td mat-cell *matCellDef="let process">
-            {{process.status | processState | translate}}
-        </td>
-    </ng-container>
+      <div class="monitoring-list--actions" list-header--actions>
+        <label for="monitoringAutoRefresh">
+          <input [formControl]="autoRefreshControl" class="form-control" type="checkbox" id="monitoringAutoRefresh">
+          <span class="checkbox"></span>
+          {{'SMC_MONITORING.ACTIONS.AUTO_REFRESH' | translate}}
+        </label>
+      </div>
 
-    <ng-container matColumnDef="startTime">
-        <th mat-header-cell *matHeaderCellDef>{{'SMC_MONITORING.PROCESS_LIST.START_TIME' | translate}}</th>
-        <td mat-cell *matCellDef="let process">
-            {{process.startTime | momentFormat:true}}
-        </td>
-    </ng-container>
+    </smc-ui--list-header>
+  </div>
 
-    <ng-container matColumnDef="stop">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let process">
-            <button (click)="stopProcess(process)">
-                <i class="ser-icon ser-icon--remove"></i>
-            </button>
-        </td>
-    </ng-container>
+  <!-- page content -->
+  <div page-content--body>
+    <!-- process list table -->
+    <table class="table" mat-table [dataSource]="tasks">
+      <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
+        <th mat-header-cell *matHeaderCellDef>{{'SMC_MONITORING.LIST.' + column.toUpperCase() | translate}}</th>
+        <ng-container *matCellDef="let task">
+          <ng-container [ngSwitch]="column">
+            <td *ngSwitchCase="'startTime'" mat-cell>{{task[column] | momentFormat:true}}</td>
+            <td *ngSwitchCase="'status'" mat-cell>{{task[column] | processState | translate}}</td>
+            <td *ngSwitchCase="'stop'" mat-cell>
+              <button (click)="stopProcess(task)"><i class="ser-icon ser-icon--remove"></i></button>
+            </td>
+            <td *ngSwitchDefault mat-cell>{{task[column]}}</td>
+          </ng-container>
+        </ng-container>
+      </ng-container>
 
-    <!-- table header row -->
-    <tr mat-header-row *matHeaderRowDef="tableHeaderFields"></tr>
+      <!-- table header row -->
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
 
-    <!-- table row for user details or edit fields -->
-    <tr mat-row 
-        *matRowDef="let process; columns: tableHeaderFields;"
-        class="process-table--row">
-    </tr>
-</table>
+      <!-- table row for user details or edit fields -->
+      <tr mat-row *matRowDef="let task; columns: columns;" class="process-table--row"></tr>
+    </table>
+  </div>
+
+  <!-- page footer -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="stopAll()"> {{'SMC_MONITORING.ACTIONS.STOP_ALL' | translate}} </smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+</smc-ui--page>

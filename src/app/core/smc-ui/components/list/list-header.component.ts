@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 
 @Component({
     selector: 'smc-ui--list-header',
@@ -8,13 +8,13 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 export class ListHeaderComponent {
 
     @Input()
-    public selected: number;
+    public selected = 0;
 
     @Input()
-    showing: number;
+    showing = 0;
 
     @Input()
-    total: number;
+    total = 0;
 
     @Input()
     disableActions: boolean;
@@ -27,6 +27,9 @@ export class ListHeaderComponent {
 
     @Output()
     public deselectAll: EventEmitter<void> = new EventEmitter();
+
+    @ViewChild('listDataCounts')
+    private listDataCounts: ElementRef;
 
     public doReload() {
         this.reload.emit();

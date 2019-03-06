@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { Observable, of, from, forkJoin, BehaviorSubject } from 'rxjs';
 import { SerCommands } from '../api/ser-commands.interface';
 import { IProcessListResponse, ResponseStatus } from '../api/process-status-response.interface';
-import { IProcess } from '../api/process.interface';
+import { IProcess, ProcessStatus } from '../api/process.interface';
 import { ProcessStatusException } from '../api';
 import { ILicenseValidationResult } from '@smc/pages/license/api/validation-result.interface';
 import { EnigmaService } from '@smc/modules/smc-common';
@@ -31,7 +31,7 @@ export class ProcessService {
      * @type {Map<string, IProcess>}
      * @memberof ProcessService
      */
-    private processMap: Map<string, IProcess>;
+    private processList: IProcess[] = [];
 
     /**
      * cache session app
@@ -52,7 +52,6 @@ export class ProcessService {
         private appRepository: AppRepository,
     ) {
         this._processList$ = new BehaviorSubject([]);
-        this.processMap = new Map();
     }
 
     public get processList$(): Observable<IProcess[]> {
@@ -82,16 +81,19 @@ export class ProcessService {
                 return result.tasks;
             }),
             switchMap((processes: IProcess[]) => {
+                if (!processes.length) {
+                    return of(processes);
+                }
+
                 const appName$ = processes.map((process) => {
                     const app$ = this.appRepository.fetchApp(process.appId);
-                    return app$.pipe( map(app => {
+                    return app$.pipe(map(app => {
                         process.appId = app.name;
                         return process;
                     }));
                 });
                 return forkJoin(...appName$);
-            }),
-            tap((processes: IProcess[]) => this._processList$.next(processes))
+            })
         );
     }
 
@@ -125,16 +127,6 @@ export class ProcessService {
     }
 
     /**
-     * load process list and submits new event for processListUpdate
-     *
-     * @returns {Observable<IProcess[]>}
-     * @memberof ProcessService
-     */
-    public refreshProcessList(): Observable<IProcess[]> {
-        return this.fetchProcesses();
-    }
-
-    /**
      * stop process and submits new event for processStop
      *
      * @param {IProcess} process
@@ -149,14 +141,9 @@ export class ProcessService {
                 });
                 return app.evaluate(`${SerCommands.STOP}('${requestData}')`);
             }),
-            tap(() => {
-                this.processMap.delete(process.taskId);
-                this._processList$.next(
-                    Array.from(this.processMap.values())
-                );
-            }),
-            map(() => {
-                return true;
+            map((response) => {
+                const result: IProcessListResponse = JSON.parse(response);
+                return result.status === ResponseStatus.SUCCESS;
             })
         );
     }
@@ -167,7 +154,7 @@ export class ProcessService {
      * @returns {Observable<string>}
      * @memberof ProcessService
      */
-    public stopAllProcesses(): Observable<string> {
+    public stopAllProcesses(): Observable<boolean> {
         return this.getSessionApp().pipe(
             switchMap((app: EngineAPI.IApp) => {
                 const requestData = JSON.stringify({
@@ -175,10 +162,9 @@ export class ProcessService {
                 });
                 return app.evaluate(`${SerCommands.STOP}('${requestData}')`);
             }),
-            tap(() => {
-                console.log(Array.from(this.processMap.values())[0].appId);
-                this.processMap.clear();
-                this._processList$.next([]);
+            map((response: string) => {
+                const result: IProcessListResponse = JSON.parse(response);
+                return result.status === ResponseStatus.SUCCESS;
             })
         );
     }
@@ -191,10 +177,9 @@ export class ProcessService {
      */
     private getSessionApp(): Observable<EngineAPI.IApp> {
         if (!this.sessionApp) {
-            return from(this.enigmaService.createSessionApp())
-                .pipe(
-                    tap((app: EngineAPI.IApp) => this.sessionApp = app)
-                );
+            return from(this.enigmaService.createSessionApp()).pipe(
+                tap((app: EngineAPI.IApp) => this.sessionApp = app)
+            );
         }
         return of(this.sessionApp);
     }

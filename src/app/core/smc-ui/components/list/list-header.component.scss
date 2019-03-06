@@ -7,17 +7,15 @@
   color: #FFF;
 
   ul {
-    flex: 1;
     list-style-type: none;
     display: flex;
+    flex: 1;
     margin: 0;
     font-size: 14px;
     line-height: 30px;
     padding: 0;
 
     li {
-      font-weight: 500;
-
       .ser-icon {
         font-size: 17px !important;
       }
@@ -32,10 +30,17 @@
     margin: 0 1rem 0 0;
   }
 
+  .list-header--info {
+      flex: 1;
+      font-weight: 500;
+  }
+
   .list-header--actions {
 
     display: flex;
     align-items: baseline;
+    font-family: "QlikView Sans", sans-serif;
+    font-size: 13px;
 
     ::ng-deep .btn {
       min-width: auto;

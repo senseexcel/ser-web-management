@@ -14,6 +14,7 @@ import { MenuComponent } from './components/menu/menu.component';
 import i18n_en from './i18n/en.json';
 import { TranslateService } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
+import { SmcUiDefaultContentDirective } from './directives/default-content.directive';
 
 @NgModule({
     imports: [
@@ -32,14 +33,16 @@ import { RouterModule } from '@angular/router';
         SmcUiButtonNavbarComponent,
         MaterialModule,
         SmcCommonModule,
-        MenuComponent
+        MenuComponent,
+        SmcUiDefaultContentDirective
     ],
     declarations: [
         ListHeaderComponent,
         SmcPageComponent,
         SmcUiButtonComponent,
         SmcUiButtonNavbarComponent,
-        MenuComponent
+        MenuComponent,
+        SmcUiDefaultContentDirective
     ],
     providers: [
     ],

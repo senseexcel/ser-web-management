@@ -1,31 +1,40 @@
-<div class="list-header--title">
-    <ng-content select="[list-header--title]"></ng-content>
-</div>
-<ul class="list-header">
-    <li class="list-item" translate="SMC_UI.LIST.HEADER.TOTAL"    [translateParams]="{COUNT: total}"></li>
-    <li class="list-item" translate="SMC_UI.LIST.HEADER.VISIBLE"  [translateParams]="{COUNT: showing}"></li>
+<ng-template #defaultCounts>
+  <ul class="list-header--info">
+    <li class="list-item" translate="SMC_UI.LIST.HEADER.TOTAL" [translateParams]="{COUNT: total}"></li>
+    <li class="list-item" translate="SMC_UI.LIST.HEADER.VISIBLE" [translateParams]="{COUNT: showing}"></li>
     <li class="list-item" translate="SMC_UI.LIST.HEADER.SELECTED" [translateParams]="{COUNT: selected}"></li>
-</ul>
+  </ul>
+</ng-template>
+
+<div class="list-header--title">
+  <ng-content select="[list-header--title]"></ng-content>
+</div>
+
+<!-- render list count overview total, visible and selected if no other list view is given -->
+<div [smcUiDefaultContent]="defaultCounts" class="list-header--info">
+  <ng-content select="[list-header--counts]"></ng-content>
+</div>
+
 <div class="list-header--actions">
-    <ng-content select="[list-header--actions]"></ng-content>
+  <!-- table actions -->
+  <smc-drop-down [hostClass]="['list-header--actions-overlay']" [label]="'Actions'" *ngIf="!disableActions">
+    <div class="content">
+      <div class="actions--title" translate="SMC_UI.LIST.ACTIONS.TITLE"></div>
+      <ul class="actions--body">
+        <li class="actions--body-item" (click)="selectAllRows()" translate="SMC_UI.LIST.ACTIONS.SELECT_ALL"></li>
+        <li class="actions--body-item" (click)="deselectAllRows()" translate="SMC_UI.LIST.ACTIONS.DESELECT_ALL"></li>
+      </ul>
+    </div>
+  </smc-drop-down>
 
-    <!-- table actions -->
-    <smc-drop-down [hostClass]="['list-header--actions-overlay']" [label]="'Actions'" *ngIf="!disableActions">
-        <div class="content">
-            <div class="actions--title" translate="SMC_UI.LIST.ACTIONS.TITLE"></div>
-            <ul class="actions--body">
-                <li class="actions--body-item" (click)="selectAllRows()"   translate="SMC_UI.LIST.ACTIONS.SELECT_ALL"></li>
-                <li class="actions--body-item" (click)="deselectAllRows()" translate="SMC_UI.LIST.ACTIONS.DESELECT_ALL"></li>
-            </ul>
-        </div>
-    </smc-drop-down>
+  <ng-content select="[list-header--actions]"></ng-content>
 
-    <!-- button toolbar -->
-    <nav class="navbar list-header--actions-navbar">
-        <div class="btn-toolbar" role="group">
-        <button type="button" class="btn" (click)="doReload()">
-            <i class="ser-icon ser-icon--reload"></i>
-        </button>
-        </div>
-    </nav>
+  <!-- button toolbar -->
+  <nav class="navbar list-header--actions-navbar">
+    <div class="btn-toolbar" role="group">
+      <button type="button" class="btn" (click)="doReload()">
+        <i class="ser-icon ser-icon--reload"></i>
+      </button>
+    </div>
+  </nav>
 </div>

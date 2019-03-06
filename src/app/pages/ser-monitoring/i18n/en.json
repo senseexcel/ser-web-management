@@ -13,17 +13,19 @@
       }
     },
 
-    "PROCESS_LIST": {
-      "ID": "Process Id",
-      "START_TIME": "Start Time",
+    "LIST": {
+      "TASKID": "Process Id",
+      "STARTTIME": "Start Time",
       "STATUS": "Status",
-      "USER": "User Id",
-      "APPNAME": "Appname"
+      "USERID": "User Id",
+      "APPID": "Appname",
+      "STOP": "Cancel Process",
+      "ACTIVE": "Active Tasks: {{COUNT}}"
     },
 
     "ACTIONS": {
         "REFRESH": "Refresh",
-        "AUTO_REFRESH": "Auto refresh",
+        "AUTO_REFRESH": "Continuous Update",
         "STOP_ALL": "Stop all"
     }
   }

@@ -1,8 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, interval, empty } from 'rxjs';
 import { ProcessService } from '../../services';
-import { takeUntil, map } from 'rxjs/operators';
-import { IProcess, ProcessStatus } from '../../api';
+import { takeUntil, map, switchMap, tap } from 'rxjs/operators';
+import { IProcess } from '../../api';
+import { FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
     selector: 'smc-monitoring-process-list',
@@ -13,20 +14,19 @@ import { IProcess, ProcessStatus } from '../../api';
 export class ProcessListComponent implements OnDestroy, OnInit {
 
     /**
+     *
+     *
+     * @type {FormControl}
+     * @memberof ProcessListComponent
+     */
+    public autoRefreshControl: FormControl;
+
+    /**
      * table header fields
      *
      * @memberof UserComponent
      */
-    public tableHeaderFields = ['processId', 'user', 'app', 'startTime', 'status', 'stop'];
-
-    /**
-     * process list
-     *
-     * @private
-     * @type {IProcess[]}
-     * @memberof ProcessListComponent
-     */
-    public myProcesses: IProcess[] = [];
+    public columns = ['taskId', 'userId', 'appId', 'startTime', 'status', 'stop'];
 
     /**
      * true if all data has been loaded
@@ -35,6 +35,15 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     public ready = false;
+
+    /**
+     * process list
+     *
+     * @private
+     * @type {IProcess[]}
+     * @memberof ProcessListComponent
+     */
+    public tasks: IProcess[] = [];
 
     /**
      * emits true if component gets destroyed
@@ -55,17 +64,25 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     private processService: ProcessService;
 
     /**
+     * interval for polling
+     *
+     * @private
+     * @memberof ProcessListComponent
+     */
+    private reloadInterval = 5000;
+
+    /**
      * Creates an instance of TasksComponent.
      * @param {QlikSessionService} qlikSession
      * @memberof TasksComponent
      */
-    constructor (
+    constructor(
+        private formBuilder: FormBuilder,
         processService: ProcessService
     ) {
         this.isDestroyed$ = new Subject();
         this.processService = processService;
     }
-
     /**
      * component get initialized, create a session app
      * and fetch values
@@ -73,11 +90,8 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof TasksComponent
      */
     ngOnInit(): void {
-        this.processService.processList$
-            .pipe(takeUntil(this.isDestroyed$))
-            .subscribe((p) => {
-                this.myProcesses = p;
-            });
+        this.autoRefreshControl = this.createAutoRefreshControl();
+        this.loadProcesses();
     }
 
     /**
@@ -86,6 +100,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof TasksComponent
      */
     ngOnDestroy(): void {
+        this.processService.closeSession();
         this.isDestroyed$.next(true);
     }
 
@@ -96,11 +111,53 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof MonitoringPageComponent
      */
     public stopProcess(process: IProcess) {
-
         this.processService.stopProcess(process)
             .pipe(takeUntil(this.isDestroyed$))
             .subscribe(() => {
-                /** @todo implement any usefull action ... */
+                this.loadProcesses();
+            });
+    }
+
+    /**
+     * enable auto refresh if checkbox is enabled
+     *
+     * @private
+     * @returns {FormControl}
+     * @memberof MonitoringPageComponent
+     */
+    private createAutoRefreshControl(): FormControl {
+
+        const control = this.formBuilder.control('');
+        const interval$ = interval(this.reloadInterval).pipe(
+            tap(() => this.loadProcesses())
+        );
+
+        control.valueChanges.pipe(
+            switchMap((val) => val ? interval$ : empty()),
+            takeUntil(this.isDestroyed$),
+        ).subscribe();
+
+        return control;
+    }
+
+    public doReload() {
+        this.loadProcesses();
+    }
+
+    public stopAll() {
+        this.processService.stopAllProcesses()
+            .subscribe(() => {
+                this.loadProcesses();
+            });
+    }
+
+    private loadProcesses() {
+        this.processService.fetchProcesses()
+            .subscribe((tasks) => {
+                /** only set if tasks length is not zero, or current tasks length not zero */
+                if (tasks.length !== 0 || this.tasks.length !== 0) {
+                    this.tasks = tasks;
+                }
             });
     }
 }

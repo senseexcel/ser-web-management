@@ -1,34 +1,93 @@
 :host {
 
-    table {
+  table {
 
-        th, td {
-            vertical-align: middle;
-            width: 20%;
-        }
-
-        /** action column */
-        th:last-child,
-        td:last-child {
-            width: 1%;
-        }
-
-        /** action column */
-        td:last-child button {
-            margin: 0;
-            background: none;
-            border: none;
-            border-radius: unset;
-            min-width: 50px;
-            height: auto;
-            padding:0;
-            outline: none;
-
-            .ser-icon {
-                color: red;
-                font-size: 1rem;
-                margin-right: 0;
-            }
-        }
+    th,
+    td {
+      vertical-align: middle;
+      width: 20%;
     }
+
+    th {
+        white-space: nowrap;
+    }
+
+    /** action column */
+    th:last-child,
+    td:last-child {
+      width: 1%;
+    }
+
+    /** action column */
+    td:last-child button {
+      margin: 0;
+      background: none;
+      border: none;
+      border-radius: unset;
+      min-width: 50px;
+      height: auto;
+      padding: 0;
+      outline: none;
+
+      .ser-icon {
+        color: red;
+        font-size: 1rem;
+        margin-right: 0;
+      }
+    }
+  }
+
+  .monitoring-list--actions {
+
+    display: flex;
+    align-self: center;
+
+    /** auto refresh */
+    label {
+      cursor: pointer;
+      display: flex;
+      flex-wrap: nowrap;
+      position: relative;
+      align-items: center;
+      margin: 0 .5rem;
+      font-weight: 500;
+      font-size: inherit;
+
+      input[type="checkbox"] {
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+
+        &:checked~.checkbox:before {
+          display: block;
+        }
+      }
+
+      .checkbox {
+        position: relative;
+        height: .8rem;
+        width: .8rem;
+        color: #1A1A1A;
+        background: white;
+        border: none;
+        border-radius: 2px;
+        margin-right: .3rem;
+        font-size: 1rem;
+        line-height: 1rem;
+
+        &:before {
+          content: " ";
+          position: absolute;
+          border-radius: 2px;
+          left: 1px;
+          top: 1px;
+          bottom: 1px;
+          right: 1px;
+          background: green;
+          display: none;
+        }
+      }
+    }
+  }
 }
