@@ -1,6 +1,6 @@
-export class ProcessStatusException extends Error {
+export class ProcessResponseException extends Error {
     constructor(m: string) {
         super(m);
-        Object.setPrototypeOf(this, ProcessStatusException.prototype);
+        Object.setPrototypeOf(this, ProcessResponseException.prototype);
     }
 }

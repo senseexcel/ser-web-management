@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
-import { Observable, merge, of, forkJoin } from 'rxjs';
+import { Observable, forkJoin } from 'rxjs';
 import { LicenseValidator } from '@smc/pages/license/services';
-import { reduce, map } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class MonitoringCanActivate implements CanActivate {

@@ -1,9 +1,10 @@
 export const enum ProcessStatus {
     ERROR      = -1,
-    IDLE       = 0,
+    READY      = 0,
     PROCESSING = 1,
     DELIVER    = 2,
-    COMPLETED  = 3
+    COMPLETED  = 3,
+    ABORTING   = 4
 }
 
 export interface IProcess {
@@ -17,4 +18,6 @@ export interface IProcess {
     startTime: string;
 
     status: number;
+
+    requestPending: boolean;
 }

@@ -3,8 +3,8 @@ import { switchMap, tap, map, catchError } from 'rxjs/operators';
 import { Observable, of, from, forkJoin, BehaviorSubject } from 'rxjs';
 import { SerCommands } from '../api/ser-commands.interface';
 import { IProcessListResponse, ResponseStatus } from '../api/process-status-response.interface';
-import { IProcess, ProcessStatus } from '../api/process.interface';
-import { ProcessStatusException } from '../api';
+import { IProcess } from '../api/process.interface';
+import { ProcessResponseException } from '../api';
 import { ILicenseValidationResult } from '@smc/pages/license/api/validation-result.interface';
 import { EnigmaService } from '@smc/modules/smc-common';
 import { AppRepository } from '@smc/modules/qrs';
@@ -19,19 +19,6 @@ export class ProcessService {
      * @memberof ProcessService
      */
     private _processList$: BehaviorSubject<IProcess[]>;
-
-    /**
-     * process which holds loaded processes
-     * we want to merge loaded processes with all existing
-     * processes, so we only modify Map existing processes
-     * since only the state can change. This helps to render
-     * not a full list only the changed processes.
-     *
-     * @private
-     * @type {Map<string, IProcess>}
-     * @memberof ProcessService
-     */
-    private processList: IProcess[] = [];
 
     /**
      * cache session app
@@ -75,12 +62,13 @@ export class ProcessService {
             }),
             map((response: string) => {
                 const result: IProcessListResponse = JSON.parse(response);
-                if (result.status === ResponseStatus.FAILURE) {
-                    throw new ProcessStatusException('Could not fetch processes.');
+                if (result.status === ResponseStatus.ERROR) {
+                    throw new ProcessResponseException('Could not fetch processes.');
                 }
                 return result.tasks;
             }),
             switchMap((processes: IProcess[]) => {
+
                 if (!processes.length) {
                     return of(processes);
                 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, interval, empty } from 'rxjs';
 import { ProcessService } from '../../services';
 import { takeUntil, map, switchMap, tap } from 'rxjs/operators';
-import { IProcess } from '../../api';
+import { IProcess, ProcessStatus } from '../../api';
 import { FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
@@ -111,9 +111,14 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof MonitoringPageComponent
      */
     public stopProcess(process: IProcess) {
+
+        process.requestPending = true;
+        process.status = ProcessStatus.ABORTING;
+
         this.processService.stopProcess(process)
             .pipe(takeUntil(this.isDestroyed$))
             .subscribe(() => {
+                process.requestPending = false;
                 this.loadProcesses();
             });
     }
@@ -140,10 +145,20 @@ export class ProcessListComponent implements OnDestroy, OnInit {
         return control;
     }
 
+    /**
+     * reload all processes
+     *
+     * @memberof ProcessListComponent
+     */
     public doReload() {
         this.loadProcesses();
     }
 
+    /**
+     * stop all processes
+     *
+     * @memberof ProcessListComponent
+     */
     public stopAll() {
         this.processService.stopAllProcesses()
             .subscribe(() => {
@@ -151,6 +166,12 @@ export class ProcessListComponent implements OnDestroy, OnInit {
             });
     }
 
+    /**
+     * fetch processes from server
+     *
+     * @private
+     * @memberof ProcessListComponent
+     */
     private loadProcesses() {
         this.processService.fetchProcesses()
             .subscribe((tasks) => {

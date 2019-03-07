@@ -11,6 +11,15 @@
     box-shadow: none;
   }
 
+  button[disabled] {
+
+    ::ng-deep {
+      i {
+        color: rgba($color: #595959, $alpha: .2);
+      }
+    }
+  }
+
   ::ng-deep {
 
     i.ser-icon {
@@ -22,6 +31,7 @@
       font-weight: 500;
       margin: 0;
       line-height: 1.1rem;
+      color: rgba($color: #595959, $alpha: 1);
 
       &:before {
         display: inline;

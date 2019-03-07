@@ -1,11 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
     selector: 'smc-ui--button',
     templateUrl: 'button.component.html',
     styleUrls: ['./button.component.scss']
 })
-
 export class SmcUiButtonComponent {
 
     @Input()
@@ -20,13 +19,26 @@ export class SmcUiButtonComponent {
     @Output()
     public close: EventEmitter<void>;
 
-    constructor() {
+    @Output()
+    public doClick: EventEmitter<void>;
+
+    constructor(
+    ) {
         this.close = new EventEmitter();
+        this.doClick = new EventEmitter();
+    }
+
+    public handleEvent($event) {
+        if (!this.disabled) {
+            this.doClick.emit($event);
+        }
     }
 
     public triggerClose($event: MouseEvent) {
-        $event.stopPropagation();
-        $event.preventDefault();
-        this.close.emit();
+        if (!this.disabled) {
+            $event.stopPropagation();
+            $event.preventDefault();
+            this.close.emit();
+        }
     }
 }
