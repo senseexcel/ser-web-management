@@ -4,6 +4,7 @@ import { ProcessService } from '../../services';
 import { takeUntil, switchMap, tap } from 'rxjs/operators';
 import { IProcess, ProcessStatus } from '../../api';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { SelectionModel } from '@angular/cdk/collections';
 
 @Component({
     selector: 'smc-monitoring-process-list',
@@ -26,7 +27,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      *
      * @memberof UserComponent
      */
-    public columns = ['taskId', 'userId', 'appId', 'startTime', 'status', 'stop'];
+    public columns = ['taskId', 'userId', 'appId', 'startTime', 'status'];
 
     /**
      * true if all data has been loaded
@@ -44,6 +45,8 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     public tasks: IProcess[] = [];
+
+    public selections: SelectionModel<IProcess> = new SelectionModel(true);
 
     /**
      * emits true if component gets destroyed
@@ -91,7 +94,20 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     ngOnInit(): void {
         this.autoRefreshControl = this.createAutoRefreshControl();
-        this.loadProcesses();
+
+        this.tasks = Array.from({length: 50}, (task, index) => {
+            const process: IProcess = {
+                appId: `app#${index}`,
+                startTime: new Date().toUTCString(),
+                status: Math.round(Math.random() * 4),
+                taskId: Math.random().toString(32),
+                userId: 'hannuscka/ralf',
+                requestPending: false
+            };
+
+            return process;
+        });
+        // this.loadProcesses();
     }
 
     /**
@@ -154,6 +170,14 @@ export class ProcessListComponent implements OnDestroy, OnInit {
         this.loadProcesses();
     }
 
+    public deselectAll() {
+        this.selections.deselect(...this.selections.selected);
+    }
+
+    public selectAll() {
+        this.selections.select(...this.tasks);
+    }
+
     /**
      * stop all processes
      *
@@ -175,6 +199,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     private loadProcesses() {
         this.processService.fetchProcesses()
             .subscribe((tasks) => {
+                this.deselectAll();
                 /** only set if tasks length is not zero, or current tasks length not zero */
                 if (tasks.length !== 0 || this.tasks.length !== 0) {
                     this.tasks = tasks;

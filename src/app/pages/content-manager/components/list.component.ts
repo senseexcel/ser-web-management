@@ -51,6 +51,12 @@ export class ListComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.initializePagination();
         this.loadSharedContentData();
+
+        this.selections.changed
+            .pipe(takeUntil(this.isDestroyed))
+            .subscribe(() => {
+                this.translateParamSelected = { COUNT: this.selections.selected.length };
+            });
     }
 
     ngOnDestroy() {
@@ -113,7 +119,6 @@ export class ListComponent implements OnInit, OnDestroy {
      */
     public selectAll() {
         this.selections.select(...this.tableData);
-        this.translateParamSelected = { COUNT: this.selections.selected.length };
     }
 
     /**
@@ -123,7 +128,6 @@ export class ListComponent implements OnInit, OnDestroy {
      */
     public deselectAll() {
         this.selections.clear();
-        this.translateParamSelected = { COUNT: 0 };
     }
 
     /**

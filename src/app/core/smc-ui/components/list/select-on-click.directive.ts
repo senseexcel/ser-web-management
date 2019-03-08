@@ -1,7 +1,7 @@
 import { Directive, Input, OnDestroy, OnInit, HostListener, HostBinding } from '@angular/core';
 import { SelectionModel, SelectionChange } from '@angular/cdk/collections';
 import { Subject } from 'rxjs';
-import { DocumentKey, KeyCode } from '@smc/modules/smc-common/provider/document-key.service';
+import { DocumentKeyEvent, KeyCode } from '@smc/modules/smc-common/provider/document-key.service';
 import { takeUntil } from 'rxjs/operators';
 
 @Directive({
@@ -56,7 +56,7 @@ export class SelectOnClickDirective<T> implements OnDestroy, OnInit {
      * @memberof SelectOnClickDirective
      */
     public constructor(
-        private documentKey: DocumentKey
+        private documentKey: DocumentKeyEvent
     ) {
         this.destroy$ = new Subject();
     }
@@ -66,7 +66,12 @@ export class SelectOnClickDirective<T> implements OnDestroy, OnInit {
         if (this.model.isMultipleSelection() && !this.ctrlKeyPressed && !this.model.isEmpty()) {
             this.model.clear();
         }
-        this.model.select(this.selectionData);
+
+        if (this.model.isSelected(this.selectionData)) {
+            this.model.deselect(this.selectionData);
+        } else {
+            this.model.select(this.selectionData);
+        }
     }
 
     /**
@@ -75,13 +80,16 @@ export class SelectOnClickDirective<T> implements OnDestroy, OnInit {
      * @memberof SelectOnClickDirective
      */
     public ngOnInit() {
+
         this.documentKey.stateChange(KeyCode.CTRL)
             .pipe(takeUntil(this.destroy$))
             .subscribe((state: string) => {
                 this.ctrlKeyPressed = state === 'pressed';
             });
 
-        this.model.changed.subscribe(() => this.handleSelectionChanged());
+        this.model.changed
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(() => this.handleSelectionChanged());
     }
 
     public ngOnDestroy() {

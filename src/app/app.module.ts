@@ -11,10 +11,10 @@ import { AppsPage, ContentManagerPage, DashboardPage, LicensePage, TasksPage } f
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TopBarComponent } from './components/top-bar/top-bar.component';
-import { MonitoringModule } from './pages/ser-monitoring/monitoring.module';
 import { BootstrapService } from './services/bootstrap.service';
 import { IBootstrap } from './api/bootstrap.interface';
 import i18n_en from './i18n/en.json';
+import { MonitoringModule } from './pages/monitoring/monitoring.module';
 
 @NgModule({
   declarations: [

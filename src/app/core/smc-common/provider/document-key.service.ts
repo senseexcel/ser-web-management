@@ -8,7 +8,7 @@ export enum KeyCode {
 
 // KeyPressed.onKeyPressed(KeyCodeS.CTRL) -> observable;
 @Injectable({ providedIn: 'root' })
-export class DocumentKey {
+export class DocumentKeyEvent {
 
     /**
      * map to save key codes and their observers so we dont need

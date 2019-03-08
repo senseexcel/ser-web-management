@@ -19,14 +19,18 @@
       "STATUS": "Status",
       "USERID": "User Id",
       "APPID": "Appname",
-      "STOP": "Cancel Process",
-      "ACTIVE": "Active Tasks: {{COUNT}}"
+      "STOP": "Cancel Process"
+    },
+
+    "LIST_HEADER": {
+      "ACTIVE": "Active Tasks: {{COUNT}}",
+      "SELECTED": "Selected: {{COUNT}}"
     },
 
     "ACTIONS": {
-        "REFRESH": "Refresh",
-        "AUTO_REFRESH": "Continuous Update",
-        "STOP_ALL": "Stop all"
+      "REFRESH": "Refresh",
+      "AUTO_REFRESH": "Continuous Update",
+      "STOP_ALL": "Stop all"
     }
   }
 }
