@@ -197,20 +197,6 @@ export class ProcessListComponent implements OnDestroy, OnInit {
         }
 
         this.processService.fetchProcesses()
-            .pipe(map(() => {
-                const mockData = Array.from({ length: 100 }, (task, index) => {
-                    const process: IProcess = {
-                        appId: `app#${index}`,
-                        startTime: new Date().toUTCString(),
-                        status: Math.round(Math.random() * 4),
-                        taskId: Math.random().toString(32),
-                        userId: 'hannuscka/ralf',
-                        requestPending: false
-                    };
-                    return process;
-                });
-                return mockData;
-            }))
             .subscribe((tasks) => {
                 this.deselectAll();
 
