@@ -1,3 +1,9 @@
+<ng-template #defaultActions>
+  <button type="button" class="btn" (click)="doReload()">
+    <i class="ser-icon ser-icon--reload"></i>
+  </button>
+</ng-template>
+
 <ng-template #defaultCounts>
   <ul class="list-header--info">
     <li class="list-item" translate="SMC_UI.LIST.HEADER.TOTAL" [translateParams]="{COUNT: total}"></li>
@@ -17,7 +23,7 @@
 
 <div class="list-header--actions">
   <!-- table actions -->
-  <smc-drop-down [hostClass]="['list-header--actions-overlay']" [label]="'Actions'" *ngIf="!disableActions">
+  <smc-drop-down [hostClass]="['list-header--actions-overlay']" [label]="'Actions'" *ngIf="!disableMassActions">
     <div class="content">
       <div class="actions--title" translate="SMC_UI.LIST.ACTIONS.TITLE"></div>
       <ul class="actions--body">
@@ -27,14 +33,10 @@
     </div>
   </smc-drop-down>
 
-  <ng-content select="[list-header--actions]"></ng-content>
-
   <!-- button toolbar -->
   <nav class="navbar list-header--actions-navbar">
-    <div class="btn-toolbar" role="group">
-      <button type="button" class="btn" (click)="doReload()">
-        <i class="ser-icon ser-icon--reload"></i>
-      </button>
+    <div class="btn-toolbar" role="group" [smcUiDefaultContent]="defaultActions">
+      <ng-content select="[list-header--actions]"></ng-content>
     </div>
   </nav>
 </div>

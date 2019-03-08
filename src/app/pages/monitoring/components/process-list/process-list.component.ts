@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, interval, empty } from 'rxjs';
+import { Subject, interval, empty, of } from 'rxjs';
 import { ProcessService } from '../../services';
-import { takeUntil, switchMap, tap } from 'rxjs/operators';
+import { takeUntil, switchMap, tap, map } from 'rxjs/operators';
 import { IProcess, ProcessStatus } from '../../api';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -36,6 +36,8 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     public ready = false;
+
+    public fetchingData = false;
 
     /**
      * process list
@@ -74,6 +76,8 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     private reloadInterval = 5000;
 
+    private autoReloadEnabled = false;
+
     /**
      * Creates an instance of TasksComponent.
      * @param {QlikSessionService} qlikSession
@@ -94,20 +98,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     ngOnInit(): void {
         this.autoRefreshControl = this.createAutoRefreshControl();
-
-        this.tasks = Array.from({length: 400}, (task, index) => {
-            const process: IProcess = {
-                appId: `app#${index}`,
-                startTime: new Date().toUTCString(),
-                status: Math.round(Math.random() * 4),
-                taskId: Math.random().toString(32),
-                userId: 'hannuscka/ralf',
-                requestPending: false
-            };
-
-            return process;
-        });
-        // this.loadProcesses();
+        this.loadProcesses();
     }
 
     /**
@@ -154,6 +145,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
         );
 
         control.valueChanges.pipe(
+            tap((value) => this.autoReloadEnabled = value),
             switchMap((val) => val ? interval$ : empty()),
             takeUntil(this.isDestroyed$),
         ).subscribe();
@@ -167,7 +159,9 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     public doReload() {
-        this.loadProcesses();
+        if (!this.autoReloadEnabled) {
+            this.loadProcesses();
+        }
     }
 
     public deselectAll() {
@@ -197,9 +191,33 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     private loadProcesses() {
+
+        if (!this.autoReloadEnabled) {
+            this.fetchingData = true;
+        }
+
         this.processService.fetchProcesses()
+            .pipe(map(() => {
+                const mockData = Array.from({ length: 100 }, (task, index) => {
+                    const process: IProcess = {
+                        appId: `app#${index}`,
+                        startTime: new Date().toUTCString(),
+                        status: Math.round(Math.random() * 4),
+                        taskId: Math.random().toString(32),
+                        userId: 'hannuscka/ralf',
+                        requestPending: false
+                    };
+                    return process;
+                });
+                return mockData;
+            }))
             .subscribe((tasks) => {
                 this.deselectAll();
+
+                if (!this.autoReloadEnabled) {
+                    this.fetchingData = false;
+                }
+
                 /** only set if tasks length is not zero, or current tasks length not zero */
                 if (tasks.length !== 0 || this.tasks.length !== 0) {
                     this.tasks = tasks;

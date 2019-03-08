@@ -1,5 +1,5 @@
 import { Directive, Input, OnDestroy, OnInit, HostListener, HostBinding } from '@angular/core';
-import { SelectionModel, SelectionChange } from '@angular/cdk/collections';
+import { SelectionModel } from '@angular/cdk/collections';
 import { Subject } from 'rxjs';
 import { DocumentKeyEvent, KeyCode } from '@smc/modules/smc-common/provider/document-key.service';
 import { takeUntil } from 'rxjs/operators';

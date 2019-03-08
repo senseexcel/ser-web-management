@@ -16,8 +16,9 @@ export class ListHeaderComponent {
     @Input()
     total = 0;
 
-    @Input()
-    disableActions: boolean;
+    // tslint:disable-next-line:no-input-rename
+    @Input('disableActions')
+    disableMassActions: boolean;
 
     @Output()
     public reload: EventEmitter<void> = new EventEmitter();

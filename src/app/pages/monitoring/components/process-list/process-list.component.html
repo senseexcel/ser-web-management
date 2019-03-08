@@ -3,30 +3,35 @@
   <!-- page header -->
   <div page-content--header>
     <smc-ui--list-header (reload)="doReload()" (selectAll)="selectAll()" (deselectAll)="deselectAll()">
-
+      <!-- list header title -->
       <ng-container list-header--title>
         <i class="ser-icon ser-icon--streams"></i>
         <span> {{'SMC_MONITORING.TITLE' | translate}} </span>
       </ng-container>
 
+      <!-- list header informations -->
       <ng-container list-header--counts>
         <span [translate]="'SMC_MONITORING.LIST_HEADER.ACTIVE'" [translateParams]="{COUNT: tasks.length}"></span>
         <span [translate]="'SMC_MONITORING.LIST_HEADER.SELECTED'" [translateParams]="{COUNT: selections.selected.length}"></span>
       </ng-container>
 
-      <div class="monitoring-list--actions" list-header--actions>
-        <label for="monitoringAutoRefresh">
-          <input [formControl]="autoRefreshControl" class="form-control" type="checkbox" id="monitoringAutoRefresh">
-          <span class="checkbox"></span>
-          {{'SMC_MONITORING.ACTIONS.AUTO_REFRESH' | translate}}
-        </label>
-      </div>
-
+      <!-- reload and auto reload -->
+      <ng-container list-header--actions>
+        <button type="button" class="btn btn-reload" (click)="doReload()">
+          <label (click)="$event.stopPropagation()">
+            <input [formControl]="autoRefreshControl" class="form-control" type="checkbox">
+            <span>{{'SMC_MONITORING.ACTIONS.AUTO_REFRESH' | translate}}</span>
+          </label>
+          <i class="ser-icon" [ngClass]="{'ser-icon--reload': !fetchingData, 'ser-icon--loading': fetchingData || autoReloadEnabled}"
+            btn-icon--right></i>
+        </button>
+      </ng-container>
     </smc-ui--list-header>
   </div>
 
   <!-- page content -->
   <div page-content--body>
+
     <!-- process list table -->
     <table class="table" mat-table [dataSource]="tasks">
       <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">

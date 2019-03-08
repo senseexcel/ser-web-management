@@ -29,7 +29,7 @@
 
     "ACTIONS": {
       "REFRESH": "Refresh",
-      "AUTO_REFRESH": "Continuous Update",
+      "AUTO_REFRESH": "auto",
       "STOP_ALL": "Stop all"
     }
   }
