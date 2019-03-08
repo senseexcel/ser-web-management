@@ -40,7 +40,7 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns;" (click)="selectSharedContent(row)" [ngClass]="{'selected': selections.isSelected(row)}"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;" smcSelectOnClick [selectionModel]="selections" [selectionData]="row"></tr>
       </table>
     </div>
   </div>

@@ -15,6 +15,7 @@ import i18n_en from './i18n/en.json';
 import { TranslateService } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { SmcUiDefaultContentDirective } from './directives/default-content.directive';
+import { SelectOnClickDirective } from './components/list/select-on-click.directive';
 
 @NgModule({
     imports: [
@@ -34,7 +35,8 @@ import { SmcUiDefaultContentDirective } from './directives/default-content.direc
         MaterialModule,
         SmcCommonModule,
         MenuComponent,
-        SmcUiDefaultContentDirective
+        SmcUiDefaultContentDirective,
+        SelectOnClickDirective
     ],
     declarations: [
         ListHeaderComponent,
@@ -42,7 +44,8 @@ import { SmcUiDefaultContentDirective } from './directives/default-content.direc
         SmcUiButtonComponent,
         SmcUiButtonNavbarComponent,
         MenuComponent,
-        SmcUiDefaultContentDirective
+        SmcUiDefaultContentDirective,
+        SelectOnClickDirective
     ],
     providers: [
     ],

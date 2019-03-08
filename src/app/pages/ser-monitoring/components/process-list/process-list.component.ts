@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subject, interval, empty } from 'rxjs';
 import { ProcessService } from '../../services';
-import { takeUntil, map, switchMap, tap } from 'rxjs/operators';
+import { takeUntil, switchMap, tap } from 'rxjs/operators';
 import { IProcess, ProcessStatus } from '../../api';
 import { FormBuilder, FormControl } from '@angular/forms';
 

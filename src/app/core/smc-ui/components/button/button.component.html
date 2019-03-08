@@ -1,9 +1,15 @@
 <button type="button" [disabled]="disabled" class="nav-item" [ngClass]="{'closeable': closeAble}" (click)="handleEvent($event); $event.stopPropagation()">
+
   <ng-content btn-icon--left></ng-content>
+
   <ng-content select="[btn-icon--left]"></ng-content>
+
   <span class="button-label">{{label}}</span>
+
   <ng-content select="[btn-icon--right]"></ng-content>
+
   <ng-container *ngIf="closeAble">
     <i class="ser-icon ser-icon--close" (click)="triggerClose($event)"></i>
   </ng-container>
+
 </button>

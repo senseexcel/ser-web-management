@@ -17,6 +17,10 @@
       i {
         color: rgba($color: #595959, $alpha: .2);
       }
+
+      * {
+        pointer-events: none;
+      }
     }
   }
 

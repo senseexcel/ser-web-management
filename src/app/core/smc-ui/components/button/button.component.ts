@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, HostListener } from '@angular/core';
 
 @Component({
     selector: 'smc-ui--button',
@@ -20,17 +20,17 @@ export class SmcUiButtonComponent {
     public close: EventEmitter<void>;
 
     @Output()
-    public doClick: EventEmitter<void>;
+    public click: EventEmitter<void>;
 
     constructor(
     ) {
         this.close = new EventEmitter();
-        this.doClick = new EventEmitter();
+        this.click = new EventEmitter();
     }
 
     public handleEvent($event) {
         if (!this.disabled) {
-            this.doClick.emit($event);
+            this.click.emit($event);
         }
     }
 
