@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Observable, fromEvent, Subject, ReplaySubject } from 'rxjs';
-import { filter, switchMap, tap } from 'rxjs/operators';
+import { Injectable, NgZone } from '@angular/core';
+import { Observable, fromEvent, ReplaySubject } from 'rxjs';
+import { filter, merge, distinctUntilChanged } from 'rxjs/operators';
 
 export enum KeyCode {
     CTRL = 17,
@@ -9,6 +9,14 @@ export enum KeyCode {
 // KeyPressed.onKeyPressed(KeyCodeS.CTRL) -> observable;
 @Injectable({ providedIn: 'root' })
 export class DocumentKeyEvent {
+
+    private keyDown$: Observable<KeyboardEvent>;
+
+    private keyUp$: Observable<KeyboardEvent>;
+
+    constructor(
+        private zone: NgZone
+    ) { }
 
     /**
      * map to save key codes and their observers so we dont need
@@ -49,9 +57,18 @@ export class DocumentKeyEvent {
         const sharedEvent$ = new ReplaySubject<string>(1);
         let subscriberCount = 0;
 
-        this.createKeyEventStream(sharedEvent$, key).subscribe();
+        /**
+         * run outside of angular zone so angular change detection
+         * will not handled on keypresed events
+         */
+        this.zone.runOutsideAngular(() => {
+            this.createKeyEventStream(key).subscribe((event: KeyboardEvent) => {
+                sharedEvent$.next(event.type === 'keyup' ? 'released' : 'pressed');
+            });
+        });
 
         return Observable.create(observer => {
+
             const event$ = sharedEvent$.subscribe(observer);
             subscriberCount++;
 
@@ -76,26 +93,16 @@ export class DocumentKeyEvent {
      * @returns {Observable<KeyboardEvent>}
      * @memberof DocumentKey
      */
-    private createKeyEventStream(shared$: Subject<any>, key: KeyCode | number): Observable<KeyboardEvent> {
-        // this is a subscribe
-        const keyDown$ = fromEvent(document, 'keydown');
-        const keyUp$ = fromEvent(document, 'keyup');
+    private createKeyEventStream(key: KeyCode | number): Observable<KeyboardEvent> {
 
-        let keyIsPressed = false;
+        /** ensures we only have one keydown and one keyup event */
+        const keyDown$ = this.keyDown$ || (this.keyDown$ = fromEvent<KeyboardEvent>(document, 'keydown'));
+        const keyUp$ = this.keyUp$ || (this.keyUp$ = fromEvent<KeyboardEvent>(document, 'keyup'));
 
         return keyDown$.pipe(
-            filter((e: KeyboardEvent) => e.keyCode === key && !keyIsPressed),
-            tap(() => {
-                keyIsPressed = true;
-                shared$.next('pressed');
-            }),
-            switchMap(() => keyUp$.pipe(
-                filter((e: KeyboardEvent) => e.keyCode === key),
-                tap(() => {
-                    keyIsPressed = false;
-                    shared$.next('released');
-                })
-            ))
+            merge(keyUp$),
+            filter((e: KeyboardEvent) => e.keyCode === key),
+            distinctUntilChanged((x, y) => x.type === y.type)
         );
     }
 }

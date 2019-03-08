@@ -95,7 +95,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     ngOnInit(): void {
         this.autoRefreshControl = this.createAutoRefreshControl();
 
-        this.tasks = Array.from({length: 50}, (task, index) => {
+        this.tasks = Array.from({length: 400}, (task, index) => {
             const process: IProcess = {
                 appId: `app#${index}`,
                 startTime: new Date().toUTCString(),
