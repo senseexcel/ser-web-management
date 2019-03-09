@@ -273,11 +273,10 @@ export class ProcessListComponent implements OnDestroy, OnInit {
             this.activeTasks.set(task.taskId, task);
         });
 
-        /**
-         * delete all tasks which has not been updated
-         */
+        /** clean up all selections */
+        this.cleanSelections(deletedTasks.map((id) => this.activeTasks.get(id)));
+        /** remove tasks finally */
         deletedTasks.forEach((id) => this.activeTasks.delete(id));
-        this.cleanSelections();
         return Array.from(this.activeTasks.values());
     }
 
@@ -323,9 +322,16 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @private
      * @memberof ProcessListComponent
      */
-    private cleanSelections() {
-        const removeSelections: IProcess[] = [];
+    private cleanSelections(remove: IProcess[] = []) {
+        const removeSelections: IProcess[] = remove;
+
         this.activeTasks.forEach((process) => {
+
+            /**if process allready should removed skip it*/
+            if (removeSelections.indexOf(process) > -1) {
+                return;
+            }
+
             /**
              * check we have to deselect current task
              * since state dont allow us to select this one
