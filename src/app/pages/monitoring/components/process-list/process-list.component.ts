@@ -5,6 +5,7 @@ import { takeUntil, switchMap, tap, repeat, delay, finalize } from 'rxjs/operato
 import { IProcess, ProcessStatus } from '../../api';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
+import { TaskStatusInfo } from 'ser.api';
 
 @Component({
     selector: 'smc-monitoring-process-list',
@@ -274,6 +275,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
 
         /** all tasks ids, updated tasks will be removed from this so they can be deleted */
         const deletedTasks: string[] = Array.from(this.activeTasks.keys());
+        const removeSelections: IProcess[] = [];
 
         tasks.forEach((task) => {
             /** tasks should be updated remove from deletedTasks */
@@ -281,10 +283,20 @@ export class ProcessListComponent implements OnDestroy, OnInit {
                 const target = this.activeTasks.get(task.taskId);
                 this.activeTasks.set(task.taskId, this.copyToProcess(task, target));
                 deletedTasks.splice(deletedTasks.indexOf(task.taskId), 1);
-                return;
+            } else {
+                /** this task not exists currently in list and should be added */
+                this.activeTasks.set(task.taskId, task);
             }
-            /** this task not exists currently in list and should be added */
-            this.activeTasks.set(task.taskId, task);
+
+            /** check we have to deselect current task since state dont allow us to select this one */
+            let deselect = false;
+            deselect = deselect || task.status === ProcessStatus.ERROR;
+            deselect = deselect || task.status === ProcessStatus.COMPLETED;
+            deselect = deselect || task.status === ProcessStatus.ABORTING;
+
+            if (deselect) {
+                removeSelections.push(this.activeTasks.get(task.taskId));
+            }
         });
 
         /**
@@ -292,14 +304,11 @@ export class ProcessListComponent implements OnDestroy, OnInit {
          * we need to remove tasks from selections if they not exists anymore
          * so selection will be clear
          */
-        let tempSelectedTasks = deletedTasks.map((id) => {
-            const task = this.activeTasks.get(id);
+        deletedTasks.forEach((id) => {
             this.activeTasks.delete(id);
-            return task;
+            removeSelections.push(this.activeTasks.get(id));
         });
-        this.selections.deselect(...tempSelectedTasks);
-        tempSelectedTasks = null;
-
+        this.selections.deselect(...removeSelections);
         return Array.from(this.activeTasks.values());
     }
 

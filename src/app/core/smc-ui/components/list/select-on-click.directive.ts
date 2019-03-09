@@ -15,6 +15,9 @@ export class SelectOnClickDirective<T> implements OnDestroy, OnInit {
     @Input()
     public selectionData: T;
 
+    @Input()
+    public disable: boolean;
+
     @HostBinding('class.selected')
     public selected = false;
 
@@ -63,6 +66,11 @@ export class SelectOnClickDirective<T> implements OnDestroy, OnInit {
 
     @HostListener('click')
     public handleClick() {
+
+        if (this.disable) {
+            return false;
+        }
+
         if (this.model.isMultipleSelection() && !this.ctrlKeyPressed && !this.model.isEmpty()) {
             this.model.clear();
         }

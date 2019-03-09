@@ -5,11 +5,12 @@
 
     "PROCESS": {
       "STATE": {
+        "ABORTING": "Stopping",
         "DELIVER": "Deliver",
         "PROCESSING": "Processing",
         "COMPLETED": "Completed",
         "ERROR": "Error",
-        "IDLE": "Idle"
+        "READY": "Ready"
       }
     },
 

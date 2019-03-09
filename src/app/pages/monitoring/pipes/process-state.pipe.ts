@@ -15,7 +15,8 @@ export class ProcessStatePipe implements PipeTransform {
             case ProcessStatus.DELIVER:    state = 'DELIVER';    break;
             case ProcessStatus.ERROR:      state = 'ERROR';      break;
             case ProcessStatus.PROCESSING: state = 'PROCESSING'; break;
-            default:                       state = 'IDLE';
+            case ProcessStatus.ABORTING:   state = 'ABORTING';   break;
+            default:                       state = 'READY';
         }
 
         return `SMC_MONITORING.PROCESS.STATE.${state}`;
