@@ -45,7 +45,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     public fetchingData = false;
 
-    public listState: ListState =  ListState.IDLE;
+    public listState: ListState = ListState.IDLE;
 
     /**
      * process list
@@ -191,13 +191,26 @@ export class ProcessListComponent implements OnDestroy, OnInit {
         }
     }
 
+    /**
+     * deselect all tasks which are currently selected
+     *
+     * @memberof ProcessListComponent
+     */
     public deselectAll() {
-        this.selections.deselect(...this.selections.selected);
+        if (this.listState === ListState.IDLE) {
+            this.selections.deselect(...this.selections.selected);
+        }
     }
 
+    /**
+     * select all possible tasks
+     *
+     * @memberof ProcessListComponent
+     */
     public selectAll() {
-        /** before we select all we need to filter which we can select */
-        this.selections.select(...this.getSelectableTasks());
+        if (this.listState === ListState.IDLE) {
+            this.selections.select(...this.getSelectableTasks());
+        }
     }
 
     /**
