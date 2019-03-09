@@ -5,7 +5,6 @@ import { takeUntil, switchMap, tap, repeat, delay, finalize } from 'rxjs/operato
 import { IProcess, ProcessStatus } from '../../api';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
-import { TaskStatusInfo } from 'ser.api';
 
 @Component({
     selector: 'smc-monitoring-process-list',
@@ -38,6 +37,11 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     public ready = false;
 
+    /**
+     *
+     *
+     * @memberof ProcessListComponent
+     */
     public fetchingData = false;
 
     /**
@@ -149,25 +153,6 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     }
 
     /**
-     * stop process, this will trigger an update on list
-     * which will handeled on processListUpdate Stream
-     *
-     * @memberof MonitoringPageComponent
-     */
-    public stopProcess(process: IProcess) {
-
-        process.requestPending = true;
-        process.status = ProcessStatus.ABORTING;
-
-        this.processService.stopProcess(process)
-            .pipe(takeUntil(this.isDestroyed$))
-            .subscribe(() => {
-                process.requestPending = false;
-                this.loadProcesses();
-            });
-    }
-
-    /**
      * enable auto refresh if checkbox is enabled
      *
      * @private
@@ -208,7 +193,8 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     }
 
     public selectAll() {
-        this.selections.select(...this.tasks);
+        /** before we select all we need to filter which we can select */
+        this.selections.select(...this.getSelectableTasks());
     }
 
     /**
@@ -257,7 +243,6 @@ export class ProcessListComponent implements OnDestroy, OnInit {
                 if (!this.autoReloadEnabled) {
                     this.fetchingData = false;
                 }
-
                 this.tasks = this.mergeTasks(tasks);
             });
     }
@@ -275,40 +260,24 @@ export class ProcessListComponent implements OnDestroy, OnInit {
 
         /** all tasks ids, updated tasks will be removed from this so they can be deleted */
         const deletedTasks: string[] = Array.from(this.activeTasks.keys());
-        const removeSelections: IProcess[] = [];
 
         tasks.forEach((task) => {
-            /** tasks should be updated remove from deletedTasks */
+            /** task allready exists and will be updated now */
             if (this.activeTasks.has(task.taskId)) {
                 const target = this.activeTasks.get(task.taskId);
                 this.activeTasks.set(task.taskId, this.copyToProcess(task, target));
                 deletedTasks.splice(deletedTasks.indexOf(task.taskId), 1);
-            } else {
-                /** this task not exists currently in list and should be added */
-                this.activeTasks.set(task.taskId, task);
+                return;
             }
-
-            /** check we have to deselect current task since state dont allow us to select this one */
-            let deselect = false;
-            deselect = deselect || task.status === ProcessStatus.ERROR;
-            deselect = deselect || task.status === ProcessStatus.COMPLETED;
-            deselect = deselect || task.status === ProcessStatus.ABORTING;
-
-            if (deselect) {
-                removeSelections.push(this.activeTasks.get(task.taskId));
-            }
+            /** this task not exists currently in list and should be added */
+            this.activeTasks.set(task.taskId, task);
         });
 
         /**
-         * all tasks which are remain now in deleted tasks could be removed
-         * we need to remove tasks from selections if they not exists anymore
-         * so selection will be clear
+         * delete all tasks which has not been updated
          */
-        deletedTasks.forEach((id) => {
-            this.activeTasks.delete(id);
-            removeSelections.push(this.activeTasks.get(id));
-        });
-        this.selections.deselect(...removeSelections);
+        deletedTasks.forEach((id) => this.activeTasks.delete(id));
+        this.cleanSelections();
         return Array.from(this.activeTasks.values());
     }
 
@@ -329,5 +298,47 @@ export class ProcessListComponent implements OnDestroy, OnInit {
             target[property] = source[property];
         });
         return target;
+    }
+
+    /**
+     * get select able tasks
+     *
+     * @private
+     * @returns {IProcess[]}
+     * @memberof ProcessListComponent
+     */
+    private getSelectableTasks(): IProcess[] {
+        return Array.from(this.activeTasks.values()).filter((process) => {
+            let selectAble = true;
+            selectAble = selectAble && process.status !== ProcessStatus.ERROR;
+            selectAble = selectAble && process.status !== ProcessStatus.COMPLETED;
+            selectAble = selectAble && process.status !== ProcessStatus.ABORTING;
+            return selectAble;
+        });
+    }
+
+    /**
+     * clean selection if required
+     *
+     * @private
+     * @memberof ProcessListComponent
+     */
+    private cleanSelections() {
+        const removeSelections: IProcess[] = [];
+        this.activeTasks.forEach((process) => {
+            /**
+             * check we have to deselect current task
+             * since state dont allow us to select this one
+             */
+            let deselect = false;
+            deselect = deselect || process.status === ProcessStatus.ERROR;
+            deselect = deselect || process.status === ProcessStatus.COMPLETED;
+            deselect = deselect || process.status === ProcessStatus.ABORTING;
+
+            if (deselect) {
+                removeSelections.push(process);
+            }
+        });
+        this.selections.deselect(...removeSelections);
     }
 }
