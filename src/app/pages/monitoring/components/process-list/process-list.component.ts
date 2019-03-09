@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, interval, empty, of } from 'rxjs';
+import { Subject, empty, of } from 'rxjs';
 import { ProcessService } from '../../services';
-import { takeUntil, switchMap, tap, map } from 'rxjs/operators';
+import { takeUntil, switchMap, tap, repeat, delay, map } from 'rxjs/operators';
 import { IProcess, ProcessStatus } from '../../api';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -48,7 +48,25 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     public tasks: IProcess[] = [];
 
+    /**
+     * selections we have made
+     *
+     * @type {SelectionModel<IProcess>}
+     * @memberof ProcessListComponent
+     */
     public selections: SelectionModel<IProcess> = new SelectionModel(true);
+
+    /**
+     * all tasks which are displayed, we dont want to create
+     * a new list allways since this will recrate all table list
+     * nodes, but if we only update them they will not completly rerendered
+     * only the content changes.
+     *
+     * @private
+     * @type {Map<number, IProcess>}
+     * @memberof ProcessListComponent
+     */
+    private activeTasks: Map<string, IProcess> = new Map();
 
     /**
      * emits true if component gets destroyed
@@ -74,8 +92,16 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @private
      * @memberof ProcessListComponent
      */
-    private reloadInterval = 5000;
+    private reloadInterval = 1000;
 
+    /**
+     * flag we have enabled automatic reloading,
+     * if true this will fetch and repeat until autoReloadEnabled is
+     * set to false
+     *
+     * @private
+     * @memberof ProcessListComponent
+     */
     private autoReloadEnabled = false;
 
     /**
@@ -140,8 +166,10 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     private createAutoRefreshControl(): FormControl {
 
         const control = this.formBuilder.control('');
-        const interval$ = interval(this.reloadInterval).pipe(
-            tap(() => this.loadProcesses())
+        const interval$ = this.processService.fetchProcesses().pipe(
+            tap((tasks) => this.tasks = this.mergeTasks(tasks)),
+            delay(this.reloadInterval),
+            repeat()
         );
 
         control.valueChanges.pipe(
@@ -159,7 +187,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     public doReload() {
-        if (!this.autoReloadEnabled) {
+        if (!this.autoReloadEnabled && !this.fetchingData) {
             this.loadProcesses();
         }
     }
@@ -204,10 +232,68 @@ export class ProcessListComponent implements OnDestroy, OnInit {
                     this.fetchingData = false;
                 }
 
-                /** only set if tasks length is not zero, or current tasks length not zero */
-                if (tasks.length !== 0 || this.tasks.length !== 0) {
-                    this.tasks = tasks;
-                }
+                this.tasks = this.mergeTasks(tasks);
             });
+    }
+
+    /**
+     * merges tasks from response with current app list
+     * @todo check we need to run outside of change detection since we make many opertations here
+     *
+     * @private
+     * @param {IProcess[]} tasks
+     * @returns {IProcess[]}
+     * @memberof ProcessListComponent
+     */
+    private mergeTasks(tasks: IProcess[]): IProcess[] {
+
+        /** all tasks ids, updated tasks will be removed from this so they can be deleted */
+        const deletedTasks: string[] = Array.from(this.activeTasks.keys());
+
+        tasks.forEach((task) => {
+            /** tasks should be updated remove from deletedTasks */
+            if (this.activeTasks.has(task.taskId)) {
+                const target = this.activeTasks.get(task.taskId);
+                this.activeTasks.set(task.taskId, this.copyToProcess(task, target));
+                deletedTasks.splice(deletedTasks.indexOf(task.taskId), 1);
+                return;
+            }
+            /** this task not exists currently in list and should be added */
+            this.activeTasks.set(task.taskId, task);
+        });
+
+        /**
+         * all tasks which are remain now in deleted tasks could be removed
+         * we need to remove tasks from selections if they not exists anymore
+         * so selection will be clear
+         */
+        let tempSelectedTasks = deletedTasks.map((id) => {
+            const task = this.activeTasks.get(id);
+            this.activeTasks.delete(id);
+            return task;
+        });
+        this.selections.deselect(...tempSelectedTasks);
+        tempSelectedTasks = null;
+
+        return Array.from(this.activeTasks.values());
+    }
+
+    /**
+     * copy data from source object to target object
+     * which helps the main object which will watched from angular
+     * will not removed
+     *
+     * @private
+     * @param {*} source
+     * @param {*} target
+     * @returns {IProcess}
+     * @memberof ProcessListComponent
+     */
+    private copyToProcess(source, target): IProcess {
+        // Object.assign would not work in IE so we have to copy old school
+        Object.keys(source).forEach((property) => {
+            target[property] = source[property];
+        });
+        return target;
     }
 }
