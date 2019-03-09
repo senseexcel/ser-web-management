@@ -5,6 +5,7 @@ import { takeUntil, switchMap, tap, repeat, delay, finalize } from 'rxjs/operato
 import { IProcess, ProcessStatus } from '../../api';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
+import { ListState } from '../../api/list-states';
 
 @Component({
     selector: 'smc-monitoring-process-list',
@@ -43,6 +44,8 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     public fetchingData = false;
+
+    public listState: ListState =  ListState.IDLE;
 
     /**
      * process list
@@ -204,6 +207,9 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     public stopAll() {
         this.fetchingData = true;
+        this.listState = ListState.STOPPING;
+        this.autoRefreshControl.setValue(false);
+        this.autoRefreshControl.disable();
 
         /** build stop requests as array */
         const stop$ = this.selections.selected.map(
@@ -222,7 +228,11 @@ export class ProcessListComponent implements OnDestroy, OnInit {
          * once all have been done disable loading flag
          */
         concat(...stop$)
-            .pipe(finalize(() => this.fetchingData = false))
+            .pipe(finalize(() => {
+                this.fetchingData = false;
+                this.listState = ListState.IDLE;
+                this.autoRefreshControl.enable();
+            }))
             .subscribe((tasks) => this.tasks = this.mergeTasks(tasks));
     }
 
