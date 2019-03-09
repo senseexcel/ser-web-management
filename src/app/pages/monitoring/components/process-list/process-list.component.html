@@ -57,8 +57,8 @@
   <!-- page footer -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="stopAll()">
-        {{'SMC_MONITORING.ACTIONS.STOP' | translate}}
+      <smc-ui--button (click)="stopAll()" [disabled]="!this.selections.selected.length">
+        {{'SMC_MONITORING.ACTIONS.STOP' | translate:translateParams.stop}}
       </smc-ui--button>
     </smc-ui--button-navbar>
   </div>

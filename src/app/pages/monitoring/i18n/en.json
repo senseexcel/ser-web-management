@@ -18,8 +18,7 @@
       "STARTTIME": "Start Time",
       "STATUS": "Status",
       "USERID": "User Id",
-      "APPID": "Appname",
-      "STOP": "Cancel Process"
+      "APPID": "Appname"
     },
 
     "LIST_HEADER": {
@@ -30,7 +29,7 @@
     "ACTIONS": {
       "REFRESH": "Refresh",
       "AUTO_REFRESH": "auto",
-      "STOP_ALL": "Stop all"
+      "STOP": "Stop ({{COUNT}})"
     }
   }
 }

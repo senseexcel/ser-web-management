@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, empty, of } from 'rxjs';
+import { Subject, empty, from, concat } from 'rxjs';
 import { ProcessService } from '../../services';
-import { takeUntil, switchMap, tap, repeat, delay, map } from 'rxjs/operators';
+import { takeUntil, switchMap, tap, repeat, delay, finalize } from 'rxjs/operators';
 import { IProcess, ProcessStatus } from '../../api';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -47,6 +47,12 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     public tasks: IProcess[] = [];
+
+    public translateParams = {
+        stop: {
+            COUNT: 0
+        }
+    };
 
     /**
      * selections we have made
@@ -125,6 +131,10 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     ngOnInit(): void {
         this.autoRefreshControl = this.createAutoRefreshControl();
         this.loadProcesses();
+
+        this.selections.changed.subscribe(() => {
+            this.translateParams.stop = { COUNT: this.selections.selected.length };
+        });
     }
 
     /**
@@ -206,10 +216,27 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     public stopAll() {
-        this.processService.stopAllProcesses()
-            .subscribe(() => {
-                this.loadProcesses();
-            });
+        this.fetchingData = true;
+
+        /** build stop requests as array */
+        const stop$ = this.selections.selected.map(
+            (process) => this.processService.stopProcess(process)
+                .pipe(
+                    switchMap(() => this.processService.fetchProcesses()),
+                    delay(1000),
+                )
+        );
+
+        /**
+         * run all stop streams, one by one if all completed,
+         * if process has been stopped and we got task informations
+         * merge tasks into active list
+         *
+         * once all have been done disable loading flag
+         */
+        concat(...stop$)
+            .pipe(finalize(() => this.fetchingData = false))
+            .subscribe((tasks) => this.tasks = this.mergeTasks(tasks));
     }
 
     /**
@@ -226,8 +253,6 @@ export class ProcessListComponent implements OnDestroy, OnInit {
 
         this.processService.fetchProcesses()
             .subscribe((tasks) => {
-                this.deselectAll();
-
                 if (!this.autoReloadEnabled) {
                     this.fetchingData = false;
                 }
