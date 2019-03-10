@@ -1,0 +1,37 @@
+{
+  "SMC_MONITORING": {
+
+    "TITLE": "Monitoring",
+
+    "PROCESS": {
+      "STATE": {
+        "ABORTING": "Stopping",
+        "DELIVER": "Deliver",
+        "PROCESSING": "Processing",
+        "COMPLETED": "Completed",
+        "ERROR": "Error",
+        "READY": "Ready"
+      }
+    },
+
+    "LIST": {
+      "TASKID": "Process Id",
+      "STARTTIME": "Start Time",
+      "STATUS": "Status",
+      "USERID": "User Id",
+      "APPID": "Appname"
+    },
+
+    "LIST_HEADER": {
+      "ACTIVE": "Active Tasks: {{COUNT}}",
+      "SELECTED": "Selected: {{COUNT}}"
+    },
+
+    "ACTIONS": {
+      "REFRESH": "Refresh",
+      "AUTO_REFRESH": "auto",
+      "STOP": "Stop ({{COUNT}})",
+      "STOPPING": "Stopping ({{COUNT}})"
+    }
+  }
+}

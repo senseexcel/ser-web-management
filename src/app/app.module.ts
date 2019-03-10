@@ -14,6 +14,7 @@ import { TopBarComponent } from './components/top-bar/top-bar.component';
 import { BootstrapService } from './services/bootstrap.service';
 import { IBootstrap } from './api/bootstrap.interface';
 import i18n_en from './i18n/en.json';
+import { MonitoringModule } from './pages/monitoring/monitoring.module';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import i18n_en from './i18n/en.json';
     DashboardPage,
     LicensePage,
     TasksPage,
+    MonitoringModule
   ],
   providers: [
     BootstrapService,

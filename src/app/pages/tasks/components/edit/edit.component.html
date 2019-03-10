@@ -23,8 +23,8 @@
   <!-- content footer -->
   <div page-content--footer>
       <smc-ui--button-navbar>
-          <smc-ui--button (click)="onApply()">{{'SMC_TASKS.EDIT.ACTIONS.APPLY' | translate}}</smc-ui--button>
-          <smc-ui--button (click)="onCancel()">{{'SMC_TASKS.EDIT.ACTIONS.CANCEL' | translate}}</smc-ui--button>
+          <smc-ui--button (click)="onApply()" [label]="'SMC_TASKS.EDIT.ACTIONS.APPLY' | translate"></smc-ui--button>
+          <smc-ui--button (click)="onCancel()"[label]="'SMC_TASKS.EDIT.ACTIONS.CANCEL' | translate"></smc-ui--button>
       </smc-ui--button-navbar>
   </div>
 

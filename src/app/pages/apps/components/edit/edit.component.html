@@ -32,9 +32,9 @@
   <!-- CONTENT FOOTER -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="save()"   >{{'SMC_APPS.EDIT.ACTION.SAVE'    | translate}}</smc-ui--button>
-      <smc-ui--button (click)="cancel()" >{{'SMC_APPS.EDIT.ACTION.CANCEL'  | translate}}</smc-ui--button>
-      <smc-ui--button (click)="preview()">{{'SMC_APPS.EDIT.ACTION.PREVIEW' | translate}}</smc-ui--button>
+      <smc-ui--button (click)="save()" [label]="'SMC_APPS.EDIT.ACTION.SAVE' | translate"></smc-ui--button>
+      <smc-ui--button (click)="cancel()" [label]="'SMC_APPS.EDIT.ACTION.CANCEL' | translate"></smc-ui--button>
+      <smc-ui--button (click)="preview()" [label]="'SMC_APPS.EDIT.ACTION.PREVIEW' | translate"></smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 
@@ -57,7 +57,7 @@
   <!-- SIDEBAR RIGHT -->
   <div page-sidebar--right>
     <div class="header">
-      {{'SMC_APPS.EDIT.PROPERTIES.LABEL' | translate}} 
+      {{'SMC_APPS.EDIT.PROPERTIES.LABEL' | translate}}
     </div>
 
     <ul class="lui-list">
@@ -68,7 +68,7 @@
 
     <ng-container *ngIf="associatedItems && associatedItems.length">
       <div class="header">
-      {{'SMC_APPS.EDIT.ASSOCIATED_ITEMS.LABEL' | translate}} 
+        {{'SMC_APPS.EDIT.ASSOCIATED_ITEMS.LABEL' | translate}}
       </div>
       <ul class="lui-list">
         <li class="lui-item" *ngFor="let item of associatedItems">

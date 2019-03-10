@@ -2,12 +2,19 @@ import { Injectable } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
 import { ContentLibService } from './contentlib.service';
 import { LicenseRepository } from './license-repository';
-import { map, catchError, mergeMap } from 'rxjs/operators';
-import { ContentLibNotExistsException, QlikLicenseNoAccessException, QlikLicenseInvalidException } from '../api/exceptions';
+import { map, catchError, mergeMap, concat, concatMap, switchMap } from 'rxjs/operators';
+import {
+    ContentLibNotExistsException,
+    QlikLicenseNoAccessException,
+    QlikLicenseInvalidException,
+    SerLicenseNotFoundException
+} from '../api/exceptions';
 import { ILicenseValidationResult, ValidationStep } from '../api/validation-result.interface';
 import { LicenseModel } from '../model/license.model';
 import { ILicenseUser } from '../api/license-user.interface';
 import moment = require('moment');
+import { HttpClient } from '@angular/common/http';
+import { IContentLibFileReference } from '../api/response/content-lib.interface';
 
 @Injectable()
 export class LicenseValidator {
@@ -16,11 +23,15 @@ export class LicenseValidator {
 
     private licenseRepository: LicenseRepository;
 
+    private http: HttpClient;
+
     public constructor(
         contentlib: ContentLibService,
+        http: HttpClient,
         licenseRepository: LicenseRepository
     ) {
         this.contentlib = contentlib;
+        this.http = http;
         this.licenseRepository = licenseRepository;
     }
 
@@ -36,7 +47,7 @@ export class LicenseValidator {
 
         return forkJoin([
             this.validateContentLibrary(),
-            this.validateQlikLicense()
+            this.validateQlikLicenseInstallation()
         ]).pipe(
             map((res: Map<ValidationStep, ILicenseValidationResult>[]) => {
                 const result: Map<ValidationStep, ILicenseValidationResult> = new Map(
@@ -68,6 +79,44 @@ export class LicenseValidator {
                     };
                 })
             );
+    }
+
+    /**
+     * try to fetch license file first check we find file in qmc
+     * and if this is the case check file exists logical and send
+     * head request to see file exists on server
+     *
+     * @returns
+     * @memberof LicenseValidator
+     */
+    public validateLicenseExists(): Observable<ILicenseValidationResult> {
+
+        /** get content library first content library */
+        return this.licenseRepository.fetchLicenseFile().pipe(
+            concatMap((file: IContentLibFileReference) => {
+                return this.http.head(file.logicalPath).pipe(
+                    catchError(() => {
+                        throw new SerLicenseNotFoundException();
+                    })
+                );
+            }),
+            map(() => {
+                return {
+                    isValid: true,
+                    errors: []
+                };
+            }),
+            catchError((error: Error) => {
+                if (error.constructor === SerLicenseNotFoundException || error.constructor === ContentLibNotExistsException) {
+                    const result: ILicenseValidationResult = {
+                        isValid: false,
+                        errors: ['No license file found.']
+                    };
+                    return of(result);
+                }
+                throw error;
+            })
+        );
     }
 
     /**
@@ -110,8 +159,34 @@ export class LicenseValidator {
      * @returns {Observable<LicenseValidationResult>}
      * @memberof LicenseValidator
      */
-    public validateQlikLicense(): Observable<Map<ValidationStep, ILicenseValidationResult>> {
+    public validateQlikLicense(): Observable<ILicenseValidationResult> {
 
+        return this.licenseRepository.fetchQlikSerialNumber().pipe(
+            map(() => {
+                return {isValid: true, errors: []};
+            }),
+            catchError((error) => {
+                let errMsg: string;
+                switch (error.constructor) {
+                    case QlikLicenseInvalidException:  errMsg = 'Invalid Qlik License'; break;
+                    case QlikLicenseNoAccessException: errMsg = 'No Access: Qlik License'; break;
+                    default:
+                        throw error;
+                }
+                return of({
+                    isValid: false, errors: [errMsg]
+                });
+            })
+        );
+    }
+
+    /**
+     * @todo refactoring to use validateQlikLicense
+     *
+     * @returns {Observable<Map<ValidationStep, ILicenseValidationResult>>}
+     * @memberof LicenseValidator
+     */
+    public validateQlikLicenseInstallation(): Observable<Map<ValidationStep, ILicenseValidationResult>> {
         const validationResults: Map<ValidationStep, ILicenseValidationResult> = new Map();
         const qlikLicensResult: ILicenseValidationResult = {isValid: true, errors: []};
 
@@ -123,7 +198,6 @@ export class LicenseValidator {
         return of(validationResults).pipe(
             mergeMap((result) => this.licenseRepository.fetchQlikSerialNumber()
                 .pipe(
-                    /** just return validation result will, skipped if fetchQlikSerialNumber throws an error */
                     map(() => result),
                     catchError((error: Error) => {
                         switch (error.constructor) {

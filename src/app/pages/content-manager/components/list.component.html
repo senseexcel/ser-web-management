@@ -40,7 +40,7 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
-        <tr mat-row *matRowDef="let row; columns: columns;" (click)="selectSharedContent(row)" [ngClass]="{'selected': selections.isSelected(row)}"></tr>
+        <tr mat-row *matRowDef="let row; columns: columns;" smcSelectOnClick [selectionModel]="selections" [selectionData]="row"></tr>
       </table>
     </div>
   </div>
@@ -48,8 +48,8 @@
   <!-- page footer -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button *ngIf="selections.selected.length <= 1" (click)="deleteSharedContent()" [disabled]="selections.isEmpty()">{{'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE' | translate}}</smc-ui--button>
-      <smc-ui--button *ngIf="selections.selected.length > 1"  (click)="deleteSharedContent()">{{'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE_MULTI' | translate:translateParamSelected}}</smc-ui--button>
+      <smc-ui--button *ngIf="selections.selected.length <= 1" (click)="deleteSharedContent()" [disabled]="selections.isEmpty()" [label]="'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE' | translate"></smc-ui--button>
+      <smc-ui--button *ngIf="selections.selected.length > 1"  (click)="deleteSharedContent()" [label]="'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE_MULTI' | translate:translateParamSelected"></smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 </smc-ui--page>
