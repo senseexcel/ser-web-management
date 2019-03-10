@@ -13,7 +13,6 @@ import { ListState } from '../../api/list-states';
     templateUrl: 'process-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush
 })
-
 export class ProcessListComponent implements OnDestroy, OnInit {
 
     /**
