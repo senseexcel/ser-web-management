@@ -48,8 +48,8 @@
   <!-- page footer -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button *ngIf="selections.selected.length <= 1" (click)="deleteSharedContent()" [disabled]="selections.isEmpty()">{{'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE' | translate}}</smc-ui--button>
-      <smc-ui--button *ngIf="selections.selected.length > 1"  (click)="deleteSharedContent()">{{'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE_MULTI' | translate:translateParamSelected}}</smc-ui--button>
+      <smc-ui--button *ngIf="selections.selected.length <= 1" (click)="deleteSharedContent()" [disabled]="selections.isEmpty()" [label]="'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE' | translate"></smc-ui--button>
+      <smc-ui--button *ngIf="selections.selected.length > 1"  (click)="deleteSharedContent()" [label]="'SMC_CONTENT_MANAGER.LIST.ACTIONS.DELETE_MULTI' | translate:translateParamSelected"></smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 </smc-ui--page>

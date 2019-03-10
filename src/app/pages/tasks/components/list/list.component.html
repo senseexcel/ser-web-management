@@ -31,9 +31,9 @@
   <!-- page footer -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="editTask()" [disabled]="isLoading || selection.isEmpty()">{{'SMC_TASKS.LIST.ACTIONS.EDIT' | translate}}</smc-ui--button>
-      <smc-ui--button (click)="createNew()" [disabled]="isLoading">{{'SMC_TASKS.LIST.ACTIONS.CREATE' | translate}}</smc-ui--button>
-      <smc-ui--button (click)="syncTasks()" [disabled]="isLoading" *ngIf="hasSerTag">{{'SMC_TASKS.LIST.ACTIONS.SYNC' | translate}}</smc-ui--button>
+      <smc-ui--button (click)="editTask()" [disabled]="isLoading || selection.isEmpty()" [label]="'SMC_TASKS.LIST.ACTIONS.EDIT' | translate"></smc-ui--button>
+      <smc-ui--button (click)="createNew()" [disabled]="isLoading" [label]="'SMC_TASKS.LIST.ACTIONS.CREATE' | translate"></smc-ui--button>
+      <smc-ui--button (click)="syncTasks()" [disabled]="isLoading" *ngIf="hasSerTag" [label]="'SMC_TASKS.LIST.ACTIONS.SYNC' | translate"></smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 

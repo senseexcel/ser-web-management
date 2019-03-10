@@ -114,12 +114,12 @@
 
     <smc-ui--button-navbar>
         <ng-container *ngIf="mode !== 'edit'">
-            <smc-ui--button (click)="addUser()">{{'SMC_LICENSE.USERS.ACTIONS.ADD' | translate }}</smc-ui--button>
-            <smc-ui--button [disabled]="!selection.selected.length" (click)="editUser(selection.selected[0])">{{'SMC_LICENSE.USERS.ACTIONS.EDIT' | translate }}</smc-ui--button>
-            <smc-ui--button [disabled]="!selection.selected.length" (click)="deleteUser()">{{'SMC_LICENSE.USERS.ACTIONS.DELETE'  | translate }}</smc-ui--button>
+            <smc-ui--button (click)="addUser()" [label]="'SMC_LICENSE.USERS.ACTIONS.ADD' | translate"></smc-ui--button>
+            <smc-ui--button [disabled]="!selection.selected.length" (click)="editUser(selection.selected[0])" [label]="'SMC_LICENSE.USERS.ACTIONS.EDIT' | translate"></smc-ui--button>
+            <smc-ui--button [disabled]="!selection.selected.length" (click)="deleteUser()" [label]="'SMC_LICENSE.USERS.ACTIONS.DELETE'  | translate"></smc-ui--button>
         </ng-container>
         <ng-container *ngIf="mode === 'edit'">
-            <smc-ui--button (click)="finishEditUser()">{{'SMC_LICENSE.USERS.ACTIONS.APPLY' | translate }}</smc-ui--button>
+            <smc-ui--button (click)="finishEditUser()" [label]="'SMC_LICENSE.USERS.ACTIONS.APPLY' | translate"></smc-ui--button>
         </ng-container>
     </smc-ui--button-navbar>
 </div>

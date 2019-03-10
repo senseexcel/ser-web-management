@@ -1,7 +1,8 @@
 import { Directive, Input, OnDestroy, OnInit, HostListener, HostBinding } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
+import * as KeyCode from '@angular/cdk/keycodes';
 import { Subject } from 'rxjs';
-import { DocumentKeyEvent, KeyCode } from '@smc/modules/smc-common/provider/document-key.service';
+import { DocumentKeyEvent } from '@smc/modules/smc-common/provider/document-key.service';
 import { takeUntil } from 'rxjs/operators';
 
 @Directive({
@@ -89,7 +90,7 @@ export class SelectOnClickDirective<T> implements OnDestroy, OnInit {
      */
     public ngOnInit() {
 
-        this.documentKey.stateChange(KeyCode.CTRL)
+        this.documentKey.stateChange(KeyCode.CONTROL)
             .pipe(takeUntil(this.destroy$))
             .subscribe((state: string) => {
                 this.ctrlKeyPressed = state === 'pressed';
@@ -102,6 +103,10 @@ export class SelectOnClickDirective<T> implements OnDestroy, OnInit {
 
     public ngOnDestroy() {
         this.destroy$.next(true);
+        this.destroy$.complete();
+
+        this.model = null;
+        this.documentKey = null;
     }
 
     private handleSelectionChanged() {

@@ -17,14 +17,14 @@
 
       <!-- reload and auto reload -->
       <ng-container list-header--actions>
-        <button type="button" class="btn btn-reload" (click)="doReload()" [disabled]="listState === 3">
-          <label (click)="$event.stopPropagation()">
+        <smc-ui--button class="btn btn-reload primary" (click)="doReload()" [disabled]="listState === 3">
+          <label (click)="$event.stopPropagation()" btn-label>
             <input [formControl]="autoRefreshControl" class="form-control" type="checkbox">
             <span>{{'SMC_MONITORING.ACTIONS.AUTO_REFRESH' | translate}}</span>
           </label>
           <i class="ser-icon" [ngClass]="{'ser-icon--reload': !fetchingData, 'ser-icon--loading': fetchingData || autoReloadEnabled}"
             btn-icon--right></i>
-        </button>
+        </smc-ui--button>
       </ng-container>
     </smc-ui--list-header>
   </div>
@@ -57,8 +57,13 @@
   <!-- page footer -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="stopAll()" [disabled]="!this.selections.selected.length || listState === 3">
-        {{'SMC_MONITORING.ACTIONS.STOP' | translate:translateParams.stop}}
+      <smc-ui--button (click)="stopAll()" [disabled]="!selections.selected.length || listState === 3">
+        <ng-container *ngIf="listState === 3" btn-label>
+          {{'SMC_MONITORING.ACTIONS.STOPPING' | translate:translateParams.stopping}}
+        </ng-container>
+        <ng-container *ngIf="listState !== 3" btn-label>
+          {{'SMC_MONITORING.ACTIONS.STOP' | translate:translateParams.stop}}
+        </ng-container>
       </smc-ui--button>
     </smc-ui--button-navbar>
   </div>

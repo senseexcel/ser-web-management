@@ -5,7 +5,6 @@ import { Component } from '@angular/core';
     styleUrls: ['./monitoring.page.scss'],
     templateUrl: 'monitoring.page.html',
 })
-
 export class MonitoringPageComponent {
 
     constructor() {

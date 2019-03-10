@@ -38,9 +38,18 @@
   }
 
   .monitoring-list--actions {
-
     display: flex;
     align-self: center;
+  }
+
+  ::ng-deep {
+    .list-header--info span {
+      margin-right: .5rem;
+
+      &:nth-last-child() {
+        margin-right: 0;
+      }
+    }
   }
 
   .btn-reload {
@@ -55,7 +64,7 @@
       background: #FFF;
 
       &:focus {
-          box-shadow: none;
+        box-shadow: none;
       }
     }
 
@@ -67,8 +76,28 @@
       margin: 0 .3rem 0 0;
       cursor: inherit;
 
+      &:after {
+        content: '';
+        display: block;
+        border: 1px solid #FFF;
+        border-width: 0 1px;
+        border-color: transparent lighten($color: #333, $amount: 15) transparent darken($color: #333, $amount: 2);
+        align-self: stretch;
+        margin: 0 0 0 .3rem;
+      }
+
       span {
         margin: 0 0 0 .3rem;
+      }
+    }
+
+    ::ng-deep {
+      button[disabled] label {
+        color: inherit;
+
+        &:after {
+          border-color: transparent lighten($color: #595959, $amount: 10) transparent darken($color: #595959, $amount: 10);
+        }
       }
     }
   }

@@ -2,10 +2,6 @@ import { Injectable, NgZone } from '@angular/core';
 import { Observable, fromEvent, ReplaySubject } from 'rxjs';
 import { filter, merge, distinctUntilChanged } from 'rxjs/operators';
 
-export enum KeyCode {
-    CTRL = 17,
-}
-
 // KeyPressed.onKeyPressed(KeyCodeS.CTRL) -> observable;
 @Injectable({ providedIn: 'root' })
 export class DocumentKeyEvent {
@@ -27,7 +23,7 @@ export class DocumentKeyEvent {
      * @type {Map<KeyCode, Observable<any>>}
      * @memberof DocumentKey
      */
-    private eventMap: Map<KeyCode, Observable<any>> = new Map();
+    private eventMap: Map<number, Observable<any>> = new Map();
 
     /**
      * stateChange
@@ -36,7 +32,7 @@ export class DocumentKeyEvent {
      * @returns {Observable<any>}
      * @memberof KeyPressed
      */
-    public stateChange(keyCode: KeyCode | number): Observable<any> {
+    public stateChange(keyCode: number): Observable<any> {
         if (!this.eventMap.has(keyCode)) {
             this.eventMap.set(keyCode, this.createEventObserver(keyCode));
         }
@@ -52,7 +48,7 @@ export class DocumentKeyEvent {
      * @returns {Observable<any>}
      * @memberof KeyPressed
      */
-    private createEventObserver(key: KeyCode | number): Observable<any> {
+    private createEventObserver(key: number): Observable<any> {
 
         const sharedEvent$ = new ReplaySubject<string>(1);
         let subscriberCount = 0;
@@ -93,7 +89,7 @@ export class DocumentKeyEvent {
      * @returns {Observable<KeyboardEvent>}
      * @memberof DocumentKey
      */
-    private createKeyEventStream(key: KeyCode | number): Observable<KeyboardEvent> {
+    private createKeyEventStream(key: number): Observable<KeyboardEvent> {
 
         /** ensures we only have one keydown and one keyup event */
         const keyDown$ = this.keyDown$ || (this.keyDown$ = fromEvent<KeyboardEvent>(document, 'keydown'));

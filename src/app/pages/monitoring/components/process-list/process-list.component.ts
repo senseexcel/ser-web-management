@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Subject, empty, from, concat } from 'rxjs';
+import { Component, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Subject, empty, concat } from 'rxjs';
 import { ProcessService } from '../../services';
 import { takeUntil, switchMap, tap, repeat, delay, finalize } from 'rxjs/operators';
 import { IProcess, ProcessStatus } from '../../api';
@@ -10,13 +10,14 @@ import { ListState } from '../../api/list-states';
 @Component({
     selector: 'smc-monitoring-process-list',
     styleUrls: ['./process-list.component.scss'],
-    templateUrl: 'process-list.component.html'
+    templateUrl: 'process-list.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class ProcessListComponent implements OnDestroy, OnInit {
 
     /**
-     *
+     * checkbox for enable auto reload on / off
      *
      * @type {FormControl}
      * @memberof ProcessListComponent
@@ -45,6 +46,15 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     public fetchingData = false;
 
+    /**
+     * current state of list
+     * IDEL does nothing
+     * LOADING -> Loading process is running
+     * STOPPING -> stop all process running
+     *
+     * @type {ListState}
+     * @memberof ProcessListComponent
+     */
     public listState: ListState = ListState.IDLE;
 
     /**
@@ -56,8 +66,16 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      */
     public tasks: IProcess[] = [];
 
+    /**
+     * translate params for ngx-translate
+     *
+     * @memberof ProcessListComponent
+     */
     public translateParams = {
         stop: {
+            COUNT: 0
+        },
+        stopping: {
             COUNT: 0
         }
     };
@@ -92,15 +110,6 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     private isDestroyed$: Subject<boolean>;
 
     /**
-     * process service
-     *
-     * @private
-     * @type {ProcessService}
-     * @memberof ProcessListComponent
-     */
-    private processService: ProcessService;
-
-    /**
      * interval for polling
      *
      * @private
@@ -124,11 +133,11 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof TasksComponent
      */
     constructor(
+        private changeDetector: ChangeDetectorRef,
         private formBuilder: FormBuilder,
-        processService: ProcessService
+        private processService: ProcessService,
     ) {
         this.isDestroyed$ = new Subject();
-        this.processService = processService;
     }
     /**
      * component get initialized, create a session app
@@ -163,10 +172,9 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof MonitoringPageComponent
      */
     private createAutoRefreshControl(): FormControl {
-
         const control = this.formBuilder.control('');
         const interval$ = this.processService.fetchProcesses().pipe(
-            tap((tasks) => this.tasks = this.mergeTasks(tasks)),
+            tap((tasks) => this.handleTasksResponse(tasks)),
             delay(this.reloadInterval),
             repeat()
         );
@@ -219,16 +227,21 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     public stopAll() {
+
+        let count = this.selections.selected.length;
+
         this.fetchingData = true;
         this.listState = ListState.STOPPING;
         this.autoRefreshControl.setValue(false);
         this.autoRefreshControl.disable();
+        this.translateParams.stopping = {COUNT: count};
 
         /** build stop requests as array */
         const stop$ = this.selections.selected.map(
             (process) => this.processService.stopProcess(process)
                 .pipe(
                     switchMap(() => this.processService.fetchProcesses()),
+                    tap(() => this.translateParams.stopping = {COUNT: (--count)}),
                     delay(1000),
                 )
         );
@@ -245,8 +258,9 @@ export class ProcessListComponent implements OnDestroy, OnInit {
                 this.fetchingData = false;
                 this.listState = ListState.IDLE;
                 this.autoRefreshControl.enable();
+                this.changeDetector.markForCheck();
             }))
-            .subscribe((tasks) => this.tasks = this.mergeTasks(tasks));
+            .subscribe((tasks) => this.handleTasksResponse(tasks));
     }
 
     /**
@@ -256,17 +270,15 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     private loadProcesses() {
-
         if (!this.autoReloadEnabled) {
             this.fetchingData = true;
         }
-
         this.processService.fetchProcesses()
             .subscribe((tasks) => {
                 if (!this.autoReloadEnabled) {
                     this.fetchingData = false;
                 }
-                this.tasks = this.mergeTasks(tasks);
+                this.handleTasksResponse(tasks);
             });
     }
 
@@ -279,7 +291,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @returns {IProcess[]}
      * @memberof ProcessListComponent
      */
-    private mergeTasks(tasks: IProcess[]): IProcess[] {
+    private handleTasksResponse(tasks: IProcess[]): void {
 
         /** all tasks ids, updated tasks will be removed from this so they can be deleted */
         const deletedTasks: string[] = Array.from(this.activeTasks.keys());
@@ -300,7 +312,11 @@ export class ProcessListComponent implements OnDestroy, OnInit {
         this.cleanSelections(deletedTasks.map((id) => this.activeTasks.get(id)));
         /** remove tasks finally */
         deletedTasks.forEach((id) => this.activeTasks.delete(id));
-        return Array.from(this.activeTasks.values());
+
+        this.tasks = [...this.sortTasks(Array.from(this.activeTasks.values()))];
+
+        // check for changes after all operations have been done
+        this.changeDetector.detectChanges();
     }
 
     /**
@@ -350,7 +366,7 @@ export class ProcessListComponent implements OnDestroy, OnInit {
 
         this.activeTasks.forEach((process) => {
 
-            /**if process allready should removed skip it*/
+            /** if process allready should removed skip it */
             if (removeSelections.indexOf(process) > -1) {
                 return;
             }
@@ -369,5 +385,26 @@ export class ProcessListComponent implements OnDestroy, OnInit {
             }
         });
         this.selections.deselect(...removeSelections);
+    }
+
+    /**
+     * sort tasks by status so completed tasks are allways displayed at bottom
+     *
+     * @private
+     * @param {IProcess[]} tasks
+     * @returns {IProcess[]}
+     * @memberof ProcessListComponent
+     */
+    private sortTasks(tasks: IProcess[]): IProcess[] {
+        tasks.sort((current, next) => {
+            if (current.status > next.status) {
+                return 1;
+            }
+            if (next.status > current.status) {
+                return -1;
+            }
+            return 0;
+        });
+        return tasks;
     }
 }

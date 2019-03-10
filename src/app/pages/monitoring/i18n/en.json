@@ -30,7 +30,8 @@
     "ACTIONS": {
       "REFRESH": "Refresh",
       "AUTO_REFRESH": "auto",
-      "STOP": "Stop ({{COUNT}})"
+      "STOP": "Stop ({{COUNT}})",
+      "STOPPING": "Stopping ({{COUNT}})"
     }
   }
 }

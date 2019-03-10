@@ -83,7 +83,8 @@ export class ProcessService {
                 return forkJoin(...appName$);
             }),
             map(() => {
-                const mockData = Array.from({length: Math.max(10, Math.round(Math.random() * 100))}, (task, index) => {
+                // const mockData = Array.from({length: Math.max(10, Math.round(Math.random() * 1000))}, (task, index) => {
+                const mockData = Array.from({length: 30}, (task, index) => {
                     const process: IProcess = {
                         appId: `app#${index}`,
                         startTime: new Date().toUTCString(),

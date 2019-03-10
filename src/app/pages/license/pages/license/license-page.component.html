@@ -37,21 +37,21 @@
         </ng-container>
         <ng-container *ngIf="!licenseExists">
           no license was found
-        </ng-container> 
+        </ng-container>
       </div>
     </ng-container>
 
     <!-- INSTALLATION INVALID -->
     <ng-container *ngIf="isInstallationInvalid">
-        <smc-license-error [progress]="installationProgress"></smc-license-error>
+      <smc-license-error [progress]="installationProgress"></smc-license-error>
     </ng-container>
   </div>
 
   <!-- CONTENT FOOTER -->
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="saveLicense()" *ngIf="!isInstallationInvalid">{{'SMC_LICENSE.ACTIONS.SAVE.BUTTON_LABEL' | translate}}</smc-ui--button>
-      <smc-ui--button (click)="reload()" *ngIf="isInstallationInvalid">{{'SMC_LICENSE.ACTIONS.RELOAD' | translate}}</smc-ui--button>
+      <smc-ui--button (click)="saveLicense()" *ngIf="!isInstallationInvalid" [label]="'SMC_LICENSE.ACTIONS.SAVE.BUTTON_LABEL' | translate"></smc-ui--button>
+      <smc-ui--button (click)="reload()" *ngIf="isInstallationInvalid" [label]="'SMC_LICENSE.ACTIONS.RELOAD' | translate"></smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 
@@ -74,12 +74,11 @@
   <!-- SIDEBAR RIGHT -->
   <div page-sidebar--right>
     <div class="header">
-        {{'SMC_LICENSE.LABEL.PROPERTIES' | translate}}
+      {{'SMC_LICENSE.LABEL.PROPERTIES' | translate}}
     </div>
 
     <ul class="lui-list">
-      <li class="lui-item" (click)="showPagePart(property, property.key)" *ngFor="let property of properties"
-        [ngClass]="{'active': property == selectedProperty}">
+      <li class="lui-item" (click)="showPagePart(property, property.key)" *ngFor="let property of properties" [ngClass]="{'active': property == selectedProperty}">
         {{property.label | translate}}
       </li>
     </ul>

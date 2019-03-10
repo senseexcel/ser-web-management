@@ -67,6 +67,13 @@
   }
 }
 
+:host-context(.primary) {
+
+  button {
+      margin: 0;
+  }
+}
+
 :host-context(.btn-lighten) {
   button {
     background-image: linear-gradient(to bottom, #FFFFFF 0%, #E6E6E6 100%);
