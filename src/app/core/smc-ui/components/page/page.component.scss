@@ -80,16 +80,16 @@
     color: #000;
     flex: 1;
     display: flex;
-    flex-direction: column;
-    overflow:hidden;
+    flex-direction: row;
+    overflow: hidden;
 
     >.content-body--wrapper {
       overflow-y: auto;
-      height: 100%;
       padding: 0 1rem;
+      flex: 1;
     }
 
-    &.no-padding >.content-body--wrapper {
+    &.no-padding>.content-body--wrapper {
       padding: 0;
     }
   }
@@ -110,12 +110,12 @@
  */
 :host-context(.page-layout.home) {
 
-    .smc-ui--page--sidebar.sidebar-left {
-      flex: 0 0 200px;
-      margin: 0;
-    }
+  .smc-ui--page--sidebar.sidebar-left {
+    flex: 0 0 200px;
+    margin: 0;
+  }
 
-    .smc-ui--page--content-body > .content-body--wrapper {
-      padding: 1.3rem;
-    }
+  .smc-ui--page--content-body>.content-body--wrapper {
+    padding: 1.3rem;
+  }
 }

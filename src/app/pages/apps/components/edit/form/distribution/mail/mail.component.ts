@@ -3,10 +3,13 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ReportModel } from '@smc/modules/ser';
 import { FormService, IFormResponse } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';
+import { ViewportControl } from 'ngx-customscrollbar';
 
 @Component({
     selector: 'smc-apps--edit-form-distribution-mail',
-    templateUrl: 'mail.component.html'
+    templateUrl: 'mail.component.html',
+    styleUrls: ['./mail.component.scss'],
+    viewProviders: [ViewportControl]
 })
 export class DistributionMailComponent implements OnInit {
 

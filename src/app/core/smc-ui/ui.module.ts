@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DropDownModule } from '@smc/modules/drop-down';
 import { MaterialModule } from '@smc/modules/material.module';
 import { SmcCommonModule } from '@smc/modules/smc-common';
+import { NgxCustomScrollbarModule } from 'ngx-customscrollbar';
 
 import { ListHeaderComponent } from './components/list/list-header.component';
 import { SmcPageComponent } from './components/page/page.component';
@@ -23,7 +24,8 @@ import { SelectOnClickDirective } from './components/list/select-on-click.direct
         SmcCommonModule,
         DropDownModule,
         MaterialModule,
-        RouterModule
+        RouterModule,
+        NgxCustomScrollbarModule
     ],
     exports: [
         CommonModule,
@@ -36,7 +38,8 @@ import { SelectOnClickDirective } from './components/list/select-on-click.direct
         SmcCommonModule,
         MenuComponent,
         SmcUiDefaultContentDirective,
-        SelectOnClickDirective
+        SelectOnClickDirective,
+        NgxCustomScrollbarModule
     ],
     declarations: [
         ListHeaderComponent,
