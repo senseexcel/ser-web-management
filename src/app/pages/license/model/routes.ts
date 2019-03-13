@@ -1,6 +1,6 @@
 
 import { Routes } from '@angular/router';
-import { LicensePageComponent } from '../pages';
+import { LicensePageComponent } from '../components';
 
 export const LicenseRoutes: Routes = [{
     path: 'license',

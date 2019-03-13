@@ -6,8 +6,6 @@ export class LicenseModel {
     private licenseKey: string;
     private licenseRaw: string;
     private licenseText: string;
-    private licenseUsers: ILicenseUser[];
-    private licenseUserLimit: number;
     private licenseValidationResult: ILicenseValidationResult;
 
     public set validationResult(result: ILicenseValidationResult) {
@@ -30,14 +28,6 @@ export class LicenseModel {
         return this.licenseText;
     }
 
-    public get users(): ILicenseUser[] {
-        return this.licenseUsers;
-    }
-
-    public get userLimit(): number {
-        return this.licenseUserLimit;
-    }
-
     public set key(key: string) {
         this.licenseKey = key || '';
     }
@@ -48,13 +38,5 @@ export class LicenseModel {
 
     public set text(text: string) {
         this.licenseText = text;
-    }
-
-    public set users(users: ILicenseUser[]) {
-        this.licenseUsers = users;
-    }
-
-    public set userLimit(limit: number) {
-        this.licenseUserLimit = limit;
     }
 }

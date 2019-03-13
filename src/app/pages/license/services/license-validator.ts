@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of, forkJoin } from 'rxjs';
 import { ContentLibService } from './contentlib.service';
 import { LicenseRepository } from './license-repository';
-import { map, catchError, mergeMap, concat, concatMap, switchMap } from 'rxjs/operators';
+import { map, catchError, mergeMap, concatMap } from 'rxjs/operators';
 import {
     ContentLibNotExistsException,
     QlikLicenseNoAccessException,
@@ -11,8 +11,6 @@ import {
 } from '../api/exceptions';
 import { ILicenseValidationResult, ValidationStep } from '../api/validation-result.interface';
 import { LicenseModel } from '../model/license.model';
-import { ILicenseUser } from '../api/license-user.interface';
-import moment = require('moment');
 import { HttpClient } from '@angular/common/http';
 import { IContentLibFileReference } from '../api/response/content-lib.interface';
 
@@ -262,7 +260,7 @@ export class LicenseValidator {
      * @returns {Observable<ILicenseValidationResult>}
      * @memberof LicenseValidator
      */
-    public validateLicense(license: LicenseModel): Observable<ILicenseValidationResult> {
+    public isValid(license: LicenseModel): Observable<ILicenseValidationResult> {
 
         if (license.raw.replace(/(^\s*|\s*$)/g, '') === '') {
             return of({
@@ -289,61 +287,5 @@ export class LicenseValidator {
                 );
             })
         );
-    }
-
-    /**
-     * check users activated are less or equal license user limit
-     * if user limit set to -1 there is no user limit
-     *
-     * @param {LicenseModel} license
-     * @returns {Observable<ILicenseValidationResult>}
-     * @memberof LicenseValidator
-     */
-    public validateUsers(license: LicenseModel): Observable<ILicenseValidationResult> {
-
-        const userValidationResult: ILicenseValidationResult = {
-            isValid: true,
-            errors: []
-        };
-
-        /** if no user limit exists or user limit is not reached it is valid */
-        if (license.userLimit === -1 && license.userLimit >= license.users.length) {
-            return of(userValidationResult);
-        }
-
-        const today = moment();
-
-        for (let i = 365; i >= 0; i--) {
-            const activeUsers = this.getActiveUsersOnDate(today.add(1, 'day'), license.users);
-            if (activeUsers.length > license.userLimit) {
-                userValidationResult.isValid = false;
-                userValidationResult.errors  = ['TO_MANY_USERS'];
-                break;
-            }
-        }
-
-        return of(userValidationResult);
-    }
-
-    /**
-     * returns users which are active on date
-     *
-     * @todo remove to other service
-     *
-     * @private
-     * @param {moment.Moment} date
-     * @param {ILicenseUser[]} users
-     * @returns {ILicenseUser[]}
-     * @memberof LicenseValidator
-     */
-    private getActiveUsersOnDate(date: moment.Moment, users: ILicenseUser[]): ILicenseUser[] {
-        /** filter for active users */
-        return users.filter((user) => {
-            const {from, to} = user;
-            let isActive = true;
-            isActive = isActive && (!Boolean(from) || date.isSameOrAfter(from, 'day'));
-            isActive = isActive && (!Boolean(to)   || date.isSameOrBefore(to , 'day'));
-            return isActive;
-        });
     }
 }

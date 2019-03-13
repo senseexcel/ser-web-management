@@ -1,3 +1,5 @@
+import { ILicenseUser } from '../api/license-user.interface';
+
 export class UserModel {
 
     private userDomain: string;

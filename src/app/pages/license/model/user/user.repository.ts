@@ -1,4 +1,4 @@
-import { UserModel } from './user.model';
+import { UserModel } from '../../user/user.model';
 
 // hold multiple users
 // fetch user by id ...

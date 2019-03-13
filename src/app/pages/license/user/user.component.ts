@@ -4,10 +4,10 @@ import { MatDatepickerInputEvent, MatAutocompleteSelectedEvent } from '@angular/
 import { Moment } from 'moment';
 import { Subject, of } from 'rxjs';
 import { map, switchMap, debounceTime, takeUntil, tap } from 'rxjs/operators';
-import { ILicenseUser } from '../../api/license-user.interface';
-import { LicenseModel } from '../../model/license.model';
-import { License, UserRepository } from '../../services';
-import { MOMENT_DATE_FORMAT } from '../../api/ser-date-formats';
+import { ILicenseUser } from '../api/license-user.interface';
+import { LicenseModel } from '../model/license.model';
+import { License, UserRepository } from '../services';
+import { MOMENT_DATE_FORMAT } from '../api/ser-date-formats';
 
 interface ITableUser {
     edit: boolean;

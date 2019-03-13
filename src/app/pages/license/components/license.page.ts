@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { LicenseValidator, License } from '../../services';
-import { LicenseModel } from '../../model/license.model';
+import { LicenseValidator, License } from '../services';
+import { LicenseModel } from '../model/license.model';
 import { finalize, takeUntil, tap, mergeMap } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
-import { ValidationStep, ILicenseValidationResult } from '../../api/validation-result.interface';
+import { ValidationStep, ILicenseValidationResult } from '../api/validation-result.interface';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ModalService } from '@smc/modules/modal';
 
 @Component({
     selector: 'smc-license-page',
-    styleUrls: ['./license-page.component.scss'],
-    templateUrl: 'license-page.component.html'
+    styleUrls: ['./license.page.scss'],
+    templateUrl: 'license.page.html'
 })
 
 export class LicensePageComponent implements OnDestroy, OnInit {

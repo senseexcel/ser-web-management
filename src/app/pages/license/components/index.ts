@@ -12,6 +12,8 @@ export * from './insert-overlay/insert-overlay.component';
 export * from './insert-overlay/insert-overlay-footer.component';
 export * from './users/user.component';
 
+export * from './license.page';
+
 export const components = [
     OverviewComponent,
     ErrorComponent,

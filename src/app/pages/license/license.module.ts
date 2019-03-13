@@ -8,9 +8,8 @@ import { ModalModule, MaterialModule, SmcUiModule } from '@smc/modules';
 import { TranslateService } from '@ngx-translate/core';
 
 import { SER_DATE_FORMATS } from './api/ser-date-formats';
-import { components, InsertOverlayComponent, InsertOverlayFooterComponent } from './components';
+import { components, InsertOverlayComponent, InsertOverlayFooterComponent, LicensePageComponent } from './components';
 import { LicenseRoutingModule } from './license-routing.module';
-import { pages } from './pages';
 import { services } from './services';
 import { JsonpInterceptorModule } from './jsonp-interceptor.module';
 
@@ -30,11 +29,11 @@ import i18n_en from './i18n/en.json';
         SmcUiModule
     ],
     declarations: [
-        ...components,
-        ...pages
+        LicensePageComponent,
+        ...components
     ],
     entryComponents: [
-        ...pages,
+        LicensePageComponent,
         InsertOverlayComponent,
         InsertOverlayFooterComponent
     ],
