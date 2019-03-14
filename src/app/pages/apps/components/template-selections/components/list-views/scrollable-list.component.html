@@ -5,7 +5,7 @@
       <i class="ser-icon ser-icon--remove" (click)="controller.remove(item)"></i>
     </div>
   </cdk-virtual-scroll-viewport>
-  <ngx-customscrollbar *ngxCustomScrollbarOverflowAutoY></ngx-customscrollbar>
+  <ngx-customscrollbar *ngxCustomScrollbarOverflowY></ngx-customscrollbar>
 </div>
 <smc-ui--button [disabled]="!items.length" (click)="clearAll()" class="clear-all btn-lighten" [label]="'SER.TEMPLATE.SELECTIONS.CLEAR_VALUES' | translate">
   <i btn-icon--right class="ser-icon ser-icon--trash"></i>

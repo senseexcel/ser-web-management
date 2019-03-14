@@ -28,6 +28,6 @@
   <mat-form-field class="form-control">
     <textarea matInput formControlName="message" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.MESSAGE' | translate}}"
       mat-autosize="true" [matAutosizeMinRows]=5 [matAutosizeMaxRows]=10 ngxCustomScrollbarScrollable></textarea>
-    <ngx-customscrollbar></ngx-customscrollbar>
+    <ngx-customscrollbar *ngxCustomScrollbarOverflowY></ngx-customscrollbar>
   </mat-form-field>
 </form>
