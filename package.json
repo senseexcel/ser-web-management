@@ -27,7 +27,7 @@
     "@ngx-translate/core": "11.0.1",
     "core-js": "2.6.5",
     "hjson": "3.1.2",
-    "leonardo-ui": "1.6.0",
+    "leonardo-ui": "1.7.0",
     "moment": "2.24.0",
     "moment-timezone": "0.5.23",
     "rxjs": "6.4.0",
