@@ -1,7 +1,7 @@
-import { UserLicenseValidator } from '@smc/modules/license/validators/user.validator';
 import moment = require('moment');
 import { UserLicense } from '../mock/user-license.mock';
-import { toManyUsersAtSameTimeError } from '@smc/modules/license/validators/validation.tokens';
+import { UserLicenseValidator } from '@smc/modules/license/validators/user.validator';
+import { toManyUsersAtSameDateError } from '@smc/modules/license/validators/validation.tokens';
 
 describe('LicenseModule', () => {
 
@@ -111,7 +111,7 @@ describe('LicenseModule', () => {
 
                 const result = validator.validate(userLicense);
                 expect(result.isValid).toBeFalsy();
-                expect(result.errors.has(toManyUsersAtSameTimeError)).toBeTruthy();
+                expect(result.errors.has(toManyUsersAtSameDateError)).toBeTruthy();
             });
         });
     });

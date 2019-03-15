@@ -23,6 +23,18 @@ describe('LicenseModule', () => {
                 expect(validator.validate(license).isValid).toBeTruthy();
             });
 
+            it('should be valid, neither start nor end date given', () => {
+                license.from = moment('');
+                license.to   = moment('');
+                expect(validator.validate(license).isValid).toBeTruthy();
+            });
+
+            it('should be expired start date not given', () => {
+                license.from = moment('');
+                license.to   = moment().add(-1, 'month');
+                expect(validator.validate(license).isValid).toBeFalsy();
+            });
+
             it('should be expired', () => {
                 license.from = moment();
                 license.to   = moment(license.from).add(-1, 'month');

@@ -1,0 +1,48 @@
+@import "~src/skin/scss/mixins/utils";
+
+:host {
+
+    .mat-form-field {
+        width: 100%;
+        margin-bottom: -1rem;
+
+        .mat-form-field-underline {
+            display: none;
+        }
+    }
+    
+    .user-table--row {
+        &.selected {
+            background: #737373;
+            color: #FFF;
+        }
+    }
+
+    .user-table--row.edit {
+        background: #FFF;
+        &.selected {
+            color: inherit;
+        }
+    }
+
+    .user-list--table {
+        table.mat-table {
+            margin-bottom: 0;
+        }
+    }
+
+    smc-ui--list-header {
+        padding: 7px 10px;
+    }
+
+    smc-ui--button-navbar {
+        display: block;
+        background: #595959;
+
+        ::ng-deep {
+            .action-bar-bottom {
+                padding: 6px 10px;
+            }
+        }
+    }
+}

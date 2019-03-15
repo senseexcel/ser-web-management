@@ -1,0 +1,28 @@
+<ng-template #progressStep let-step="step">
+    <i class="ser-icon" [ngClass]="{
+        'ser-icon--warning': !step.value.isValid,
+        'ser-icon--check': step.value.isValid
+    }"></i>
+    {{step.key | translate}}
+</ng-template>
+
+<div class="header">
+    {{'SMC_LICENSE.INSTALLATION.INVALID' | translate}}
+</div>
+<div class="body">
+    <ul class="lui-list">
+        <li class="lui--item" *ngFor="let step of progress | keyvalue:sortIsValid" 
+            [ngClass]="{
+                'valid': step.value.isValid,
+                'invalid': !step.value.isValid
+            }">
+            <ng-container 
+                [ngTemplateOutlet]="progressStep"
+                [ngTemplateOutletContext]="{step: step}"
+            ></ng-container>
+        </li> 
+    </ul>
+    <div class="notification">
+        {{'SMC_CORE.CONTACT_CONSULTANT' | translate}}
+    </div>
+</div>

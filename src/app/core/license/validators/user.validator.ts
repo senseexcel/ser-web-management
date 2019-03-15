@@ -1,7 +1,7 @@
 import moment = require('moment');
 import { IValidationResult, IUser, IUserLicense } from '../api';
 import { LicenseValidator } from './license.validator';
-import { toManyUsersAtSameTimeError } from './validation.tokens';
+import { toManyUsersAtSameDateError } from './validation.tokens';
 
 export class UserLicenseValidator extends LicenseValidator {
 
@@ -28,7 +28,7 @@ export class UserLicenseValidator extends LicenseValidator {
             const activeUsers = this.getActiveUsersOnDate(today.add(1, 'day'), license.users);
             if (activeUsers.length > license.userLimit) {
                 validationResult.isValid = false;
-                validationResult.errors.add(toManyUsersAtSameTimeError);
+                validationResult.errors.add(toManyUsersAtSameDateError);
                 break;
             }
         }
