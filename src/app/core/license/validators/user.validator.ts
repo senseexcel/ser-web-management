@@ -1,8 +1,9 @@
-import { Observable, of } from 'rxjs';
-import { IValidationResult, IUser, IUserLicense } from '../api';
 import moment = require('moment');
+import { IValidationResult, IUser, IUserLicense } from '../api';
+import { LicenseValidator } from './license.validator';
+import { toManyUsersActivatedError } from './validation.tokens';
 
-export class UserLicenseValidator {
+export class UserLicenseValidator extends LicenseValidator {
 
     /**
      * check users activated are less or equal license user limit
@@ -12,16 +13,13 @@ export class UserLicenseValidator {
      * @returns {Observable<ILicenseValidationResult>}
      * @memberof LicenseValidator
      */
-    public validate(license: IUserLicense): Observable<IValidationResult> {
+    public validate(license: IUserLicense): IValidationResult {
 
-        const userValidationResult: IValidationResult = {
-            isValid: true,
-            errors: []
-        };
+        const validationResult = super.validate(license);
 
         /** if no user limit exists or user limit is not reached it is valid */
-        if (license.userLimit === -1 && license.userLimit >= license.users.length) {
-            return of(userValidationResult);
+        if (license.userLimit >= license.users.length) {
+            return validationResult;
         }
 
         const today = moment();
@@ -29,13 +27,12 @@ export class UserLicenseValidator {
         for (let i = 365; i >= 0; i--) {
             const activeUsers = this.getActiveUsersOnDate(today.add(1, 'day'), license.users);
             if (activeUsers.length > license.userLimit) {
-                userValidationResult.isValid = false;
-                userValidationResult.errors  = ['TO_MANY_USERS'];
+                validationResult.isValid = false;
+                validationResult.errors.add(toManyUsersActivatedError);
                 break;
             }
         }
-
-        return of(userValidationResult);
+        return validationResult;
     }
 
     /**

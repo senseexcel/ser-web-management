@@ -24,10 +24,12 @@ export class LicenseReader {
      * read license data
      */
     public read(data: string): IReaderResult {
+
         const lines = this.sanitizeData(data.split(/\r?\n/));
         const raw = this.parseLicenseRaw(lines);
         const meta = this.parseLicenseMeta(raw);
         const result: IReaderResult = {
+            licenseKey: raw[0],
             licenseMeta: meta,
             licenseRaw: raw,
             raw: lines

@@ -12,7 +12,8 @@ export abstract class SearchTokens {
      */
     public static readonly TOKEN_LICENSE_META = /^EXCEL_TOKENS;([0-9]+)(?:(?:;)([^;]*))?(?:;(.*?))?$/;
 
-
-    /** @todo implement pattern for user excel name, EXCEL_NAME is start, user; from; to */
-    public static readonly USER = /^EXCEL_NAME;?([0-9]+)(?:(?:;)([^;]+))?;?([^;]+)?$/;
+    /**
+     * pattern to match username
+     */
+    public static readonly TOKEN_NAME = /^EXCEL_NAME(?:(?:;)([^;]*))?(?:(?:;)([^;]*))?(?:;(.*?))?$/;
 }
