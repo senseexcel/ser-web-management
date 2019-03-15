@@ -1,7 +1,7 @@
 import moment = require('moment');
 import { IValidationResult, IUser, IUserLicense } from '../api';
 import { LicenseValidator } from './license.validator';
-import { toManyUsersActivatedError } from './validation.tokens';
+import { toManyUsersAtSameTimeError } from './validation.tokens';
 
 export class UserLicenseValidator extends LicenseValidator {
 
@@ -28,7 +28,7 @@ export class UserLicenseValidator extends LicenseValidator {
             const activeUsers = this.getActiveUsersOnDate(today.add(1, 'day'), license.users);
             if (activeUsers.length > license.userLimit) {
                 validationResult.isValid = false;
-                validationResult.errors.add(toManyUsersActivatedError);
+                validationResult.errors.add(toManyUsersAtSameTimeError);
                 break;
             }
         }
@@ -37,14 +37,6 @@ export class UserLicenseValidator extends LicenseValidator {
 
     /**
      * returns users which are active on date
-     *
-     * @todo remove to other service
-     *
-     * @private
-     * @param {moment.Moment} date
-     * @param {ILicenseUser[]} users
-     * @returns {ILicenseUser[]}
-     * @memberof LicenseValidator
      */
     private getActiveUsersOnDate(date: moment.Moment, users: IUser[]): IUser[] {
         /** filter for active users */

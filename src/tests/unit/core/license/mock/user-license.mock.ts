@@ -1,6 +1,23 @@
 import { IUser, IUserLicense, IValidationResult } from '@smc/modules/license/api';
+import { Moment } from 'moment';
+import moment = require('moment');
 
 export class UserLicense implements IUserLicense {
+
+    licenseData: string[];
+
+    licenseKey: string;
+
+    from: Moment;
+
+    to: Moment;
+
+    data: string[];
+
+    public constructor() {
+        this.from = moment();
+        this.to   = moment(this.from).add(6, 'months');
+    }
 
     private _users: IUser[] = [];
 
