@@ -1,8 +1,8 @@
 import { IUser, IUserLicense, IValidationResult, LicenseType } from '../api';
-import { License } from './license';
+import { AbstractLicense } from './license';
 import { UserLicenseValidator } from '../validators/user.validator';
 
-export class UserLicense extends License implements IUserLicense {
+export class UserLicense extends AbstractLicense implements IUserLicense {
 
     private _userLimit;
 

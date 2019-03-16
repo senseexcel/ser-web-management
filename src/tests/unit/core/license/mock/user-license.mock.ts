@@ -1,8 +1,10 @@
-import { IUser, IUserLicense, IValidationResult } from '@smc/modules/license/api';
+import { IUser, IUserLicense, IValidationResult, LicenseType } from '@smc/modules/license/api';
 import { Moment } from 'moment';
 import moment = require('moment');
 
 export class UserLicense implements IUserLicense {
+
+    licenseType: LicenseType = LicenseType.USER;
 
     licenseData: string[];
 

@@ -1,8 +1,7 @@
-import { Observable } from 'rxjs';
 import { IValidationResult } from '../api';
-import { License } from './license';
+import { AbstractLicense } from './license';
 
-export class TokenLicense extends License {
+export class TokenLicense extends AbstractLicense {
 
     public toString(): string {
         return '';

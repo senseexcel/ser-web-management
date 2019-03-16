@@ -1,8 +1,10 @@
+import { Moment } from 'moment';
+
 export interface IUser {
 
     id: string;
 
-    from: string;
+    from: Moment;
 
-    to: string;
+    to: Moment;
 }

@@ -48,8 +48,10 @@ export class License {
             );
     }
 
+    /**
+     * load license file from content library
+     */
     public loadLicenseFile(): Observable<ILicense> {
-
         return this.repository.readLicense()
             .pipe(map((raw) => this.createLicense(raw)));
     }
@@ -81,13 +83,6 @@ export class License {
      * @memberof License
      */
     private createLicense(raw: string): ILicense {
-
-        const result = this.licenseReader.read(raw);
-        switch (result.licenseMeta.type) {
-            case LicenseType.USER:
-                return this.licenseFactory.createUserLicense(result);
-            case LicenseType.TOKEN:
-                return this.licenseFactory.createTokenLicense(result);
-        }
+        return this.licenseFactory.createFromRaw(raw);
     }
 }

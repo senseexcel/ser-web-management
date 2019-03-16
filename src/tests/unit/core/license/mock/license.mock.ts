@@ -1,7 +1,7 @@
 import { IValidationResult } from '@smc/modules/license/api';
-import { License } from '@smc/modules/license/model';
+import { AbstractLicense } from '@smc/modules/license/model';
 
-export class LicenseMock extends License {
+export class LicenseMock extends AbstractLicense {
 
     public toString(): string {
         return '';

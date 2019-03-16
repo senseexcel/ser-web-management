@@ -1,17 +1,19 @@
-import { ILicense, IValidationResult } from '../api';
+import { ILicense, IValidationResult, LicenseType } from '../api';
 import { Moment } from 'moment';
 
-export abstract class License implements ILicense {
+export abstract class AbstractLicense implements ILicense {
 
-    private _licenseData: string[];
+    readonly licenseType: LicenseType;
 
-    private _licenseKey: string;
+    private _licenseData: string[] = [];
+
+    private _licenseKey = '';
 
     private _from: Moment;
 
     private _to: Moment;
 
-    private _data: string[];
+    private _data: string[] = [];
 
     /**
      * set additional data on license
@@ -83,7 +85,12 @@ export abstract class License implements ILicense {
         return this._to;
     }
 
-    public abstract toString(): string;
+    public toString() {
+        return [
+            ...this.licenseData,
+            ...this.data
+        ].join('\n');
+    }
 
     public abstract validate(): IValidationResult;
 }

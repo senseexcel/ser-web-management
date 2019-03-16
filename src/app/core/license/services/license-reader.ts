@@ -26,7 +26,6 @@ export class LicenseReader {
      * read license data
      */
     public read(data: string): IReaderResult {
-
         const lines = this.sanitizeData(data.split(/\r?\n/));
         const raw = this.parseLicenseRaw(lines);
         const meta = this.parseLicenseMeta(raw);
@@ -44,31 +43,34 @@ export class LicenseReader {
      * this could be TOKEN, USERS or anything else
      */
     private parseLicenseMeta(lines: string[]): ILicenseMeta {
-        /** define search tokens */
-        const namedMetaSearch = SearchTokens.NAMED_LICENSE_META;
-        const tokenMetaSearch = SearchTokens.TOKEN_LICENSE_META;
-
-        /** search for token in every line */
-        const result = this.find(lines, [namedMetaSearch, tokenMetaSearch], false);
-
-        /** we dont get any meta data in license */
-        if (!result.get(namedMetaSearch).length && !result.get(tokenMetaSearch).length) {
-            throw { message: 'no license meta was found' };
-        }
-
-        /** we found some meta data */
-        const metaDataLine = result.get(namedMetaSearch).length
-            ? result.get(namedMetaSearch)
-            : result.get(tokenMetaSearch);
-
-        const metaData = metaDataLine[0].split(';');
-
-        return {
-            count: parseInt(metaData[1], 10),
-            from: metaData[2] || '',
-            to: metaData[3] || '',
-            type: result.get(namedMetaSearch).length ? LicenseType.USER : LicenseType.TOKEN
+        const licenseMeta: ILicenseMeta = {
+            count: 0,
+            from: '',
+            to: '',
+            type: LicenseType.EMPTY
         };
+
+        if (lines.length !== 0) {
+            licenseMeta.type = LicenseType.BROKEN;
+
+            const namedMetaSearch = SearchTokens.NAMED_LICENSE_META;
+            const tokenMetaSearch = SearchTokens.TOKEN_LICENSE_META;
+            const result = this.find(lines, [namedMetaSearch, tokenMetaSearch], false);
+
+            if (result.get(namedMetaSearch).length || result.get(tokenMetaSearch).length) {
+                const metaDataLine = result.get(namedMetaSearch).length
+                    ? result.get(namedMetaSearch)
+                    : result.get(tokenMetaSearch);
+
+                const metaData = metaDataLine[0].split(';');
+
+                licenseMeta.count = parseInt(metaData[1], 10);
+                licenseMeta.from  = metaData[2];
+                licenseMeta.to    = metaData[3];
+                licenseMeta.type  = result.get(namedMetaSearch).length ? LicenseType.USER : LicenseType.TOKEN;
+            }
+        }
+        return licenseMeta;
     }
 
     /**
@@ -98,7 +100,7 @@ export class LicenseReader {
         const matches = new WeakMap<RegExp, string[]>(mapData);
 
         for (let index = lines.length - 1; index >= 0; index--) {
-            const line    = lines[index];
+            const line = lines[index];
             const matched = searchTokens.filter((token) => token.test(line))[0];
             if (!matched) {
                 continue;
