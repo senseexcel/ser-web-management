@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { License } from '../../services';
+import { LicenseRepository } from '../../services';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
 import { ModalService, IModalData } from '@smc/modules/modal';
@@ -9,7 +9,7 @@ import { InsertOverlayFooterComponent } from '../insert-overlay/insert-overlay-f
 import { SerLicenseResponseException } from '../../api/exceptions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { I18nTranslation } from '@smc/modules/smc-common';
-import { LicenseSource } from '../../services/license-source';
+import { LicenseSource } from '../../model/license-source';
 import { ILicense } from '@smc/modules/license/api';
 
 @Component({
@@ -25,19 +25,15 @@ export class OverviewComponent implements OnDestroy, OnInit {
     public licenseData = '';
 
     private isDestroyed$: Subject<boolean>;
-    private license: License;
-    private modal: ModalService;
 
     @Input()
     public licenseSource: LicenseSource;
 
     constructor(
-        license: License,
-        modal: ModalService
+        private license: LicenseRepository,
+        private modal: ModalService
     ) {
         this.isDestroyed$ = new Subject();
-        this.license = license;
-        this.modal = modal;
     }
 
     /**

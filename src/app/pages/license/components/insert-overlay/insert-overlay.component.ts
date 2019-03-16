@@ -2,8 +2,7 @@ import { Component, OnInit, Inject, AfterViewInit, OnDestroy } from '@angular/co
 import { MODAL_OVERLAY_CTRL } from '@smc/modules/modal/api/modal-content.injector';
 import { InsertOverlayControl } from '../../services/insert-overlay.control';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { debounceTime, takeUntil, tap } from 'rxjs/operators';
-import { License } from '../../services';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -19,17 +18,14 @@ export class InsertOverlayComponent implements AfterViewInit, OnDestroy, OnInit 
 
     private ctrl: InsertOverlayControl;
     private formBuilder: FormBuilder;
-    private license: License;
     private isDestroyed$: Subject<boolean>;
 
     constructor(
         @Inject(MODAL_OVERLAY_CTRL) ctrl: InsertOverlayControl,
-        formBuilder: FormBuilder,
-        license: License
+        formBuilder: FormBuilder
     ) {
         this.formBuilder = formBuilder;
         this.ctrl = ctrl;
-        this.license = license;
         this.isDestroyed$ = new Subject();
     }
 

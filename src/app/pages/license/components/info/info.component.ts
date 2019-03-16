@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subject } from 'rxjs';
+import { LicenseSource } from '../../model/license-source';
+import { LicenseRepository } from '../../services';
 import { ILicense } from '@smc/modules/license/api';
-import { LicenseSource } from '../../services/license-source';
 
 @Component({
     selector: 'smc-license-info',
@@ -19,7 +20,7 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     public isValid: boolean;
 
-    public qlikLicense: string;
+    public qlikSerial: string;
 
     public licenseKey = '';
 
@@ -29,7 +30,7 @@ export class InfoComponent implements OnDestroy, OnInit {
      * @type {string}
      * @memberof InfoComponent
      */
-    public licenseStatus: 'valid' | 'invalid'  = 'invalid';
+    public licenseStatus: 'valid' | 'invalid' = 'invalid';
 
     public validationErrors: string[];
 
@@ -46,7 +47,9 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     private isDestroyed$: Subject<boolean>;
 
-    constructor() {
+    constructor(
+        private licenseRepository: LicenseRepository
+    ) {
         this.isDestroyed$ = new Subject();
         this.validationErrors = [];
     }
@@ -67,12 +70,19 @@ export class InfoComponent implements OnDestroy, OnInit {
      * @memberof InfoComponent
      */
     ngOnInit() {
-        this.licenseSource.changed$.subscribe((license: ILicense) => {
-            this.licenseKey    = license.licenseKey;
-            this.licenseStatus = license.validate().isValid ? 'valid' : 'invalid';
-        });
+
+        this.licenseSource.changed$
+            .subscribe((license) => this.sourceChanged(license));
+
+        this.licenseSource.validate$
+            .subscribe();
     }
 
-    private validateLicense() {
+    private sourceChanged(license: ILicense) {
+        this.licenseKey = license.licenseKey;
+        this.qlikSerial = this.licenseSource.qlikLicenseKey;
+
+        this.isValid = this.licenseKey === this.qlikSerial;
+        this.isValid = this.isValid && this.licenseSource.isValid;
     }
 }

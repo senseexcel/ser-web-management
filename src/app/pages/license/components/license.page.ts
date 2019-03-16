@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { LicenseSource } from '../services/license-source';
-import { License } from '../services';
-import { ILicense } from '@smc/modules/license/api';
+import { LicenseSource } from '../model/license-source';
+import { LicenseRepository } from '../services';
+import { LicenseFactory } from '@smc/modules/license';
 
 @Component({
     selector: 'smc-license-page',
@@ -12,7 +12,7 @@ import { ILicense } from '@smc/modules/license/api';
 })
 export class LicensePageComponent implements OnDestroy, OnInit {
 
-    public ready: boolean;
+    public isLoading: boolean;
     public isInstallationInvalid: boolean;
     public properties: any[] = [];
     public selectedProperty: any;
@@ -36,7 +36,8 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     constructor(
-        private repository: License,
+        private licenseFactory: LicenseFactory,
+        private repository: LicenseRepository,
         private router: Router,
         private activatedRoute: ActivatedRoute
     ) {
@@ -52,9 +53,9 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      */
     ngOnInit() {
         this.properties = [
-            { key: 'information', label: 'SMC_LICENSE.INFORMATIONS.LABEL'},
-            { key: 'overview',    label: 'SMC_LICENSE.OVERVIEW.LABEL'    },
-            { key: 'users',       label: 'SMC_LICENSE.USERS.LABEL'       }
+            { key: 'information', label: 'SMC_LICENSE.INFORMATIONS.LABEL' },
+            { key: 'overview', label: 'SMC_LICENSE.OVERVIEW.LABEL' },
+            { key: 'users', label: 'SMC_LICENSE.USERS.LABEL' }
         ];
         this.loadPage();
     }
@@ -99,9 +100,9 @@ export class LicensePageComponent implements OnDestroy, OnInit {
         let scrollToContainer: ElementRef;
 
         switch (part) {
-            case 'overview':    scrollToContainer = this.overviewContainer; break;
-            case 'information': scrollToContainer = this.infoContainer;     break;
-            case 'users':       scrollToContainer = this.userContainer;     break;
+            case 'overview': scrollToContainer = this.overviewContainer; break;
+            case 'information': scrollToContainer = this.infoContainer; break;
+            case 'users': scrollToContainer = this.userContainer; break;
             default:
                 return;
         }
@@ -121,10 +122,15 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     private loadPage() {
-        this.ready = false;
+        this.isLoading = true;
 
-        this.repository.loadLicenseFile().subscribe((license: ILicense) => {
-            this.licenseSource.license = license;
+        const qlikSerial$ = this.repository.fetchQlikSerialNumber();
+        const licenseFile$ = this.repository.readLicense();
+
+        forkJoin([qlikSerial$, licenseFile$]).subscribe(([qlikSerial, licenseRaw]) => {
+            this.licenseSource.qlikLicenseKey = qlikSerial;
+            this.licenseSource.license = this.licenseFactory.createFromRaw(licenseRaw);
+            this.isLoading = false;
         });
     }
 }

@@ -4,14 +4,11 @@ import { MatDatepickerInputEvent, MatAutocompleteSelectedEvent } from '@angular/
 import { Moment } from 'moment';
 import { Subject, of } from 'rxjs';
 import { ILicenseUser } from '../../api/license-user.interface';
-import { License, UserRepository } from '../../services';
 import { MOMENT_DATE_FORMAT } from '../../api/ser-date-formats';
 
 interface ITableUser {
     edit: boolean;
-
     isNew: boolean;
-
     user: ILicenseUser;
 }
 
@@ -34,19 +31,13 @@ export class UserComponent implements OnDestroy, OnInit {
     public licenseExists: boolean;
 
     private isDestroyed$: Subject<boolean>;
-    private license: License;
     private suggest$: Subject<any>;
-    private repository: UserRepository;
 
     constructor(
-        license: License,
-        repository: UserRepository
     ) {
         this.isDestroyed$ = new Subject();
-        this.license      = license;
         this.selection    = new SelectionModel(false);
         this.suggest$     = new Subject();
-        this.repository   = repository;
 
         this.licensedUserInfo = {total: 0, showing: 0};
         this.userSuggestions = [];
@@ -61,7 +52,6 @@ export class UserComponent implements OnDestroy, OnInit {
         this.isDestroyed$.next(true);
 
         /** null variables to ensure it is not set anymore */
-        this.license      = null;
         this.selection    = null;
         this.suggest$     = null;
         this.isDestroyed$ = null;
@@ -149,7 +139,6 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public finishEditUser() {
-
         const tableUser: ITableUser = this.currentEditUser;
         tableUser.edit = false;
 
@@ -165,8 +154,7 @@ export class UserComponent implements OnDestroy, OnInit {
             // we need to add user to model
             tableUser.isNew = false;
         } else {
-            // nobody triggers an update ...
-            this.license.update();
+            // add a new user to license
         }
 
         this.currentEditUser = null;

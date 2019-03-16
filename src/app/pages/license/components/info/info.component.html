@@ -2,10 +2,10 @@
 
     <div class="body">
         <div class="key" translate [translateParams]="{KEY: licenseKey}">SMC_LICENSE.INFORMATIONS.SER_LICENSE_KEY</div>
-        <div class="key" translate [translateParams]="{KEY: 123}">SMC_LICENSE.INFORMATIONS.QLIK_LICENSE_KEY</div>
+        <div class="key" translate [translateParams]="{KEY: qlikSerial}">SMC_LICENSE.INFORMATIONS.QLIK_LICENSE_KEY</div>
         <div>
             <span class="status" [ngClass]="{'not-valid': !isValid}">
-                {{'SMC_LICENSE.INFORMATIONS.LICENSE_' +licenseStatus.toUpperCase() | translate}}
+                {{'SMC_LICENSE.INFORMATIONS.LICENSE_' + (isValid ? 'VALID' : 'INVALID') | translate}}
             </span>
             <ul class="errors" *ngIf="!isValid">
                 <li *ngFor="let error of validationErrors">
