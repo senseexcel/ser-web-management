@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { License } from '../../services';
-import { LicenseModel } from '../../model/license.model';
-import { takeUntil, catchError } from 'rxjs/operators';
+import { catchError, takeUntil } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
 import { ModalService, IModalData } from '@smc/modules/modal';
 import { InsertOverlayControl } from '../../services/insert-overlay.control';
@@ -10,6 +9,8 @@ import { InsertOverlayFooterComponent } from '../insert-overlay/insert-overlay-f
 import { SerLicenseResponseException } from '../../api/exceptions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { I18nTranslation } from '@smc/modules/smc-common';
+import { LicenseSource } from '../../services/license-source';
+import { ILicense } from '@smc/modules/license/api';
 
 @Component({
     selector: 'smc-license-overview',
@@ -21,11 +22,14 @@ export class OverviewComponent implements OnDestroy, OnInit {
 
     public content: string;
     public isReady = false;
-    public licenseData: string;
+    public licenseData = '';
 
     private isDestroyed$: Subject<boolean>;
     private license: License;
     private modal: ModalService;
+
+    @Input()
+    public licenseSource: LicenseSource;
 
     constructor(
         license: License,
@@ -52,11 +56,10 @@ export class OverviewComponent implements OnDestroy, OnInit {
      * @memberof LicenseComponent
      */
     ngOnInit() {
-        this.license.onload$
+        this.licenseSource.changed$
             .pipe(takeUntil(this.isDestroyed$))
-            .subscribe((license: LicenseModel) => {
-                this.licenseData = license.text;
-                this.isReady = true;
+            .subscribe((license: ILicense) => {
+                this.licenseData = license.licenseData.join('\n');
             });
     }
 
@@ -79,7 +82,7 @@ export class OverviewComponent implements OnDestroy, OnInit {
     }
 
     public loadFromServer() {
-        this.license.fetchLicense()
+        this.license.readLicenseFile()
             .pipe(
                 catchError((error: Error) => {
                     this.handleResponseError(error);
@@ -113,7 +116,7 @@ export class OverviewComponent implements OnDestroy, OnInit {
             footerComponent: InsertOverlayFooterComponent,
             title,
         };
-        this.modal.open(modalData, { panelClass: ['license-modal--insert']});
+        this.modal.open(modalData, { panelClass: ['license-modal--insert'] });
     }
 
     private handleResponseError(error: Error) {
@@ -124,11 +127,11 @@ export class OverviewComponent implements OnDestroy, OnInit {
                 const title = 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_RESPONSE_TITLE';
                 const msg: I18nTranslation = {
                     key: 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_RESPONSE_MESSAGE',
-                    param: {ERROR: responseError.response.error}
+                    param: { ERROR: responseError.response.error }
                 };
 
                 this.modal.openMessageModal(title, msg);
-            break;
+                break;
             default:
                 throw error;
         }

@@ -3,9 +3,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { MatDatepickerInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { Moment } from 'moment';
 import { Subject, of } from 'rxjs';
-import { map, switchMap, debounceTime, takeUntil, tap } from 'rxjs/operators';
 import { ILicenseUser } from '../../api/license-user.interface';
-import { LicenseModel } from '../../model/license.model';
 import { License, UserRepository } from '../../services';
 import { MOMENT_DATE_FORMAT } from '../../api/ser-date-formats';
 
@@ -72,36 +70,6 @@ export class UserComponent implements OnDestroy, OnInit {
     }
 
     ngOnInit() {
-
-        this.license.onload$.pipe(
-            map((model: LicenseModel): ITableUser[] => {
-
-                this.licenseExists            = model.raw.replace(/(^\s*|\s*$)/gm, '') !== '';
-                this.licensedUserInfo.total   = model.users.length;
-                this.licensedUserInfo.showing = model.users.length;
-
-                return model.users.map((user: ILicenseUser): ITableUser => {
-                    return {
-                        edit: false,
-                        isNew: false,
-                        user
-                    };
-                });
-            }),
-            takeUntil(this.isDestroyed$)
-        )
-        .subscribe((users: ITableUser[]) => {
-            this.users = [...users];
-            this.ready = true;
-        });
-
-        this.suggest$.pipe(
-            debounceTime(300),
-            switchMap((val) => val.length < 3 ? of([]) : this.repository.fetchQrsUsers(val)),
-            takeUntil(this.isDestroyed$)
-        ).subscribe((result) => {
-            this.userSuggestions = result;
-        });
     }
 
     /**
@@ -144,8 +112,6 @@ export class UserComponent implements OnDestroy, OnInit {
 
         /** the chosen one to delete */
         const theCosenOne = this.selection.selected[0].user;
-
-        this.license.deleteUser(theCosenOne);
         this.selection.clear();
     }
 
@@ -197,7 +163,6 @@ export class UserComponent implements OnDestroy, OnInit {
 
         if (tableUser.isNew) {
             // we need to add user to model
-            this.license.addUser(this.currentEditUser.user);
             tableUser.isNew = false;
         } else {
             // nobody triggers an update ...

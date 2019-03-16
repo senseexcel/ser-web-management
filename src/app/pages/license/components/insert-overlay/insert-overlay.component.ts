@@ -34,11 +34,6 @@ export class InsertOverlayComponent implements AfterViewInit, OnDestroy, OnInit 
     }
 
     ngAfterViewInit() {
-        this.license.onload$
-            .pipe(takeUntil(this.isDestroyed$))
-            .subscribe(() => {
-                this.ctrl.update(this.license.raw);
-            });
     }
 
     ngOnDestroy() {

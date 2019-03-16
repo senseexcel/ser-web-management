@@ -1,9 +1,11 @@
 import { ILicenseMeta, IReaderResult, LicenseType } from '../api';
 import { SearchTokens } from '../model/search.tokens';
+import { Injectable } from '@angular/core';
 
 /**
  * read license data from given string
  */
+@Injectable()
 export class LicenseReader {
 
     /**

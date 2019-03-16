@@ -1,4 +1,4 @@
-import { IUser, IUserLicense, IValidationResult } from '../api';
+import { IUser, IUserLicense, IValidationResult, LicenseType } from '../api';
 import { License } from './license';
 import { UserLicenseValidator } from '../validators/user.validator';
 
@@ -12,6 +12,7 @@ export class UserLicense extends License implements IUserLicense {
 
     public constructor() {
         super();
+        this._users    = new Set();
         this.validator = new UserLicenseValidator();
     }
 
@@ -30,6 +31,10 @@ export class UserLicense extends License implements IUserLicense {
      */
     public get userLimit(): number {
         return this._userLimit;
+    }
+
+    public get licenseType(): LicenseType {
+        return LicenseType.USER;
     }
 
     /**

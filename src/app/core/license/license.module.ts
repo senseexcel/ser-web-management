@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { LicenseReader } from './services/license-reader';
-import { LicenseWriter } from './services/license-writer';
+import { LicenseFactory } from './services/license-factory';
 
 @NgModule({
     providers: [
         LicenseReader,
-        LicenseWriter
+        LicenseFactory
     ]
 })
 export class LicenseModule { }

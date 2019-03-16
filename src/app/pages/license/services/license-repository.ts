@@ -50,6 +50,7 @@ export class LicenseRepository {
 
     /**
      * get current qlik license
+     * should placed in qmc module
      *
      * @throws {QlikLicenseInvalidException}
      * @throws {QlikLicenseNoAccessException}
@@ -71,7 +72,6 @@ export class LicenseRepository {
                     if (!response || response.isInvalid) {
                         throw new QlikLicenseInvalidException('No License found or invalid.');
                     }
-
                     /** serial number */
                     const serial = response.serial || '';
                     // write value into cache so we dont need to fetch again

@@ -4,6 +4,7 @@ import { InfoComponent } from './info/info.component';
 import { InsertOverlayComponent } from './insert-overlay/insert-overlay.component';
 import { InsertOverlayFooterComponent } from './insert-overlay/insert-overlay-footer.component';
 import { UserComponent } from './users/user.component';
+import { LicensePageComponent } from './license.page';
 
 export * from './overview/overview.component';
 export * from './error/error.component';
@@ -11,6 +12,7 @@ export * from './info/info.component';
 export * from './insert-overlay/insert-overlay.component';
 export * from './insert-overlay/insert-overlay-footer.component';
 export * from './users/user.component';
+export * from './license.page';
 
 export const components = [
     OverviewComponent,
@@ -18,5 +20,12 @@ export const components = [
     InfoComponent,
     InsertOverlayComponent,
     InsertOverlayFooterComponent,
-    UserComponent
+    UserComponent,
+    LicensePageComponent
+];
+
+export const entry_components = [
+    InsertOverlayComponent,
+    InsertOverlayFooterComponent,
+    LicensePageComponent
 ];

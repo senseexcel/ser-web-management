@@ -1,27 +1,22 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { LicenseValidator, License } from '../../services';
-import { LicenseModel } from '../../model/license.model';
-import { finalize, takeUntil, tap, mergeMap } from 'rxjs/operators';
-import { Subject, of } from 'rxjs';
-import { ValidationStep, ILicenseValidationResult } from '../../api/validation-result.interface';
+import { Subject } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ModalService } from '@smc/modules/modal';
+import { LicenseSource } from '../services/license-source';
+import { License } from '../services';
+import { ILicense } from '@smc/modules/license/api';
 
 @Component({
     selector: 'smc-license-page',
-    styleUrls: ['./license-page.component.scss'],
-    templateUrl: 'license-page.component.html'
+    styleUrls: ['./license.page.scss'],
+    templateUrl: 'license.page.html'
 })
-
 export class LicensePageComponent implements OnDestroy, OnInit {
 
     public ready: boolean;
-    public licenseModel: LicenseModel;
     public isInstallationInvalid: boolean;
-    public installationProgress: Map<ValidationStep, ILicenseValidationResult>;
     public properties: any[] = [];
     public selectedProperty: any;
-    public licenseExists: boolean;
+    public licenseSource: LicenseSource = new LicenseSource();
 
     @ViewChild('licenseOverview')
     private overviewContainer: ElementRef;
@@ -41,13 +36,10 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     constructor(
-        private modal: ModalService,
-        private license: License,
-        private licenseValidator: LicenseValidator,
+        private repository: License,
         private router: Router,
         private activatedRoute: ActivatedRoute
     ) {
-        this.isInstallationInvalid = false;
         this.isDestroyed$ = new Subject();
     }
 
@@ -65,13 +57,6 @@ export class LicensePageComponent implements OnDestroy, OnInit {
             { key: 'users',       label: 'SMC_LICENSE.USERS.LABEL'       }
         ];
         this.loadPage();
-
-        this.license.onload$
-            .pipe(takeUntil(this.isDestroyed$))
-            .subscribe((license: LicenseModel) => {
-                this.licenseModel = license;
-                this.licenseExists = license.raw && license.raw.replace(/(^\s*|\s*$)/gm, '') !== '';
-            });
     }
 
     ngOnDestroy() {
@@ -99,13 +84,6 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     public saveLicense() {
-        this.license.saveLicense()
-            .subscribe(() => {
-                this.modal.openMessageModal(
-                    'SMC_LICENSE.ACTIONS.SAVE.MODAL.SUCCESS_TITLE',
-                    {key: 'SMC_LICENSE.ACTIONS.SAVE.MODAL.SUCCESS_MESSAGE'}
-                );
-            });
     }
 
     /**
@@ -144,25 +122,9 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      */
     private loadPage() {
         this.ready = false;
-        this.licenseValidator.isValidLicenseInstallation()
-            .pipe(
-                tap((result) => {
-                    this.isInstallationInvalid = !result.isValid;
-                    this.installationProgress = result.data;
-                }),
-                mergeMap((result) => {
-                    if (!result.isValid) {
-                        this.properties = [{ label: 'Installation' }];
-                        return of(null);
-                    }
-                    return this.license.loadLicense();
-                }),
-                finalize(() => this.ready = true),
-                takeUntil(this.isDestroyed$)
-            )
-            .subscribe((license: LicenseModel) => {
-                this.licenseModel = license;
-                this.selectedProperty = this.properties[0] || '';
-            });
+
+        this.repository.loadLicenseFile().subscribe((license: ILicense) => {
+            this.licenseSource.license = license;
+        });
     }
 }

@@ -1,61 +1,32 @@
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject, Subject } from 'rxjs';
-import { map, switchMap, mergeMap  } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { LicenseRepository } from './license-repository';
-import { LicenseWriter } from './license-writer';
-import { ILicenseUser } from '../api/license-user.interface';
-import { LICENSE_PROPERTIES } from '../api/license-data.interface';
 import { SerLicenseResponseException } from '../api/exceptions';
+import { LicenseFactory, LicenseReader, LicenseType } from '@smc/modules/license';
+import { ILicense } from '@smc/modules/license/api';
 
 @Injectable()
 export class License {
 
-    public onload$: BehaviorSubject<LicenseModel>;
-    public update$: Subject<LicenseModel>;
-
-    private model: LicenseModel;
+    public update$: Subject<any>;
 
     constructor(
+        private licenseFactory: LicenseFactory,
+        private licenseReader: LicenseReader,
         private repository: LicenseRepository,
-        private writer: LicenseWriter,
     ) {
-        this.onload$    = new BehaviorSubject(this.model);
-        this.update$    = new Subject();
-    }
-
-    /**
-     * load license
-     *
-     * @memberof License
-     */
-    public loadLicense(): Observable<LicenseModel> {
-
-        return this.repository.readLicense().pipe(
-            map((licenseContent: string): LicenseModel => {
-                const license = this.reader.read(licenseContent, this.model);
-                this.onload$.next(license);
-                return license;
-            }),
-            mergeMap((license: LicenseModel) => {
-                return this.validator.validateLicense(license)
-                    .pipe(
-                        map((validationResult) => {
-                            license.validationResult = validationResult;
-                            return license;
-                        })
-                    );
-            })
-        );
+        this.update$ = new Subject();
     }
 
     /**
      * fetch license from remote server
      *
      * @throws {SerLicenseResponseException}
-     * @returns {Observable<LicenseModel>}
+     * @returns {Observable<string>}
      * @memberof License
      */
-    public fetchLicense(): Observable<LicenseModel> {
+    public readLicenseFile(): Observable<ILicense> {
         return this.repository.fetchSenseExcelReportingLicense()
             .pipe(
                 map((content: string[]): string => {
@@ -73,12 +44,17 @@ export class License {
                     }
                     return excelLicense;
                 }),
-                switchMap((licenseContent: string) => this.updateLicense(licenseContent))
+                map((raw) => this.createLicense(raw))
             );
     }
 
+    public loadLicenseFile(): Observable<ILicense> {
+
+        return this.repository.readLicense()
+            .pipe(map((raw) => this.createLicense(raw)));
+    }
+
     public update() {
-        this.update$.next(this.model);
     }
 
     /**
@@ -87,23 +63,7 @@ export class License {
      * @param {string} content
      * @memberof License
      */
-    public updateLicense(content: string | LicenseModel): Observable<LicenseModel> {
-
-        let license;
-        if (content instanceof LicenseModel) {
-            license = this.reader.copy(content, this.model);
-        } else {
-            license = this.reader.read(content, this.model);
-        }
-
-        return this.validator.validateLicense(license)
-            .pipe(
-                map((validationResult) => {
-                    license.validationResult = validationResult;
-                    this.onload$.next(license);
-                    return license;
-                })
-            );
+    public updateLicense(content: string): void {
     }
 
     /**
@@ -113,40 +73,21 @@ export class License {
      * @memberof License
      */
     public saveLicense() {
-        return this.writer.write(this.model);
     }
 
     /**
-     * adds new user to license
+     * read license from qmc/shared content
      *
-     * @param {ILicenseUser} user
      * @memberof License
      */
-    public get raw(): string {
-        const text = this.model.text;
-        const raw = this.model.users.reduce((rawData: string, user: ILicenseUser) => {
-            if (!user.id || !user.id.replace(/(^\s|\s$)/g, '').length ) {
-                return rawData;
-            }
+    private createLicense(raw: string): ILicense {
 
-            // create new user line for raw
-            const {id, from, to} = user;
-            const userData = [id, from, to].filter((value, index, fullData) => {
-
-                if (value !== null && value !== undefined) {
-                    return true;
-                }
-
-                return fullData.slice(index + 1).some((val) => {
-                    return val !== null && val !== undefined;
-                });
-            });
-
-            const lineData = [].concat([LICENSE_PROPERTIES.USER, ...userData]);
-
-            // concat current raw data with user line
-            return `${rawData}\n${lineData.join(';')}`;
-        }, text);
-        return raw;
+        const result = this.licenseReader.read(raw);
+        switch (result.licenseMeta.type) {
+            case LicenseType.USER:
+                return this.licenseFactory.createUserLicense(result);
+            case LicenseType.TOKEN:
+                return this.licenseFactory.createTokenLicense(result);
+        }
     }
 }

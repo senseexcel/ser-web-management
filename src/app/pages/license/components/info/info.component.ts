@@ -1,9 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { License, LicenseValidator, LicenseRepository } from '../../services';
-import { LicenseModel } from '../../model/license.model';
-import { mergeMap, takeUntil, map, switchMap, tap } from 'rxjs/operators';
-import { Subject, forkJoin, of } from 'rxjs';
-import { ILicenseValidationResult } from '../../api/validation-result.interface';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Subject } from 'rxjs';
+import { ILicense } from '@smc/modules/license/api';
+import { LicenseSource } from '../../services/license-source';
 
 @Component({
     selector: 'smc-license-info',
@@ -21,15 +19,9 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     public isValid: boolean;
 
-    /**
-     * current loaded license
-     *
-     * @type {LicenseModel}
-     * @memberof InfoComponent
-     */
-    public licenseModel: LicenseModel;
-
     public qlikLicense: string;
+
+    public licenseKey = '';
 
     /**
      * current license status valid or invalid
@@ -37,38 +29,12 @@ export class InfoComponent implements OnDestroy, OnInit {
      * @type {string}
      * @memberof InfoComponent
      */
-    public licenseStatus: 'valid' | 'invalid';
-
-    public ready = false;
+    public licenseStatus: 'valid' | 'invalid'  = 'invalid';
 
     public validationErrors: string[];
 
-    /**
-     * license service
-     *
-     * @private
-     * @type {License}
-     * @memberof InfoComponent
-     */
-    private license: License;
-
-    /**
-     * license repository
-     *
-     * @private
-     * @type {LicenseRepository}
-     * @memberof InfoComponent
-     */
-    private repository: LicenseRepository;
-
-    /**
-     * license validator service
-     *
-     * @private
-     * @type {LicenseValidator}
-     * @memberof InfoComponent
-     */
-    private validator: LicenseValidator;
+    @Input()
+    public licenseSource: LicenseSource;
 
     /**
      * emmits true if components get destroyed to unsubscribe automatically
@@ -80,15 +46,8 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     private isDestroyed$: Subject<boolean>;
 
-    constructor(
-        license: License,
-        repository: LicenseRepository,
-        validator: LicenseValidator
-    ) {
+    constructor() {
         this.isDestroyed$ = new Subject();
-        this.license      = license;
-        this.repository   = repository;
-        this.validator    = validator;
         this.validationErrors = [];
     }
 
@@ -108,45 +67,12 @@ export class InfoComponent implements OnDestroy, OnInit {
      * @memberof InfoComponent
      */
     ngOnInit() {
-        this.initLicense();
-
-        this.license.update$
-            .pipe(
-                switchMap((license: LicenseModel) => this.validator.validateLicense(license)),
-                takeUntil(this.isDestroyed$)
-            )
-            .subscribe((validationResult: ILicenseValidationResult) => {
-                this.isValid          = validationResult.isValid;
-                this.licenseStatus    = this.isValid ? 'valid' : 'invalid';
-                this.validationErrors = validationResult.errors;
-            });
+        this.licenseSource.changed$.subscribe((license: ILicense) => {
+            this.licenseKey    = license.licenseKey;
+            this.licenseStatus = license.validate().isValid ? 'valid' : 'invalid';
+        });
     }
 
-    /**
-     * init license data to determine status,
-     * this could also happens on update
-     *
-     * @private
-     * @memberof InfoComponent
-     */
-    private initLicense() {
-
-        const qlikSerial$ = this.repository.qlikSerial
-            ? of(this.repository.qlikSerial)
-            : this.repository.fetchQlikSerialNumber();
-
-       this.license.onload$.pipe(
-            switchMap((license: LicenseModel) => {
-                this.licenseModel = license;
-                return qlikSerial$;
-            }),
-            takeUntil(this.isDestroyed$)
-        )
-        .subscribe((qlikSerial: string) => {
-            this.licenseStatus    = this.licenseModel.validationResult.isValid ? 'valid' : 'invalid';
-            this.validationErrors = this.licenseModel.validationResult.errors;
-            this.qlikLicense      = qlikSerial;
-            this.ready            = true;
-        });
+    private validateLicense() {
     }
 }

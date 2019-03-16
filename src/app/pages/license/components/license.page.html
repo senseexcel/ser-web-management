@@ -1,4 +1,4 @@
-<smc-ui--page [loading]="!ready">
+<smc-ui--page [loading]="false">
 
   <!-- CONTENT HEADER -->
   <div page-content--header>
@@ -7,7 +7,7 @@
   </div>
 
   <!-- CONTENT BODY -->
-  <div page-content--body *ngIf="ready">
+  <div page-content--body>
 
     <!-- INSTALLATION VALID -->
     <ng-container *ngIf="!isInstallationInvalid">
@@ -16,7 +16,7 @@
           <i class="ser-icon ser-icon--license"></i>
           <span>{{'SMC_LICENSE.INFORMATIONS.LABEL' | translate}}</span>
         </div>
-        <smc-license-info></smc-license-info>
+        <smc-license-info [licenseSource]="licenseSource"></smc-license-info>
       </div>
 
       <div class="license-block" #licenseOverview>
@@ -24,7 +24,7 @@
           <i class="ser-icon ser-icon--license"></i>
           <span>{{'SMC_LICENSE.OVERVIEW.LABEL' | translate}}</span>
         </div>
-        <smc-license-overview></smc-license-overview>
+        <smc-license-overview [licenseSource]="licenseSource"></smc-license-overview>
       </div>
 
       <div class="license-block" #licensedUsers>
@@ -32,12 +32,6 @@
           <i class="ser-icon ser-icon--license"></i>
           <span>{{'SMC_LICENSE.USERS.LABEL' | translate}}</span>
         </div>
-        <ng-container *ngIf="licenseExists">
-          <smc-license-user></smc-license-user>
-        </ng-container>
-        <ng-container *ngIf="!licenseExists">
-          no license was found
-        </ng-container>
       </div>
     </ng-container>
 

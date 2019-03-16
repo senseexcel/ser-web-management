@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, KeyValueDifferFactory } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ValidationStep, ILicenseValidationResult } from '../../api/validation-result.interface';
 import { KeyValue } from '@angular/common';
 
