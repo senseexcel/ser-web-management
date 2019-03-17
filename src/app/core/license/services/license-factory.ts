@@ -4,7 +4,7 @@ import { LicenseReader } from './license-reader';
 import { Injectable } from '@angular/core';
 import moment = require('moment');
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class LicenseFactory {
 
     private reader: LicenseReader = new LicenseReader();
@@ -15,6 +15,7 @@ export class LicenseFactory {
      * broken license
      */
     public createFromRaw(raw: string): ILicense {
+
         let license: ILicense;
         const readerResult = this.reader.read(raw);
         switch (readerResult.licenseMeta.type) {
@@ -24,7 +25,7 @@ export class LicenseFactory {
                 break;
             /** user license was found */
             case LicenseType.NAMED:
-                license = this.createUserLicense(readerResult);
+                license = this.createNamedLicense(readerResult);
                 break;
             /** token license was found */
             case LicenseType.TOKEN:
@@ -47,7 +48,7 @@ export class LicenseFactory {
     /**
      * create a user license from dataset
      */
-    public createUserLicense(data: IReaderResult): IUserLicense {
+    public createNamedLicense(data: IReaderResult): IUserLicense {
 
         const nameToken = SearchTokens.TOKEN_NAME;
         const result = this.reader.extract(data.raw, [nameToken]);

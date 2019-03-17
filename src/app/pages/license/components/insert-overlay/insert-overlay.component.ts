@@ -1,8 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MODAL_OVERLAY_DATA } from '@smc/modules/modal/api/modal-content.injector';
+import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
+import { MODAL_OVERLAY_DATA, MODAL_OVERLAY_CTRL } from '@smc/modules/modal/api/modal-content.injector';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { ILicenseModalData } from '../../api/license-modal.data';
+import { debounceTime, takeUntil } from 'rxjs/operators';
+import { InsertOverlayControl } from '../../services/insert-overlay.control';
 
 @Component({
     selector: 'smc-license-insert-overlay',
@@ -10,7 +12,7 @@ import { ILicenseModalData } from '../../api/license-modal.data';
     templateUrl: 'insert-overlay.component.html'
 })
 
-export class InsertOverlayComponent implements  OnInit {
+export class InsertOverlayComponent implements OnInit, OnDestroy {
 
     public insertField: FormControl;
     public licenseValue = '';
@@ -20,17 +22,28 @@ export class InsertOverlayComponent implements  OnInit {
 
     constructor(
         @Inject(MODAL_OVERLAY_DATA) private data: ILicenseModalData<any>,
+        @Inject(MODAL_OVERLAY_CTRL) private ctrl: InsertOverlayControl,
         formBuilder: FormBuilder
     ) {
+        this.isDestroyed$ = new Subject();
         this.formBuilder = formBuilder;
     }
 
     ngOnInit() {
-        this.insertField = this.createInsertField();
+        const licenseData = this.data.license.toString();
+        this.ctrl.content = licenseData;
+        this.insertField = this.formBuilder.control(licenseData);
+        this.insertField.valueChanges.pipe(
+            debounceTime(400),
+            takeUntil(this.isDestroyed$)
+        ).subscribe((val) => {
+            this.ctrl.content = val;
+        });
     }
 
-    private createInsertField(): FormControl {
-        const control = this.formBuilder.control(this.data.license.toString());
-        return control;
+    ngOnDestroy() {
+        this.isDestroyed$.next(true);
+        this.isDestroyed$.complete();
+        this.insertField = null;
     }
 }

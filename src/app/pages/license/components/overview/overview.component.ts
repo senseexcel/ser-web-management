@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { LicenseRepository } from '../../services';
 import { catchError, takeUntil } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
-import { ModalService, IModalData } from '@smc/modules/modal';
+import { ModalService } from '@smc/modules/modal';
+import { HttpErrorResponse } from '@angular/common/http';
+import { I18nTranslation } from '@smc/modules/smc-common';
+import { LicenseFactory, ILicense } from '@smc/modules/license';
+
 import { InsertOverlayControl } from '../../services/insert-overlay.control';
 import { InsertOverlayComponent } from '../insert-overlay/insert-overlay.component';
 import { InsertOverlayFooterComponent } from '../insert-overlay/insert-overlay-footer.component';
 import { SerLicenseResponseException } from '../../api/exceptions';
-import { HttpErrorResponse } from '@angular/common/http';
-import { I18nTranslation } from '@smc/modules/smc-common';
-import { LicenseSource } from '../../model/license-source';
-import { ILicense } from '@smc/modules/license/api';
 import { ILicenseModalData } from '../../api/license-modal.data';
+import { LicenseRepository } from '../../services';
+import { LicenseSource } from '../../model/license-source';
 
 @Component({
     selector: 'smc-license-overview',
@@ -31,6 +32,7 @@ export class OverviewComponent implements OnDestroy, OnInit {
     public licenseSource: LicenseSource;
 
     constructor(
+        private licenseFactory: LicenseFactory,
         private license: LicenseRepository,
         private modal: ModalService
     ) {
@@ -78,22 +80,19 @@ export class OverviewComponent implements OnDestroy, OnInit {
         this.openModal('SMC_LICENSE.OVERVIEW.ACTIONS.EDIT');
     }
 
+    /**
+     * fetch license from remote server
+     */
     public loadFromServer() {
         this.license.readLicenseFile()
-            .pipe(
-                catchError((error: Error) => {
-                    this.handleResponseError(error);
-                    return of(null);
-                })
-            )
+            .pipe(catchError((error: Error) => {
+                this.handleResponseError(error);
+                return of(null);
+            }))
             .subscribe(
-                () => {},
-                /**
-                 * for any reason, if no internet connection is available (status: 0) this error will not catched
-                 * with catchError operator from rxjs.
-                 *
-                 * we need to handle this here
-                 */
+                (license: ILicense) => {
+                    this.licenseSource.license = license;
+                },
                 (error) => {
                     if (error.constructor === HttpErrorResponse && error.status === 0) {
                         const title = 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_CONNECTION_TITLE';
@@ -114,7 +113,14 @@ export class OverviewComponent implements OnDestroy, OnInit {
             title,
             license: this.licenseSource.license
         };
-        this.modal.open(modalData, { panelClass: ['license-modal--insert'] });
+
+        const ctrl = this.modal.open(modalData, { panelClass: ['license-modal--insert'] }) as InsertOverlayControl;
+        ctrl.update$
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe((licenseRaw: string) => {
+                const license = this.licenseFactory.createFromRaw(licenseRaw);
+                this.licenseSource.license = license;
+            });
     }
 
     private handleResponseError(error: Error) {

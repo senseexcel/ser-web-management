@@ -15,6 +15,7 @@ export class NamedLicenseValidator extends LicenseValidator {
      */
     public validate(license: IUserLicense): IValidationResult {
         const validationResult = super.validate(license);
+
         if (!this.hasLimit(license.userLimit)) {
             validationResult.isValid = false;
             validationResult.errors.add(noLimitError);
@@ -36,8 +37,10 @@ export class NamedLicenseValidator extends LicenseValidator {
     private validateActiveUsersAtSameTime(license): boolean {
         const today = moment();
         let isValid = true;
+        const users = license.users;
+
         for (let i = 365; i >= 0; i--) {
-            const activeUsers = this.getActiveUsersOnDate(today.add(1, 'day'), license.users);
+            const activeUsers = this.getActiveUsersOnDate(today.add(1, 'day'), users);
             if (activeUsers.length > license.userLimit) {
                 isValid = false;
                 break;
@@ -52,11 +55,15 @@ export class NamedLicenseValidator extends LicenseValidator {
     private getActiveUsersOnDate(date: moment.Moment, users: IUser[]): IUser[] {
         /** filter for active users */
         return users.filter((user) => {
-            const { from, to } = user;
-
+            const {from, to} = user;
             let isActive = true;
+
+
+            // console.log(date.format('YYYY-MM-DD'), from.format('YYYY-MM-DD'), to.format('YYYY-MM-DD'));
+            // throw new Error('who cares');
+
             isActive = isActive && (!from.isValid() || date.isSameOrAfter(from, 'day'));
-            isActive = isActive && (!to.isValid() || date.isSameOrBefore(to, 'day'));
+            isActive = isActive && (!to.isValid()   || date.isSameOrBefore(to, 'day'));
             return isActive;
         });
     }

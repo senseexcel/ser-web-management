@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { LicenseSource } from '../model/license-source';
 import { LicenseRepository } from '../services';
 import { LicenseFactory, LicenseType } from '@smc/modules/license';
+import { ModalService } from '@smc/modules/modal';
 
 @Component({
     selector: 'smc-license-page',
@@ -38,6 +39,7 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     constructor(
+        private modal: ModalService,
         private licenseFactory: LicenseFactory,
         private repository: LicenseRepository,
         private router: Router,
@@ -91,6 +93,14 @@ export class LicensePageComponent implements OnDestroy, OnInit {
      * @memberof LicensePageComponent
      */
     public saveLicense() {
+        const license = this.licenseSource.license;
+        this.repository.writeLicense(license.toString())
+            .subscribe(() => {
+                this.modal.openMessageModal(
+                    'SMC_LICENSE.ACTIONS.SAVE.MODAL.SUCCESS_TITLE',
+                    {key: 'SMC_LICENSE.ACTIONS.SAVE.MODAL.SUCCESS_MESSAGE'}
+                );
+            });
     }
 
     /**

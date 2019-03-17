@@ -105,7 +105,7 @@ export class LicenseReader {
             if (!matched) {
                 continue;
             }
-            matches.get(matched).push(...(extract ? lines.splice(index, 1) : [line]));
+            matches.get(matched).unshift(...(extract ? lines.splice(index, 1) : [line]));
         }
         return matches;
     }

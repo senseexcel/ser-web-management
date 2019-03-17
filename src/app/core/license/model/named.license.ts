@@ -41,7 +41,7 @@ export class NamedLicense extends AbstractLicense implements IUserLicense {
      * get all users from license
      */
     public get users(): IUser[] {
-        return Array.from(this._users);
+        return Array.from(this._users.values());
     }
 
     /**

@@ -15,5 +15,5 @@ export abstract class SearchTokens {
     /**
      * pattern to match username
      */
-    public static readonly TOKEN_NAME = /^EXCEL_NAME(?:(?:;)([^;]*))?(?:(?:;)([^;]*))?(?:;(.*?))?$/;
+    public static readonly TOKEN_NAME = /^EXCEL_NAME(.*?)$/;
 }

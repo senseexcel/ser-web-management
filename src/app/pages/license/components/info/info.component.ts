@@ -87,6 +87,9 @@ export class InfoComponent implements OnDestroy, OnInit {
 
     private sourceChanged(license: ILicense) {
 
+        this.validationErrors   = [];
+        this.validationWarnings = [];
+
         this.licenseKey = license.licenseKey;
         this.qlikSerial = this.licenseSource.qlikLicense.serial;
 

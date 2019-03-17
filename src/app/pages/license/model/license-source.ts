@@ -20,11 +20,9 @@ export class LicenseSource {
     }
 
     public set license(license: ILicense) {
-        if (license !== this._license) {
-            this._validationResult = license.validate();
-            this._license = license;
-            this.changed$.next(license);
-        }
+        this._validationResult = license.validate();
+        this._license = license;
+        this.changed$.next(license);
     }
 
     public get license(): ILicense {

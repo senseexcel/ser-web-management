@@ -23,6 +23,7 @@ export class InsertOverlayFooterComponent {
      * @memberof InsertOverlayFooterComponent
      */
     public apply() {
+        this.ctrl.update();
         this.close();
     }
 

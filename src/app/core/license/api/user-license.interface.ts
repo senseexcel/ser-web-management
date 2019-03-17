@@ -10,4 +10,8 @@ export interface IUserLicense extends ILicense {
     addUser(user: IUser);
 
     addUsers(user: IUser[]);
+
+    removeUser(user: IUser);
+
+    removeUsers(user: IUser[]);
 }

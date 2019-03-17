@@ -48,4 +48,16 @@ export class NamedLicense implements IUserLicense {
     public validate(): IValidationResult {
         return null;
     }
+
+    removeUser(user: IUser) {
+        /* noop */
+    }
+
+    removeUsers(user: IUser[]) {
+        /** noop */
+    }
+
+    toString(): string {
+        return '';
+    }
 }

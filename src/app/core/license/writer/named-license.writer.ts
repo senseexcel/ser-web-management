@@ -7,12 +7,12 @@ import { LicenseWriter } from './license-writer';
 export class NamedLicenseWriter extends LicenseWriter {
 
     public write(license: IUserLicense): string {
-
-        return [
+        const result = [
             ...license.licenseData,
             ...this.writeUser(license.users),
             ...license.data
         ].join('\r\n');
+        return result;
     }
 
     /**
@@ -47,7 +47,7 @@ export class NamedLicenseWriter extends LicenseWriter {
             } else if (!toDate) {
                 return `${line};${fromDate}`;
             } else {
-                return `${line};${toDate};${fromDate}`;
+                return `${line};${fromDate};${toDate}`;
             }
         });
     }
