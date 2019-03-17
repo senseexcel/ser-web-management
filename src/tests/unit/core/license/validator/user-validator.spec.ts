@@ -118,23 +118,7 @@ describe('LicenseModule', () => {
 
                 const sd: moment.Moment = moment();
                 const ed: moment.Moment = moment().add(1, 'month');
-                userLicense.userLimit = null;
-
-                userLicense.addUsers([{
-                    id: 'jasmine/test',
-                    from: sd,
-                    to: ed
-                },
-                {
-                    id: 'jasmine/test',
-                    from: sd,
-                    to: ed
-                },
-                {
-                    id: 'jasmine/test',
-                    from: sd.add(1, 'month'),
-                    to: ed.add(1, 'month')
-                }]);
+                userLicense.userLimit = -1;
 
                 const result = validator.validate(userLicense);
                 expect(result.isValid).toBeFalsy();

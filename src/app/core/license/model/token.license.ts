@@ -1,13 +1,9 @@
-import { IValidationResult } from '../api';
 import { AbstractLicense } from './license';
+import { LicenseType } from '../api/license-type.interface';
 
 export class TokenLicense extends AbstractLicense {
 
-    public toString(): string {
-        return '';
-    }
-
-    public validate(): IValidationResult {
-        return null;
+    public get licenseType(): LicenseType {
+        return LicenseType.TOKEN;
     }
 }

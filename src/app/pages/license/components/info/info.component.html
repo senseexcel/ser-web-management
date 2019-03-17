@@ -12,6 +12,11 @@
                     {{'SMC_LICENSE.VALIDATION.ERRORS.' + error | translate}}
                 </li>
             </ul>
+            <ul class="warnings" *ngIf="validationWarnings.length">
+                <li *ngFor="let warning of validationWarnings">
+                    {{'SMC_LICENSE.VALIDATION.WARNINGS.' + warning | translate}}
+                </li>
+            </ul>
         </div>
     </div>
 </div>

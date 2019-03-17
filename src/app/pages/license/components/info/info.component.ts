@@ -1,8 +1,13 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { LicenseSource } from '../../model/license-source';
-import { ILicense } from '@smc/modules/license/api';
-import { toManyUsersAtSameDateError, licenseExpiredError, licenseNotActiveYetError } from '@smc/modules/license';
+import { ILicense, LicenseType } from '@smc/modules/license/api';
+import {
+    toManyUsersAtSameDateError,
+    licenseExpiredError,
+    licenseNotActiveYetError,
+    noLimitError
+} from '@smc/modules/license';
 
 @Component({
     selector: 'smc-license-info',
@@ -34,6 +39,8 @@ export class InfoComponent implements OnDestroy, OnInit {
 
     public validationErrors: string[];
 
+    public validationWarnings: string[];
+
     @Input()
     public licenseSource: LicenseSource;
 
@@ -49,7 +56,8 @@ export class InfoComponent implements OnDestroy, OnInit {
 
     constructor() {
         this.isDestroyed$ = new Subject();
-        this.validationErrors = [];
+        this.validationErrors   = [];
+        this.validationWarnings = [];
     }
 
     /**
@@ -77,18 +85,40 @@ export class InfoComponent implements OnDestroy, OnInit {
     }
 
     private sourceChanged(license: ILicense) {
+
         this.licenseKey = license.licenseKey;
         this.qlikSerial = this.licenseSource.qlikLicenseKey;
 
-        this.isValid = this.licenseKey === this.qlikSerial;
-        this.isValid = this.isValid && this.licenseSource.isValid;
+        this.isValid = this.licenseSource.isValid;
 
-        if (!this.isValid) {
-            this.resolveErrors();
+        if (this.licenseKey !== this.qlikSerial) {
+            this.isValid = false;
+            this.validationErrors.push('MISSMATCH_SERIALS');
+        }
+
+        this.handleLicenseValidations();
+    }
+
+    private handleLicenseValidations() {
+
+        this.resolveErrorsLicense();
+
+        switch (this.licenseSource.license.licenseType) {
+            case LicenseType.NAMED:
+                this.resolveErrorsNamedLicense();
+                break;
+            case LicenseType.TOKEN:
+                this.resolveErrorsTokenLicense();
+                break;
+            default:
+                this.validationWarnings.push('UNKNOWN_LICENSE');
         }
     }
 
-    private resolveErrors() {
+    /**
+     * resolve general erros for license
+     */
+    private resolveErrorsLicense() {
         const errors = this.licenseSource.validationResult.errors;
 
         if (errors.has(licenseExpiredError)) {
@@ -97,6 +127,28 @@ export class InfoComponent implements OnDestroy, OnInit {
 
         if (errors.has(licenseNotActiveYetError)) {
             this.validationErrors.push('LICENSE_NOT_ACTIVATED');
+        }
+    }
+
+    /**
+     * resolve errors for token license
+     */
+    private resolveErrorsTokenLicense() {
+        const errors = this.licenseSource.validationResult.errors;
+
+        if (errors.has(noLimitError)) {
+            this.validationErrors.push('LICENSE_NO_LIMIT');
+        }
+    }
+
+    /**
+     * resolve errors for named license
+     */
+    private resolveErrorsNamedLicense() {
+        const errors = this.licenseSource.validationResult.errors;
+
+        if (errors.has(noLimitError)) {
+            this.validationErrors.push('LICENSE_NO_LIMIT');
         }
 
         if (errors.has(toManyUsersAtSameDateError)) {

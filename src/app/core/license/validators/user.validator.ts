@@ -1,7 +1,7 @@
 import moment = require('moment');
 import { IValidationResult, IUser, IUserLicense } from '../api';
 import { LicenseValidator } from './license.validator';
-import { toManyUsersAtSameDateError, noUserLimitError } from './validation.tokens';
+import { toManyUsersAtSameDateError, noLimitError } from './validation.tokens';
 
 export class UserLicenseValidator extends LicenseValidator {
 
@@ -17,7 +17,7 @@ export class UserLicenseValidator extends LicenseValidator {
         const validationResult = super.validate(license);
         if (!this.validateHasUserLimit(license.userLimit)) {
             validationResult.isValid = false;
-            validationResult.errors.add(noUserLimitError);
+            validationResult.errors.add(noLimitError);
         } else if (license.userLimit < license.users.length && !this.validateActiveUsersAtSameTime(license)) {
             /**
              * if we added more users as we have a user limit we need to check
@@ -31,8 +31,8 @@ export class UserLicenseValidator extends LicenseValidator {
 
     /**
      * isNaN works not that great to check it is a number
-     * since string '' will be a number but isNaN(parseInt('', 10)) will not
-     * and parseInt('12abc', 10) will be a number  again since this will convert to 12
+     * the most cases could be catched via isNaN(parseInt(value, 10));
+     * but this will also convert a string like ab12 to a number -> 12
      */
     private validateHasUserLimit(count): boolean {
         const parsedCount = parseInt(count, 10);

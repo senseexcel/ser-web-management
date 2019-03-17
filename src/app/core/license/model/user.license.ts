@@ -8,11 +8,9 @@ export class UserLicense extends AbstractLicense implements IUserLicense {
 
     private _users: Set<IUser>;
 
-    private validator: UserLicenseValidator;
-
     public constructor() {
         super();
-        this._users    = new Set();
+        this._users = new Set();
         this.validator = new UserLicenseValidator();
     }
 

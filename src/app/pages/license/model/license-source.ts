@@ -26,6 +26,10 @@ export class LicenseSource {
         }
     }
 
+    public get license(): ILicense {
+        return this._license;
+    }
+
     public set qlikLicenseKey(key: string) {
         this._qlikSerial = key;
     }
