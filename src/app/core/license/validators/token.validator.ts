@@ -4,7 +4,7 @@ import { noLimitError } from './validation.tokens';
 import { TokenLicense } from '../model';
 import { IValidationResult } from '../api';
 
-export class UserLicenseValidator extends LicenseValidator {
+export class TokenLicenseValidator extends LicenseValidator {
     /**
      * check users activated are less or equal license user limit
      * if user limit set to -1 there is no user limit

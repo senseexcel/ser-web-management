@@ -1,9 +1,12 @@
 import { AbstractLicense } from './license';
 import { LicenseType } from '../api/license-type.interface';
+import { TokenLicenseValidator } from '../validators/token.validator';
 
 export class TokenLicense extends AbstractLicense {
 
     private _tokens: number;
+
+    protected validator = new TokenLicenseValidator();
 
     public get licenseType(): LicenseType {
         return LicenseType.TOKEN;

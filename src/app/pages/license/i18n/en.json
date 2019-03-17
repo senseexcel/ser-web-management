@@ -25,7 +25,7 @@
     "VALIDATION": {
       "ERRORS": {
         "MISSMATCH_SERIALS": "missmatch Sense Excel Reporting Serial and Qlik Serial.",
-        "NOT_ENOUGH_SER_TOKENS": "Sense Excel Tokens has to been greater or equal QlikLicense Tokens",
+        "NOT_ENOUGH_SER_TOKENS": "Sense Excel Tokens has to been greater or equal Qlik Tokens",
         "NO_ACCESS_QLIK_LICENSE": "No access Qlik Serial",
         "CONTENTLIB_NOT_EXISTS": "Content Library senseexcel does not exists",
         "LICENSE_EXPIRED": "License expired",
