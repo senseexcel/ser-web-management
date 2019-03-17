@@ -11,6 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { I18nTranslation } from '@smc/modules/smc-common';
 import { LicenseSource } from '../../model/license-source';
 import { ILicense } from '@smc/modules/license/api';
+import { ILicenseModalData } from '../../api/license-modal.data';
 
 @Component({
     selector: 'smc-license-overview',
@@ -106,11 +107,12 @@ export class OverviewComponent implements OnDestroy, OnInit {
     }
 
     private openModal(title: string) {
-        const modalData: IModalData<InsertOverlayComponent> = {
+        const modalData: ILicenseModalData<InsertOverlayComponent> = {
             bodyComponent: InsertOverlayComponent,
             control: InsertOverlayControl,
             footerComponent: InsertOverlayFooterComponent,
             title,
+            license: this.licenseSource.license
         };
         this.modal.open(modalData, { panelClass: ['license-modal--insert'] });
     }

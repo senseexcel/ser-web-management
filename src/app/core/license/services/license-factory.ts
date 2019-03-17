@@ -1,4 +1,4 @@
-import { UnknownLicense, EmptyLicense, SearchTokens, TokenLicense, UserLicense } from '../model';
+import { UnknownLicense, EmptyLicense, SearchTokens, TokenLicense, NamedLicense } from '../model';
 import { IReaderResult, IUserLicense, IUser, ILicense, LicenseType } from '../api';
 import { LicenseReader } from './license-reader';
 import { Injectable } from '@angular/core';
@@ -60,7 +60,7 @@ export class LicenseFactory {
             };
         });
 
-        const license = new UserLicense();
+        const license = new NamedLicense();
         license.userLimit = data.licenseMeta.count;
         license.addUsers(users);
         this.loadDataIntoLicense(data, license);

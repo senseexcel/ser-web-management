@@ -1,33 +1,33 @@
 import moment = require('moment');
-import { UserLicense } from '../mock/user-license.mock';
-import { UserLicenseValidator } from '@smc/modules/license/validators/user.validator';
-import { toManyUsersAtSameDateError, noUserLimitError } from '@smc/modules/license/validators/validation.tokens';
+import { NamedLicense } from '../mock/user-license.mock';
+import { NamedLicenseValidator } from '@smc/modules/license/validators/user.validator';
+import { toManyUsersAtSameDateError, noLimitError } from '@smc/modules/license/validators/validation.tokens';
 
 describe('LicenseModule', () => {
 
     describe('Validators', () => {
 
-        describe('UserLicense', () => {
+        describe('NamedLicense', () => {
 
-            let validator: UserLicenseValidator;
-            let userLicense: UserLicense;
+            let validator: NamedLicenseValidator;
+            let namedLicense: NamedLicense;
 
             beforeEach(() => {
-                validator = new UserLicenseValidator();
-                userLicense = new UserLicense();
-                userLicense.userLimit = 2;
+                validator = new NamedLicenseValidator();
+                namedLicense = new NamedLicense();
+                namedLicense.userLimit = 2;
             });
 
             it('Valid: only 2 users registerd', () => {
                 const startDate = moment();
                 const endDate = moment().add(1, 'M');
 
-                userLicense.addUsers([
+                namedLicense.addUsers([
                     { id: 'jasmine/test', from: startDate, to: endDate },
                     { id: 'jasmine/test', from: startDate, to: endDate }
                 ]);
 
-                const result = validator.validate(userLicense);
+                const result = validator.validate(namedLicense);
                 expect(result.isValid).toBeTruthy();
             });
 
@@ -36,13 +36,13 @@ describe('LicenseModule', () => {
                 const sd: moment.Moment = moment();
                 const ed: moment.Moment = moment().add(1, 'month');
 
-                userLicense.addUsers([
+                namedLicense.addUsers([
                     { id: 'jasmine/test', from: sd, to: ed },
                     { id: 'jasmine/test', from: sd, to: ed },
                     { id: 'jasmine/test', from: sd.add(1, 'day').add(1, 'month'), to: ed }
                 ]);
 
-                const result = validator.validate(userLicense);
+                const result = validator.validate(namedLicense);
                 expect(result.isValid).toBeTruthy();
             });
 
@@ -54,13 +54,13 @@ describe('LicenseModule', () => {
                 const startDate = moment();
                 const endDate = moment().add(1, 'M');
 
-                userLicense.addUsers([
+                namedLicense.addUsers([
                     { id: 'jasmine/test', from: startDate, to: endDate },
                     { id: 'jasmine/test', from: startDate, to: endDate },
                     { id: 'jasmine/test', from: startDate, to: endDate }
                 ]);
 
-                expect(validator.validate(userLicense).isValid).toBeFalsy();
+                expect(validator.validate(namedLicense).isValid).toBeFalsy();
             });
 
             /**
@@ -72,13 +72,13 @@ describe('LicenseModule', () => {
                 const sd: moment.Moment = moment();
                 const ed: moment.Moment = moment().add(1, 'month');
 
-                userLicense.addUsers([
+                namedLicense.addUsers([
                     { id: 'jasmine/test', from: sd, to: ed },
                     { id: 'jasmine/test', from: sd, to: ed },
                     { id: 'jasmine/test', from: sd.add(1, 'day'), to: ed }
                 ]);
 
-                expect(validator.validate(userLicense).isValid).toBeFalsy();
+                expect(validator.validate(namedLicense).isValid).toBeFalsy();
             });
 
             /**
@@ -93,7 +93,7 @@ describe('LicenseModule', () => {
                 const sd: moment.Moment = moment();
                 const ed: moment.Moment = moment().add(1, 'month');
 
-                userLicense.addUsers([{
+                namedLicense.addUsers([{
                     id: 'jasmine/test',
                     from: sd,
                     to: ed
@@ -109,7 +109,7 @@ describe('LicenseModule', () => {
                     to: ed.add(1, 'month')
                 }]);
 
-                const result = validator.validate(userLicense);
+                const result = validator.validate(namedLicense);
                 expect(result.isValid).toBeFalsy();
                 expect(result.errors.has(toManyUsersAtSameDateError)).toBeTruthy();
             });
@@ -118,11 +118,11 @@ describe('LicenseModule', () => {
 
                 const sd: moment.Moment = moment();
                 const ed: moment.Moment = moment().add(1, 'month');
-                userLicense.userLimit = -1;
+                namedLicense.userLimit = -1;
 
-                const result = validator.validate(userLicense);
+                const result = validator.validate(namedLicense);
                 expect(result.isValid).toBeFalsy();
-                expect(result.errors.has(noUserLimitError)).toBeTruthy();
+                expect(result.errors.has(noLimitError)).toBeTruthy();
             });
         });
     });

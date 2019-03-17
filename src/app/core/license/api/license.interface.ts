@@ -17,4 +17,6 @@ export interface ILicense {
     data: string[];
 
     validate(): IValidationResult;
+
+    toString(): string;
 }

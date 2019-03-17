@@ -2,7 +2,7 @@ import { IUser, IUserLicense, IValidationResult, LicenseType } from '@smc/module
 import { Moment } from 'moment';
 import moment = require('moment');
 
-export class UserLicense implements IUserLicense {
+export class NamedLicense implements IUserLicense {
 
     licenseType: LicenseType = LicenseType.NAMED;
 

@@ -1,8 +1,9 @@
 import { IUser, IUserLicense, IValidationResult, LicenseType } from '../api';
 import { AbstractLicense } from './license';
-import { UserLicenseValidator } from '../validators/user.validator';
+import { NamedLicenseValidator } from '../validators/user.validator';
+import { NamedLicenseWriter } from '../writer/named-license.writer';
 
-export class UserLicense extends AbstractLicense implements IUserLicense {
+export class NamedLicense extends AbstractLicense implements IUserLicense {
 
     private _userLimit;
 
@@ -11,7 +12,8 @@ export class UserLicense extends AbstractLicense implements IUserLicense {
     public constructor() {
         super();
         this._users = new Set();
-        this.validator = new UserLicenseValidator();
+        this.validator = new NamedLicenseValidator();
+        this.writer    = new NamedLicenseWriter();
     }
 
     /**
@@ -25,7 +27,7 @@ export class UserLicense extends AbstractLicense implements IUserLicense {
      * get user limitation for license
      *
      * @type {number}
-     * @memberof UserLicense
+     * @memberof NamedLicense
      */
     public get userLimit(): number {
         return this._userLimit;
@@ -71,7 +73,7 @@ export class UserLicense extends AbstractLicense implements IUserLicense {
     }
 
     public toString(): string {
-        return '';
+        return this.writer.write(this);
     }
 
     public validate(): IValidationResult {

@@ -3,7 +3,7 @@ import { IValidationResult, IUser, IUserLicense } from '../api';
 import { LicenseValidator } from './license.validator';
 import { toManyUsersAtSameDateError, noLimitError } from './validation.tokens';
 
-export class UserLicenseValidator extends LicenseValidator {
+export class NamedLicenseValidator extends LicenseValidator {
 
     /**
      * check users activated are less or equal license user limit

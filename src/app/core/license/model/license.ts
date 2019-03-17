@@ -1,12 +1,15 @@
 import { ILicense, IValidationResult, LicenseType } from '../api';
 import { Moment } from 'moment';
 import { LicenseValidator } from '../validators/license.validator';
+import { LicenseWriter } from '../writer/license-writer';
 
 export abstract class AbstractLicense implements ILicense {
 
     readonly licenseType: LicenseType;
 
     protected validator: LicenseValidator = new LicenseValidator();
+
+    protected writer: LicenseWriter = new LicenseWriter();
 
     private _licenseData: string[] = [];
 
@@ -89,10 +92,7 @@ export abstract class AbstractLicense implements ILicense {
     }
 
     public toString() {
-        return [
-            ...this.licenseData,
-            ...this.data
-        ].join('\n');
+        return this.writer.write(this);
     }
 
     public validate(): IValidationResult {
