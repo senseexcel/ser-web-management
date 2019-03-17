@@ -15,7 +15,7 @@ export class UserLicenseValidator extends LicenseValidator {
      */
     public validate(license: IUserLicense): IValidationResult {
         const validationResult = super.validate(license);
-        if (!this.validateHasUserLimit(license.userLimit)) {
+        if (!this.hasLimit(license.userLimit)) {
             validationResult.isValid = false;
             validationResult.errors.add(noLimitError);
         } else if (license.userLimit < license.users.length && !this.validateActiveUsersAtSameTime(license)) {
@@ -27,20 +27,6 @@ export class UserLicenseValidator extends LicenseValidator {
             validationResult.errors.add(toManyUsersAtSameDateError);
         }
         return validationResult;
-    }
-
-    /**
-     * isNaN works not that great to check it is a number
-     * the most cases could be catched via isNaN(parseInt(value, 10));
-     * but this will also convert a string like ab12 to a number -> 12
-     */
-    private validateHasUserLimit(count): boolean {
-        const parsedCount = parseInt(count, 10);
-        if (!count || isNaN(parsedCount) || parsedCount <= 0) {
-            return false;
-        }
-        // to be sure we dont have add a string for example '123abc'
-        return /^(?!.*?\D).*$/.test(String(count));
     }
 
     /**

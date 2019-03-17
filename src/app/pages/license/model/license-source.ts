@@ -1,5 +1,6 @@
-import { ILicense, IValidationResult } from '@smc/modules/license/api';
 import { ReplaySubject, Subject } from 'rxjs';
+import { IValidationResult, ILicense } from '@smc/modules/license/api';
+import { IQlikLicense } from '../api/qlik-license.interface';
 
 export class LicenseSource {
 
@@ -7,7 +8,7 @@ export class LicenseSource {
 
     public validate$: Subject<IValidationResult>;
 
-    private _qlikSerial = '';
+    private _qlikLicense: IQlikLicense;
 
     private _validationResult: IValidationResult;
 
@@ -30,12 +31,12 @@ export class LicenseSource {
         return this._license;
     }
 
-    public set qlikLicenseKey(key: string) {
-        this._qlikSerial = key;
+    public set qlikLicense(key: IQlikLicense) {
+        this._qlikLicense = key;
     }
 
-    public get qlikLicenseKey(): string {
-        return this._qlikSerial;
+    public get qlikLicense(): IQlikLicense {
+        return this._qlikLicense;
     }
 
     public get isValid(): boolean {

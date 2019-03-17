@@ -73,6 +73,7 @@ export class LicenseFactory {
      */
     public createTokenLicense(data: IReaderResult): TokenLicense {
         const license = new TokenLicense();
+        license.tokens = data.licenseMeta.count;
         this.loadDataIntoLicense(data, license);
         return license;
     }

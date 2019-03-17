@@ -13,7 +13,8 @@ import { ContentLibService } from './contentlib.service';
 import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 import { SerLicenseResponse } from '../api/response/ser-license.response';
 import { ILicense } from '@smc/modules/license/api';
-import { LicenseFactory } from '@smc/modules/license';
+import { LicenseFactory, LicenseReader } from '@smc/modules/license';
+import { IQlikLicense } from '../api/qlik-license.interface';
 
 @Injectable()
 export class LicenseRepository {
@@ -25,10 +26,11 @@ export class LicenseRepository {
      * @type {BehaviorSubject<string>}
      * @memberof LicenseService
      */
-    private qlikSerialNumber: string;
+    private qlikLef: string[];
 
     constructor(
         private licenseFactory: LicenseFactory,
+        private licenseReader: LicenseReader,
         private contentLib: ContentLibService,
         private http: HttpClient
     ) {
@@ -40,9 +42,9 @@ export class LicenseRepository {
      * get current qlik license
      * should placed in qmc module
      */
-    public fetchQlikSerialNumber(): Observable<string> {
-        let serial$: Observable<string>;
-        if (!this.qlikSerialNumber) {
+    public fetchQlikLicenseFile(): Observable<string[]> {
+        let serial$: Observable<string[]>;
+        if (!this.qlikLef) {
             serial$ = this.http.get<IQlikLicenseResponse>('/qrs/license').pipe(
                 catchError((response: HttpErrorResponse) => {
                     if (response.status === 403) {
@@ -54,13 +56,12 @@ export class LicenseRepository {
                     if (!response || response.isInvalid) {
                         throw new QlikLicenseInvalidException('No License found or invalid.');
                     }
-                    const serial = response.serial || '';
-                    this.qlikSerialNumber = serial;
-                    return serial;
+                    this.qlikLef = response.lef.split('\r\n');
+                    return this.qlikLef;
                 })
             );
         } else {
-            serial$ = of(this.qlikSerialNumber);
+            serial$ = of(this.qlikLef);
         }
         return serial$;
     }
@@ -73,14 +74,14 @@ export class LicenseRepository {
      */
     public fetchSenseExcelReportingLicense(): Observable<string[]> {
 
-        return this.fetchQlikSerialNumber().pipe(
-            switchMap((qlikSerial: string) => {
+        return this.readQlikLicenseFile().pipe(
+            switchMap((license: IQlikLicense) => {
                 /** calculate checksum */
-                const checkSum = this.calculateCheckSum(qlikSerial);
+                const checkSum = this.calculateCheckSum(license.serial);
 
                 /** create params */
                 const params = new HttpParams()
-                    .set('serial', qlikSerial)
+                    .set('serial', license.serial)
                     .set('chk', String(checkSum));
 
                 const url = `https://license.senseexcel.com/lefupdate/update_lef.json?${params.toString()}`;
@@ -201,6 +202,28 @@ export class LicenseRepository {
                 }),
                 map((raw) => this.createLicense(raw))
             );
+    }
+
+    public readQlikLicenseFile(): Observable<IQlikLicense> {
+        return this.fetchQlikLicenseFile().pipe(
+            switchMap((licenseData: string[]) => {
+                const tokenSearch = /^TOKENS/;
+                const result = this.licenseReader.search(licenseData, [tokenSearch]);
+                const tokens: string[] = result.get(tokenSearch) || [];
+
+                const qlikSerial = licenseData[0];
+                let tokensMax: number;
+
+                if (tokens.length) {
+                    tokensMax = parseInt(tokens[0].split(';')[1], 10) || -1;
+                }
+
+                return of({
+                    serial: qlikSerial,
+                    tokens: tokensMax
+                });
+            })
+        );
     }
 
     /**

@@ -1,6 +1,5 @@
 import { AbstractLicense } from './license';
-import { IValidationResult, LicenseType } from '../api';
-import { licenseUnknownError } from '../validators/validation.tokens';
+import { LicenseType } from '../api';
 
 export class UnknownLicense extends AbstractLicense {
 

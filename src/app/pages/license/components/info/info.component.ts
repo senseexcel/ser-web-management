@@ -8,6 +8,7 @@ import {
     licenseNotActiveYetError,
     noLimitError
 } from '@smc/modules/license';
+import { TokenLicense } from '@smc/modules/license/model';
 
 @Component({
     selector: 'smc-license-info',
@@ -87,7 +88,7 @@ export class InfoComponent implements OnDestroy, OnInit {
     private sourceChanged(license: ILicense) {
 
         this.licenseKey = license.licenseKey;
-        this.qlikSerial = this.licenseSource.qlikLicenseKey;
+        this.qlikSerial = this.licenseSource.qlikLicense.serial;
 
         this.isValid = this.licenseSource.isValid;
 
@@ -99,6 +100,9 @@ export class InfoComponent implements OnDestroy, OnInit {
         this.handleLicenseValidations();
     }
 
+    /**
+     * check for validation errors
+     */
     private handleLicenseValidations() {
 
         this.resolveErrorsLicense();
@@ -134,10 +138,17 @@ export class InfoComponent implements OnDestroy, OnInit {
      * resolve errors for token license
      */
     private resolveErrorsTokenLicense() {
+
+        const license = this.licenseSource.license as TokenLicense;
         const errors = this.licenseSource.validationResult.errors;
 
         if (errors.has(noLimitError)) {
             this.validationErrors.push('LICENSE_NO_LIMIT');
+        }
+
+        if (license.tokens < this.licenseSource.qlikLicense.tokens) {
+            this.isValid = false;
+            this.validationErrors.push('NOT_ENOUGH_SER_TOKENS');
         }
     }
 

@@ -130,11 +130,12 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     private loadPage() {
         this.isLoading = true;
 
-        const qlikSerial$ = this.repository.fetchQlikSerialNumber();
+        // const qlikSerial$ = this.repository.fetchLicenseFile();
         const licenseFile$ = this.repository.readLicense();
+        const qlikLicense$ = this.repository.readQlikLicenseFile();
 
-        forkJoin([qlikSerial$, licenseFile$]).subscribe(([qlikSerial, licenseRaw]) => {
-            this.licenseSource.qlikLicenseKey = qlikSerial;
+        forkJoin([qlikLicense$, licenseFile$]).subscribe(([qlikLicense, licenseRaw]) => {
+            this.licenseSource.qlikLicense = qlikLicense;
             this.licenseSource.license = this.licenseFactory.createFromRaw(licenseRaw);
             this.isLoading = false;
         });
