@@ -1,7 +1,7 @@
 import moment = require('moment');
 import { UserLicense } from '../mock/user-license.mock';
 import { UserLicenseValidator } from '@smc/modules/license/validators/user.validator';
-import { toManyUsersAtSameDateError } from '@smc/modules/license/validators/validation.tokens';
+import { toManyUsersAtSameDateError, noUserLimitError } from '@smc/modules/license/validators/validation.tokens';
 
 describe('LicenseModule', () => {
 
@@ -19,8 +19,8 @@ describe('LicenseModule', () => {
             });
 
             it('Valid: only 2 users registerd', () => {
-                const startDate: string = moment().format('Y-MM-DD');
-                const endDate: string = moment().add(1, 'M').format('Y-MM-DD');
+                const startDate = moment();
+                const endDate = moment().add(1, 'M');
 
                 userLicense.addUsers([
                     { id: 'jasmine/test', from: startDate, to: endDate },
@@ -37,9 +37,9 @@ describe('LicenseModule', () => {
                 const ed: moment.Moment = moment().add(1, 'month');
 
                 userLicense.addUsers([
-                    { id: 'jasmine/test', from: sd.format('Y-MM-DD'), to: ed.format('Y-MM-DD') },
-                    { id: 'jasmine/test', from: sd.format('Y-MM-DD'), to: ed.format('Y-MM-DD') },
-                    { id: 'jasmine/test', from: sd.add(1, 'day').add(1, 'month').format('Y-MM-DD'), to: ed.format('Y-MM-DD') }
+                    { id: 'jasmine/test', from: sd, to: ed },
+                    { id: 'jasmine/test', from: sd, to: ed },
+                    { id: 'jasmine/test', from: sd.add(1, 'day').add(1, 'month'), to: ed }
                 ]);
 
                 const result = validator.validate(userLicense);
@@ -51,8 +51,8 @@ describe('LicenseModule', () => {
              */
             it('Invalid: 3 Users active at the same day', () => {
 
-                const startDate: string = moment().format('Y-MM-DD');
-                const endDate: string = moment().add(1, 'M').format('Y-MM-DD');
+                const startDate = moment();
+                const endDate = moment().add(1, 'M');
 
                 userLicense.addUsers([
                     { id: 'jasmine/test', from: startDate, to: endDate },
@@ -73,9 +73,9 @@ describe('LicenseModule', () => {
                 const ed: moment.Moment = moment().add(1, 'month');
 
                 userLicense.addUsers([
-                    { id: 'jasmine/test', from: sd.format('Y-MM-DD'), to: ed.format('Y-MM-DD') },
-                    { id: 'jasmine/test', from: sd.format('Y-MM-DD'), to: ed.format('Y-MM-DD') },
-                    { id: 'jasmine/test', from: sd.add(1, 'day').format('Y-MM-DD'), to: ed.format('Y-MM-DD') }
+                    { id: 'jasmine/test', from: sd, to: ed },
+                    { id: 'jasmine/test', from: sd, to: ed },
+                    { id: 'jasmine/test', from: sd.add(1, 'day'), to: ed }
                 ]);
 
                 expect(validator.validate(userLicense).isValid).toBeFalsy();
@@ -95,23 +95,50 @@ describe('LicenseModule', () => {
 
                 userLicense.addUsers([{
                     id: 'jasmine/test',
-                    from: sd.format('Y-MM-DD'),
-                    to: ed.format('Y-MM-DD')
+                    from: sd,
+                    to: ed
                 },
                 {
                     id: 'jasmine/test',
-                    from: sd.format('Y-MM-DD'),
-                    to: ed.format('Y-MM-DD')
+                    from: sd,
+                    to: ed
                 },
                 {
                     id: 'jasmine/test',
-                    from: sd.add(1, 'month').format('Y-MM-DD'),
-                    to: ed.add(1, 'month').format('Y-MM-DD')
+                    from: sd.add(1, 'month'),
+                    to: ed.add(1, 'month')
                 }]);
 
                 const result = validator.validate(userLicense);
                 expect(result.isValid).toBeFalsy();
                 expect(result.errors.has(toManyUsersAtSameDateError)).toBeTruthy();
+            });
+
+            it('should be invalid since no userLimit is given', () => {
+
+                const sd: moment.Moment = moment();
+                const ed: moment.Moment = moment().add(1, 'month');
+                userLicense.userLimit = null;
+
+                userLicense.addUsers([{
+                    id: 'jasmine/test',
+                    from: sd,
+                    to: ed
+                },
+                {
+                    id: 'jasmine/test',
+                    from: sd,
+                    to: ed
+                },
+                {
+                    id: 'jasmine/test',
+                    from: sd.add(1, 'month'),
+                    to: ed.add(1, 'month')
+                }]);
+
+                const result = validator.validate(userLicense);
+                expect(result.isValid).toBeFalsy();
+                expect(result.errors.has(noUserLimitError)).toBeTruthy();
             });
         });
     });

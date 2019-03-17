@@ -25,11 +25,17 @@
       <smc-license-overview [licenseSource]="licenseSource"></smc-license-overview>
     </div>
 
-    <!-- 
-        check we have to load a template here or not 
-        for tokens we dont need an extra template for user license we need 
-    -->
-    <smc-license-overview [licenseSource]="licenseSource"></smc-license-overview>
+    <!-- USER CONTAINER -->
+    <ng-container *ngIf="isUserLicense">
+      <div class="license-block" #licenseUsers>
+        <div class="header qmc-page--content-header">
+          <i class="ser-icon ser-icon--license"></i>
+          <span>{{'SMC_LICENSE.USERS.LABEL' | translate}}</span>
+        </div>
+        <smc-license-user [licenseSource]="licenseSource"></smc-license-user>
+      </div>
+    </ng-container>
+
   </div>
 
   <!-- CONTENT FOOTER -->

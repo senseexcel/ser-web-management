@@ -1,7 +1,7 @@
 import moment = require('moment');
 import { IValidationResult, IUser, IUserLicense } from '../api';
 import { LicenseValidator } from './license.validator';
-import { toManyUsersAtSameDateError } from './validation.tokens';
+import { toManyUsersAtSameDateError, noUserLimitError } from './validation.tokens';
 
 export class UserLicenseValidator extends LicenseValidator {
 
@@ -14,25 +14,50 @@ export class UserLicenseValidator extends LicenseValidator {
      * @memberof LicenseValidator
      */
     public validate(license: IUserLicense): IValidationResult {
-
         const validationResult = super.validate(license);
-
-        /** if no user limit exists or user limit is not reached it is valid */
-        if (license.userLimit >= license.users.length) {
-            return validationResult;
+        if (!this.validateHasUserLimit(license.userLimit)) {
+            validationResult.isValid = false;
+            validationResult.errors.add(noUserLimitError);
+        } else if (license.userLimit < license.users.length && !this.validateActiveUsersAtSameTime(license)) {
+            /**
+             * if we added more users as we have a user limit we need to check
+             * that users are spread out so they dont use the same time
+             */
+            validationResult.isValid = false;
+            validationResult.errors.add(toManyUsersAtSameDateError);
         }
+        return validationResult;
+    }
 
+    /**
+     * isNaN works not that great to check it is a number
+     * since string '' will be a number but isNaN(parseInt('', 10)) will not
+     * and parseInt('12abc', 10) will be a number  again since this will convert to 12
+     */
+    private validateHasUserLimit(count): boolean {
+        const parsedCount = parseInt(count, 10);
+        if (!count || isNaN(parsedCount) || parsedCount <= 0) {
+            return false;
+        }
+        // to be sure we dont have add a string for example '123abc'
+        return /^(?!.*?\D).*$/.test(String(count));
+    }
+
+    /**
+     * since we can add more users as limit to license
+     * we have to check how many users uses the license at the same time
+     */
+    private validateActiveUsersAtSameTime(license): boolean {
         const today = moment();
-
+        let isValid = true;
         for (let i = 365; i >= 0; i--) {
             const activeUsers = this.getActiveUsersOnDate(today.add(1, 'day'), license.users);
             if (activeUsers.length > license.userLimit) {
-                validationResult.isValid = false;
-                validationResult.errors.add(toManyUsersAtSameDateError);
+                isValid = false;
                 break;
             }
         }
-        return validationResult;
+        return isValid;
     }
 
     /**
@@ -41,10 +66,11 @@ export class UserLicenseValidator extends LicenseValidator {
     private getActiveUsersOnDate(date: moment.Moment, users: IUser[]): IUser[] {
         /** filter for active users */
         return users.filter((user) => {
-            const {from, to} = user;
+            const { from, to } = user;
+
             let isActive = true;
-            isActive = isActive && (!Boolean(from) || date.isSameOrAfter(from, 'day'));
-            isActive = isActive && (!Boolean(to)   || date.isSameOrBefore(to , 'day'));
+            isActive = isActive && (!from.isValid() || date.isSameOrAfter(from, 'day'));
+            isActive = isActive && (!to.isValid() || date.isSameOrBefore(to, 'day'));
             return isActive;
         });
     }

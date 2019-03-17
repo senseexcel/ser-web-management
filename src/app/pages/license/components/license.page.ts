@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { Subject, forkJoin } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LicenseSource } from '../model/license-source';
 import { LicenseRepository } from '../services';
-import { LicenseFactory } from '@smc/modules/license';
+import { LicenseFactory, LicenseType } from '@smc/modules/license';
 
 @Component({
     selector: 'smc-license-page',
@@ -17,6 +17,8 @@ export class LicensePageComponent implements OnDestroy, OnInit {
     public properties: any[] = [];
     public selectedProperty: any;
     public licenseSource: LicenseSource = new LicenseSource();
+
+    public isUserLicense = false;
 
     @ViewChild('licenseOverview')
     private overviewContainer: ElementRef;
@@ -57,6 +59,10 @@ export class LicensePageComponent implements OnDestroy, OnInit {
             { key: 'overview', label: 'SMC_LICENSE.OVERVIEW.LABEL' },
             { key: 'users', label: 'SMC_LICENSE.USERS.LABEL' }
         ];
+
+        this.licenseSource.changed$.subscribe((license) => {
+            this.isUserLicense = license.licenseType === LicenseType.NAMED;
+        });
         this.loadPage();
     }
 

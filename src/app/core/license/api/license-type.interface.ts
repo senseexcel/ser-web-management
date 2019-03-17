@@ -1,6 +1,6 @@
 export enum LicenseType {
-    BROKEN = -1,
+    UNKNOWN = -1,
     EMPTY = 0,
-    USER = 1,
+    NAMED = 1,
     TOKEN = 2
 }

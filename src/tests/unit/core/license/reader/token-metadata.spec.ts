@@ -28,7 +28,7 @@ describe('LicenseModule: Reader', () => {
             _result = _reader.read(license1);
             expect(_result.licenseMeta.type).toBe(LicenseType.TOKEN);
             expect(_result.licenseMeta.count).toBe(5);
-            expect(_result.licenseMeta.from).toBe('');
+            expect(_result.licenseMeta.from).toBe(null);
             expect(_result.licenseMeta.to).toBe('2019-01-31');
         });
 
@@ -38,7 +38,7 @@ describe('LicenseModule: Reader', () => {
             expect(_result.licenseMeta.type).toBe(LicenseType.TOKEN);
             expect(_result.licenseMeta.count).toBe(20);
             expect(_result.licenseMeta.from).toBe('2020-01-20');
-            expect(_result.licenseMeta.to).toBe('');
+            expect(_result.licenseMeta.to).toBe(null);
         });
 
 
@@ -46,8 +46,8 @@ describe('LicenseModule: Reader', () => {
             _result = _reader.read(license3);
             expect(_result.licenseMeta.type).toBe(LicenseType.TOKEN);
             expect(_result.licenseMeta.count).toBe(20);
-            expect(_result.licenseMeta.from).toBe('');
-            expect(_result.licenseMeta.to).toBe('');
+            expect(_result.licenseMeta.from).toBe(null);
+            expect(_result.licenseMeta.to).toBe(null);
         });
 
         it('should be have meta data count: 20; from:2020-01-20: to: empty', () => {
@@ -56,14 +56,6 @@ describe('LicenseModule: Reader', () => {
             expect(_result.licenseMeta.count).toBe(20);
             expect(_result.licenseMeta.from).toBe('2020-01-20');
             expect(_result.licenseMeta.to).toBe('2021-01-20');
-        });
-
-        it('should throw an error count missing', () => {
-            expect(() => _reader.read(license5)).toThrow();
-        });
-
-        it('should throw an error no license found', () => {
-            expect(() => _reader.read(license6)).toThrow();
         });
     });
 });

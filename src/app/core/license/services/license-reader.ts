@@ -51,7 +51,7 @@ export class LicenseReader {
         };
 
         if (lines.length !== 0) {
-            licenseMeta.type = LicenseType.BROKEN;
+            licenseMeta.type = LicenseType.UNKNOWN;
 
             const namedMetaSearch = SearchTokens.NAMED_LICENSE_META;
             const tokenMetaSearch = SearchTokens.TOKEN_LICENSE_META;
@@ -64,10 +64,10 @@ export class LicenseReader {
 
                 const metaData = metaDataLine[0].split(';');
 
-                licenseMeta.count = parseInt(metaData[1], 10);
-                licenseMeta.from  = metaData[2];
-                licenseMeta.to    = metaData[3];
-                licenseMeta.type  = result.get(namedMetaSearch).length ? LicenseType.USER : LicenseType.TOKEN;
+                licenseMeta.count = metaData[1] ? parseInt(metaData[1], 10) : null;
+                licenseMeta.from  = metaData[2] || null;
+                licenseMeta.to    = metaData[3] || null;
+                licenseMeta.type  = result.get(namedMetaSearch).length ? LicenseType.NAMED : LicenseType.TOKEN;
             }
         }
         return licenseMeta;

@@ -1,4 +1,4 @@
-import { BrokenLicense, EmptyLicense, SearchTokens, TokenLicense, UserLicense } from '../model';
+import { UnknownLicense, EmptyLicense, SearchTokens, TokenLicense, UserLicense } from '../model';
 import { IReaderResult, IUserLicense, IUser, ILicense, LicenseType } from '../api';
 import { LicenseReader } from './license-reader';
 import { Injectable } from '@angular/core';
@@ -19,11 +19,11 @@ export class LicenseFactory {
         const readerResult = this.reader.read(raw);
         switch (readerResult.licenseMeta.type) {
             /** unknown or broken license was found */
-            case LicenseType.BROKEN:
-                license = this.createBrokenLicense(readerResult);
+            case LicenseType.UNKNOWN:
+                license = this.createUnknownLicense(readerResult);
                 break;
             /** user license was found */
-            case LicenseType.USER:
+            case LicenseType.NAMED:
                 license = this.createUserLicense(readerResult);
                 break;
             /** token license was found */
@@ -55,8 +55,8 @@ export class LicenseFactory {
             const userData = line.split(';');
             return {
                 id:   userData[1] || '',
-                from: moment(userData[2] || '-'),
-                to:   moment(userData[3] || '-')
+                from: moment(userData[2] || null),
+                to:   moment(userData[3] || null)
             };
         });
 
@@ -82,8 +82,8 @@ export class LicenseFactory {
      * in both cases we could not handle license correctly
      * in validation
      */
-    private createBrokenLicense(data: IReaderResult): BrokenLicense {
-        const license = new BrokenLicense();
+    private createUnknownLicense(data: IReaderResult): UnknownLicense {
+        const license = new UnknownLicense();
         this.loadDataIntoLicense(data, license);
         return license;
     }
@@ -93,7 +93,7 @@ export class LicenseFactory {
      */
     private loadDataIntoLicense(data: IReaderResult, license: ILicense) {
         license.data = data.raw;
-        license.from = moment(data.licenseMeta.from);
+        license.from = moment(data.licenseMeta.from || null);
         license.licenseData = data.licenseRaw;
         license.licenseKey = data.licenseKey;
         license.to = moment(data.licenseMeta.to);

@@ -2,10 +2,10 @@ import { AbstractLicense } from './license';
 import { IValidationResult, LicenseType } from '../api';
 import { licenseBrokenError } from '../validators/validation.tokens';
 
-export class BrokenLicense extends AbstractLicense {
+export class UnknownLicense extends AbstractLicense {
 
     public get licenseType(): LicenseType {
-        return LicenseType.BROKEN;
+        return LicenseType.UNKNOWN;
     }
 
     public validate(): IValidationResult {

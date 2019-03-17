@@ -4,7 +4,7 @@ import moment = require('moment');
 
 export class UserLicense implements IUserLicense {
 
-    licenseType: LicenseType = LicenseType.USER;
+    licenseType: LicenseType = LicenseType.NAMED;
 
     licenseData: string[];
 

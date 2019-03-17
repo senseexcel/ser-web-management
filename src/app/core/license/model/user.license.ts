@@ -34,7 +34,7 @@ export class UserLicense extends AbstractLicense implements IUserLicense {
     }
 
     public get licenseType(): LicenseType {
-        return LicenseType.USER;
+        return LicenseType.NAMED;
     }
 
     /**

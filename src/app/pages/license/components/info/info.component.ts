@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subject } from 'rxjs';
 import { LicenseSource } from '../../model/license-source';
-import { LicenseRepository } from '../../services';
 import { ILicense } from '@smc/modules/license/api';
+import { toManyUsersAtSameDateError, licenseExpiredError, licenseNotActiveYetError } from '@smc/modules/license';
 
 @Component({
     selector: 'smc-license-info',
@@ -47,9 +47,7 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     private isDestroyed$: Subject<boolean>;
 
-    constructor(
-        private licenseRepository: LicenseRepository
-    ) {
+    constructor() {
         this.isDestroyed$ = new Subject();
         this.validationErrors = [];
     }
@@ -84,5 +82,25 @@ export class InfoComponent implements OnDestroy, OnInit {
 
         this.isValid = this.licenseKey === this.qlikSerial;
         this.isValid = this.isValid && this.licenseSource.isValid;
+
+        if (!this.isValid) {
+            this.resolveErrors();
+        }
+    }
+
+    private resolveErrors() {
+        const errors = this.licenseSource.validationResult.errors;
+
+        if (errors.has(licenseExpiredError)) {
+            this.validationErrors.push('LICENSE_EXPIRED');
+        }
+
+        if (errors.has(licenseNotActiveYetError)) {
+            this.validationErrors.push('LICENSE_NOT_ACTIVATED');
+        }
+
+        if (errors.has(toManyUsersAtSameDateError)) {
+            this.validationErrors.push('TO_MANY_USERS_AT_SAME_DATE');
+        }
     }
 }

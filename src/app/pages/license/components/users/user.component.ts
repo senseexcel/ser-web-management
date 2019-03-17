@@ -1,20 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDatepickerInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { Moment } from 'moment';
 import { Subject, of } from 'rxjs';
-import { ILicenseUser } from '../../api/license-user.interface';
 import { MOMENT_DATE_FORMAT } from '../../api/ser-date-formats';
+import { LicenseSource } from '../../model/license-source';
+import { takeUntil } from 'rxjs/operators';
+import { IUserLicense, IUser } from '@smc/modules/license/api';
+import { toManyUsersAtSameDateError } from '@smc/modules/license/validators/validation.tokens';
 
 interface ITableUser {
     edit: boolean;
     isNew: boolean;
-    user: ILicenseUser;
+    user: IUser;
 }
 
 @Component({
-    selector   : 'smc-license-user',
-    styleUrls  : ['user.component.scss'],
+    selector: 'smc-license-user',
+    styleUrls: ['user.component.scss'],
     templateUrl: 'user.component.html'
 })
 
@@ -33,13 +36,16 @@ export class UserComponent implements OnDestroy, OnInit {
     private isDestroyed$: Subject<boolean>;
     private suggest$: Subject<any>;
 
+    @Input()
+    private licenseSource: LicenseSource;
+
     constructor(
     ) {
         this.isDestroyed$ = new Subject();
-        this.selection    = new SelectionModel(false);
-        this.suggest$     = new Subject();
+        this.selection = new SelectionModel(false);
+        this.suggest$ = new Subject();
 
-        this.licensedUserInfo = {total: 0, showing: 0};
+        this.licensedUserInfo = { total: 0, showing: 0 };
         this.userSuggestions = [];
     }
 
@@ -52,14 +58,29 @@ export class UserComponent implements OnDestroy, OnInit {
         this.isDestroyed$.next(true);
 
         /** null variables to ensure it is not set anymore */
-        this.selection    = null;
-        this.suggest$     = null;
+        this.selection = null;
+        this.suggest$ = null;
         this.isDestroyed$ = null;
-        this.users        = null;
+        this.users = null;
         this.userSuggestions = null;
     }
 
     ngOnInit() {
+        this.licenseSource.changed$
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe((license: IUserLicense) => {
+
+                this.licensedUserInfo.total = license.users.length;
+                this.licensedUserInfo.showing = license.users.length;
+
+                this.users = license.users.map((user: IUser): ITableUser => {
+                    return {
+                        edit: false,
+                        isNew: false,
+                        user
+                    };
+                });
+            });
     }
 
     /**
@@ -77,16 +98,16 @@ export class UserComponent implements OnDestroy, OnInit {
             edit: true,
             isNew: true,
             user: {
-                id  : '',
+                id: '',
                 from: null,
-                to  : null,
+                to: null,
                 isActive: false
             }
         };
 
         this.currentEditUser = newUser;
         this.users = [...this.users, this.currentEditUser];
-        this.mode  = 'edit';
+        this.mode = 'edit';
     }
 
     /**
@@ -144,7 +165,7 @@ export class UserComponent implements OnDestroy, OnInit {
 
         this.mode = 'view';
 
-        if (tableUser.user.id.replace(/(^\s*|\s*$)/g, '') === '' ) {
+        if (tableUser.user.id.replace(/(^\s*|\s*$)/g, '') === '') {
             // remove last user from table
             this.users = this.users.slice(0, -1);
             return;

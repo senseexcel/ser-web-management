@@ -27,7 +27,10 @@
         "SER_QLIK_NOT_EQUAL": "Sense Excel Reporting Serial not equal Qlik Serial.",
         "NO_ACCESS_QLIK_LICENSE": "No access Qlik Serial",
         "CONTENTLIB_NOT_EXISTS": "Content Library senseexcel does not exists",
-        "TO_MANY_USERS": "To many users uses the license at the same time!"
+        "LICENSE_EXPIRED": "License expired",
+        "LICENSE_BROKEN": "License is broken or could not handled in smc",
+        "LICENSE_NOT_ACTIVATED": "License not actived yet",
+        "TO_MANY_USERS_AT_SAME_DATE": "To many users at same date"
       }
     },
 

@@ -1,7 +1,6 @@
-
 import { LicenseReader } from '@smc/modules/license/services/license-reader';
 import { TestBed, inject } from '@angular/core/testing';
-import { IReaderResult } from '@smc/modules/license/api/reader-result.interface';
+import { LicenseType } from '@smc/modules/license';
 import { license1, license7, license8, license9 } from '../mock/named-license';
 
 describe('LicenseModule: Reader', () => {
@@ -19,24 +18,39 @@ describe('LicenseModule: Reader', () => {
         _reader = reader;
     }));
 
-    describe('general: extract', () => {
+    describe('license type', () => {
+        it('should be an empty license', () => {
+            const result = _reader.read('');
+            expect(result.licenseMeta.type).toBe(LicenseType.EMPTY);
+        });
 
-        let _result: IReaderResult;
+        it('should be an unknown license', () => {
+            const result = _reader.read('EXCEL_UNKNOWN_LICENSE_TYPE');
+            expect(result.licenseMeta.type).toBe(LicenseType.UNKNOWN);
+        });
+
+        it('should be an named license', () => {
+            const result = _reader.read('EXCEL_NAMED');
+            expect(result.licenseMeta.type).toBe(LicenseType.NAMED);
+        });
+    });
+
+    describe('extract lines', () => {
 
         it('raw data from result should be empty', () => {
-            _result = _reader.read(license1);
+            const _result = _reader.read(license1);
             expect(_result.raw).toEqual([]);
         });
 
         it('raw data from result should contain 2 entries', () => {
-            _result = _reader.read(license7);
+            const _result = _reader.read(license7);
             expect(_result.raw).toEqual([
                 'PARENT;;', 'PARENT;;'
             ]);
         });
 
         it('raw data from result should trimmed', () => {
-            _result = _reader.read(license8);
+            const _result = _reader.read(license8);
             expect(_result.raw).toEqual([
                 'PARENT;;', 'PARENT;;', 'PARENT;;'
             ]);
@@ -44,7 +58,7 @@ describe('LicenseModule: Reader', () => {
 
         it('should extract all parents from lines', () => {
 
-            _result = _reader.read(license9);
+            const _result = _reader.read(license9);
             const searchToken = /^PARENT;;/;
             const parents = _reader.extract(_result.raw, [searchToken]).get(searchToken);
 
