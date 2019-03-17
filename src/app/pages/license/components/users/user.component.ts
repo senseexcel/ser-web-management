@@ -5,7 +5,7 @@ import { Moment } from 'moment';
 import { Subject, of } from 'rxjs';
 import { LicenseSource } from '../../model/license-source';
 import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
-import { IUserLicense, IUser } from '@smc/modules/license/api';
+import { IUserLicense, IUser, ILicense, LicenseType } from '@smc/modules/license/api';
 import moment = require('moment');
 import { UserRepository } from '../../services';
 
@@ -70,18 +70,23 @@ export class UserComponent implements OnDestroy, OnInit {
 
     ngOnInit() {
 
-        this.license = this.licenseSource.license as IUserLicense;
+        this.licenseSource.changed$.subscribe((license: ILicense) => {
+            this.license = this.licenseSource.license as IUserLicense;
 
-        const licenseUsers = this.license.users;
+            if (license.licenseType !== LicenseType.NAMED) {
+                return;
+            }
 
-        this.licensedUserInfo.total = licenseUsers.length;
-        this.licensedUserInfo.showing = licenseUsers.length;
-        this.users = licenseUsers.map((user: IUser): ITableUser => {
-            return {
-                edit: false,
-                isNew: false,
-                user
-            };
+            const licenseUsers = this.license.users;
+            this.licensedUserInfo.total   = licenseUsers.length;
+            this.licensedUserInfo.showing = licenseUsers.length;
+            this.users = licenseUsers.map((user: IUser): ITableUser => {
+                return {
+                    edit: false,
+                    isNew: false,
+                    user
+                };
+            });
         });
 
         this.suggest$.pipe(
@@ -136,7 +141,12 @@ export class UserComponent implements OnDestroy, OnInit {
         this.license.removeUser(theCosenOne);
         this.users.splice(this.users.indexOf(this.selection.selected[0]), 1);
         this.users = [...this.users];
+
+        this.licensedUserInfo.total   = this.users.length;
+        this.licensedUserInfo.showing = this.users.length;
         this.selection.clear();
+
+        this.licenseSource.revalidateSource();
     }
 
     /**
@@ -189,6 +199,7 @@ export class UserComponent implements OnDestroy, OnInit {
             tableUser.isNew = false;
         }
 
+        this.licenseSource.revalidateSource();
         this.currentEditUser = null;
     }
 

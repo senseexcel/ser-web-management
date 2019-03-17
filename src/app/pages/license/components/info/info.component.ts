@@ -57,7 +57,7 @@ export class InfoComponent implements OnDestroy, OnInit {
 
     constructor() {
         this.isDestroyed$ = new Subject();
-        this.validationErrors   = [];
+        this.validationErrors = [];
         this.validationWarnings = [];
     }
 
@@ -82,16 +82,25 @@ export class InfoComponent implements OnDestroy, OnInit {
             .subscribe((license) => this.sourceChanged(license));
 
         this.licenseSource.validate$
-            .subscribe();
+            .subscribe(() => this.getValidationInformations());
     }
 
     private sourceChanged(license: ILicense) {
 
-        this.validationErrors   = [];
-        this.validationWarnings = [];
 
         this.licenseKey = license.licenseKey;
         this.qlikSerial = this.licenseSource.qlikLicense.serial;
+
+        this.getValidationInformations();
+    }
+
+    /**
+     * check for validation errors
+     */
+    private getValidationInformations() {
+
+        this.validationErrors = [];
+        this.validationWarnings = [];
 
         this.isValid = this.licenseSource.isValid;
 
@@ -99,14 +108,6 @@ export class InfoComponent implements OnDestroy, OnInit {
             this.isValid = false;
             this.validationErrors.push('MISSMATCH_SERIALS');
         }
-
-        this.handleLicenseValidations();
-    }
-
-    /**
-     * check for validation errors
-     */
-    private handleLicenseValidations() {
 
         this.resolveErrorsLicense();
 
