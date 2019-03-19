@@ -43,7 +43,7 @@
     "@angular/language-service": "7.2.9",
     "@types/angular-material": "1.1.66",
     "@types/enigma.js": "2.2.1",
-    "@types/jasmine": "3.3.10",
+    "@types/jasmine": "3.3.11",
     "@types/jasminewd2": "2.0.6",
     "@types/jsonwebtoken": "8.3.2",
     "@types/moment-timezone": "0.5.12",
