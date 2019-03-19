@@ -1,0 +1,83 @@
+export const license1 = `
+1234567890
+EXCEL_NAMED;5;;2019-01-31
+AAAA-BBBB-CCCC-DDDD-EEEE
+`;
+
+export const license2 = `
+1234567890
+EXCEL_NAMED;20;2020-01-20
+AAAA-BBBB-CCCC-DDDD-EEEE
+`;
+
+export const license3 = `
+1234567890
+EXCEL_NAMED;20
+AAAA-BBBB-CCCC-DDDD-EEEE
+`;
+
+export const license4 = `
+1234567890
+EXCEL_NAMED;20;2020-01-20;2021-01-20
+AAAA-BBBB-CCCC-DDDD-EEEE
+`;
+
+export const license5 = `
+1234567890
+EXCEL_NAMED
+AAAA-BBBB-CCCC-DDDD-EEEE
+`;
+
+export const license6 = `
+1234567890
+EXCEL_NAMES_ARE_WRONG_HERE
+AAAA-BBBB-CCCC-DDDD-EEEE
+`;
+
+export const license7 = `
+1234567890
+EXCEL_NAMED;20;2020-01-20;2021-01-20
+AAAA-BBBB-CCCC-DDDD-EEEE
+PARENT;;
+PARENT;;
+`;
+
+export const license8 = `
+1234567890
+EXCEL_NAMED;20;2020-01-20;2021-01-20
+AAAA-BBBB-CCCC-DDDD-EEEE
+
+        PARENT;;
+
+PARENT;;
+
+  PARENT;;
+
+
+
+`;
+
+export const license9 = `
+1234567890
+EXCEL_NAMED;20;2020-01-20;2021-01-20
+AAAA-BBBB-CCCC-DDDD-EEEE
+Child;;
+PARENT;;
+PARENT;;
+Child;;
+`;
+
+export const license10 = `
+1234567890
+EXCEL_NAMED;20;2020-01-20;2021-01-20
+AAAA-BBBB-CCCC-DDDD-EEEE
+
+        PARENT;;
+
+            Child;;
+
+PARENT;;
+
+
+Child;;
+`;

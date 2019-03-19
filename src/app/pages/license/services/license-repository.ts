@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
-import { map, switchMap, catchError, retryWhen } from 'rxjs/operators';
+import { map, switchMap, catchError } from 'rxjs/operators';
 import { IQlikLicenseResponse } from '../api/response/qlik-license.interface';
 import {
     QlikLicenseNoAccessException,
     QlikLicenseInvalidException,
-    SerLicenseNotFoundException,
     SerLicenseResponseException
 } from '../api/exceptions';
-import { ContentLibService } from './contentlib.service';
-import { IContentLibResponse, IContentLibFileReference } from '../api/response/content-lib.interface';
 import { SerLicenseResponse } from '../api/response/ser-license.response';
+import { LicenseReader } from '@smc/modules/license';
+import { ContentlibController } from '@smc/modules/contentlib/services/contentlib.controller';
+import { IQlikLicense } from '../api/qlik-license.interface';
 
 @Injectable()
 export class LicenseRepository {
@@ -23,62 +23,14 @@ export class LicenseRepository {
      * @type {BehaviorSubject<string>}
      * @memberof LicenseService
      */
-    private qlikSerialNumber: string;
-
-    private contentLib: ContentLibService;
-
-    /**
-     * angular http client
-     *
-     * @private
-     * @type {HttpClient}
-     * @memberof LicenseService
-     */
-    private http: HttpClient;
+    private qlikLef: string[];
 
     constructor(
-        contentLib: ContentLibService,
-        http: HttpClient
+        private licenseReader: LicenseReader,
+        private http: HttpClient,
+        private contentlibCtrl: ContentlibController
     ) {
-        this.contentLib = contentLib;
         this.http = http;
-    }
-
-    public get qlikSerial() {
-        return this.qlikSerialNumber;
-    }
-
-    /**
-     * get current qlik license
-     *
-     * @throws {QlikLicenseInvalidException}
-     * @throws {QlikLicenseNoAccessException}
-     * @returns {Observable<any>}
-     * @memberof LicenseService
-     */
-    public fetchQlikSerialNumber(): Observable<string> {
-
-        return this.http.get('/qrs/license')
-            .pipe(
-                catchError((response: HttpErrorResponse) => {
-                    if (response.status === 403) {
-                        throw new QlikLicenseNoAccessException('No access qlik license.');
-                    }
-                    throw response;
-                }),
-                map((response: IQlikLicenseResponse) => {
-
-                    if (!response || response.isInvalid) {
-                        throw new QlikLicenseInvalidException('No License found or invalid.');
-                    }
-
-                    /** serial number */
-                    const serial = response.serial || '';
-                    // write value into cache so we dont need to fetch again
-                    this.qlikSerialNumber = serial;
-                    return serial;
-                })
-            );
     }
 
     /**
@@ -89,106 +41,110 @@ export class LicenseRepository {
      */
     public fetchSenseExcelReportingLicense(): Observable<string[]> {
 
-        return this.fetchQlikSerialNumber().pipe(
-            switchMap((qlikSerial: string) => {
+        return this.readQlikLicenseFile().pipe(
+            switchMap((license: IQlikLicense) => {
                 /** calculate checksum */
-                const checkSum = this.calculateCheckSum(qlikSerial);
+                const checkSum = this.calculateCheckSum(license.serial);
 
                 /** create params */
                 const params = new HttpParams()
-                    .set('serial', qlikSerial)
+                    .set('serial', license.serial)
                     .set('chk', String(checkSum));
 
                 const url = `https://license.senseexcel.com/lefupdate/update_lef.json?${params.toString()}`;
 
                 /** fetch license for qlik sense excel reporting  */
                 return this.http.jsonp(url, 'callback')
-                .pipe(
-                    catchError((error: HttpErrorResponse) => {
-                        throw new SerLicenseResponseException({
-                            status: 404,
-                            error: 'Could not fetch License from Server'
-                        });
-                    }),
-                    map((response: string | SerLicenseResponse) => {
-
-                        if ( response.constructor === String) {
-                            response = JSON.parse(<string>response);
-                        }
-
-                        const data: SerLicenseResponse = <SerLicenseResponse>response;
-                        if (!data.success) {
+                    .pipe(
+                        catchError((error: HttpErrorResponse) => {
                             throw new SerLicenseResponseException({
-                                status: data.status_code,
-                                error: data.status
+                                status: 404,
+                                error: 'Could not fetch License from Server'
                             });
-                        }
+                        }),
+                        map((response: string | SerLicenseResponse) => {
+                            if (response.constructor === String) {
+                                response = JSON.parse(<string>response);
+                            }
 
-                        return data.licenses;
-                    }),
-                );
+                            const data: SerLicenseResponse = <SerLicenseResponse>response;
+                            if (!data.success) {
+                                throw new SerLicenseResponseException({
+                                    status: data.status_code,
+                                    error: data.status
+                                });
+                            }
+
+                            return data.licenses;
+                        }),
+                    );
             })
         );
     }
 
     /**
-     * fetch license file
-     *
-     * @throws SerLicenseNotFoundException
-     * @returns {Observable<string>}
-     * @memberof LicenseService
+     * get current qlik license
+     * should placed in qmc module
      */
-    public fetchLicenseFile(): Observable<IContentLibFileReference> {
-
-        return this.contentLib.fetchContentLibrary().pipe(
-            map((library: IContentLibResponse) => {
-                /** filter all files for license.txt file */
-                const files = library.references.filter((file: IContentLibFileReference) => {
-                    const p: RegExp = new RegExp('senseexcel/license.txt$');
-                    if (file.logicalPath.match(p)) {
-                        return true;
+    public fetchQlikLicenseFile(): Observable<string[]> {
+        let serial$: Observable<string[]>;
+        if (!this.qlikLef) {
+            serial$ = this.http.get<IQlikLicenseResponse>('/qrs/license').pipe(
+                catchError((response: HttpErrorResponse) => {
+                    if (response.status === 403) {
+                        throw new QlikLicenseNoAccessException('No access qlik license.');
                     }
-                    return false;
-                });
+                    throw response;
+                }),
+                map((response: IQlikLicenseResponse) => {
+                    if (!response || response.isInvalid) {
+                        throw new QlikLicenseInvalidException('No License found or invalid.');
+                    }
+                    this.qlikLef = response.lef.split('\r\n');
+                    return this.qlikLef;
+                })
+            );
+        } else {
+            serial$ = of(this.qlikLef);
+        }
+        return serial$;
+    }
 
-                if (!files.length) {
-                    throw new SerLicenseNotFoundException();
+    public readQlikLicenseFile(): Observable<IQlikLicense> {
+        return this.fetchQlikLicenseFile().pipe(
+            switchMap((licenseData: string[]) => {
+                const tokenSearch = /^TOKENS/;
+                const result = this.licenseReader.search(licenseData, [tokenSearch]);
+                const tokens: string[] = result.get(tokenSearch) || [];
+
+                const qlikSerial = licenseData[0];
+                let tokensMax: number;
+
+                if (tokens.length) {
+                    tokensMax = parseInt(tokens[0].split(';')[1], 10) || -1;
                 }
 
-                return files[0];
+                return of({
+                    serial: qlikSerial,
+                    tokens: tokensMax
+                });
             })
         );
     }
 
     /**
-     * fetch  sense excel reporting license content
+     * fetch load sense excel reporting license from content library
      *
      * @returns {Observable<string>}
      * @memberof LicenseService
      */
     public readLicense(): Observable<string> {
-
-        let retryAttempts = 0;
-
-        return this.fetchLicenseFile()
-            .pipe(
-                /** retry to create file if no license.txt exists, for max 1 time */
-                retryWhen((errors) => {
-                    const createFile$ = this.contentLib.uploadFile('license.txt', this.createLicenseFile());
-                    return errors.pipe(
-                        switchMap((error) => {
-                            retryAttempts += 1;
-                            if (error instanceof SerLicenseNotFoundException && retryAttempts === 1) {
-                                return createFile$;
-                            }
-                            throw error;
-                        }),
-                    );
-                }),
-                switchMap((file: IContentLibFileReference) => {
-                    return this.contentLib.readFile(file);
-                })
-            );
+        return this.contentlibCtrl.open('senseexcel').pipe(
+            switchMap((lib) => {
+                return lib.readFile(lib.fetchFile('license.txt'));
+            }),
+            catchError(() => of(''))
+        );
     }
 
     /**
@@ -198,19 +154,9 @@ export class LicenseRepository {
      * @returns {Observable<string>}
      * @memberof LicenseRepository
      */
-    public writeLicense(data): Observable<string> {
-        const file = this.createLicenseFile(data);
-        return this.contentLib.uploadFile('license.txt', file, true);
-    }
-
-    /**
-     * create license file
-     *
-     * @returns {FileReader}
-     * @memberof LicenseService
-     */
-    private createLicenseFile(content = ''): Blob {
-        return new Blob([content], {type: 'text/plain'});
+    public writeLicense(data: string): Observable<string> {
+        return this.contentlibCtrl.open('senseexcel').pipe(
+            switchMap((lib) => lib.updateFile('license.txt', data)));
     }
 
     /**

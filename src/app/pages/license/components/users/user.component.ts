@@ -1,25 +1,23 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDatepickerInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
 import { Moment } from 'moment';
 import { Subject, of } from 'rxjs';
-import { map, switchMap, debounceTime, takeUntil, tap } from 'rxjs/operators';
-import { ILicenseUser } from '../../api/license-user.interface';
-import { LicenseModel } from '../../model/license.model';
-import { License, UserRepository } from '../../services';
-import { MOMENT_DATE_FORMAT } from '../../api/ser-date-formats';
+import { LicenseSource } from '../../model/license-source';
+import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
+import { IUserLicense, IUser, ILicense, LicenseType } from '@smc/modules/license/api';
+import moment = require('moment');
+import { UserRepository } from '../../services';
 
 interface ITableUser {
     edit: boolean;
-
     isNew: boolean;
-
-    user: ILicenseUser;
+    user: IUser;
 }
 
 @Component({
-    selector   : 'smc-license-user',
-    styleUrls  : ['user.component.scss'],
+    selector: 'smc-license-user',
+    styleUrls: ['user.component.scss'],
     templateUrl: 'user.component.html'
 })
 
@@ -36,21 +34,21 @@ export class UserComponent implements OnDestroy, OnInit {
     public licenseExists: boolean;
 
     private isDestroyed$: Subject<boolean>;
-    private license: License;
     private suggest$: Subject<any>;
-    private repository: UserRepository;
+
+    @Input()
+    private licenseSource: LicenseSource;
+
+    private license: IUserLicense;
 
     constructor(
-        license: License,
-        repository: UserRepository
+        private userRepository: UserRepository
     ) {
         this.isDestroyed$ = new Subject();
-        this.license      = license;
-        this.selection    = new SelectionModel(false);
-        this.suggest$     = new Subject();
-        this.repository   = repository;
+        this.selection = new SelectionModel(false);
+        this.suggest$ = new Subject();
 
-        this.licensedUserInfo = {total: 0, showing: 0};
+        this.licensedUserInfo = { total: 0, showing: 0 };
         this.userSuggestions = [];
     }
 
@@ -63,41 +61,37 @@ export class UserComponent implements OnDestroy, OnInit {
         this.isDestroyed$.next(true);
 
         /** null variables to ensure it is not set anymore */
-        this.license      = null;
-        this.selection    = null;
-        this.suggest$     = null;
+        this.selection = null;
+        this.suggest$ = null;
         this.isDestroyed$ = null;
-        this.users        = null;
+        this.users = null;
         this.userSuggestions = null;
     }
 
     ngOnInit() {
 
-        this.license.onload$.pipe(
-            map((model: LicenseModel): ITableUser[] => {
+        this.licenseSource.changed$.subscribe((license: ILicense) => {
+            this.license = this.licenseSource.license as IUserLicense;
 
-                this.licenseExists            = model.raw.replace(/(^\s*|\s*$)/gm, '') !== '';
-                this.licensedUserInfo.total   = model.users.length;
-                this.licensedUserInfo.showing = model.users.length;
+            if (license.licenseType !== LicenseType.NAMED) {
+                return;
+            }
 
-                return model.users.map((user: ILicenseUser): ITableUser => {
-                    return {
-                        edit: false,
-                        isNew: false,
-                        user
-                    };
-                });
-            }),
-            takeUntil(this.isDestroyed$)
-        )
-        .subscribe((users: ITableUser[]) => {
-            this.users = [...users];
-            this.ready = true;
+            const licenseUsers = this.license.users;
+            this.licensedUserInfo.total   = licenseUsers.length;
+            this.licensedUserInfo.showing = licenseUsers.length;
+            this.users = licenseUsers.map((user: IUser): ITableUser => {
+                return {
+                    edit: false,
+                    isNew: false,
+                    user
+                };
+            });
         });
 
         this.suggest$.pipe(
             debounceTime(300),
-            switchMap((val) => val.length < 3 ? of([]) : this.repository.fetchQrsUsers(val)),
+            switchMap((val) => val.length < 3 ? of([]) : this.userRepository.fetchQrsUsers(val)),
             takeUntil(this.isDestroyed$)
         ).subscribe((result) => {
             this.userSuggestions = result;
@@ -119,16 +113,16 @@ export class UserComponent implements OnDestroy, OnInit {
             edit: true,
             isNew: true,
             user: {
-                id  : '',
-                from: null,
-                to  : null,
+                id: '',
+                from: moment(null),
+                to: moment(null),
                 isActive: false
             }
         };
 
         this.currentEditUser = newUser;
         this.users = [...this.users, this.currentEditUser];
-        this.mode  = 'edit';
+        this.mode = 'edit';
     }
 
     /**
@@ -144,9 +138,15 @@ export class UserComponent implements OnDestroy, OnInit {
 
         /** the chosen one to delete */
         const theCosenOne = this.selection.selected[0].user;
+        this.license.removeUser(theCosenOne);
+        this.users.splice(this.users.indexOf(this.selection.selected[0]), 1);
+        this.users = [...this.users];
 
-        this.license.deleteUser(theCosenOne);
+        this.licensedUserInfo.total   = this.users.length;
+        this.licensedUserInfo.showing = this.users.length;
         this.selection.clear();
+
+        this.licenseSource.revalidateSource();
     }
 
     /**
@@ -183,27 +183,23 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public finishEditUser() {
-
         const tableUser: ITableUser = this.currentEditUser;
         tableUser.edit = false;
 
         this.mode = 'view';
 
-        if (tableUser.user.id.replace(/(^\s*|\s*$)/g, '') === '' ) {
+        if (tableUser.user.id.replace(/(^\s*|\s*$)/g, '') === '') {
             // remove last user from table
             this.users = this.users.slice(0, -1);
             return;
         }
 
         if (tableUser.isNew) {
-            // we need to add user to model
             this.license.addUser(this.currentEditUser.user);
             tableUser.isNew = false;
-        } else {
-            // nobody triggers an update ...
-            this.license.update();
         }
 
+        this.licenseSource.revalidateSource();
         this.currentEditUser = null;
     }
 
@@ -214,7 +210,7 @@ export class UserComponent implements OnDestroy, OnInit {
      * @memberof UserComponent
      */
     public onDateChange(event: MatDatepickerInputEvent<Moment>, key: string) {
-        this.currentEditUser.user[key] = event.value.format(MOMENT_DATE_FORMAT);
+        this.currentEditUser.user[key] = event.value;
     }
 
     /**

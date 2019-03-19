@@ -24,10 +24,19 @@
 
     "VALIDATION": {
       "ERRORS": {
-        "SER_QLIK_NOT_EQUAL": "Sense Excel Reporting Serial not equal Qlik Serial.",
-        "NO_ACCESS_QLIK_LICENSE": "No access Qlik Serial",
+        "MISSMATCH_SERIALS": "missmatch Sense Excel Reporting Serial and Qlik Serial.",
+        "NOT_ENOUGH_SER_TOKENS": "Sense Excel Tokens has to been greater or equal Qlik Tokens",
+        "NO_LICENSE_FOUND": "No license found",
         "CONTENTLIB_NOT_EXISTS": "Content Library senseexcel does not exists",
-        "TO_MANY_USERS": "To many users uses the license at the same time!"
+        "LICENSE_EXPIRED": "License expired",
+        "LICENSE_BROKEN": "License is broken or could not handled in smc",
+        "LICENSE_NOT_ACTIVATED": "License not activated yet",
+        "TO_MANY_USERS_AT_SAME_DATE": "To many users activated for license at same date",
+        "LICENSE_NO_LIMIT": "License type expects a limit, none given"
+      },
+      "WARNINGS": {
+        "UNKNOWN_LICENSE": "Unknown License found and could not validated correctly by SMC",
+        "EMPTY_LICENSE": "Insert a valid license or fetch your license from server"
       }
     },
 

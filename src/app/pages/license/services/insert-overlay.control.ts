@@ -1,16 +1,19 @@
 import { ModalControl } from '@smc/modules/modal/services/modal-control';
-import { BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { OverlayRef } from '@angular/cdk/overlay';
+import { IControl } from '@smc/modules/modal/api/control.interface';
 
-export class InsertOverlayControl extends ModalControl {
+export class InsertOverlayControl extends ModalControl implements IControl {
 
-    public update$: BehaviorSubject<string>;
+    public update$: Subject<string>;
 
     private licenseContent: string;
 
-    public constructor(ref: OverlayRef) {
-        super(ref);
-        this.update$ = new BehaviorSubject('');
+    public constructor(
+        overlayRef: OverlayRef,
+    ) {
+        super(overlayRef);
+        this.update$ = new Subject();
     }
 
     /**
@@ -19,11 +22,8 @@ export class InsertOverlayControl extends ModalControl {
      * @param {string} content
      * @memberof InsertOverlayControl
      */
-    public update(content: string) {
-        if (content !== this.licenseContent) {
-            this.update$.next(content);
-        }
-        this.content = content;
+    public update() {
+        this.update$.next(this.licenseContent);
     }
 
     /**
@@ -33,15 +33,5 @@ export class InsertOverlayControl extends ModalControl {
      */
     public set content(content: string) {
         this.licenseContent = content;
-    }
-
-    /**
-     * getter for license content
-     *
-     * @type {string}
-     * @memberof InsertOverlayControl
-     */
-    public get content(): string {
-        return this.licenseContent;
     }
 }

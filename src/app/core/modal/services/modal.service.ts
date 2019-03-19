@@ -37,8 +37,8 @@ export class ModalService {
     public open<T>(data: IModalData<T>, configuration: IOverlayConfig = {}): IControl {
 
         const overlayRef = this.createOverlay(configuration);
-        const control: IControl = new (data.control || ModalControl)(overlayRef);
-        const tokens = this.createInjectionTokens(data, control as IControl);
+        const control = new (data.control || ModalControl)(overlayRef);
+        const tokens = this.createInjectionTokens(data, control);
         const injector = this.createInjector(tokens);
         const overlayPortal = new ComponentPortal(ModalComponent, null, injector);
 

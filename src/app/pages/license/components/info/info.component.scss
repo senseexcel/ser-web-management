@@ -37,11 +37,15 @@
             }
         }
 
-        .errors {
+        .errors, .warnings {
             list-style-type: none;
             text-align: right;
             color: red;
             font-size:11px;
+        }
+
+        .warnings {
+            color: orangered;
         }
     }
 }
