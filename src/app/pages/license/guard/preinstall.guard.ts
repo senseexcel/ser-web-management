@@ -49,7 +49,7 @@ export class LicensePreinstallGuard implements CanActivate {
         const library$ = this.clibCtrl.open(this.lib);
         return library$.pipe(
             mergeMap((lib) => lib.fileExists(this.file).pipe(
-                switchMap((file) => file ? of(true) : lib.createFile(this.file)))
+                switchMap((file) => file ? of(true) : lib.createFile(this.file, 'hallo hallo')))
             ),
             map(() => true), // if no error happened
             catchError((error) => of(false))

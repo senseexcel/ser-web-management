@@ -22,8 +22,14 @@ export class ContentLibrary implements IContentLibrary {
         this.http = http;
     }
 
-    public update(data: ILibrary): void {
-        this.contentlibData = data;
+    /**
+     * create file with default content in content library
+     */
+    public createFile(name: string, content = ''): Observable<string> {
+        const uploadFile = new Blob([content], { type: 'text/plain' });
+        return this.uploadFile(name, uploadFile, true).pipe(
+            tap((uploadedFile) => this.fileUploaded$.next(uploadedFile))
+        );
     }
 
     /**
@@ -38,24 +44,6 @@ export class ContentLibrary implements IContentLibrary {
             return false;
         });
         return files[0] || null;
-    }
-
-    /**
-     * upload given file to content library with specific file name
-     */
-    public uploadFile(fileName: string, content: Blob, overwrite = false): Observable<string> {
-        return this.createFileFormData(fileName, content).pipe(
-            switchMap((formData: FormData) => {
-                const url = `/qrs/contentLibrary/${this.contentlibData.name}/uploadfile`;
-                const params = new HttpParams()
-                    .set('externalpath', fileName)
-                    .set('overwrite', String(overwrite));
-
-                return this.http.post<string>(url, formData, { params }).pipe(
-                    tap((file) => this.fileUploaded$.next(file))
-                );
-            })
-        );
     }
 
     /**
@@ -75,17 +63,24 @@ export class ContentLibrary implements IContentLibrary {
     }
 
     /**
-     * create file with default content in content library
+     * upload content library meta data
      */
-    public createFile(name: string, content = ''): Observable<string> {
-        const uploadFile = new Blob([content], { type: 'text/plain' });
-        return this.uploadFile(name, uploadFile, true);
+    public update(data: ILibrary): void {
+        this.contentlibData = data;
+    }
+
+    /**
+     * upload and override file in content library
+     */
+    public updateFile(filename: string, content: string): Observable<string> {
+        const blob = new Blob([content], { type: 'text/plain' });
+        return this.uploadFile(filename, blob, true);
     }
 
     /**
      * read contents of a file
      */
-    public readFile(file: IFile): Observable<string | ArrayBuffer> {
+    public readFile(file: IFile): Observable<string> {
         const fileLoad$ = this.http.get(file.logicalPath, { responseType: 'blob' as 'json' });
         return fileLoad$.pipe(
             switchMap((content: Blob) => this.createFileReader(content))
@@ -93,14 +88,27 @@ export class ContentLibrary implements IContentLibrary {
     }
 
     /**
+     * upload given file to content library with specific file name
+     */
+    private uploadFile(fileName: string, content: Blob, overwrite = false): Observable<string> {
+        const formData = this.createFileFormData(fileName, content);
+        const url = `/qrs/contentLibrary/${this.contentlibData.name}/uploadfile`;
+        const params = new HttpParams()
+            .set('externalpath', fileName)
+            .set('overwrite', String(overwrite));
+
+        return this.http.post<string>(url, formData, { params });
+    }
+
+    /**
      * create file reader stream to fetch content from file
      */
-    private createFileReader(bin: Blob): Observable<string | ArrayBuffer> {
-        const fileReader$ = new Observable<string | ArrayBuffer>(obs => {
+    private createFileReader(bin: Blob): Observable<string> {
+        const fileReader$ = new Observable<string>(obs => {
             const reader = new FileReader();
             reader.onerror = err => obs.error(err);
             reader.onabort = err => obs.error(err);
-            reader.onload = () => obs.next(reader.result);
+            reader.onload = () => obs.next(reader.result as string);
             reader.onloadend = () => obs.complete();
             return reader.readAsText(bin);
         });
@@ -110,13 +118,9 @@ export class ContentLibrary implements IContentLibrary {
     /**
      * create form data which could uploaded with post
      */
-    private createFileFormData(name: string, data: Blob): Observable<FormData> {
-        const fileReader$ = this.createFileReader(data);
-        /** after blob content has been loaded add to form data object */
-        return fileReader$.pipe(map(content => {
-            const formData = new FormData();
-            formData.append('file', String(content), `${name}`);
-            return formData;
-        }));
+    private createFileFormData(name: string, data: Blob): FormData {
+        const formData = new FormData();
+        formData.append('file', data, `${name}`);
+        return formData;
     }
 }

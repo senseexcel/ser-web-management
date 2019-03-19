@@ -8,13 +8,9 @@ import {
     QlikLicenseInvalidException,
     SerLicenseResponseException
 } from '../api/exceptions';
-/*
-import { ContentLibService } from '../api/response/contentlib.service';
-import { IContentLibResponse, IContentLibFileReference } from '../../../core/contentlib/api/content-lib.interface';
-*/
 import { SerLicenseResponse } from '../api/response/ser-license.response';
-import { ILicense } from '@smc/modules/license/api';
-import { LicenseFactory, LicenseReader } from '@smc/modules/license';
+import { LicenseReader } from '@smc/modules/license';
+import { ContentlibController } from '@smc/modules/contentlib/services/contentlib.controller';
 import { IQlikLicense } from '../api/qlik-license.interface';
 
 @Injectable()
@@ -30,39 +26,11 @@ export class LicenseRepository {
     private qlikLef: string[];
 
     constructor(
-        private licenseFactory: LicenseFactory,
         private licenseReader: LicenseReader,
-        private http: HttpClient
+        private http: HttpClient,
+        private contentlibCtrl: ContentlibController
     ) {
         this.http = http;
-    }
-
-    /**
-     * get current qlik license
-     * should placed in qmc module
-     */
-    public fetchQlikLicenseFile(): Observable<string[]> {
-        let serial$: Observable<string[]>;
-        if (!this.qlikLef) {
-            serial$ = this.http.get<IQlikLicenseResponse>('/qrs/license').pipe(
-                catchError((response: HttpErrorResponse) => {
-                    if (response.status === 403) {
-                        throw new QlikLicenseNoAccessException('No access qlik license.');
-                    }
-                    throw response;
-                }),
-                map((response: IQlikLicenseResponse) => {
-                    if (!response || response.isInvalid) {
-                        throw new QlikLicenseInvalidException('No License found or invalid.');
-                    }
-                    this.qlikLef = response.lef.split('\r\n');
-                    return this.qlikLef;
-                })
-            );
-        } else {
-            serial$ = of(this.qlikLef);
-        }
-        return serial$;
     }
 
     /**
@@ -95,7 +63,6 @@ export class LicenseRepository {
                             });
                         }),
                         map((response: string | SerLicenseResponse) => {
-
                             if (response.constructor === String) {
                                 response = JSON.parse(<string>response);
                             }
@@ -116,24 +83,31 @@ export class LicenseRepository {
     }
 
     /**
-     * fetch license file
-     *
-     * @throws SerLicenseNotFoundException
-     * @returns {Observable<string>}
-     * @memberof LicenseService
+     * get current qlik license
+     * should placed in qmc module
      */
-    public fetchLicenseFile(): Observable<any> {
-        return of(null);
-    }
-
-    /**
-     * fetch  sense excel reporting license content
-     *
-     * @returns {Observable<string>}
-     * @memberof LicenseService
-     */
-    public readLicense(): Observable<string> {
-        return of('');
+    public fetchQlikLicenseFile(): Observable<string[]> {
+        let serial$: Observable<string[]>;
+        if (!this.qlikLef) {
+            serial$ = this.http.get<IQlikLicenseResponse>('/qrs/license').pipe(
+                catchError((response: HttpErrorResponse) => {
+                    if (response.status === 403) {
+                        throw new QlikLicenseNoAccessException('No access qlik license.');
+                    }
+                    throw response;
+                }),
+                map((response: IQlikLicenseResponse) => {
+                    if (!response || response.isInvalid) {
+                        throw new QlikLicenseInvalidException('No License found or invalid.');
+                    }
+                    this.qlikLef = response.lef.split('\r\n');
+                    return this.qlikLef;
+                })
+            );
+        } else {
+            serial$ = of(this.qlikLef);
+        }
+        return serial$;
     }
 
     public readQlikLicenseFile(): Observable<IQlikLicense> {
@@ -159,23 +133,30 @@ export class LicenseRepository {
     }
 
     /**
+     * fetch load sense excel reporting license from content library
+     *
+     * @returns {Observable<string>}
+     * @memberof LicenseService
+     */
+    public readLicense(): Observable<string> {
+        return this.contentlibCtrl.open('senseexcel').pipe(
+            switchMap((lib) => {
+                return lib.readFile(lib.fetchFile('license.txt'));
+            }),
+            catchError(() => of(''))
+        );
+    }
+
+    /**
      * create new file and upload
      *
      * @param {*} data
      * @returns {Observable<string>}
      * @memberof LicenseRepository
      */
-    public writeLicense(data): Observable<string> {
-        return of('');
-    }
-
-    /**
-     * read license from qmc/shared content
-     *
-     * @memberof License
-     */
-    private createLicense(raw: string): ILicense {
-        return this.licenseFactory.createFromRaw(raw);
+    public writeLicense(data: string): Observable<string> {
+        return this.contentlibCtrl.open('senseexcel').pipe(
+            switchMap((lib) => lib.updateFile('license.txt', data)));
     }
 
     /**

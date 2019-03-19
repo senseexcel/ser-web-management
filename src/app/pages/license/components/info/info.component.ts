@@ -86,8 +86,6 @@ export class InfoComponent implements OnDestroy, OnInit {
     }
 
     private sourceChanged(license: ILicense) {
-
-
         this.licenseKey = license.licenseKey;
         this.qlikSerial = this.licenseSource.qlikLicense.serial;
 
@@ -104,22 +102,31 @@ export class InfoComponent implements OnDestroy, OnInit {
 
         this.isValid = this.licenseSource.isValid;
 
-        if (this.licenseKey !== this.qlikSerial) {
-            this.isValid = false;
-            this.validationErrors.push('MISSMATCH_SERIALS');
-        }
-
         this.resolveErrorsLicense();
 
         switch (this.licenseSource.license.licenseType) {
+            case LicenseType.EMPTY:
+                this.isValid = false;
+                this.validationErrors.push('NO_LICENSE_FOUND');
+                this.validationWarnings.push('EMPTY_LICENSE');
+                break;
             case LicenseType.NAMED:
+                this.resolveLicenseKeyValidation();
                 this.resolveErrorsNamedLicense();
                 break;
             case LicenseType.TOKEN:
+                this.resolveLicenseKeyValidation();
                 this.resolveErrorsTokenLicense();
                 break;
             default:
                 this.validationWarnings.push('UNKNOWN_LICENSE');
+        }
+    }
+
+    private resolveLicenseKeyValidation() {
+        if (this.licenseKey !== this.qlikSerial) {
+            this.isValid = false;
+            this.validationErrors.push('MISSMATCH_SERIALS');
         }
     }
 

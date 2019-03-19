@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { catchError, takeUntil } from 'rxjs/operators';
+import { catchError, takeUntil, map } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
 import { ModalService } from '@smc/modules/modal';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -84,25 +84,17 @@ export class OverviewComponent implements OnDestroy, OnInit {
      * fetch license from remote server
      */
     public loadFromServer() {
-        this.license.readLicenseFile()
-            .pipe(catchError((error: Error) => {
+        this.license.fetchSenseExcelReportingLicense().pipe(
+            map((raw) => this.licenseFactory.createFromRaw(raw[0])),
+            catchError((error: Error) => {
                 this.handleResponseError(error);
                 return of(null);
             }))
-            .subscribe(
-                (license: ILicense) => {
+            .subscribe((license: ILicense) => {
+                if (license) {
                     this.licenseSource.license = license;
-                },
-                (error) => {
-                    if (error.constructor === HttpErrorResponse && error.status === 0) {
-                        const title = 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_CONNECTION_TITLE';
-                        const msg: I18nTranslation = {
-                            key: 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_CONNECTION_MESSAGE',
-                        };
-                        this.modal.openMessageModal(title, msg);
-                    }
                 }
-            );
+            });
     }
 
     private openModal(title: string) {

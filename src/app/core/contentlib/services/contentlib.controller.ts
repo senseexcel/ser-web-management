@@ -33,11 +33,12 @@ export class ContentlibController {
         }
 
         return this.fetchContentLibMetadata(name).pipe(
-            map((meta: ILibrary) => {
-                this.contentLibCache.set(name, this.createContentLibrary(meta));
-                return this.contentLibCache.get(name);
-            })
+            map((meta: ILibrary) => this.createContentLibrary(meta))
         );
+    }
+
+    public close(lib: IContentLibrary): void {
+        /** @todo implement */
     }
 
     /**
@@ -46,13 +47,16 @@ export class ContentlibController {
      */
     private createContentLibrary(data: ILibrary): IContentLibrary {
         const lib: IContentLibrary = new ContentLibrary(this.httpClient, data);
+
         merge(lib.fileUploaded$, lib.fileRemoved$)
             .pipe(
-                takeUntil(lib.deleted$),
+                /** @todo remove subscriptions if not needed anymore */
                 switchMap(() => this.fetchContentLibMetadata(data.name)),
             )
             .subscribe((libMeta) => lib.update(libMeta));
 
+        // write contentlib to cache
+        this.contentLibCache.set(name, lib);
         return lib;
     }
 

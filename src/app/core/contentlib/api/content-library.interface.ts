@@ -15,11 +15,6 @@ export interface IContentLibrary {
     fetchFile(fileName: string): IFile;
 
     /**
-     * upload given file to content library with specific file name
-     */
-    uploadFile(fileName: string, content: Blob, overwrite?: boolean): Observable<string>;
-
-    /**
      * checks file allready exists
      */
     fileExists(name: string): Observable<boolean>;
@@ -32,5 +27,7 @@ export interface IContentLibrary {
     /**
      * read contents of a file
      */
-    readFile(file: IFile): Observable<string | ArrayBuffer>;
+    readFile(file: IFile): Observable<string>;
+
+    updateFile(name: string, content: string): Observable<string>;
 }
