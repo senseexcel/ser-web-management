@@ -46,6 +46,16 @@ export class ProcessListComponent implements OnDestroy, OnInit {
     public fetchingData = false;
 
     /**
+     * flag we have enabled automatic reloading,
+     * if true this will fetch and repeat until autoReloadEnabled is
+     * set to false
+     *
+     * @private
+     * @memberof ProcessListComponent
+     */
+    public autoReloadEnabled = false;
+
+    /**
      * current state of list
      * IDEL does nothing
      * LOADING -> Loading process is running
@@ -115,16 +125,6 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof ProcessListComponent
      */
     private reloadInterval = 1000;
-
-    /**
-     * flag we have enabled automatic reloading,
-     * if true this will fetch and repeat until autoReloadEnabled is
-     * set to false
-     *
-     * @private
-     * @memberof ProcessListComponent
-     */
-    private autoReloadEnabled = false;
 
     /**
      * Creates an instance of TasksComponent.
