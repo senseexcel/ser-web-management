@@ -25,14 +25,13 @@
     "@angular/platform-browser-dynamic": "7.2.10",
     "@angular/router": "7.2.10",
     "@ngx-translate/core": "11.0.1",
-    "core-js": "3.0.0",
     "hjson": "3.1.2",
     "leonardo-ui": "1.7.1",
     "moment": "2.24.0",
     "moment-timezone": "0.5.23",
     "rxjs": "6.4.0",
     "ws": "6.2.0",
-    "zone.js": "0.9.0"
+    "zone.js": "^0.8.29"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "7.4.3",
@@ -52,6 +51,7 @@
     "@types/ws": "6.0.1",
     "bootstrap-scss": "4.3.1",
     "codelyzer": "4.5.0",
+    "core-js": "^2.6.5",
     "enigma.js": "2.4.0",
     "ifdef-loader": "2.1.1",
     "jasmine-core": "3.3.0",
@@ -67,6 +67,6 @@
     "ser.api": "3.4.2",
     "ts-node": "8.0.3",
     "tslint": "5.14.0",
-    "typescript": "3.3.3333"
+    "typescript": "^3.2.4"
   }
 }
