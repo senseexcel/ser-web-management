@@ -16,10 +16,9 @@
     "HEADER": "License Manager",
 
     "INSTALLATION": {
-      "INVALID": "Installation Invalid",
-      "QLIK_LICENSE_ACCESS": "Qlik License access",
-      "QLIK_LICENSE_VALID": "Qlik License valid",
-      "CONTENTLIB_EXISTS": "Content library \"senseexcel\" exists and have access rights"
+      "INVALID": "We are sorry but we could not proceed since installation is invalid",
+      "QLIK_LICENSE": "check Qlik License is valid and have access rights",
+      "CONTENT_LIB": "check content library <strong>senseexcel</strong> exists and have access rights"
     },
 
     "VALIDATION": {

@@ -1,27 +1,25 @@
 :host {
 
-    width: 100%;
+  width: 100%;
 
+  [page-content--body] {
     .header {
-        font-size: 12px;
-        text-transform: uppercase;
-        margin-bottom: 10px; 
+        font-size: 1rem;
+        margin-bottom: 10px;
+    }
+
+    .lui-list {
+      font-size: .8rem;
+      list-style-type: initial;
+      padding: 0 0 0 1.1rem;
     }
 
     .lui--item {
-
-        margin-bottom: 5px;
-
-        &.valid {
-            color: green;
-        }
-
-        &.invalid {
-            color: red;
-        }
+      margin-bottom: 5px;
     }
+  }
 
-    .notification {
-        margin-top: 10px;
-    }
+  .notification {
+    margin-top: 10px;
+  }
 }

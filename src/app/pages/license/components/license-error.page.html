@@ -7,7 +7,20 @@
 
   <!-- CONTENT BODY -->
   <div page-content--body>
-      <h1>Error</h1>
+    <p class="header">{{'SMC_LICENSE.INSTALLATION.INVALID' | translate}}</p>
+    <ul class="lui-list">
+      <li class="lui--item">{{'SMC_LICENSE.INSTALLATION.QLIK_LICENSE' | translate}}</li>
+      <li class="lui--item" [innerHtml]="'SMC_LICENSE.INSTALLATION.CONTENT_LIB' | translate"></li>
+    </ul>
+    <div class="notification">
+      {{'SMC_CORE.CONTACT_CONSULTANT' | translate}}
+    </div>
+  </div>
+
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="reload()" [label]="'SMC_LICENSE.ACTIONS.RELOAD' | translate"></smc-ui--button>
+    </smc-ui--button-navbar>
   </div>
 
 </smc-ui--page>
