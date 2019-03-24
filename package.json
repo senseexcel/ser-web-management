@@ -30,7 +30,7 @@
     "leonardo-ui": "1.7.1",
     "moment": "2.24.0",
     "moment-timezone": "0.5.23",
-    "ngx-customscrollbar": "^1.1.0",
+    "ngx-customscrollbar": "^1.2.0",
     "rxjs": "6.4.0",
     "ws": "6.2.0",
     "zone.js": "0.8.29"

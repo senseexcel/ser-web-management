@@ -25,7 +25,7 @@
         "@smc/pages/*": ["src/app/pages/*"],
         "@smc/modules": ["src/app/core"],
         "@smc/modules/*": ["src/app/core/*"],
-        "@node_modules/*": ["node_modules/*"],
+        "@node_modules/*": ["node_modules/*"]
     }
   }
 }

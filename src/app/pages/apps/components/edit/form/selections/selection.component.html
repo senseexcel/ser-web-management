@@ -1,10 +1,13 @@
 <h3 class="header header-secondary">{{'SMC_APPS.EDIT.PROPERTIES.ITEM.SELECTIONS' | translate}}</h3>
 
-<div class="selections-wrapper">
-  <div cdkDropList cdkDropListOrientation="horizontal" class="selections-list" (cdkDropListDropped)="moveSelection($event)">
-    <smc-template--selection [selection]="selection" *ngFor="let selection of selections" (delete)="removeSelection($event)" cdkDrag>
-        <div class="dd-selection--placeholder" *cdkDragPlaceholder></div>
+<div class="selections-wrapper"  ngxCustomScrollbarScrollable>
+  <div cdkDropList cdkDropListOrientation="horizontal" class="selections-list"
+    (cdkDropListDropped)="moveSelection($event)">
+    <smc-template--selection [selection]="selection" *ngFor="let selection of selections"
+      (delete)="removeSelection($event)" cdkDrag>
+      <div class="dd-selection--placeholder" *cdkDragPlaceholder></div>
     </smc-template--selection>
   </div>
   <smc-template-selections--create (created)="createSelection($event)"></smc-template-selections--create>
 </div>
+<ngx-customscrollbar [scrollDirection]="'horizontal'"></ngx-customscrollbar>

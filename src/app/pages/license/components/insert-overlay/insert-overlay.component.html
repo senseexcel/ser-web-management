@@ -1,4 +1,7 @@
 <div class="insert-field">
-    <textarea [formControl]="insertField" placeholder="past license here" rows="10">
-    </textarea>
+  <mat-form-field class="form-control">
+    <textarea matInput formControlName="insertField" placeholder="past license here" mat-autosize="true" 
+    [matAutosizeMinRows]=5 [matAutosizeMaxRows]=10 ngxCustomScrollbarScrollable></textarea>
+    <ngx-customscrollbar *ngxCustomScrollbarOverflowY></ngx-customscrollbar>
+  </mat-form-field>
 </div>

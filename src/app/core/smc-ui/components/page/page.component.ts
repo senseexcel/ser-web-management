@@ -5,8 +5,7 @@ import { ViewportControl } from 'ngx-customscrollbar';
     selector: 'smc-ui--page',
     templateUrl: 'page.component.html',
     styleUrls: [
-        './page.component.scss',
-        './scrollbar.scss'
+        './page.component.scss'
     ],
     viewProviders: [ViewportControl]
 })
