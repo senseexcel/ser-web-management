@@ -145,7 +145,6 @@ export class ProcessListComponent implements OnDestroy, OnInit {
      * @memberof TasksComponent
      */
     ngOnInit(): void {
-        console.log('twice ???');
         this.autoRefreshControl = this.createAutoRefreshControl();
         this.loadProcesses();
 

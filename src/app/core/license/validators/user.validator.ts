@@ -58,10 +58,6 @@ export class NamedLicenseValidator extends LicenseValidator {
             const {from, to} = user;
             let isActive = true;
 
-
-            // console.log(date.format('YYYY-MM-DD'), from.format('YYYY-MM-DD'), to.format('YYYY-MM-DD'));
-            // throw new Error('who cares');
-
             isActive = isActive && (!from.isValid() || date.isSameOrAfter(from, 'day'));
             isActive = isActive && (!to.isValid()   || date.isSameOrBefore(to, 'day'));
             return isActive;
