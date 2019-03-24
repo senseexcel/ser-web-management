@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { switchMap, tap, map, catchError } from 'rxjs/operators';
-import { Observable, of, from, forkJoin, BehaviorSubject } from 'rxjs';
+import { Observable, of, from, forkJoin, BehaviorSubject, ReplaySubject } from 'rxjs';
 import { SerCommands } from '../api/ser-commands.interface';
 import { IProcessListResponse, ResponseStatus } from '../api/process-status-response.interface';
 import { IProcess } from '../api/process.interface';
@@ -12,6 +12,14 @@ import { AppRepository } from '@smc/modules/qrs';
 @Injectable()
 export class ProcessService {
 
+    public static SESSION_STATE = {
+        UNINITIALIZED: 'unintialized',
+        PENDING: 'pending',
+        CONNECTED: 'connected'
+    };
+
+    private sessionState = ProcessService.SESSION_STATE.UNINITIALIZED;
+
     /**
      * observable for process list has been updated
      *
@@ -22,12 +30,15 @@ export class ProcessService {
 
     /**
      * cache session app
-     *
-     * @private
-     * @type {EngineAPI.IApp}
-     * @memberof TasksComponent
      */
     private sessionApp: EngineAPI.IApp;
+
+    /**
+     * proxy which subscribes to enigmaService to ensure it could
+     * not happens that multiple sessions would be created since the first
+     * response not allready finished
+     */
+    private session$: ReplaySubject<EngineAPI.IApp> = new ReplaySubject(1);
 
     /**
      * Creates an instance of ProcessService.
@@ -164,11 +175,15 @@ export class ProcessService {
      * @memberof ProcessService
      */
     private getSessionApp(): Observable<EngineAPI.IApp> {
-        if (!this.sessionApp) {
-            return from(this.enigmaService.createSessionApp()).pipe(
-                tap((app: EngineAPI.IApp) => this.sessionApp = app)
-            );
+        if (this.sessionState === ProcessService.SESSION_STATE.UNINITIALIZED) {
+            this.sessionState = ProcessService.SESSION_STATE.PENDING;
+
+            let openSession$ = from(this.enigmaService.createSessionApp());
+            openSession$ = openSession$.pipe(tap((app: EngineAPI.IApp) => this.sessionApp = app));
+            openSession$.subscribe(this.session$);
+
+            this.sessionState = ProcessService.SESSION_STATE.CONNECTED;
         }
-        return of(this.sessionApp);
+        return this.session$;
     }
 }
