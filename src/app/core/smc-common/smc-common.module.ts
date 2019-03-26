@@ -17,7 +17,7 @@ import { EnigmaService, StorageService, SmcCache, AppConnector } from './provide
         HJSonPipe,
         Nl2Br,
         MomentFormatPipe,
-        TranslateModule
+        TranslateModule,
     ],
     declarations: [
         MouseDblClickDirective,

@@ -1,25 +1,13 @@
-import { ContentLibService } from './contentlib.service';
-import { License } from './license';
+// import { ContentLibService } from './contentlib.service';
 import { LicenseRepository } from './license-repository';
-import { LicenseValidator } from './license-validator';
-import { LicenseReader } from './license-reader';
-import { LicenseWriter } from './license-writer';
 import { UserRepository } from './user-repository';
 
-export * from './contentlib.service';
-export * from './license';
-export * from './license-reader';
+// export * from './contentlib.service';
 export * from './license-repository';
-export * from './license-validator';
-export * from './license-writer';
 export * from './user-repository';
 
 export const services = [
-    ContentLibService,
-    License,
-    LicenseReader,
+    // ContentLibService,
     LicenseRepository,
-    LicenseValidator,
-    LicenseWriter,
     UserRepository
 ];

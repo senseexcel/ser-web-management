@@ -32,8 +32,9 @@ export const AppPageSettings: IAppSection[] = [
         pages: [{
             id: 'monitoring_apps',
             show: true,
-            disabled: true,
+            disabled: false,
             icon: 'streams',
+            route: 'monitoring'
         }]
     },
     {

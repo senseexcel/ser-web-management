@@ -8,6 +8,4 @@ export interface IControl {
     close(): void;
 }
 
-export interface IControlConstructor {
-    new(overlayRef: OverlayRef): IControl;
-}
+export type IControlConstructor = new(overlayRef: OverlayRef, ...args) => IControl;

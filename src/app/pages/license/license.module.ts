@@ -6,11 +6,11 @@ import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE } from '@angular/materia
 import { MomentDateAdapter } from '@angular/material-moment-adapter';
 import { ModalModule, MaterialModule, SmcUiModule } from '@smc/modules';
 import { TranslateService } from '@ngx-translate/core';
+import { LicenseModule as SerLicenseModule } from '@smc/modules/license';
 
 import { SER_DATE_FORMATS } from './api/ser-date-formats';
-import { components, InsertOverlayComponent, InsertOverlayFooterComponent } from './components';
+import { components, entry_components } from './components';
 import { LicenseRoutingModule } from './license-routing.module';
-import { pages } from './pages';
 import { services } from './services';
 import { JsonpInterceptorModule } from './jsonp-interceptor.module';
 
@@ -27,18 +27,15 @@ import i18n_en from './i18n/en.json';
         ModalModule,
         ReactiveFormsModule,
         MaterialModule,
-        SmcUiModule
+        SmcUiModule,
+        SerLicenseModule
     ],
     declarations: [
         ...components,
-        ...pages
     ],
     entryComponents: [
-        ...pages,
-        InsertOverlayComponent,
-        InsertOverlayFooterComponent
+        ...entry_components
     ],
-    exports: [],
     providers: [
         ...services,
         {provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE]},
@@ -46,7 +43,6 @@ import i18n_en from './i18n/en.json';
     ]
 })
 export class LicenseModule {
-
     public constructor(translate: TranslateService) {
         translate.setTranslation('en', i18n_en, true);
     }

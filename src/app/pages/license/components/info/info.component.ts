@@ -1,9 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { License, LicenseValidator, LicenseRepository } from '../../services';
-import { LicenseModel } from '../../model/license.model';
-import { mergeMap, takeUntil, map, switchMap, tap } from 'rxjs/operators';
-import { Subject, forkJoin, of } from 'rxjs';
-import { ILicenseValidationResult } from '../../api/validation-result.interface';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Subject } from 'rxjs';
+import { LicenseSource } from '../../model/license-source';
+import { ILicense, LicenseType } from '@smc/modules/license/api';
+import {
+    toManyUsersAtSameDateError,
+    licenseExpiredError,
+    licenseNotActiveYetError,
+    noLimitError
+} from '@smc/modules/license';
+import { TokenLicense } from '@smc/modules/license/model';
 
 @Component({
     selector: 'smc-license-info',
@@ -21,15 +26,9 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     public isValid: boolean;
 
-    /**
-     * current loaded license
-     *
-     * @type {LicenseModel}
-     * @memberof InfoComponent
-     */
-    public licenseModel: LicenseModel;
+    public qlikSerial: string;
 
-    public qlikLicense: string;
+    public licenseKey = '';
 
     /**
      * current license status valid or invalid
@@ -37,38 +36,14 @@ export class InfoComponent implements OnDestroy, OnInit {
      * @type {string}
      * @memberof InfoComponent
      */
-    public licenseStatus: 'valid' | 'invalid';
-
-    public ready = false;
+    public licenseStatus: 'valid' | 'invalid' = 'invalid';
 
     public validationErrors: string[];
 
-    /**
-     * license service
-     *
-     * @private
-     * @type {License}
-     * @memberof InfoComponent
-     */
-    private license: License;
+    public validationWarnings: string[];
 
-    /**
-     * license repository
-     *
-     * @private
-     * @type {LicenseRepository}
-     * @memberof InfoComponent
-     */
-    private repository: LicenseRepository;
-
-    /**
-     * license validator service
-     *
-     * @private
-     * @type {LicenseValidator}
-     * @memberof InfoComponent
-     */
-    private validator: LicenseValidator;
+    @Input()
+    public licenseSource: LicenseSource;
 
     /**
      * emmits true if components get destroyed to unsubscribe automatically
@@ -80,16 +55,10 @@ export class InfoComponent implements OnDestroy, OnInit {
      */
     private isDestroyed$: Subject<boolean>;
 
-    constructor(
-        license: License,
-        repository: LicenseRepository,
-        validator: LicenseValidator
-    ) {
+    constructor() {
         this.isDestroyed$ = new Subject();
-        this.license      = license;
-        this.repository   = repository;
-        this.validator    = validator;
         this.validationErrors = [];
+        this.validationWarnings = [];
     }
 
     /**
@@ -108,45 +77,104 @@ export class InfoComponent implements OnDestroy, OnInit {
      * @memberof InfoComponent
      */
     ngOnInit() {
-        this.initLicense();
 
-        this.license.update$
-            .pipe(
-                switchMap((license: LicenseModel) => this.validator.validateLicense(license)),
-                takeUntil(this.isDestroyed$)
-            )
-            .subscribe((validationResult: ILicenseValidationResult) => {
-                this.isValid          = validationResult.isValid;
-                this.licenseStatus    = this.isValid ? 'valid' : 'invalid';
-                this.validationErrors = validationResult.errors;
-            });
+        this.licenseSource.changed$
+            .subscribe((license) => this.sourceChanged(license));
+
+        this.licenseSource.validate$
+            .subscribe(() => this.getValidationInformations());
+    }
+
+    private sourceChanged(license: ILicense) {
+        this.licenseKey = license.licenseKey;
+        this.qlikSerial = this.licenseSource.qlikLicense.serial;
+
+        this.getValidationInformations();
     }
 
     /**
-     * init license data to determine status,
-     * this could also happens on update
-     *
-     * @private
-     * @memberof InfoComponent
+     * check for validation errors
      */
-    private initLicense() {
+    private getValidationInformations() {
 
-        const qlikSerial$ = this.repository.qlikSerial
-            ? of(this.repository.qlikSerial)
-            : this.repository.fetchQlikSerialNumber();
+        this.validationErrors = [];
+        this.validationWarnings = [];
 
-       this.license.onload$.pipe(
-            switchMap((license: LicenseModel) => {
-                this.licenseModel = license;
-                return qlikSerial$;
-            }),
-            takeUntil(this.isDestroyed$)
-        )
-        .subscribe((qlikSerial: string) => {
-            this.licenseStatus    = this.licenseModel.validationResult.isValid ? 'valid' : 'invalid';
-            this.validationErrors = this.licenseModel.validationResult.errors;
-            this.qlikLicense      = qlikSerial;
-            this.ready            = true;
-        });
+        this.isValid = this.licenseSource.isValid;
+
+        this.resolveErrorsLicense();
+
+        switch (this.licenseSource.license.licenseType) {
+            case LicenseType.EMPTY:
+                this.isValid = false;
+                this.validationErrors.push('NO_LICENSE_FOUND');
+                this.validationWarnings.push('EMPTY_LICENSE');
+                break;
+            case LicenseType.NAMED:
+                this.resolveLicenseKeyValidation();
+                this.resolveErrorsNamedLicense();
+                break;
+            case LicenseType.TOKEN:
+                this.resolveLicenseKeyValidation();
+                this.resolveErrorsTokenLicense();
+                break;
+            default:
+                this.validationWarnings.push('UNKNOWN_LICENSE');
+        }
+    }
+
+    private resolveLicenseKeyValidation() {
+        if (this.licenseKey !== this.qlikSerial) {
+            this.isValid = false;
+            this.validationErrors.push('MISSMATCH_SERIALS');
+        }
+    }
+
+    /**
+     * resolve general erros for license
+     */
+    private resolveErrorsLicense() {
+        const errors = this.licenseSource.validationResult.errors;
+
+        if (errors.has(licenseExpiredError)) {
+            this.validationErrors.push('LICENSE_EXPIRED');
+        }
+
+        if (errors.has(licenseNotActiveYetError)) {
+            this.validationErrors.push('LICENSE_NOT_ACTIVATED');
+        }
+    }
+
+    /**
+     * resolve errors for token license
+     */
+    private resolveErrorsTokenLicense() {
+
+        const license = this.licenseSource.license as TokenLicense;
+        const errors = this.licenseSource.validationResult.errors;
+
+        if (errors.has(noLimitError)) {
+            this.validationErrors.push('LICENSE_NO_LIMIT');
+        }
+
+        if (license.tokens < this.licenseSource.qlikLicense.tokens) {
+            this.isValid = false;
+            this.validationErrors.push('NOT_ENOUGH_SER_TOKENS');
+        }
+    }
+
+    /**
+     * resolve errors for named license
+     */
+    private resolveErrorsNamedLicense() {
+        const errors = this.licenseSource.validationResult.errors;
+
+        if (errors.has(noLimitError)) {
+            this.validationErrors.push('LICENSE_NO_LIMIT');
+        }
+
+        if (errors.has(toManyUsersAtSameDateError)) {
+            this.validationErrors.push('TO_MANY_USERS_AT_SAME_DATE');
+        }
     }
 }

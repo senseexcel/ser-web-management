@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ITableData } from '@smc/modules/qrs/api/table.interface';
 import { SharedContentRepository } from '@smc/modules/qrs';
-import { mergeMap, catchError, filter, switchMap, takeUntil } from 'rxjs/operators';
-import { of, Observable, fromEvent, Subject } from 'rxjs';
+import { mergeMap, takeUntil } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 import { IDataNode, SmcCache } from '@smc/modules/smc-common';
 import { DataConverter } from '@smc/modules/qrs';
 import { PaginationService } from '@smc/modules/smc-ui/pagination';
@@ -23,10 +23,9 @@ export class ListComponent implements OnInit, OnDestroy {
     public visible: number;
     public selections: SelectionModel<IDataNode>;
 
-    public translateParamSelected = {COUNT: 0};
+    public translateParamSelected = { COUNT: 0 };
 
     private listSettings: IDataNode;
-    private ctrlKeyDown: boolean;
     private isDestroyed: Subject<boolean> = new Subject();
 
     constructor(
@@ -52,30 +51,17 @@ export class ListComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.initializePagination();
         this.loadSharedContentData();
-        this.registerKeyEvents();
+
+        this.selections.changed
+            .pipe(takeUntil(this.isDestroyed))
+            .subscribe(() => {
+                this.translateParamSelected = { COUNT: this.selections.selected.length };
+            });
     }
 
     ngOnDestroy() {
         this.selections.clear();
         this.isDestroyed.next(true);
-    }
-
-    /**
-     * shared content gets selected
-     *
-     * @param {IDataNode} content
-     * @memberof ListComponent
-     */
-    public selectSharedContent(content: IDataNode) {
-        if (this.ctrlKeyDown && this.selections.isSelected(content)) {
-            this.selections.deselect(content);
-            return;
-        }
-        if (!this.ctrlKeyDown) {
-            this.selections.clear();
-        }
-        this.selections.select(content);
-        this.translateParamSelected = {COUNT: this.selections.selected.length};
     }
 
     /**
@@ -116,19 +102,32 @@ export class ListComponent implements OnInit, OnDestroy {
             });
     }
 
+    /**
+     *
+     *
+     * @memberof ListComponent
+     */
     public reloadList() {
         this.selections.clear();
         this.pagination.showPage(1);
     }
 
+    /**
+     *
+     *
+     * @memberof ListComponent
+     */
     public selectAll() {
         this.selections.select(...this.tableData);
-        this.translateParamSelected = {COUNT: this.selections.selected.length};
     }
 
+    /**
+     *
+     *
+     * @memberof ListComponent
+     */
     public deselectAll() {
         this.selections.clear();
-        this.translateParamSelected = {COUNT: 0};
     }
 
     /**
@@ -181,28 +180,5 @@ export class ListComponent implements OnInit, OnDestroy {
 
                 this.isLoading = false;
             });
-    }
-
-    /**
-     * register keyboard events to get notified
-     * if ctrl key has been pressed down for multi selection
-     *
-     * @private
-     * @memberof ListComponent
-     */
-    private registerKeyEvents() {
-        /** could be used as pipe / directive ? */
-        fromEvent(document, 'keydown').pipe(
-            filter((e: KeyboardEvent) => e.keyCode === 17 && !this.ctrlKeyDown),
-            switchMap(() => {
-                this.ctrlKeyDown = true;
-                return fromEvent(document, 'keyup').pipe(
-                    filter((e: KeyboardEvent) => e.keyCode === 17)
-                );
-            }),
-            takeUntil(this.isDestroyed)
-        ).subscribe(() => {
-            this.ctrlKeyDown = false;
-        });
     }
 }

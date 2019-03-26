@@ -179,3 +179,7 @@
     content: "\0F4";
   }
 }
+
+.ser-icon--remove {
+    &:before { content: "E"; }
+}

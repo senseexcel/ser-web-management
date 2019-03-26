@@ -1,15 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { License } from '../../services';
-import { LicenseModel } from '../../model/license.model';
-import { takeUntil, catchError } from 'rxjs/operators';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { catchError, takeUntil, map } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
-import { ModalService, IModalData } from '@smc/modules/modal';
+import { ModalService } from '@smc/modules/modal';
+import { HttpErrorResponse } from '@angular/common/http';
+import { I18nTranslation } from '@smc/modules/smc-common';
+import { LicenseFactory, ILicense } from '@smc/modules/license';
+
 import { InsertOverlayControl } from '../../services/insert-overlay.control';
 import { InsertOverlayComponent } from '../insert-overlay/insert-overlay.component';
 import { InsertOverlayFooterComponent } from '../insert-overlay/insert-overlay-footer.component';
 import { SerLicenseResponseException } from '../../api/exceptions';
-import { HttpErrorResponse } from '@angular/common/http';
-import { I18nTranslation } from '@smc/modules/smc-common';
+import { ILicenseModalData } from '../../api/license-modal.data';
+import { LicenseRepository } from '../../services';
+import { LicenseSource } from '../../model/license-source';
 
 @Component({
     selector: 'smc-license-overview',
@@ -21,19 +24,19 @@ export class OverviewComponent implements OnDestroy, OnInit {
 
     public content: string;
     public isReady = false;
-    public licenseData: string;
+    public licenseData = '';
 
     private isDestroyed$: Subject<boolean>;
-    private license: License;
-    private modal: ModalService;
+
+    @Input()
+    public licenseSource: LicenseSource;
 
     constructor(
-        license: License,
-        modal: ModalService
+        private licenseFactory: LicenseFactory,
+        private license: LicenseRepository,
+        private modal: ModalService
     ) {
         this.isDestroyed$ = new Subject();
-        this.license = license;
-        this.modal = modal;
     }
 
     /**
@@ -52,11 +55,10 @@ export class OverviewComponent implements OnDestroy, OnInit {
      * @memberof LicenseComponent
      */
     ngOnInit() {
-        this.license.onload$
+        this.licenseSource.changed$
             .pipe(takeUntil(this.isDestroyed$))
-            .subscribe((license: LicenseModel) => {
-                this.licenseData = license.text;
-                this.isReady = true;
+            .subscribe((license: ILicense) => {
+                this.licenseData = license.licenseData.join('\n');
             });
     }
 
@@ -78,42 +80,39 @@ export class OverviewComponent implements OnDestroy, OnInit {
         this.openModal('SMC_LICENSE.OVERVIEW.ACTIONS.EDIT');
     }
 
+    /**
+     * fetch license from remote server
+     */
     public loadFromServer() {
-        this.license.fetchLicense()
-            .pipe(
-                catchError((error: Error) => {
-                    this.handleResponseError(error);
-                    return of(null);
-                })
-            )
-            .subscribe(
-                () => {},
-                /**
-                 * for any reason, if no internet connection is available (status: 0) this error will not catched
-                 * with catchError operator from rxjs.
-                 *
-                 * we need to handle this here
-                 */
-                (error) => {
-                    if (error.constructor === HttpErrorResponse && error.status === 0) {
-                        const title = 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_CONNECTION_TITLE';
-                        const msg: I18nTranslation = {
-                            key: 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_CONNECTION_MESSAGE',
-                        };
-                        this.modal.openMessageModal(title, msg);
-                    }
+        this.license.fetchSenseExcelReportingLicense().pipe(
+            map((raw) => this.licenseFactory.createFromRaw(raw[0])),
+            catchError((error: Error) => {
+                this.handleResponseError(error);
+                return of(null);
+            }))
+            .subscribe((license: ILicense) => {
+                if (license) {
+                    this.licenseSource.license = license;
                 }
-            );
+            });
     }
 
     private openModal(title: string) {
-        const modalData: IModalData<InsertOverlayComponent> = {
+        const modalData: ILicenseModalData<InsertOverlayComponent> = {
             bodyComponent: InsertOverlayComponent,
             control: InsertOverlayControl,
             footerComponent: InsertOverlayFooterComponent,
             title,
+            license: this.licenseSource.license
         };
-        this.modal.open(modalData, { panelClass: ['license-modal--insert']});
+
+        const ctrl = this.modal.open(modalData, { panelClass: ['license-modal--insert'] }) as InsertOverlayControl;
+        ctrl.update$
+            .pipe(takeUntil(this.isDestroyed$))
+            .subscribe((licenseRaw: string) => {
+                const license = this.licenseFactory.createFromRaw(licenseRaw);
+                this.licenseSource.license = license;
+            });
     }
 
     private handleResponseError(error: Error) {
@@ -124,11 +123,11 @@ export class OverviewComponent implements OnDestroy, OnInit {
                 const title = 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_RESPONSE_TITLE';
                 const msg: I18nTranslation = {
                     key: 'SMC_LICENSE.OVERVIEW.MODAL.ERROR_RESPONSE_MESSAGE',
-                    param: {ERROR: responseError.response.error}
+                    param: { ERROR: responseError.response.error }
                 };
 
                 this.modal.openMessageModal(title, msg);
-            break;
+                break;
             default:
                 throw error;
         }

@@ -1,0 +1,104 @@
+:host {
+
+  table {
+
+    th,
+    td {
+      vertical-align: middle;
+      width: 20%;
+    }
+
+    th {
+      white-space: nowrap;
+    }
+
+    /** action column */
+    th:last-child,
+    td:last-child {
+      width: 1%;
+    }
+
+    /** action column */
+    td:last-child button {
+      margin: 0;
+      background: none;
+      border: none;
+      border-radius: unset;
+      min-width: 50px;
+      height: auto;
+      padding: 0;
+      outline: none;
+
+      .ser-icon {
+        color: red;
+        font-size: 1rem;
+        margin-right: 0;
+      }
+    }
+  }
+
+  .monitoring-list--actions {
+    display: flex;
+    align-self: center;
+  }
+
+  ::ng-deep {
+    .list-header--info span {
+      margin-right: .5rem;
+
+      &:nth-last-child() {
+        margin-right: 0;
+      }
+    }
+  }
+
+  .btn-reload {
+
+    outline: none;
+    cursor: pointer;
+
+    input {
+      height: auto;
+      width: auto;
+      line-height: inherit;
+      background: #FFF;
+
+      &:focus {
+        box-shadow: none;
+      }
+    }
+
+    label {
+      display: flex;
+      flex: 1;
+      flex-direction: row;
+      align-items: center;
+      margin: 0 .3rem 0 0;
+      cursor: inherit;
+
+      &:after {
+        content: '';
+        display: block;
+        border: 1px solid #FFF;
+        border-width: 0 1px;
+        border-color: transparent lighten($color: #333, $amount: 15) transparent darken($color: #333, $amount: 2);
+        align-self: stretch;
+        margin: 0 0 0 .3rem;
+      }
+
+      span {
+        margin: 0 0 0 .3rem;
+      }
+    }
+
+    ::ng-deep {
+      button[disabled] label {
+        color: inherit;
+
+        &:after {
+          border-color: transparent lighten($color: #595959, $amount: 10) transparent darken($color: #595959, $amount: 10);
+        }
+      }
+    }
+  }
+}

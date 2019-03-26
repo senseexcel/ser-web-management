@@ -4,10 +4,22 @@ import moment = require('moment');
 @Pipe({name: 'momentFormat'})
 export class MomentFormatPipe implements PipeTransform {
 
-    transform(date: string) {
+    transform(date: string | moment.Moment, showTime = false, defaultValue = '-') {
+
+        let _date: moment.Moment;
+
         if (!date) {
-            return '';
+            return defaultValue;
         }
-        return moment(date).format('YYYY-MM-DD');
+
+        if (date && !moment.isMoment(date)) {
+            _date = moment(date);
+        } else {
+            _date = date as moment.Moment;
+        }
+
+        let formatString = 'YYYY-MM-DD';
+        formatString = showTime ? `${formatString}, HH:mm:ss` : formatString;
+        return !_date.isValid() ? defaultValue : _date.format(formatString);
     }
 }

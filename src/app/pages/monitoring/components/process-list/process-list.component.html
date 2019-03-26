@@ -1,0 +1,70 @@
+<smc-ui--page [disablePadding]="true">
+
+  <!-- page header -->
+  <div page-content--header>
+    <smc-ui--list-header (reload)="doReload()" (selectAll)="selectAll()" (deselectAll)="deselectAll()">
+      <!-- list header title -->
+      <ng-container list-header--title>
+        <i class="ser-icon ser-icon--streams"></i>
+        <span> {{'SMC_MONITORING.TITLE' | translate}} </span>
+      </ng-container>
+
+      <!-- list header informations -->
+      <ng-container list-header--counts>
+        <span [translate]="'SMC_MONITORING.LIST_HEADER.ACTIVE'" [translateParams]="{COUNT: tasks.length}"></span>
+        <span [translate]="'SMC_MONITORING.LIST_HEADER.SELECTED'" [translateParams]="{COUNT: selections.selected.length}"></span>
+      </ng-container>
+
+      <!-- reload and auto reload -->
+      <ng-container list-header--actions>
+        <smc-ui--button class="btn btn-reload primary" (click)="doReload()" [disabled]="listState === 3">
+          <label (click)="$event.stopPropagation()" btn-label>
+            <input [formControl]="autoRefreshControl" class="form-control" type="checkbox">
+            <span>{{'SMC_MONITORING.ACTIONS.AUTO_REFRESH' | translate}}</span>
+          </label>
+          <i class="ser-icon" [ngClass]="{'ser-icon--reload': !fetchingData, 'ser-icon--loading': fetchingData || autoReloadEnabled}"
+            btn-icon--right></i>
+        </smc-ui--button>
+      </ng-container>
+    </smc-ui--list-header>
+  </div>
+
+  <!-- page content -->
+  <div page-content--body>
+
+    <!-- process list table -->
+    <table class="table" mat-table [dataSource]="tasks">
+      <ng-container *ngFor="let column of columns" matColumnDef="{{column}}">
+        <th mat-header-cell *matHeaderCellDef>{{'SMC_MONITORING.LIST.' + column.toUpperCase() | translate}}</th>
+        <ng-container *matCellDef="let task">
+          <ng-container [ngSwitch]="column">
+            <td *ngSwitchCase="'startTime'" mat-cell>{{task[column] | momentFormat:true}}</td>
+            <td *ngSwitchCase="'status'" mat-cell>{{task[column] | processState | translate}}</td>
+            <td *ngSwitchDefault mat-cell>{{task[column]}}</td>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <!-- table header row -->
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+
+      <!-- table row for user details or edit fields -->
+      <tr mat-row *matRowDef="let task; columns: columns;" class="process-table--row" smcSelectOnClick [selectionModel]="selections"
+        [selectionData]="task" [disable]="[-1, 3, 4].indexOf(task.status) > -1 || listState === 3"></tr>
+    </table>
+  </div>
+
+  <!-- page footer -->
+  <div page-content--footer>
+    <smc-ui--button-navbar>
+      <smc-ui--button (click)="stopAll()" [disabled]="!selections.selected.length || listState === 3">
+        <ng-container *ngIf="listState === 3" btn-label>
+          {{'SMC_MONITORING.ACTIONS.STOPPING' | translate:translateParams.stopping}}
+        </ng-container>
+        <ng-container *ngIf="listState !== 3" btn-label>
+          {{'SMC_MONITORING.ACTIONS.STOP' | translate:translateParams.stop}}
+        </ng-container>
+      </smc-ui--button>
+    </smc-ui--button-navbar>
+  </div>
+</smc-ui--page>
