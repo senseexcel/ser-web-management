@@ -40,7 +40,7 @@
     "@angular/cli": "7.3.6",
     "@angular/compiler-cli": "7.2.10",
     "@angular/language-service": "7.2.10",
-    "@types/angular-material": "1.1.66",
+    "@types/angular-material": "1.1.67",
     "@types/enigma.js": "2.2.1",
     "@types/jasmine": "3.3.12",
     "@types/jasminewd2": "2.0.6",
