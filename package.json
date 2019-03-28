@@ -36,8 +36,8 @@
   "devDependencies": {
     "@angular-builders/custom-webpack": "7.4.3",
     "@angular-builders/dev-server": "7.3.1",
-    "@angular-devkit/build-angular": "0.13.6",
-    "@angular/cli": "7.3.6",
+    "@angular-devkit/build-angular": "0.13.7",
+    "@angular/cli": "7.3.7",
     "@angular/compiler-cli": "7.2.11",
     "@angular/language-service": "7.2.11",
     "@types/angular-material": "1.1.67",
