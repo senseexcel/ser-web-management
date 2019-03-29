@@ -46,7 +46,7 @@
     "@types/jasminewd2": "2.0.6",
     "@types/jsonwebtoken": "8.3.2",
     "@types/moment-timezone": "0.5.12",
-    "@types/node": "11.12.0",
+    "@types/node": "11.12.1",
     "@types/qlik-engineapi": "12.67.8",
     "@types/ws": "6.0.1",
     "bootstrap-scss": "4.3.1",
