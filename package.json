@@ -67,6 +67,6 @@
     "ser.api": "3.4.2",
     "ts-node": "8.0.3",
     "tslint": "5.14.0",
-    "typescript": "3.2.4"
+    "typescript": "3.4.1"
   }
 }
