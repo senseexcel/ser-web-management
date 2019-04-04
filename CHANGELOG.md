@@ -1,3 +1,11 @@
+#### 1.4.2 (2019-04-04)
+
+##### Bug Fixes
+
+* **ReportingApps:**  connect / disconnect icon missing [#227] (43fd0945)
+* **ReportingApps:**  fixed bug session object destroyed after session close [#225] (7a104aec)
+* **CreateReportingApp:**  fixed bug labels missing [#226] (34f16a59)
+
 # 1.4.1 (2019-04-04)
 
 ## Chores
