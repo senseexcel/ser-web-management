@@ -1,3 +1,12 @@
+#### 1.4.3 (2019-04-05)
+
+##### Bug Fixes
+
+* **License:**  license not scrollable [#231] (3c34a856)
+* **deps:**
+  *  update dependency @angular/material-moment-adapter to v7.3.7 (90f42d64)
+  *  update angularmaterial monorepo to v7.3.7 (d19a0df1)
+
 #### 1.4.2 (2019-04-04)
 
 ##### Bug Fixes

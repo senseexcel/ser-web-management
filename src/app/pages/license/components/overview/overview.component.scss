@@ -17,6 +17,7 @@
         height: 200px;
         padding: 5px 10px;
         color: lighten(#000, 40);
+        overflow-y: auto;
     }
 
     &> * {
