@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild, AfterViewInit, OnDestroy, OnInit, Inject, Optional, Host } from '@angular/core';
-import { MatInput, MatAutocompleteTrigger } from '@angular/material';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatInput } from '@angular/material/input';
 import { IDataNode } from '@smc/modules/smc-common';
 import { Subject } from 'rxjs';
 import { debounceTime, switchMap, takeUntil } from 'rxjs/operators';
@@ -28,10 +29,10 @@ export class ItemListComponent implements AfterViewInit, OnDestroy, OnInit {
     public mode: ItemList.MODE;
     public source = [];
 
-    @ViewChild(MatInput)
+    @ViewChild(MatInput, { static: true })
     private textField: MatInput;
 
-    @ViewChild(MatAutocompleteTrigger)
+    @ViewChild(MatAutocompleteTrigger, { static: true })
     private autoCompleteTrigger: MatAutocompleteTrigger;
 
     private remoteSource: RemoteSource.Connector<IDataNode> | EmptyRemoteSourceConnector;

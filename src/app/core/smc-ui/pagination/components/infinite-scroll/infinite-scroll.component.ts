@@ -11,7 +11,7 @@ import { debounceTime, map } from 'rxjs/operators';
 })
 export class InfiniteScrollComponent implements OnInit {
 
-  @ViewChild('infiniteWrap')
+  @ViewChild('infiniteWrap', { static: true })
   public contentWrapper: ElementRef;
 
   @Input()

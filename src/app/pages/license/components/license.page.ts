@@ -21,13 +21,13 @@ export class LicensePageComponent implements OnDestroy, OnInit {
 
     public isUserLicense = false;
 
-    @ViewChild('licenseOverview')
+    @ViewChild('licenseOverview', { static: true })
     private overviewContainer: ElementRef;
 
-    @ViewChild('licenseInfo')
+    @ViewChild('licenseInfo', { static: true })
     private infoContainer: ElementRef;
 
-    @ViewChild('licensedUsers')
+    @ViewChild('licensedUsers', { static: false })
     private userContainer: ElementRef;
 
     private isDestroyed$: Subject<boolean>;

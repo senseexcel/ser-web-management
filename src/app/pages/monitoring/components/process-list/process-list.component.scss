@@ -46,7 +46,7 @@
     .list-header--info span {
       margin-right: .5rem;
 
-      &:nth-last-child() {
+      &:nth-last-child(0) {
         margin-right: 0;
       }
     }

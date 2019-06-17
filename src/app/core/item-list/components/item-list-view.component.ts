@@ -16,7 +16,7 @@ export class ItemListViewComponent implements AfterViewInit {
     @Input()
     public items: ItemList.Item[] = [];
 
-    @ViewChild('portalHost')
+    @ViewChild('portalHost', { static: true })
     private listViewPortal: ElementRef;
 
     constructor(

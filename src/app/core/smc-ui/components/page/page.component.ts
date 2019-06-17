@@ -7,13 +7,13 @@ import { Component, OnInit, AfterContentInit, ElementRef, ViewChild, Input } fro
 })
 export class SmcPageComponent implements AfterContentInit {
 
-    @ViewChild('sectionLeft')
+    @ViewChild('sectionLeft', { static: true })
     private sectionLeft: ElementRef;
 
-    @ViewChild('sectionRight')
+    @ViewChild('sectionRight', { static: true })
     private sectionRight: ElementRef;
 
-    @ViewChild('sectionHeader')
+    @ViewChild('sectionHeader', { static: true })
     private sectionHeader: ElementRef;
 
     @Input()

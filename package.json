@@ -19,9 +19,8 @@
     "@angular/compiler": "8.0.1",
     "@angular/core": "8.0.1",
     "@angular/forms": "8.0.1",
-    "@angular/http": "7.2.13",
     "@angular/material": "8.0.1",
-    "@angular/material-moment-adapter": "8.0.0",
+    "@angular/material-moment-adapter": "8.0.1",
     "@angular/platform-browser": "8.0.1",
     "@angular/platform-browser-dynamic": "8.0.1",
     "@angular/router": "8.0.1",
@@ -32,12 +31,12 @@
     "moment-timezone": "0.5.25",
     "rxjs": "6.5.2",
     "ws": "7.0.0",
-    "zone.js": "0.9.1"
+    "zone.js": "~0.9.1"
   },
   "devDependencies": {
     "@angular-builders/custom-webpack": "8.0.2",
     "@angular-builders/dev-server": "7.3.1",
-    "@angular-devkit/build-angular": "0.800.3",
+    "@angular-devkit/build-angular": "~0.800.0",
     "@angular/cli": "8.0.3",
     "@angular/compiler-cli": "8.0.1",
     "@angular/language-service": "8.0.1",
@@ -47,12 +46,12 @@
     "@types/jasminewd2": "2.0.6",
     "@types/jsonwebtoken": "8.3.2",
     "@types/moment-timezone": "0.5.12",
-    "@types/node": "11.13.14",
+    "@types/node": "12.0.8",
     "@types/qlik-engineapi": "12.67.8",
     "@types/ws": "6.0.1",
     "bootstrap-scss": "4.3.1",
-    "codelyzer": "5.1.0",
-    "core-js": "2.6.9",
+    "codelyzer": "^5.0.1",
+    "core-js": "^2.5.7",
     "enigma.js": "2.4.0",
     "ifdef-loader": "2.1.1",
     "jasmine-core": "3.4.0",
@@ -68,6 +67,6 @@
     "ser.api": "3.4.2",
     "ts-node": "8.3.0",
     "tslint": "5.17.0",
-    "typescript": "3.2.4"
+    "typescript": "^3.4.5"
   }
 }
