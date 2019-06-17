@@ -51,7 +51,7 @@
     "@types/qlik-engineapi": "12.67.8",
     "@types/ws": "6.0.1",
     "bootstrap-scss": "4.3.1",
-    "codelyzer": "5.0.0",
+    "codelyzer": "5.1.0",
     "core-js": "2.6.9",
     "enigma.js": "2.4.0",
     "ifdef-loader": "2.1.1",
