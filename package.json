@@ -21,7 +21,7 @@
     "@angular/forms": "7.2.13",
     "@angular/http": "7.2.13",
     "@angular/material": "7.3.7",
-    "@angular/material-moment-adapter": "7.3.7",
+    "@angular/material-moment-adapter": "8.0.0",
     "@angular/platform-browser": "7.2.13",
     "@angular/platform-browser-dynamic": "7.2.13",
     "@angular/router": "7.2.13",
