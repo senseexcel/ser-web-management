@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MatSelectChange } from '@angular/material';
+import { MatSelectChange } from '@angular/material/select';
 import { IApp } from '@smc/modules/ser';
 
 @Component({

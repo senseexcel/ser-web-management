@@ -1,4 +1,4 @@
-import moment = require('moment');
+import moment from 'moment';
 import { IValidationResult, IUser, IUserLicense } from '../api';
 import { LicenseValidator } from './license.validator';
 import { toManyUsersAtSameDateError, noLimitError } from './validation.tokens';

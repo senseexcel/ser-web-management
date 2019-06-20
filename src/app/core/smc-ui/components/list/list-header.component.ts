@@ -29,7 +29,7 @@ export class ListHeaderComponent {
     @Output()
     public deselectAll: EventEmitter<void> = new EventEmitter();
 
-    @ViewChild('listDataCounts')
+    @ViewChild('listDataCounts', { static: false })
     private listDataCounts: ElementRef;
 
     public doReload() {

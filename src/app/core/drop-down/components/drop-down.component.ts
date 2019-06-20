@@ -32,7 +32,7 @@ export class DropDownComponent implements OnInit {
     @Output()
     public close: EventEmitter<DropDownOverlay>;
 
-    @ViewChild('arrowUp')
+    @ViewChild('arrowUp', { static: false })
     private arrowUpIcon: ElementRef;
 
     private overlay: Overlay;
@@ -43,7 +43,7 @@ export class DropDownComponent implements OnInit {
      * @type {TemplateRef<any>}
      * @memberof SelectPopoverComponent
      */
-    @ViewChild('contentWrapper')
+    @ViewChild('contentWrapper', { static: true })
     public template: TemplateRef<any>;
 
     /**

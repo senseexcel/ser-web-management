@@ -2,7 +2,7 @@ import { UnknownLicense, EmptyLicense, SearchTokens, TokenLicense, NamedLicense 
 import { IReaderResult, IUserLicense, IUser, ILicense, LicenseType } from '../api';
 import { LicenseReader } from './license-reader';
 import { Injectable } from '@angular/core';
-import moment = require('moment');
+import moment from 'moment';
 
 @Injectable({providedIn: 'root'})
 export class LicenseFactory {

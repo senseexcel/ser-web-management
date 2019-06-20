@@ -150,7 +150,7 @@ export class ModalService {
             .centerHorizontally();
 
         const mergedConfig = { ...DEFAULT_OVERLAY_CONFIGURATION, ...config };
-        mergedConfig.panelClass = [...DEFAULT_OVERLAY_CONFIGURATION.panelClass, ...config.panelClass];
+        mergedConfig.panelClass = [...DEFAULT_OVERLAY_CONFIGURATION.panelClass, ...config.panelClass || []];
 
         const overlayConfig: OverlayConfig = {
             ...mergedConfig,

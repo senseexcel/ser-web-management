@@ -12,10 +12,10 @@ import { MessageFooterComponent } from './message/message-footer.component';
 })
 export class ModalComponent implements OnInit {
 
-    @ViewChild('body', {read: ViewContainerRef})
+    @ViewChild('body', { read: ViewContainerRef, static: true })
     private bodyViewContainer: ViewContainerRef;
 
-    @ViewChild('footer', {read: ViewContainerRef})
+    @ViewChild('footer', { read: ViewContainerRef, static: true })
     private footerViewContainer: ViewContainerRef;
 
     /**

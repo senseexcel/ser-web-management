@@ -31,19 +31,19 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public taskCount = 0;
     public app: string;
 
-    @ViewChild('connections')
+    @ViewChild('connections', { static: true })
     private connectionsContainer: ElementRef;
 
-    @ViewChild('distribute')
+    @ViewChild('distribute', { static: true })
     private distributeContainer: ElementRef;
 
-    @ViewChild('template')
+    @ViewChild('template', { static: true })
     private templateContainer: ElementRef;
 
-    @ViewChild('selections')
+    @ViewChild('selections', { static: true })
     private selectionContainer: ElementRef;
 
-    @ViewChild('settings')
+    @ViewChild('settings', { static: true })
     private settingsContainer: ElementRef;
 
     private isDestroyed$: Subject<boolean>;
@@ -129,7 +129,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 }];
                 this.isLoading = false;
             });
-
     }
 
     /**
@@ -214,6 +213,7 @@ export class AppEditComponent implements OnInit, OnDestroy {
         return this.formService.updateModel().pipe(
             map((result) => result.every((isValid) => isValid)),
             tap(() => {
+                console.log(this.report.raw);
                 const cleanedReport = this.reportService.cleanReport(this.report.raw);
                 this.cacheService.currentReportData.raw = cleanedReport;
             })

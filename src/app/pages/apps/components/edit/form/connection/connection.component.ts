@@ -5,7 +5,7 @@ import { FormService } from '@smc/modules/form-helper';
 import { AppRepository, FilterFactory, IApp } from '@smc/modules/qrs';
 import { ReportModel } from '@smc/modules/ser';
 import { takeUntil, map, switchMap, debounceTime, mergeMap, tap, catchError, finalize } from 'rxjs/operators';
-import { MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { IDataNode, EnigmaService } from '@smc/modules/smc-common';
 import { ISerFormResponse } from '../../../../api/ser-form.response.interface';
 import { ModalService } from '@smc/modules/modal';

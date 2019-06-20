@@ -7,14 +7,14 @@ export function importData(target, key = null, descriptor: PropertyDescriptor): 
     }
     return {
         set: function (data: IDataNode) {
-            // get all properties, exclude decorated property
-            const properties = Object.keys(target).filter((prop) => prop !== key);
-            properties.forEach((property) => {
-                if (data.hasOwnProperty(property)) {
-                    this[property] = data[property];
+            Object.keys(data).forEach((property: string) => {
+                const targetDescriptor = Object.getOwnPropertyDescriptor(target, property);
+
+                if (targetDescriptor.set instanceof Function) {
+                    targetDescriptor.set.call(this, data[property]);
                 }
+
             });
-            // call original descriptor
             return descriptor.set.call(this, data);
         },
         enumerable: true,
