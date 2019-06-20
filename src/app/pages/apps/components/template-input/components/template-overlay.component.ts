@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
     selector: 'smc-templateinput-overlay',
-    templateUrl: 'template-overlay.component.html'
+    templateUrl: 'template-overlay.component.html',
+    styleUrls: ['./template-overlay.component.scss']
 })
-export class TemplateOverlayComponent implements OnInit {
+export class TemplateOverlayComponent {
 
-    constructor() { }
+    public selectedLibary: string = null;
 
-    ngOnInit() { }
+    public openLibrary(id: string) {
+        this.selectedLibary = id;
+    }
 }

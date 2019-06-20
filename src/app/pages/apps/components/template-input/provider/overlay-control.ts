@@ -10,7 +10,6 @@ export class OverlayCtrl {
     ) { }
 
     public show() {
-        console.log("show something");
         this.overlayRef.attach(this.overlayPortal);
     }
 

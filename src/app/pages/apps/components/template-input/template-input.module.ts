@@ -5,6 +5,8 @@ import { SidebarComponent } from './components/sidebar';
 import { TemplateOverlayComponent } from './components/template-overlay.component';
 import { TemplateInputSelectDirective } from './directives/template-input.select';
 import { TemplateInputOverlayService } from './provider/templateinput-overlay.service';
+import { QrsModule } from '@smc/modules';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -17,10 +19,13 @@ import { TemplateInputOverlayService } from './provider/templateinput-overlay.se
         TemplateOverlayComponent
     ],
     exports: [
-        TemplateInputSelectDirective
+        TemplateInputSelectDirective,
+        QrsModule
     ],
     imports: [
-        OverlayModule
+        CommonModule,
+        OverlayModule,
+        QrsModule
     ],
     providers: [
         TemplateInputOverlayService

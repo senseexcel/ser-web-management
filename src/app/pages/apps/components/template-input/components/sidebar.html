@@ -1,0 +1,3 @@
+<ul>
+  <li *ngFor="let library of libraries" (click)="openLibrary($event, library.id)">{{library.name}}</li>
+</ul>

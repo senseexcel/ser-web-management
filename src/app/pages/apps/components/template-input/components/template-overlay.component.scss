@@ -1,0 +1,15 @@
+:host {
+    width: 60vw;
+    height: 60vh;
+
+    background: #FFF;
+    display: flex;
+}
+
+::ng-deep {
+    .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+        &.template-input--backdrop {
+            background: rgba(0, 0, 0, .75);
+        }
+    }
+}

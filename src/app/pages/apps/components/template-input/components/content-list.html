@@ -1,0 +1,3 @@
+<ul>
+    <li *ngFor="let content of contents" (click)="selectFile($event, content)">{{content.logicalPath}}</li>
+</ul>
