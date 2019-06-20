@@ -1,9 +1,12 @@
 <h3 class="header header-secondary">{{'SMC_APPS.EDIT.PROPERTIES.ITEM.TEMPLATE' | translate}}</h3>
 <ng-container *ngIf="templateForm">
     <div [formGroup]="templateForm">
+
         <mat-form-field class="form-control">
             <input matInput formControlName="input" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_INPUT' | translate}}">
         </mat-form-field>
+
+        <button type="button" smcTemplateInputSelect>Select Template</button>
 
         <mat-form-field class="form-control">
             <input matInput formControlName="output" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_OUTPUT' | translate}}">
