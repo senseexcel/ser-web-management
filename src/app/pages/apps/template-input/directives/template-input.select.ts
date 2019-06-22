@@ -1,8 +1,9 @@
-import { Directive, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { Subscription, fromEvent } from 'rxjs';
+import { Directive, ElementRef, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
+import { Subscription, fromEvent, Subject } from 'rxjs';
 import { OverlayCtrl } from '../provider/overlay-control';
 import { TemplateInputOverlayService } from '../provider/templateinput-overlay.service';
 import { tap } from 'rxjs/internal/operators/tap';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * directive which triggers show templateinput overlay
@@ -14,6 +15,9 @@ import { tap } from 'rxjs/internal/operators/tap';
 @Directive({ selector: '[smcTemplateInputSelect]' })
 export class TemplateInputSelectDirective implements OnInit, OnDestroy {
 
+    @Output()
+    public select: EventEmitter<string>;
+
     private overlayCtrl: OverlayCtrl;
 
     /**
@@ -21,28 +25,42 @@ export class TemplateInputSelectDirective implements OnInit, OnDestroy {
      */
     private clickSub: Subscription;
 
+    private destroy$: Subject<boolean>;
+
     /**
      * Creates an instance of TemplateInputSelectDirective.
      */
     constructor(
         private el: ElementRef,
         private overlayService: TemplateInputOverlayService
-    ) { }
+    ) {
+        this.destroy$ = new Subject();
+        this.select = new EventEmitter();
+    }
 
     /**
      * registers click event on element
      */
     public ngOnInit() {
+        this.overlayService.onSelect()
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((path) => {
+                this.select.emit(path);
+                this.overlayCtrl.close();
+            });
 
-        this.clickSub = fromEvent(this.el.nativeElement, 'click')
-            .pipe(tap(() => {
-                if (!this.overlayCtrl) {
-                    this.overlayCtrl = this.overlayService.create({
-                        backdropClass: 'template-input--backdrop',
-                        panelClass: 'template-input--overlay'
-                    });
-                }
-            }))
+        fromEvent(this.el.nativeElement, 'click')
+            .pipe(
+                tap(() => {
+                    if (!this.overlayCtrl) {
+                        this.overlayCtrl = this.overlayService.create({
+                            backdropClass: 'template-input--backdrop',
+                            panelClass: 'template-input--overlay'
+                        });
+                    }
+                }),
+                takeUntil(this.destroy$)
+            )
             .subscribe(() => this.toggleTemplateOverlay());
     }
 
@@ -50,10 +68,7 @@ export class TemplateInputSelectDirective implements OnInit, OnDestroy {
      * directive gets destroyed
      */
     public ngOnDestroy() {
-
-        this.clickSub.unsubscribe();
-
-        this.clickSub = null;
+        this.destroy$.next(true);
         this.overlayCtrl = null;
         this.overlayService = null;
     }

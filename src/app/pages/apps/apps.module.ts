@@ -24,8 +24,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import i18n_en from './i18n/en.json';
 
-import { TemplateSelectionsModule } from './components/template-selections/template-selections.module';
-import { TemplateInputModule } from './components/template-input/template-input.module';
+import { TemplateSelectionsModule } from './template-selections/template-selections.module';
+import { TemplateInputModule } from './template-input/template-input.module';
 
 @NgModule({
   imports: [

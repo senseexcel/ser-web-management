@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, switchMap, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { ITableData } from '../api/table.interface';
+import { FilterFactory } from './filter.factory';
 
 export interface IContentLibrary {
     id: string;
@@ -39,7 +40,8 @@ interface ISelection {
 export class ContentLibraryService {
 
     constructor(
-        private http: HttpClient
+        private http: HttpClient,
+        private filterFactory: FilterFactory
     ) { }
 
     /** @todo implement skip / take for pagination */
@@ -64,11 +66,11 @@ export class ContentLibraryService {
     /**
      * fetch static content from library
      */
-    public fetchLibraryContent(libraryId, start = 0, count = 20): Observable<IStaticContent[]> {
+    public fetchLibraryContent(libraryId, start = 0, count = 20, filter?): Observable<IStaticContent[]> {
 
         return this.createSelection(libraryId).pipe(
             /** we created a selection switch to static content references */
-            switchMap((selection) => this.fetchSelectionData(selection.id, start, count)),
+            switchMap((selection) => this.fetchSelectionData(selection.id, start, count, filter)),
             /** map data in 2 steps, first extract rows then convert to static content*/
             map<ITableData, string[][]>((data: ITableData) => data.rows as string[][]),
             map<string[][], IStaticContent[]>((rows) =>  rows.map<IStaticContent>((row) => {
@@ -98,7 +100,7 @@ export class ContentLibraryService {
      * fetch static content references from selection
      * @todo implement skip / take for pagination
      */
-    private fetchSelectionData(selectionId, start = 0, count = 20) {
+    private fetchSelectionData(selectionId, start = 0, count = 20, filter?) {
         const url = `/qrs/Selection/${selectionId}/StaticContentReference/table`;
         const tableDefinition = {
             'entity': 'StaticContentReference',
@@ -109,6 +111,11 @@ export class ContentLibraryService {
                 { 'name': 'LogicalPath', 'columnType': 'Property', 'definition': 'logicalPath' }
             ]
         };
-        return this.http.post<ITableData>(url, tableDefinition);
+
+        let params: HttpParams = new HttpParams();
+        if (filter) {
+            params = params.set('filter', this.filterFactory.createFilterQueryString(filter));
+        }
+        return this.http.post<ITableData>(url, tableDefinition, {params});
     }
 }

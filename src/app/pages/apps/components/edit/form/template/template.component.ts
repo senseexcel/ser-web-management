@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ReportModel } from '@smc/modules/ser';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormService } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';
 import { ISerTemplate } from 'ser.api';
@@ -44,6 +44,11 @@ export class TemplateComponent implements OnInit {
 
     public setOutput(event) {
         this.templateForm.controls.outputFormat.setValue(event.value);
+    }
+
+    public selectTemplate(template: string) {
+        console.log(template);
+        this.templateForm.get('input').setValue(template);
     }
 
     /**

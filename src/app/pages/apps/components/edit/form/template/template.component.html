@@ -6,7 +6,7 @@
             <input matInput formControlName="input" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_INPUT' | translate}}">
         </mat-form-field>
 
-        <button type="button" smcTemplateInputSelect>Select Template</button>
+        <button type="button" smcTemplateInputSelect (select)="selectTemplate($event)">Select Template</button>
 
         <mat-form-field class="form-control">
             <input matInput formControlName="output" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_OUTPUT' | translate}}">
