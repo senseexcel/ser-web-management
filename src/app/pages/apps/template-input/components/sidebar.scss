@@ -1,5 +1,30 @@
 :host {
-    display: block;
-    background: green;
-    flex: 0 0 20rem;
+
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 20rem;
+  border-right: 1px solid #CCC;
+
+  .library-list--wrapper {
+    flex: 1;
+  }
+
+  .btn-upload {
+      line-height: 2.4rem;
+      border-radius: 0;
+      margin: 0;
+      border-color: #CCC;
+      border-width: 1px 0 0;
+      background: #F2F2F2;
+      height: auto;
+      text-align: left;
+      color: #000;
+      justify-content: flex-start;
+      padding: 0 1rem;
+
+      &:hover {
+          outline: none;
+          box-shadow: none;
+      }
+  }
 }

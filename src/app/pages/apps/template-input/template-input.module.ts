@@ -5,7 +5,7 @@ import { SidebarComponent } from './components/sidebar';
 import { TemplateOverlayComponent } from './components/template-overlay.component';
 import { TemplateInputSelectDirective } from './directives/template-input.select';
 import { TemplateInputOverlayService } from './provider/templateinput-overlay.service';
-import { QrsModule } from '@smc/modules';
+import { QrsModule, SmcUiModule } from '@smc/modules';
 import { CommonModule } from '@angular/common';
 
 @NgModule({
@@ -25,7 +25,8 @@ import { CommonModule } from '@angular/common';
     imports: [
         CommonModule,
         OverlayModule,
-        QrsModule
+        QrsModule,
+        SmcUiModule
     ],
     providers: [
         TemplateInputOverlayService

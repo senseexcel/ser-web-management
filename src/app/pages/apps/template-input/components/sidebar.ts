@@ -1,4 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { SelectionModel } from '@angular/cdk/collections';
 import { IContentLibrary, ContentLibraryService } from '@smc/modules/qrs/provider/content-library.repository';
 
 @Component({
@@ -13,10 +14,13 @@ export class SidebarComponent implements OnInit {
 
     public libraries: IContentLibrary[];
 
+    public selection: SelectionModel<IContentLibrary>;
+
     constructor (
         private contentLibraryRepository: ContentLibraryService
     ) {
         this.open = new EventEmitter();
+        this.selection = new SelectionModel();
     }
 
     ngOnInit() {
@@ -26,7 +30,8 @@ export class SidebarComponent implements OnInit {
             });
     }
 
-    public openLibrary($event, libraryId) {
-        this.open.emit(libraryId);
+    public openLibrary($event, library: IContentLibrary) {
+        this.selection.select(library);
+        this.open.emit(library.id);
     }
 }

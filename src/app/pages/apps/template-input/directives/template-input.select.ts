@@ -3,7 +3,7 @@ import { Subscription, fromEvent, Subject } from 'rxjs';
 import { OverlayCtrl } from '../provider/overlay-control';
 import { TemplateInputOverlayService } from '../provider/templateinput-overlay.service';
 import { tap } from 'rxjs/internal/operators/tap';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, switchMap } from 'rxjs/operators';
 
 /**
  * directive which triggers show templateinput overlay
@@ -42,26 +42,17 @@ export class TemplateInputSelectDirective implements OnInit, OnDestroy {
      * registers click event on element
      */
     public ngOnInit() {
-        this.overlayService.onSelect()
-            .pipe(takeUntil(this.destroy$))
-            .subscribe((path) => {
-                this.select.emit(path);
-                this.overlayCtrl.close();
-            });
-
-        fromEvent(this.el.nativeElement, 'click')
-            .pipe(
-                tap(() => {
-                    if (!this.overlayCtrl) {
-                        this.overlayCtrl = this.overlayService.create({
-                            backdropClass: 'template-input--backdrop',
-                            panelClass: 'template-input--overlay'
-                        });
-                    }
-                }),
-                takeUntil(this.destroy$)
-            )
-            .subscribe(() => this.toggleTemplateOverlay());
+        fromEvent(this.el.nativeElement, 'click').pipe(
+            takeUntil(this.destroy$),
+            switchMap(() => {
+                this.overlayCtrl = this.overlayService.open();
+                return this.overlayService.onSelect();
+            })
+        ).subscribe((path) => {
+            this.select.emit(path);
+            this.overlayCtrl.close();
+            this.overlayCtrl = null;
+        });
     }
 
     /**
@@ -71,12 +62,5 @@ export class TemplateInputSelectDirective implements OnInit, OnDestroy {
         this.destroy$.next(true);
         this.overlayCtrl = null;
         this.overlayService = null;
-    }
-
-    /**
-     * enable templateinput overlay
-     */
-    private toggleTemplateOverlay() {
-        this.overlayCtrl.show();
     }
 }

@@ -12,7 +12,8 @@ interface ContentListItem {
 
 @Component({
     selector: 'smc-templateinput-list',
-    templateUrl: 'content-list.html'
+    templateUrl: 'content-list.html',
+    styleUrls: ['./content-list.scss']
 })
 export class ContentListComponent implements OnDestroy {
 

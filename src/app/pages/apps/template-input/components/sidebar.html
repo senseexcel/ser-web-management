@@ -1,3 +1,8 @@
-<ul>
-  <li *ngFor="let library of libraries" (click)="openLibrary($event, library.id)">{{library.name}}</li>
-</ul>
+<div class="library-list--wrapper">
+  <ul class="library-list">
+    <li *ngFor="let library of libraries" (click)="openLibrary($event, library)"
+      [ngClass]="{'active': selection.isSelected(library)}">{{library.name}}</li>
+  </ul>
+</div>
+
+<button type="button" class="btn-upload">Upload Template</button>
