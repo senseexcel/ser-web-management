@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy } from '@angular/core';
 import { ContentLibraryService, IStaticContent } from '@smc/modules/qrs/provider/content-library.repository';
 import { Subject } from 'rxjs';
-import { takeUntil, map, reduce } from 'rxjs/operators';
+import { takeUntil, map } from 'rxjs/operators';
 import { FilterFactory, FilterOperator } from '@smc/modules/qrs';
 import { TemplateInputOverlayService } from '../provider/templateinput-overlay.service';
 

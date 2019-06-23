@@ -2,7 +2,6 @@ import { Directive, ElementRef, OnInit, OnDestroy, Output, EventEmitter } from '
 import { Subscription, fromEvent, Subject } from 'rxjs';
 import { OverlayCtrl } from '../provider/overlay-control';
 import { TemplateInputOverlayService } from '../provider/templateinput-overlay.service';
-import { tap } from 'rxjs/internal/operators/tap';
 import { takeUntil, switchMap } from 'rxjs/operators';
 
 /**
@@ -19,11 +18,6 @@ export class TemplateInputSelectDirective implements OnInit, OnDestroy {
     public select: EventEmitter<string>;
 
     private overlayCtrl: OverlayCtrl;
-
-    /**
-     * click subscription
-     */
-    private clickSub: Subscription;
 
     private destroy$: Subject<boolean>;
 
