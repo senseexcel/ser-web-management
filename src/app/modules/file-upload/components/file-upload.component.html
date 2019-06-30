@@ -1,18 +1,18 @@
 <div class="header">
-    Upload Sense Excel Template
+  Upload Sense Excel Template
 </div>
 
 <div class="body" [ngxFileupload]="uploadUrl" (add)="onUploadsAdd($event)">
-    <div class="file-upload--list">
-        <ng-container *ngFor="let item of uploads">
-            <ngx-fileupload-item [upload]="item" [template]="itemTemplate" (changed)="handleUploadChange($event, item)">
-            </ngx-fileupload-item>
-        </ng-container>
-    </div>
+  <div class="file-upload--list">
+    <ng-container *ngFor="let item of uploads">
+      <ngx-fileupload-item [upload]="item" (changed)="handleUploadChange($event, item)" [@removeUpload]="'visible'"
+        (@removeUpload.done)="animationEnd($event)"></ngx-fileupload-item>
+    </ng-container>
+  </div>
 </div>
 
 <!-- button, on click use myNgxFileuploadRef to upload all files at once -->
 <div class="footer">
-    <smc-ui--button class="btn btn-lighten" [label]="'Upload'" (click)="uploadFiles()"></smc-ui--button>
-    <smc-ui--button class="btn btn-lighten" [label]="'Close'" (click)="close()"></smc-ui--button>
+  <smc-ui--button class="btn btn-lighten" [label]="'Upload'" (click)="uploadFiles()"></smc-ui--button>
+  <smc-ui--button class="btn btn-lighten" [label]="'Close'" (click)="close()"></smc-ui--button>
 </div>

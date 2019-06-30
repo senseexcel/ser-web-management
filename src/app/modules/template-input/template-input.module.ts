@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { QrsModule, SmcUiModule } from '@smc/modules';
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { FileUploadModule } from '@modules/file-upload/file-upload.module';
 import { ContentListComponent } from './components/content-list';
