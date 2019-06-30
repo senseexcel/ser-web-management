@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { IContentLibrary, ContentLibraryService } from '@smc/modules/qrs/provider/content-library.repository';
+import { FileUploadOverlay } from '@modules/file-upload/services/file-upload.overlay';
 
 @Component({
     selector: 'smc-templateinput-sidebar',
@@ -17,7 +18,8 @@ export class SidebarComponent implements OnInit {
     public selection: SelectionModel<IContentLibrary>;
 
     constructor (
-        private contentLibraryRepository: ContentLibraryService
+        private contentLibraryRepository: ContentLibraryService,
+        private uploadOverlay: FileUploadOverlay
     ) {
         this.open = new EventEmitter();
         this.selection = new SelectionModel();
@@ -33,5 +35,13 @@ export class SidebarComponent implements OnInit {
     public openLibrary($event, library: IContentLibrary) {
         this.selection.select(library);
         this.open.emit(library.id);
+    }
+
+    public uploadFile() {
+        const selection: IContentLibrary = this.selection.selected[0];
+        if (selection) {
+            const url = `/qrs/contentLibrary/${selection.name}/uploadfile`;
+            this.uploadOverlay.open(url);
+        }
     }
 }

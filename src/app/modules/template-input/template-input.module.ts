@@ -1,12 +1,15 @@
 import { NgModule } from '@angular/core';
 import { OverlayModule } from '@angular/cdk/overlay';
+import { QrsModule, SmcUiModule } from '@smc/modules';
+import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+
+import { FileUploadModule } from '@modules/file-upload/file-upload.module';
 import { ContentListComponent } from './components/content-list';
 import { SidebarComponent } from './components/sidebar';
 import { TemplateOverlayComponent } from './components/template-overlay.component';
 import { TemplateInputSelectDirective } from './directives/template-input.select';
 import { TemplateInputOverlayService } from './provider/templateinput-overlay.service';
-import { QrsModule, SmcUiModule } from '@smc/modules';
-import { CommonModule } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -26,11 +29,11 @@ import { CommonModule } from '@angular/common';
         CommonModule,
         OverlayModule,
         QrsModule,
-        SmcUiModule
+        SmcUiModule,
+        FileUploadModule
     ],
     providers: [
         TemplateInputOverlayService
     ],
 })
-export class TemplateInputModule {
-}
+export class TemplateInputModule {}

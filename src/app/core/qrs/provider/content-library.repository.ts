@@ -84,6 +84,9 @@ export class ContentLibraryService {
         );
     }
 
+    public uploadFile() {
+    }
+
     /**
      * create new selection
      */
