@@ -142,7 +142,7 @@ export class EnigmaService {
 
         const url = buildUrl({
             host: window.location.hostname,
-            secure: false,
+            secure: true,
             appId,
             identity: Math.random().toString(32).substr(2)
         });
