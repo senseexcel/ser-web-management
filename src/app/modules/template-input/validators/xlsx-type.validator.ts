@@ -1,6 +1,6 @@
-import { NgxFileuploadValidator, ValidationResult } from '@r-hannuschka/ngx-fileupload';
+import { NgxFileUploadValidator, ValidationResult } from '@r-hannuschka/ngx-fileupload';
 
-export class XlsxTypeValidator implements NgxFileuploadValidator {
+export class XlsxTypeValidator implements NgxFileUploadValidator {
 
     validate(file: File): ValidationResult {
 

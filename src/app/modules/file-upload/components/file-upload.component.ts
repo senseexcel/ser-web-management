@@ -1,6 +1,6 @@
 import { Component, ViewChild, Inject } from '@angular/core';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { FileUpload, UploadModel, UploadState, NgxFileuploadDirective } from '@r-hannuschka/ngx-fileupload';
+import { FileUpload, UploadModel, UploadState, NgxFileUploadDirective } from '@r-hannuschka/ngx-fileupload';
 import { FILEUPLOAD_URL, FILEUPLOAD_OVERLAY_CTRL } from '../model/tokens';
 import { OverlayCtrl } from '../services/overlay-control';
 import { of, Subject } from 'rxjs';
@@ -21,8 +21,8 @@ import { delay, switchMap, take } from 'rxjs/operators';
 })
 export class FileUploadComponent {
 
-    @ViewChild(NgxFileuploadDirective, {read: NgxFileuploadDirective, static: true})
-    private ngxFileuploadRef: NgxFileuploadDirective;
+    @ViewChild(NgxFileUploadDirective, {read: NgxFileUploadDirective, static: true})
+    private ngxFileUploadRef: NgxFileUploadDirective;
 
     /**
      * all file uploades, which will be added to upload-item view
@@ -91,11 +91,22 @@ export class FileUploadComponent {
      * upload all files
      */
     public uploadFiles() {
-        this.ngxFileuploadRef.uploadAll();
+        this.ngxFileUploadRef.uploadAll();
     }
 
+    /**
+     * remove all uploads (cancel if not completed)
+     */
     public clearFiles() {
-        this.ngxFileuploadRef.cancelAll();
+        this.ngxFileUploadRef.cancelAll();
+    }
+
+    /**
+     * remove all invalid / error uploads but keeps
+     * all other ones
+     */
+    public cleanFiles() {
+        this.ngxFileUploadRef.cleanAll();
     }
 
     /**

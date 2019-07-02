@@ -1,7 +1,7 @@
 :host {
 
   display: flex;
-  width: 30rem;
+  width: 35rem;
   height: 20rem;
   flex-direction: column;
   border: 1px solid #CCC;
@@ -35,7 +35,39 @@
   .body {
     flex: 1;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
+    position: relative;
+
+    .file-upload--info-wrapper {
+        cursor: pointer;
+        height: calc(100% + 1rem);
+        margin: -.5rem -1rem;
+    }
+
+    .file-upload--info {
+
+        display: inline-block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+
+        .ser-icon--add {
+            display: flex;
+            font-size: 2rem;
+            border: 1px dashed darken(#CCC, 30%);
+            color: darken(#CCC, 30%);
+            height: 5rem;
+            width: 5rem;
+            border-radius: 50%;
+            background: lighten(#CCC, 5%);
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+    }
+
 
    /*--------------------------------------
     * Section: Body::ngx-fileupload-items

@@ -1,19 +1,25 @@
 <div class="header">
-  Upload Sense Excel Template
+    Upload Sense Excel Template
 </div>
 
-<div class="body" [ngxFileupload]="uploadUrl" (add)="onUploadsAdd($event)">
-  <div class="file-upload--list">
-    <ng-container *ngFor="let item of uploads">
-      <ngx-fileupload-item [upload]="item" (changed)="handleUploadChange($event, item)" [@removeUpload]="'visible'"
-        (@removeUpload.done)="animationEnd($event)"></ngx-fileupload-item>
-    </ng-container>
+<div class="body" [ngxFileUpload]="uploadUrl" (add)="onUploadsAdd($event)">
+    <div *ngIf="!uploads.length" class="file-upload--info-wrapper">
+        <div class="file-upload--info">
+            <i class="ser-icon ser-icon--add"></i>
+            <span>Drag/Drop files here or click to select files</span>
+        </div>
+    </div>
+    <div class="file-upload--list">
+        <ng-container *ngFor="let item of uploads">
+        <ngx-fileupload-item [upload]="item" (changed)="handleUploadChange($event, item)" [@removeUpload]="'visible'"
+            (@removeUpload.done)="animationEnd($event)"></ngx-fileupload-item>
+        </ng-container>
   </div>
 </div>
 
-<!-- button, on click use myNgxFileuploadRef to upload all files at once -->
 <div class="footer">
-  <smc-ui--button class="btn btn-lighten" [label]="'Upload'" (click)="uploadFiles()"></smc-ui--button>
-  <smc-ui--button class="btn btn-lighten" [label]="'Clear'"  (click)="clearFiles()"></smc-ui--button>
-  <smc-ui--button class="btn btn-lighten" [label]="'Close'"  (click)="close()"></smc-ui--button>
+    <smc-ui--button class="btn btn-lighten" [disabled]="!uploads.length" [label]="'Upload'"   (click)="uploadFiles()"></smc-ui--button>
+    <smc-ui--button class="btn btn-lighten" [disabled]="!uploads.length" [label]="'Clean Up'" (click)="cleanFiles()"></smc-ui--button>
+    <smc-ui--button class="btn btn-lighten" [disabled]="!uploads.length" [label]="'Clear'"    (click)="clearFiles()"></smc-ui--button>
+    <smc-ui--button class="btn btn-lighten" [label]="'Close'" (click)="close()"></smc-ui--button>
 </div>
