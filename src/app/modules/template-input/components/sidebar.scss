@@ -7,6 +7,8 @@
 
   .library-list--wrapper {
     flex: 1;
+    overflow-y: auto;
+    overflow-x: none;
 
     li:hover {
       background: darken($color: #FFF, $amount: 5%);
