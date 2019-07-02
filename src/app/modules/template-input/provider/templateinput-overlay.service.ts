@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable, Injector, OnDestroy } from '@angular/core';
 import { IOverlayConfig, OVERLAY_CONTROL } from '../api/overlay-config';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
@@ -7,7 +7,7 @@ import { OverlayCtrl } from './overlay-control';
 import { Subject, Observable } from 'rxjs';
 
 @Injectable()
-export class TemplateInputOverlayService {
+export class TemplateInputOverlayService implements OnDestroy {
 
     private select$: Subject<string>;
 
@@ -37,6 +37,11 @@ export class TemplateInputOverlayService {
 
         overlayRef.backdropClick().subscribe(() => overlayRef.dispose());
         return remoteCtrl;
+    }
+
+    public ngOnDestroy () {
+        this.select$.complete();
+        this.select$ = null;
     }
 
     public onSelect(): Observable<string> {

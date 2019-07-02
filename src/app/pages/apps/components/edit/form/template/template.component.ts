@@ -34,9 +34,7 @@ export class TemplateComponent implements OnInit {
         this.formService.editModel()
         .subscribe ((report: ReportModel) => {
             this.report = report;
-
             if (this.report) {
-                /** @todo should only update form fields and not create every time a new form group */
                 this.templateForm = this.buildTemplateForm();
             }
         });

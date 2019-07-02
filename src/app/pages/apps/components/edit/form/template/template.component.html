@@ -2,20 +2,27 @@
 <ng-container *ngIf="templateForm">
     <div [formGroup]="templateForm">
 
-        <mat-form-field class="form-control">
-            <input matInput formControlName="input" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_INPUT' | translate}}">
-        </mat-form-field>
-
-        <button type="button" smcTemplateInputSelect (select)="selectTemplate($event)">Select Template</button>
-
-        <mat-form-field class="form-control">
-            <input matInput formControlName="output" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_OUTPUT' | translate}}">
-        </mat-form-field>
+        <div class="row">
+            <div class="col">
+                <mat-form-field class="form-control">
+                    <input matInput formControlName="input" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_INPUT' | translate}}">
+                </mat-form-field>
+            </div>
+            <div class="col-sm col-sm-auto align-self-center">
+                <smc-ui--button 
+                    class="btn-lighten" 
+                    smcTemplateInputSelect (select)="selectTemplate($event)"
+                    [label]="'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_SELECT' | translate"
+                >
+                    <i class="ser-icon ser-icon--search" btn-icon--left></i>
+                </smc-ui--button>
+            </div>
+        </div>
 
         <div class="row">
             <div class="col col-md-9">
                 <mat-form-field class="form-control">
-                    <input matInput formControlName="outputFormat" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_OUTPUT_FORMAT' | translate}}">
+                    <input matInput formControlName="output" placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.TEMPLATE_OUTPUT' | translate}}">
                 </mat-form-field>
             </div>
             <div class="col col-md-3">

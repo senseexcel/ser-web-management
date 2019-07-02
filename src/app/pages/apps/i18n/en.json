@@ -128,7 +128,8 @@
           "TEMPLATE_OUTPUT": "Template Output",
           "TEMPLATE_OUTPUT_FORMAT": "Template Output Format",
           "TEMPLATE_OUTPUT_PASSWORD": "Template Output Password",
-          "OUTPUT_FORMAT": "Output Format"
+          "OUTPUT_FORMAT": "Output Format",
+          "TEMPLATE_SELECT": "Template"
         }
       },
 

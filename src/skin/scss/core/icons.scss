@@ -135,6 +135,12 @@
   }
 }
 
+.ser-icon--search {
+  &:before {
+    content: "F";
+  }
+}
+
 /** safari chrome */
 @-webkit-keyframes rotating {
   from {

@@ -1,8 +1,8 @@
-import { Directive, ElementRef, OnInit, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { Subscription, fromEvent, Subject } from 'rxjs';
+import { Directive, ElementRef, OnDestroy, Output, EventEmitter, HostListener } from '@angular/core';
+import { Subject } from 'rxjs';
 import { OverlayCtrl } from '../provider/overlay-control';
 import { TemplateInputOverlayService } from '../provider/templateinput-overlay.service';
-import { takeUntil, switchMap } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 
 /**
  * directive which triggers show templateinput overlay
@@ -12,7 +12,7 @@ import { takeUntil, switchMap } from 'rxjs/operators';
  * <button type="button" smcTemplateInputSelect>Select Input Template</button>
  */
 @Directive({ selector: '[smcTemplateInputSelect]' })
-export class TemplateInputSelectDirective implements OnInit, OnDestroy {
+export class TemplateInputSelectDirective implements OnDestroy {
 
     @Output()
     public select: EventEmitter<string>;
@@ -32,21 +32,20 @@ export class TemplateInputSelectDirective implements OnInit, OnDestroy {
         this.select = new EventEmitter();
     }
 
-    /**
-     * registers click event on element
-     */
-    public ngOnInit() {
-        fromEvent(this.el.nativeElement, 'click').pipe(
-            takeUntil(this.destroy$),
-            switchMap(() => {
-                this.overlayCtrl = this.overlayService.open();
-                return this.overlayService.onSelect();
-            })
-        ).subscribe((path) => {
-            this.select.emit(path);
-            this.overlayCtrl.close();
-            this.overlayCtrl = null;
-        });
+    @HostListener('click', ['$event'])
+    public openOverflay(event: MouseEvent) {
+        event.stopPropagation();
+
+        this.overlayCtrl = this.overlayService.open();
+        this.overlayService.onSelect()
+            .pipe(take(1))
+            .subscribe({
+                next: (path) => {
+                    this.select.emit(path);
+                    this.overlayCtrl.close();
+                    this.overlayCtrl = null;
+                }
+            });
     }
 
     /**
