@@ -24,7 +24,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import i18n_en from './i18n/en.json';
 
-import { TemplateSelectionsModule } from './components/template-selections/template-selections.module';
+import { TemplateSelectionsModule } from '@modules/template-selections/template-selections.module';
+import { TemplateInputModule } from '@modules/template-input/template-input.module';
 
 @NgModule({
   imports: [
@@ -35,6 +36,7 @@ import { TemplateSelectionsModule } from './components/template-selections/templ
     QrsModule,
     SerModule,
     SmcUiModule,
+    TemplateInputModule,
     TemplateSelectionsModule,
     DragDropModule
   ],

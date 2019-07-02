@@ -22,8 +22,7 @@ export class SmcUiButtonComponent {
     @Output()
     public click: EventEmitter<void>;
 
-    constructor(
-    ) {
+    constructor() {
         this.close = new EventEmitter();
         this.click = new EventEmitter();
     }

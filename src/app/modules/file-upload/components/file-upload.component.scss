@@ -1,0 +1,142 @@
+:host {
+
+  display: flex;
+  width: 35rem;
+  height: 20rem;
+  flex-direction: column;
+  border: 1px solid #CCC;
+  border-radius: .5rem;
+  background: #FFF;
+
+  .body,
+  .footer,
+  .header {
+    padding: 0.5rem 1rem;
+  }
+
+  .footer,
+  .headr {
+    flex-shrink: 0;
+  }
+
+  /*--------------------------------------
+   * Section: Header
+   *--------------------------------------
+   */
+  .header {
+    font-weight: 700;
+    border-bottom: 1px solid #CCC;
+  }
+
+  /*--------------------------------------
+   * Section: Body
+   *--------------------------------------
+   */
+  .body {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+
+    .file-upload--info-wrapper {
+        cursor: pointer;
+        height: calc(100% + 1rem);
+        margin: -.5rem -1rem;
+    }
+
+    .file-upload--info {
+
+        display: inline-block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+
+        .ser-icon--add {
+            display: flex;
+            font-size: 2rem;
+            border: 1px dashed darken(#CCC, 30%);
+            color: darken(#CCC, 30%);
+            height: 5rem;
+            width: 5rem;
+            border-radius: 50%;
+            background: lighten(#CCC, 5%);
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+    }
+
+
+   /*--------------------------------------
+    * Section: Body::ngx-fileupload-items
+    *--------------------------------------
+    */
+    ngx-fileupload-item {
+      ::ng-deep {
+
+        .upload-item {
+          background: #FFF;
+          border-width: 0 0 1px;
+          border-radius: 0;
+        }
+
+        .upload-item--progress .progressbar {
+          height: 1rem;
+        }
+
+        .upload-item--progress .label-size {
+          font-size: .7rem;
+        }
+
+        button {
+          min-width: initial;
+        }
+      }
+    }
+
+    ngx-fileupload-item:last-child {
+      ::ng-deep {
+        .upload-item {
+          border-width: 0;
+        }
+      }
+    }
+  }
+
+  /*--------------------------------------
+   * Section: Footer
+   *--------------------------------------
+   */
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    border-top: 1px solid #CCC;
+
+    ::ng-deep {
+      .btn {
+        margin: 0 1rem 0 0;
+
+        button {
+          margin: 0;
+          border-color: #B3B3B3;
+          border-radius: 3px;
+          background: #FFF;
+        }
+
+        &:last-child {
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+    &.fileupload--backdrop {
+      background: rgba(0, 0, 0, .35);
+    }
+  }
+}

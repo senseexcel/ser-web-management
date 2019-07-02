@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ReportModel } from '@smc/modules/ser';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormService } from '@smc/modules/form-helper';
 import { Observable } from 'rxjs';
 import { ISerTemplate } from 'ser.api';
@@ -34,9 +34,7 @@ export class TemplateComponent implements OnInit {
         this.formService.editModel()
         .subscribe ((report: ReportModel) => {
             this.report = report;
-
             if (this.report) {
-                /** @todo should only update form fields and not create every time a new form group */
                 this.templateForm = this.buildTemplateForm();
             }
         });
@@ -44,6 +42,10 @@ export class TemplateComponent implements OnInit {
 
     public setOutput(event) {
         this.templateForm.controls.outputFormat.setValue(event.value);
+    }
+
+    public selectTemplate(template: string) {
+        this.templateForm.get('input').setValue(template);
     }
 
     /**

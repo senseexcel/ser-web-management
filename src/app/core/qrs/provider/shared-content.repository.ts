@@ -80,6 +80,7 @@ export class SharedContentRepository {
 
                 /**
                  * join all requests
+                 * @todo deprecated
                  */
                 return forkJoin(...deleteRequests).pipe(
                     map((response: number[]) => !response.some((status) => status === -1))

@@ -22,4 +22,10 @@
             border-left: 1px solid #333;
         }
     }
+
+    ::ng-deep {
+        button {
+            margin: 0;
+        }
+    }
 }

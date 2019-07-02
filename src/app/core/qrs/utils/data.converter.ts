@@ -15,13 +15,17 @@ export class DataConverter {
             return [];
         }
 
-        return data.rows.reduce((previouseData: IDataNode[], qrsRow: Array<string | IDataNode>) => {
-            const matRow: IDataNode = {};
-            qrsRow.forEach((value, index) => {
-                matRow[data.columnNames[index]] = value;
-            });
-            previouseData.push(matRow);
-            return previouseData;
-        }, []);
+        const rows = data.rows as IDataNode[][];
+        return rows.reduce(
+            (previouseData, qrsRow) => {
+                const matRow: IDataNode = {};
+                qrsRow.forEach( ( value, index ) => {
+                    matRow[data.columnNames[index]] = value;
+                } );
+                previouseData.push( matRow );
+                return previouseData;
+            },
+            []
+        );
     }
 }

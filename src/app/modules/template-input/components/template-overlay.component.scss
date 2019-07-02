@@ -1,0 +1,71 @@
+:host {
+    width: 60vw;
+    height: 60vh;
+
+    background: #FFF;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+
+    .header, .footer {
+        padding : .5rem 1rem;
+    }
+
+    .body {
+        border: 1px solid #CCC;
+        border-width: 1px 0;
+        flex: 1;
+        display: flex;
+        min-height: 0;
+    }
+
+    .footer {
+        display: flex;
+        justify-content: flex-end;
+
+        ::ng-deep {
+            button {
+                margin: 0 0 0 .5rem;
+                border-color: #B3B3B3;
+                border-radius: 3px;
+                background: #FFF;
+            }
+        }
+    }
+
+    ::ng-deep {
+
+        /*+----------------------------------------------------
+          | LISTS
+          +---------------------------------------------------*/
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            line-height: 2.2rem;
+            border-bottom: 1px solid #CCC;
+            padding: 0 1rem;
+            cursor: pointer;
+        }
+
+        li:hover {
+            background: darken($color: #FFF, $amount: 5%);
+        }
+
+        li.active {
+            font-weight: 900;
+            background: darken($color: #FFF, $amount: 10%);
+        }
+    }
+}
+
+::ng-deep {
+    .cdk-overlay-backdrop.cdk-overlay-backdrop-showing {
+        &.template-input--backdrop {
+            background: rgba(0, 0, 0, .35);
+        }
+    }
+}

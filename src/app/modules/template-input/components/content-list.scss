@@ -1,0 +1,15 @@
+:host {
+    position: relative;
+    display: block;
+    flex: 1;
+
+    mat-spinner {
+        left: calc(50% - 50px);
+        top:  calc(50% - 50px);
+    }
+
+    .content-list--wrapper {
+        height: 100%;
+        overflow-y: auto;
+    }
+}

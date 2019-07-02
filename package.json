@@ -1,6 +1,6 @@
 {
   "name": "ser-web-management",
-  "version": "1.4.3",
+  "version": "3.5.8",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --disable-host-check",
@@ -25,6 +25,8 @@
     "@angular/platform-browser-dynamic": "8.0.1",
     "@angular/router": "8.0.1",
     "@ngx-translate/core": "11.0.1",
+    "@r-hannuschka/ngx-fileupload": "^0.4.0-beta.2",
+    "angular-pipes": "^9.0.2",
     "hjson": "3.1.2",
     "leonardo-ui": "1.7.1",
     "moment": "2.24.0",

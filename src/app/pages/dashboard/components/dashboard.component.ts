@@ -39,8 +39,7 @@ export class DashboardComponent implements OnInit {
         private taskRepository: TaskRepository,
         private filterFactory: FilterFactory,
         private sharendContentRepository: SharedContentRepository
-    ) {
-    }
+    ) {}
 
     /**
      *
