@@ -25,7 +25,7 @@
 
         ::ng-deep {
             button {
-                margin: 0;
+                margin: 0 0 0 .5rem;
                 border-color: #B3B3B3;
                 border-radius: 3px;
                 background: #FFF;
@@ -52,11 +52,12 @@
         }
 
         li:hover {
-            background: darken($color: #FFF, $amount: 10%);
+            background: darken($color: #FFF, $amount: 5%);
         }
 
         li.active {
             font-weight: 900;
+            background: darken($color: #FFF, $amount: 10%);
         }
     }
 }

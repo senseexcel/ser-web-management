@@ -47,7 +47,6 @@ export class TemplateComponent implements OnInit {
     }
 
     public selectTemplate(template: string) {
-        console.log(template);
         this.templateForm.get('input').setValue(template);
     }
 

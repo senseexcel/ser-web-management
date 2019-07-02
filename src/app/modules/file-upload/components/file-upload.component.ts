@@ -65,8 +65,13 @@ export class FileUploadComponent {
      * if upload has been completed or canceled remove it from list
      */
     public handleUploadChange( upload: UploadModel, fileUpload: FileUpload ) {
+
         if (upload.state === UploadState.CANCELED || upload.state === UploadState.UPLOADED) {
             this.removeUpload(fileUpload);
+
+            if (upload.state === UploadState.UPLOADED) {
+                this.ctrl.uploadCompleted();
+            }
         }
     }
 
@@ -77,7 +82,7 @@ export class FileUploadComponent {
                 const idx = this.uploads.indexOf(upload);
                 this.uploads.splice(idx, 1);
                 return this.animation$.pipe(take(1));
-            })
+            }),
         )
         .subscribe();
     }
@@ -86,14 +91,18 @@ export class FileUploadComponent {
      * upload all files
      */
     public uploadFiles() {
-        this.ngxFileuploadRef.upload();
+        this.ngxFileuploadRef.uploadAll();
+    }
+
+    public clearFiles() {
+        this.ngxFileuploadRef.cancelAll();
     }
 
     /**
      * close modal, this will cancel all active downloads
      */
     public close() {
-        this.ngxFileuploadRef.cancel();
+        this.clearFiles();
         this.ctrl.close();
     }
 }

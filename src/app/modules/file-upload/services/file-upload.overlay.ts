@@ -1,4 +1,4 @@
-import { Injectable, Injector, InjectionToken } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Overlay, OverlayRef, OverlayConfig } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 import { FileUploadComponent } from '../components/file-upload.component';
@@ -13,11 +13,13 @@ export class FileUploadOverlay {
         private injector: Injector
     ) { }
 
-    public open(url: string) {
+    public open(url: string): OverlayCtrl {
         const overlayConfig = this.createConfig();
         const overlayRef: OverlayRef = this.overlay.create(overlayConfig);
+        const overlayCtrl = new OverlayCtrl(overlayRef);
 
-        this.attachOverlay(overlayRef, url);
+        this.attachOverlay(overlayRef, url, overlayCtrl);
+        return overlayCtrl;
     }
 
     /**
@@ -43,9 +45,8 @@ export class FileUploadOverlay {
     /**
      *
      */
-    private attachOverlay(overlayRef: OverlayRef, url: string) {
-        const overlayCtrl = new OverlayCtrl(overlayRef);
-        const injector = this.createInjector(url, overlayCtrl);
+    private attachOverlay(overlayRef: OverlayRef, url: string, ctrl: OverlayCtrl) {
+        const injector = this.createInjector(url, ctrl);
         const overlayPortal = new ComponentPortal(FileUploadComponent, null, injector);
         overlayRef.attach(overlayPortal);
     }

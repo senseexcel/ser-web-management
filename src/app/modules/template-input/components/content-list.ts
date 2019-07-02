@@ -1,9 +1,8 @@
-import { Component, Input, OnDestroy } from '@angular/core';
+import { Component, Input, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { ContentLibraryService, IStaticContent } from '@smc/modules/qrs/provider/content-library.repository';
 import { Subject } from 'rxjs';
 import { takeUntil, map } from 'rxjs/operators';
 import { FilterFactory, FilterOperator } from '@smc/modules/qrs';
-import { TemplateInputOverlayService } from '../provider/templateinput-overlay.service';
 
 interface ContentListItem {
     label: string;
@@ -17,11 +16,16 @@ interface ContentListItem {
 })
 export class ContentListComponent implements OnDestroy {
 
+    public isLoading = false;
+
     public contents: ContentListItem[];
 
     private libraryId: string;
 
     private destroyed$: Subject<boolean>;
+
+    @Output()
+    public select: EventEmitter<any>;
 
     /**
      * sets current libary id and load new data
@@ -35,10 +39,10 @@ export class ContentListComponent implements OnDestroy {
     }
 
     constructor (
-        private overlayService: TemplateInputOverlayService,
         private contentLibraryRepository: ContentLibraryService,
         private filterFactory: FilterFactory
     ) {
+        this.select = new EventEmitter();
         this.destroyed$ = new Subject();
     }
 
@@ -52,7 +56,11 @@ export class ContentListComponent implements OnDestroy {
     }
 
     public selectFile(event: MouseEvent, item: ContentListItem) {
-        this.overlayService.selectContent(item.path);
+        this.select.emit(item.path);
+    }
+
+    public reload(id: string) {
+        this.loadStaticContent(id);
     }
 
     /**
@@ -62,14 +70,14 @@ export class ContentListComponent implements OnDestroy {
 
         /** create filter we only want xlsx files */
         const filter = this.filterFactory.createFilter('logicalPath', `'.xlsx'`, FilterOperator.ENDS_WITH);
-
+        this.isLoading = true;
         this.contentLibraryRepository.fetchLibraryContent(id, 0, 20, filter)
             .pipe(
                 takeUntil(this.destroyed$),
                 map((contents) => contents.map((staticContent) => this.mapToListItem(staticContent)))
             )
             .subscribe((contents) => {
-                // name.replace(^\/content\/(.*)$, 'content://$1')
+                this.isLoading = false;
                 this.contents = contents;
             });
     }

@@ -9,6 +9,8 @@ import { SidebarComponent } from './components/sidebar';
 import { TemplateOverlayComponent } from './components/template-overlay.component';
 import { TemplateInputSelectDirective } from './directives/template-input.select';
 import { TemplateInputOverlayService } from './provider/templateinput-overlay.service';
+import { NGX_FILEUPLOAD_VALIDATOR } from '@r-hannuschka/ngx-fileupload';
+import { XlsxTypeValidator } from './validators/xlsx-type.validator';
 
 @NgModule({
     declarations: [
@@ -32,7 +34,12 @@ import { TemplateInputOverlayService } from './provider/templateinput-overlay.se
         FileUploadModule
     ],
     providers: [
-        TemplateInputOverlayService
+        TemplateInputOverlayService,
+        {
+            provide: NGX_FILEUPLOAD_VALIDATOR,
+            useClass: XlsxTypeValidator,
+            multi: true
+        }
     ],
 })
 export class TemplateInputModule {}

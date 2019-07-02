@@ -1,6 +1,7 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { OverlayCtrl } from '../provider/overlay-control';
 import { OVERLAY_CONTROL } from '../api/overlay-config';
+import { ContentListComponent } from './content-list';
 
 @Component({
     selector: 'smc-templateinput-overlay',
@@ -8,6 +9,9 @@ import { OVERLAY_CONTROL } from '../api/overlay-config';
     styleUrls: ['./template-overlay.component.scss']
 })
 export class TemplateOverlayComponent {
+
+    @ViewChild(ContentListComponent, {read: ContentListComponent, static: true})
+    private contentList: ContentListComponent;
 
     public selectedLibary: string = null;
 
@@ -19,7 +23,19 @@ export class TemplateOverlayComponent {
         this.selectedLibary = id;
     }
 
+    public libraryContentChanged() {
+        this.reloadContent();
+    }
+
+    public reloadContent() {
+        this.contentList.reload(this.selectedLibary);
+    }
+
     public close() {
         this.overlayCtrl.close();
+    }
+
+    public selectTemplate(template) {
+        this.overlayCtrl.select(template);
     }
 }

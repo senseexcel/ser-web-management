@@ -8,6 +8,9 @@ export class UploadInterceptor implements HttpInterceptor {
         if (req.url.match(needle) && req.body.has('file')) {
             const fileName = req.body.get('file').name;
             const request: HttpRequest<any> = req.clone({
+                setHeaders: {
+                    'Content-Type': 'application/vnd.qlik.sense.app'
+                },
                 setParams: {
                     'externalpath': fileName,
                     'overwrite': 'true'

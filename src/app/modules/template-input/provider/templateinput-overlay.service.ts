@@ -30,10 +30,8 @@ export class TemplateInputOverlayService {
 
         // create portal host, where overlay will attached
         const overlayRef = this.overlay.create(overlayConfig);
-
         // create remote control
-        const remoteCtrl = new OverlayCtrl(overlayRef);
-
+        const remoteCtrl = new OverlayCtrl(overlayRef, this);
         // attach overlay to portal host
         this.attachOverlay(overlayRef, remoteCtrl);
 
@@ -71,10 +69,8 @@ export class TemplateInputOverlayService {
     private attachOverlay(overlayRef: OverlayRef, ctrl: OverlayCtrl) {
         // create injector
         const injector = this.createInjector(ctrl);
-
         // create overlay component portal which will added to portal host
         const containerPortal = new ComponentPortal(TemplateOverlayComponent, null, injector);
-
         // attach container portal to portal host
         overlayRef.attach(containerPortal);
     }
@@ -86,10 +82,8 @@ export class TemplateInputOverlayService {
     private createInjector(ctrl: OverlayCtrl): PortalInjector {
         // Instantiate new WeakMap for our custom injection tokens
         const injectionTokens = new WeakMap();
-
         // Set custom injection tokens
         injectionTokens.set(OVERLAY_CONTROL, ctrl);
-
         // Instantiate new PortalInjector
         return new PortalInjector(this.injector, injectionTokens);
     }
