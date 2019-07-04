@@ -75,7 +75,7 @@
         "SELECTIONS": {
 
           "LABEL": {
-            "SELECTION_NAME": "Dimension / Field / Qlik Script",
+            "SELECTION_NAME": "Dimension / Field / Qlik Formula",
             "SELECTION_VALUE": "Value"
           },
 
