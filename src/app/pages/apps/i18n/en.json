@@ -183,13 +183,18 @@
       "ACTIONS": {
         "EDIT": "Edit",
         "NEW": "Create new app",
-        "SYNC": "Synchronize apps"
+        "SYNC": "Synchronize apps",
+        "DELETE": "Delete"
       },
       "DIALOG": {
         "SYNC_APPS_TITLE": "Synchronize Apps",
         "SYNC_APPS_MESSAGE": "This will Synchronize Sense Excel Reporting Apps and add SER Tag to App. This can take a while...",
         "SYNC_APPS_TITLE_SUCCESS": "Apps Synchronized",
-        "SYNC_APPS_MESSAGE_SUCCESS": "{{COUNT}} Apps where synchronized"
+        "SYNC_APPS_MESSAGE_SUCCESS": "{{COUNT}} Apps where synchronized",
+        "DELETE_APP_TITLE": "Delete App",
+        "DELETE_APP_MESSAGE": "Are you sure delete following item: {{APP_NAME}}",
+        "DELETE_APP_TITLE_SUCCESS": "App Deleted",
+        "DELETE_APP_MESSAGE_SUCCESS": "App {{APP_NAME}} removed."
       },
       "HEADER": "Reports"
     }
