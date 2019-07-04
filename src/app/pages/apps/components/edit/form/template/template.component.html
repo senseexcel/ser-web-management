@@ -28,7 +28,7 @@
             <div class="col col-md-3">
                 <mat-form-field class="form-control">
                     <mat-select placeholder="{{'SMC_APPS.EDIT.FORM.TEMPLATE.OUTPUT_FORMAT' | translate}}" (selectionChange)="setOutput($event)">
-                        <mat-option *ngFor="let format of ['csv', 'html', 'pdf', 'svg', 'tiff', 'tsv', 'xlsm', 'xls', 'xlsx']" [value]="format">
+                        <mat-option *ngFor="let format of outputFormats" [value]="format">
                             {{format}}
                         </mat-option>
                     </mat-select>

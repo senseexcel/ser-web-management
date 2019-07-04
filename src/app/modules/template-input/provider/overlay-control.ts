@@ -1,18 +1,27 @@
 import { OverlayRef } from '@angular/cdk/overlay';
-import { TemplateInputOverlayService } from './templateinput-overlay.service';
+import { Subject, Observable } from 'rxjs';
 
 export class OverlayCtrl {
 
+    private select$: Subject<string>;
+
     constructor(
         private overlayRef: OverlayRef,
-        private inputService: TemplateInputOverlayService
-    ) { }
+    ) {
+        this.select$ = new Subject();
+    }
 
     public close() {
         this.overlayRef.dispose();
+        this.select$.complete();
+        this.select$ = null;
     }
 
     public select(value: string) {
-        this.inputService.selectContent(value);
+        this.select$.next(value);
+    }
+
+    public onSelect(): Observable<string> {
+        return this.select$.asObservable();
     }
 }

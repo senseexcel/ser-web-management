@@ -31,7 +31,7 @@ export class TemplateInputOverlayService implements OnDestroy {
         // create portal host, where overlay will attached
         const overlayRef = this.overlay.create(overlayConfig);
         // create remote control
-        const remoteCtrl = new OverlayCtrl(overlayRef, this);
+        const remoteCtrl = new OverlayCtrl(overlayRef);
         // attach overlay to portal host
         this.attachOverlay(overlayRef, remoteCtrl);
 
