@@ -1,4 +1,4 @@
-import { Directive, ElementRef, OnDestroy, Output, EventEmitter, HostListener } from '@angular/core';
+import { Directive, OnDestroy, Output, EventEmitter, HostListener } from '@angular/core';
 import { Subject } from 'rxjs';
 import { OverlayCtrl } from '../provider/overlay-control';
 import { TemplateInputOverlayService } from '../provider/templateinput-overlay.service';
@@ -25,7 +25,6 @@ export class TemplateInputSelectDirective implements OnDestroy {
      * Creates an instance of TemplateInputSelectDirective.
      */
     constructor(
-        private el: ElementRef,
         private overlayService: TemplateInputOverlayService
     ) {
         this.destroy$ = new Subject();
@@ -37,7 +36,7 @@ export class TemplateInputSelectDirective implements OnDestroy {
         event.stopPropagation();
 
         this.overlayCtrl = this.overlayService.open();
-        this.overlayService.onSelect()
+        this.overlayCtrl.onSelect()
             .pipe(take(1))
             .subscribe({
                 next: (path) => {
