@@ -1,10 +1,10 @@
-import { Observable, of } from 'rxjs';
+import { Observable, of, concat } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { IQrsFilter as IFilter, IApp, FilterOperator, IQrsFilter, IQrsFilterGroup, IAppFull } from '../api';
 import { FilterFactory } from './filter.factory';
 import { Injectable } from '@angular/core';
 import { IDataNode } from '@smc/modules/smc-common';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, bufferCount, take } from 'rxjs/operators';
 import { ITable } from '../api/request/table.interface';
 
 @Injectable()
@@ -90,6 +90,33 @@ export class AppRepository {
                 return this.http.put<IApp>(`/qrs/app/${id}`, updateData);
             })
         );
+    }
+
+    /**
+     * delete app object
+     */
+    public deleteApp(id: string) {
+
+        return this.createSelection(id).pipe(
+            switchMap((selection: any) => {
+                const deleteApp = this.http.delete(`/qrs/Selection/${selection.id}/App`);
+                const deleteSel = this.http.delete(`/qrs/Selection/${selection.id}`);
+                return concat(deleteApp, deleteSel);
+            }),
+            bufferCount(2),
+            take(1)
+        );
+    }
+
+    /**
+     * create selection for app object
+     */
+    private createSelection(appId: string): Observable<any> {
+        const url = `/qrs/Selection`;
+        const items = [
+            {type: 'App', objectId: appId}
+        ];
+        return this.http.post(url, {items});
     }
 
     /**

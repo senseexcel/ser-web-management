@@ -31,9 +31,10 @@
 
   <div page-content--footer>
     <smc-ui--button-navbar>
-      <smc-ui--button (click)="editApp()"   [label]="'SMC_APPS.LIST.ACTIONS.EDIT' | translate"></smc-ui--button>
-      <smc-ui--button (click)="createApp()" [label]="'SMC_APPS.LIST.ACTIONS.NEW'  | translate"></smc-ui--button>
-      <smc-ui--button (click)="syncApps()"  [label]="'SMC_APPS.LIST.ACTIONS.SYNC' | translate"></smc-ui--button>
+      <smc-ui--button (click)="editApp()"   [label]="'SMC_APPS.LIST.ACTIONS.EDIT'   | translate"></smc-ui--button>
+      <smc-ui--button (click)="createApp()" [label]="'SMC_APPS.LIST.ACTIONS.NEW'    | translate"></smc-ui--button>
+      <smc-ui--button (click)="syncApps()"  [label]="'SMC_APPS.LIST.ACTIONS.SYNC'   | translate"></smc-ui--button>
+      <smc-ui--button (click)="deleteApp()" [label]="'SMC_APPS.LIST.ACTIONS.DELETE' | translate" [disabled]="selection.isEmpty()"></smc-ui--button>
     </smc-ui--button-navbar>
   </div>
 

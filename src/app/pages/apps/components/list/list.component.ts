@@ -1,13 +1,14 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SelectionModel } from '@angular/cdk/collections';
-import { empty } from 'rxjs';
+import { EMPTY } from 'rxjs';
 import { ModalService } from '@smc/modules/modal';
 import { switchMap, tap } from 'rxjs/operators';
 import { IApp } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings, SmcCache } from '@smc/modules/smc-common';
 import { AppRepository } from '@smc/modules/ser/provider/app.repository';
+import { CompileTemplateMetadata } from '@angular/compiler';
 
 @Component({
     selector: 'smc-list',
@@ -59,7 +60,41 @@ export class AppListComponent implements OnInit, OnDestroy {
      * @param {IApp} app
      * @memberof AppListComponent
      */
-    public deleteApp(app: IApp) {
+    public deleteApp() {
+
+        if (this.selection.isEmpty()) {
+            return;
+        }
+
+        const dialogCtrl = this.dialogService.openDialog(
+            'SMC_APPS.LIST.DIALOG.DELETE_APP_TITLE',
+            {
+                key: 'SMC_APPS.LIST.DIALOG.DELETE_APP_MESSAGE',
+                param: {
+                    APP_NAME: this.selection.selected[0].name
+                }
+            }
+        );
+
+        dialogCtrl.switch.pipe(
+            switchMap((confirm: boolean) => {
+                if (confirm) {
+                    return this.appRepository.deleteApp(this.selection.selected[0].id);
+                }
+                return EMPTY;
+            }),
+        ).subscribe({
+            next: () => {
+                const config = {
+                    key: 'SMC_APPS.LIST.DIALOG.DELETE_APP_MESSAGE_SUCCESS',
+                    param: { APP_NAME: this.selection.selected[0].name }
+                };
+                const title = 'SMC_APPS.LIST.DIALOG.DELETE_APP_TITLE_SUCCESS';
+                this.dialogService.openMessageModal(title, config);
+                this.selection.clear();
+                this.loadApps();
+            }
+        });
     }
 
     /**
@@ -127,7 +162,7 @@ export class AppListComponent implements OnInit, OnDestroy {
                         this.isLoading = true;
                         return this.appRepository.addTagToSerApps();
                     }
-                    return empty();
+                    return EMPTY;
                 }),
             ).subscribe((apps) => {
                 this.dialogService.openMessageModal(
