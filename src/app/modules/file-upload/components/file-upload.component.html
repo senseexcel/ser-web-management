@@ -2,7 +2,7 @@
     Upload Sense Excel Template
 </div>
 
-<div class="body" [ngxFileUpload]="uploadUrl" (add)="onUploadsAdd($event)">
+<div class="body" [ngxFileUpload]="uploadUrl" [useFormData]="false" (add)="onUploadsAdd($event)">
     <div *ngIf="!uploads.length" class="file-upload--info-wrapper">
         <div class="file-upload--info">
             <i class="ser-icon ser-icon--add"></i>
