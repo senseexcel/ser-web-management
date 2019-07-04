@@ -13,6 +13,25 @@ import { ISerTemplate } from 'ser.api';
 
 export class TemplateComponent implements OnInit {
 
+    /** possible output formats */
+    public outputFormats = [
+        'csv',
+        'docx',
+        'html',
+        'md',
+        'ods',
+        'pdf',
+        'pptx',
+        'svg',
+        'tiff',
+        'tlsx',
+        'tsv',
+        'xml',
+        'xlsm',
+        'xls',
+        'xlsx'
+    ];
+
     public templateForm: FormGroup;
     private updateHook: Observable<boolean>;
     private report: ReportModel;
