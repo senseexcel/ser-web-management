@@ -7,15 +7,15 @@ export class HubModel implements IHubSettings {
 
     private hubType: SettingsType;
 
-    private hubActive: boolean;
+    private hubActive = false;
 
     private hubTarget: string;
 
-    private hubMode: DistributeMode;
+    private hubMode: DistributeMode = DistributeMode.DELETEALLFIRST;
 
     private hubOwner: string;
 
-    private hubConnections: ISerConnection[];
+    private hubConnections: any = '@CONFIGCONNECTION@';
 
     public get type(): SettingsType {
         return this.hubType;
@@ -30,14 +30,24 @@ export class HubModel implements IHubSettings {
     }
 
     public get mode(): DistributeMode {
-        return this.hubMode;
+        let mode: any = this.hubMode;
+        if (typeof this.hubMode === 'number') {
+            const modes = Object.keys(DistributeMode).filter((val) => isNaN(parseInt(val, 10)));
+            mode = modes.map((cur) => {
+                if (cur !== DistributeMode[this.hubMode]) {
+                    cur = DistributeMode[this.hubMode];
+                }
+                return cur;
+            })[0];
+        }
+        return mode;
     }
 
     public get owner(): string {
         return this.hubOwner;
     }
 
-    public get connections(): ISerConnection[] {
+    public get connections(): any {
         return this.hubConnections;
     }
 
@@ -65,7 +75,7 @@ export class HubModel implements IHubSettings {
         this.hubOwner = owner;
     }
 
-    public set connections(connections: ISerConnection[]) {
+    public set connections(connections: any) {
         this.hubConnections = connections;
     }
 
@@ -82,7 +92,7 @@ export class HubModel implements IHubSettings {
             type:   this.hubType,
             active: this.hubActive,
             target: this.hubTarget,
-            mode:   this.hubMode,
+            mode: this.hubMode,
             owner:  this.hubOwner,
             connections: this.hubConnections,
             sharedContentType: this.sharedContentType
