@@ -4,8 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --disable-host-check",
-    "build": "ng build",
-    "build:prod": "ng build --prod",
+    "build": "ng build --prod",
     "postbuild": "node ./bin/create-mashup",
     "test": "ng test",
     "lint": "ng lint",
