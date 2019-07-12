@@ -39,8 +39,7 @@ export class DashboardComponent implements OnInit {
         private taskRepository: TaskRepository,
         private filterFactory: FilterFactory,
         private sharendContentRepository: SharedContentRepository
-    ) {
-    }
+    ) {}
 
     /**
      *
@@ -74,8 +73,9 @@ export class DashboardComponent implements OnInit {
     }
 
     private async loadSenseExcelVersion() {
-        const app      = await this.enigmaService.createSessionApp();
-        const response = JSON.parse( await app.evaluate(`SER.STATUS('versions: all')`));
+        const app = await this.enigmaService.createSessionApp();
+        const response = JSON.parse(await app.evaluate(`SER.STATUS('versions: all')`));
+        await this.enigmaService.closeApp(app);
 
         const sensePkg = response.versions.reduce((current, pkg) => {
             if (pkg.name === 'ser-engine') {

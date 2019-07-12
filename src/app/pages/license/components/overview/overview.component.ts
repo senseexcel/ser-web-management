@@ -2,7 +2,6 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { catchError, takeUntil, map } from 'rxjs/operators';
 import { Subject, of } from 'rxjs';
 import { ModalService } from '@smc/modules/modal';
-import { HttpErrorResponse } from '@angular/common/http';
 import { I18nTranslation } from '@smc/modules/smc-common';
 import { LicenseFactory, ILicense } from '@smc/modules/license';
 

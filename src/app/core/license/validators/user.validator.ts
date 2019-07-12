@@ -1,4 +1,4 @@
-import moment = require('moment');
+import moment from 'moment';
 import { IValidationResult, IUser, IUserLicense } from '../api';
 import { LicenseValidator } from './license.validator';
 import { toManyUsersAtSameDateError, noLimitError } from './validation.tokens';
@@ -57,10 +57,6 @@ export class NamedLicenseValidator extends LicenseValidator {
         return users.filter((user) => {
             const {from, to} = user;
             let isActive = true;
-
-
-            // console.log(date.format('YYYY-MM-DD'), from.format('YYYY-MM-DD'), to.format('YYYY-MM-DD'));
-            // throw new Error('who cares');
 
             isActive = isActive && (!from.isValid() || date.isSameOrAfter(from, 'day'));
             isActive = isActive && (!to.isValid()   || date.isSameOrBefore(to, 'day'));

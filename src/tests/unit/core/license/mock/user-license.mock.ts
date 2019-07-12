@@ -1,6 +1,6 @@
 import { IUser, IUserLicense, IValidationResult, LicenseType } from '@smc/modules/license/api';
 import { Moment } from 'moment';
-import moment = require('moment');
+import moment from 'moment';
 
 export class NamedLicense implements IUserLicense {
 

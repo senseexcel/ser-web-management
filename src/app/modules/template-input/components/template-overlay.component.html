@@ -1,0 +1,11 @@
+<div class="header">
+    <strong>Sense Excel Templates</strong>
+</div>
+<div class="body">
+    <smc-templateinput-sidebar (open)="openLibrary($event)" (changed)="libraryContentChanged()"></smc-templateinput-sidebar>
+    <smc-templateinput-list [library]="selectedLibary" (select)="selectTemplate($event)"></smc-templateinput-list>
+</div>
+<div class="footer">
+    <smc-ui--button class="btn-lighten" [label]="'Reload'" [disabled]="!selectedLibary" (click)="reloadContent()"></smc-ui--button>
+    <smc-ui--button class="btn-lighten" [label]="'Close'" (click)="close()"></smc-ui--button>
+</div>

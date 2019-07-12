@@ -33,13 +33,13 @@ export class EditComponent implements OnInit {
     private activeRoute: ActivatedRoute;
     private location: Location;
 
-    @ViewChild('identification')
+    @ViewChild('identification', { static: false })
     private identificationContainer: ElementRef;
 
-    @ViewChild('execution')
+    @ViewChild('execution', { static: false })
     private executionContainer: ElementRef;
 
-    @ViewChild('trigger')
+    @ViewChild('trigger', { static: false })
     private triggerContainer: ElementRef;
 
     /**

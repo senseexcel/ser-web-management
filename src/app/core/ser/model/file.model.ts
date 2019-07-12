@@ -5,15 +5,15 @@ export class FileModel implements IFileSettings {
 
     private fileType: SettingsType;
 
-    private fileActive: boolean;
+    private fileActive = false;
 
     private fileTarget: string;
 
-    private fileMode: DistributeMode;
+    private fileMode: DistributeMode = DistributeMode.DELETEALLFIRST;
 
     private fileOwner: string;
 
-    private fileConnections: ISerConnection[];
+    private fileConnections: any = '@CONFIGCONNECTION@';
 
     public get type(): SettingsType {
         return this.fileType;
@@ -28,14 +28,24 @@ export class FileModel implements IFileSettings {
     }
 
     public get mode(): DistributeMode {
-        return this.fileMode;
+        let mode: any = this.fileMode;
+        if (typeof this.fileMode === 'number') {
+            const modes = Object.keys(DistributeMode).filter((val) => isNaN(parseInt(val, 10)));
+            mode = modes.map((cur) => {
+                if (cur !== DistributeMode[this.fileMode]) {
+                    cur = DistributeMode[this.fileMode];
+                }
+                return cur;
+            })[0];
+        }
+        return mode;
     }
 
     public get owner(): string {
         return this.fileOwner;
     }
 
-    public get connections(): ISerConnection[] {
+    public get connections(): any {
         return this.fileConnections;
     }
 
@@ -59,7 +69,7 @@ export class FileModel implements IFileSettings {
         this.fileOwner = owner;
     }
 
-    public set connections(connections: ISerConnection[]) {
+    public set connections(connections: any) {
         this.fileConnections = connections;
     }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as qixSchema from '@node_modules/enigma.js/schemas/12.20.0.json';
+import schema from '@node_modules/enigma.js/schemas/12.20.0.json';
 import { create } from 'enigma.js';
 import { buildUrl } from 'enigma.js/sense-utilities';
 import { AppCreatedResponse } from '../api';
@@ -90,6 +90,7 @@ export class EnigmaService {
      * @memberof AppRepository
      */
     public async writeScript(script: string, appid: string): Promise<void> {
+
         // could we wrap this into Observable ...
         const app = await this.openApp(appid);
         await app.setScript(script);
@@ -102,7 +103,6 @@ export class EnigmaService {
      * @memberof EnigmaService
      */
     public async fetchApps(force = false): Promise<EngineAPI.IDocListEntry[]> {
-
         if (!this.appCache || force) {
             const global = await this.openSession();
             /** typings are wrong, we got an array of doclist entries and not 1 doclist entry */
@@ -110,7 +110,6 @@ export class EnigmaService {
             await global.session.close();
             this.appCache = appList as EngineAPI.IDocListEntry[];
         }
-
         return this.appCache;
     }
 
@@ -139,22 +138,17 @@ export class EnigmaService {
      * @returns {Promise<enigmaJS.ISession>}
      * @memberof SerAppService
      */
-    private createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
-        return new Promise<enigmaJS.ISession>((resolve) => {
-            const url = buildUrl({
-                host: window.location.host,
-                secure: true,
-                appId,
-                identity: Math.random().toString(32).substr(2)
-            });
+    private async createSession(appId = 'engineData'): Promise<enigmaJS.ISession> {
 
-            const session: enigmaJS.ISession = create({
-                schema: qixSchema,
-                url
-            });
-
-            resolve(session);
+        const url = buildUrl({
+            host: window.location.hostname,
+            secure: true,
+            appId,
+            identity: Math.random().toString(32).substr(2)
         });
+
+        const session: enigmaJS.ISession = create({ schema, url });
+        return session;
     }
 
     private async openSession(): Promise<EngineAPI.IGlobal> {

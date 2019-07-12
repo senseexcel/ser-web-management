@@ -4,7 +4,7 @@ import { ReportService } from '@smc/modules/ser/provider/report.service';
 import { FormService } from '@smc/modules/form-helper/provider/form.service';
 import { TaskRepository } from '@smc/modules/qrs';
 import { Subject, Observable } from 'rxjs';
-import { map, takeUntil, tap, mergeMap } from 'rxjs/operators';
+import { map, takeUntil, tap, mergeMap, switchMap } from 'rxjs/operators';
 import { BreadcrumbService } from '@smc/modules/breadcrumb/provider/breadcrumb.service';
 import { IBreadCrumb } from '@smc/modules/breadcrumb/api/breadcrumb.interface';
 import { ModalService } from '@smc/modules/modal';
@@ -31,19 +31,19 @@ export class AppEditComponent implements OnInit, OnDestroy {
     public taskCount = 0;
     public app: string;
 
-    @ViewChild('connections')
+    @ViewChild('connections', { static: true })
     private connectionsContainer: ElementRef;
 
-    @ViewChild('distribute')
+    @ViewChild('distribute', { static: true })
     private distributeContainer: ElementRef;
 
-    @ViewChild('template')
+    @ViewChild('template', { static: true })
     private templateContainer: ElementRef;
 
-    @ViewChild('selections')
+    @ViewChild('selections', { static: true })
     private selectionContainer: ElementRef;
 
-    @ViewChild('settings')
+    @ViewChild('settings', { static: true })
     private settingsContainer: ElementRef;
 
     private isDestroyed$: Subject<boolean>;
@@ -101,14 +101,14 @@ export class AppEditComponent implements OnInit, OnDestroy {
             { key: 'settings'    , label: 'SMC_APPS.EDIT.PROPERTIES.ITEM.SETTINGS' }
         ];
 
-        const data = this.cacheService.currentReportData;
+        const data  = this.cacheService.currentReportData;
         this.app    = data.app;
         this.report = data.report;
 
+        this.updateReportData();
+
         this.breadcrumbService.breadcrumbs
-            .pipe(
-                takeUntil(this.isDestroyed$)
-            )
+            .pipe(takeUntil(this.isDestroyed$))
             .subscribe((breadcrumbs: IBreadCrumb[]) => {
                 const breadcrumb = breadcrumbs.slice(-1)[0];
                 if (breadcrumb.data.page === 'detail') {
@@ -129,7 +129,6 @@ export class AppEditComponent implements OnInit, OnDestroy {
                 }];
                 this.isLoading = false;
             });
-
     }
 
     /**

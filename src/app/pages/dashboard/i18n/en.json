@@ -14,8 +14,8 @@
         "DESCRIPTION": "Show and delete shared content like reports."
       },
       "MONITORING_APPS": {
-        "TITLE": "Monitoring Apps",
-        "DESCRIPTION": "Montioring Apps"
+        "TITLE": "Monitoring Tasks",
+        "DESCRIPTION": "Montioring Tasks"
       },
       "LICENSE": {
         "TITLE": "License Manager",

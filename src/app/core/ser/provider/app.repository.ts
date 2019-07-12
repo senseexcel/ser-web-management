@@ -129,6 +129,10 @@ export class AppRepository {
         return this.qrsAppRepository.fetchApp(app.id).toPromise();
     }
 
+    public deleteApp(id: string) {
+        return this.qrsAppRepository.deleteApp(id);
+    }
+
     /**
      * filter for ser script
      *

@@ -1,5 +1,5 @@
 import { IValidationResult } from './validation-result.interface';
-import moment = require('moment');
+import moment from 'moment';
 import { LicenseType } from './license-type.interface';
 
 export interface ILicense {

@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { SelectionModel } from '@angular/cdk/collections';
-import { MatDatepickerInputEvent, MatAutocompleteSelectedEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Moment } from 'moment';
 import { Subject, of } from 'rxjs';
 import { LicenseSource } from '../../model/license-source';
 import { takeUntil, debounceTime, switchMap } from 'rxjs/operators';
 import { IUserLicense, IUser, ILicense, LicenseType } from '@smc/modules/license/api';
-import moment = require('moment');
+import moment from 'moment';
 import { UserRepository } from '../../services';
 
 interface ITableUser {

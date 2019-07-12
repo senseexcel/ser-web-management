@@ -1,5 +1,5 @@
 import { IValidationResult, ILicense } from '../api';
-import moment = require('moment');
+import moment from 'moment';
 import { licenseExpiredError, licenseNotActiveYetError } from './validation.tokens';
 
 export class LicenseValidator {

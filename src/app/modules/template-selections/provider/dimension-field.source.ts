@@ -67,11 +67,6 @@ export class DimensionFieldSource implements RemoteSource.Connector<IDataNode> {
      */
     async close() {
 
-        await Promise.all([
-            this.dimensionSession ? this.connectedApp.destroySessionObject(this.dimensionSession.id) : true,
-            this.fieldSession ? this.connectedApp.destroySessionObject(this.fieldSession.id) : true
-        ]);
-
         this.fieldCache = null;
         this.dimensionsCache = null;
         this.fieldSession = null;

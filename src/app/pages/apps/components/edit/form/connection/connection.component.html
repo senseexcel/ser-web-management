@@ -13,10 +13,10 @@
   </div>
   <div [ngClass]="{'connected': isConnected}">
     <smc-ui--button class="btn-lighten" *ngIf="!isConnected" (click)="connectToApp()" [disabled]="!this.selectedAppId" [label]="'SMC_APPS.EDIT.FORM.CONNECTION.CONNECT' | translate">
-      <i class="ser-icon" [ngClass]="{'ser-icon--disconnect': !connecting, 'ser-icon--loading': connecting}" icon-left></i>
+      <i class="ser-icon" [ngClass]="{'ser-icon--disconnect': !connecting, 'ser-icon--loading': connecting}" btn-icon--left></i>
     </smc-ui--button>
     <smc-ui--button class="btn-lighten" *ngIf="isConnected" (click)="disconnectFromApp()" [label]="'SMC_APPS.EDIT.FORM.CONNECTION.DISCONNECT' | translate">
-      <i class="ser-icon ser-icon--disconnect" icon--left></i>
+      <i class="ser-icon ser-icon--disconnect" btn-icon--left></i>
     </smc-ui--button>
   </div>
 </div>
