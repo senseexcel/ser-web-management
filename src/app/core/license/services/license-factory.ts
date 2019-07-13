@@ -18,6 +18,7 @@ export class LicenseFactory {
 
         let license: ILicense;
         const readerResult = this.reader.read(raw);
+
         switch (readerResult.licenseMeta.type) {
             /** unknown or broken license was found */
             case LicenseType.UNKNOWN:

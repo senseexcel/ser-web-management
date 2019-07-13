@@ -8,7 +8,6 @@ import { IApp } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings, SmcCache } from '@smc/modules/smc-common';
 import { AppRepository } from '@smc/modules/ser/provider/app.repository';
-import { CompileTemplateMetadata } from '@angular/compiler';
 
 @Component({
     selector: 'smc-list',
@@ -37,14 +36,13 @@ export class AppListComponent implements OnInit, OnDestroy {
         this.route = route;
         this.router = routerProvider;
         this.selection = new SelectionModel<IApp>();
-
         this.dialogService = dialog;
     }
 
     public async ngOnInit() {
         if (this.smcCache.has('ser.apps') && Array.isArray(this.smcCache.get('ser.apps'))) {
-            this.isLoading = false;
             this.apps = this.smcCache.get<IApp[]>('ser.apps');
+            this.isLoading = false;
         } else {
             this.loadApps();
         }

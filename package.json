@@ -27,11 +27,12 @@
     "@ngx-translate/core": "11.0.1",
     "@r-hannuschka/ngx-fileupload": "1.0.2",
     "angular-pipes": "9.0.2",
+    "element-resize-detector": "^1.1.15",
     "hjson": "3.1.2",
     "leonardo-ui": "1.7.1",
     "moment": "2.24.0",
     "moment-timezone": "0.5.23",
-    "ngx-customscrollbar": "^1.2.0",
+    "ngx-customscrollbar": "^2.0.1",
     "rxjs": "6.5.2",
     "ws": "7.1.0",
     "zone.js": "0.9.1"
@@ -69,14 +70,8 @@
     "os": "0.1.1",
     "protractor": "6.0.0",
     "ser.api": "3.4.2",
-<<<<<<< HEAD
-    "ts-node": "8.0.3",
-    "tslint": "5.14.0",
-    "typescript": "^3.2.4"
-=======
     "ts-node": "8.3.0",
     "tslint": "5.18.0",
     "typescript": "3.4.5"
->>>>>>> development
   }
 }

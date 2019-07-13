@@ -35,12 +35,10 @@ export class InsertOverlayComponent implements OnInit, OnDestroy {
         const licenseData = this.data.license.toString();
         this.ctrl.content = licenseData;
         this.insertField = this.formBuilder.control(licenseData);
-        this.insertField.valueChanges.pipe(
-            debounceTime(400),
-            takeUntil(this.isDestroyed$)
-        ).subscribe((val) => {
-            this.ctrl.content = val;
-        });
+
+        this.insertField.valueChanges
+            .pipe( takeUntil(this.isDestroyed$))
+            .subscribe((val) => this.ctrl.content = val);
     }
 
     ngOnDestroy() {
