@@ -1,6 +1,6 @@
-# Sense Excel Reporting Management
+# Sense Excel Reporting Web Management
 
-Angular 8 Mashup which could loaded as extension into Qlik Qrs to manage sense excel reporting reports.
+Angular 8 App which could loaded as extension (mashup) into Qlik Qrs to manage ser reports.
 
 ## Install
 
