@@ -31,4 +31,4 @@ npm run build
 ```
 
 after build has been finished a zip file will created which could imported to qrs/extensions, this file could found under
-**./dist/ser-web.management.zip** and could imported into qrs.
+**./dist/ser-web-management.zip** and could imported into qrs.
