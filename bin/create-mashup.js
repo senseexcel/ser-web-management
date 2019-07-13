@@ -40,5 +40,6 @@ class CreateMashup {
 
 const createMashup = new CreateMashup();
 createMashup.run().then(() => {
-    process.stdout.write("all done");
+    process.stdout.write("Mashup ser-web-managment created.");
+    process.stdout.write("You can find it under ./dist/ser-web-management.zip");
 });
