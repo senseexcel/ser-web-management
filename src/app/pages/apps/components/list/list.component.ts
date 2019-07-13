@@ -8,7 +8,6 @@ import { IApp } from '@smc/modules/qrs';
 import { SMC_SESSION } from '@smc/modules/smc-common/model/session.model';
 import { ISettings, SmcCache } from '@smc/modules/smc-common';
 import { AppRepository } from '@smc/modules/ser/provider/app.repository';
-import { CompileTemplateMetadata } from '@angular/compiler';
 
 @Component({
     selector: 'smc-list',
@@ -37,14 +36,13 @@ export class AppListComponent implements OnInit, OnDestroy {
         this.route = route;
         this.router = routerProvider;
         this.selection = new SelectionModel<IApp>();
-
         this.dialogService = dialog;
     }
 
     public async ngOnInit() {
         if (this.smcCache.has('ser.apps') && Array.isArray(this.smcCache.get('ser.apps'))) {
-            this.isLoading = false;
             this.apps = this.smcCache.get<IApp[]>('ser.apps');
+            this.isLoading = false;
         } else {
             this.loadApps();
         }
@@ -105,12 +103,19 @@ export class AppListComponent implements OnInit, OnDestroy {
      */
     public editApp() {
 
+        const modal = this.dialogService.openInfoModal({
+            key: 'SMC_APPS.LIST.DIALOG.OPEN_APP',
+            param: { APP_NAME: this.selection.selected[0].name }
+        });
+
         this.router
             .navigate([`edit/${this.selection.selected[0].id}`], { relativeTo: this.route })
             .then((routeChange: boolean) => {
+                /** we hit new page */
                 if (!routeChange) {
                     this.selection.clear();
                 }
+                modal.close();
             });
     }
 
@@ -155,25 +160,24 @@ export class AppListComponent implements OnInit, OnDestroy {
             {key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS_MESSAGE'}
         );
 
-        dialogCtrl.switch
-            .pipe(
-                switchMap((confirm: boolean) => {
-                    if (confirm) {
-                        this.isLoading = true;
-                        return this.appRepository.addTagToSerApps();
-                    }
-                    return EMPTY;
-                }),
-            ).subscribe((apps) => {
-                this.dialogService.openMessageModal(
-                    'SMC_APPS.LIST.DIALOG.SYNC_APPS_TITLE_SUCCESS',
-                    {
-                        key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS_MESSAGE_SUCCESS',
-                        param: { COUNT: apps.length }
-                    }
-                );
-                this.loadApps();
-            });
+        dialogCtrl.switch.pipe(
+            switchMap((confirm: boolean) => {
+                if (confirm) {
+                    this.isLoading = true;
+                    return this.appRepository.addTagToSerApps();
+                }
+                return EMPTY;
+            }),
+        ).subscribe((apps) => {
+            this.dialogService.openMessageModal(
+                'SMC_APPS.LIST.DIALOG.SYNC_APPS_TITLE_SUCCESS',
+                {
+                    key: 'SMC_APPS.LIST.DIALOG.SYNC_APPS_MESSAGE_SUCCESS',
+                    param: { COUNT: apps.length }
+                }
+            );
+            this.loadApps();
+        });
     }
 
     /**

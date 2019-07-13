@@ -1,8 +1,9 @@
 import { UnknownLicense, EmptyLicense, SearchTokens, TokenLicense, NamedLicense } from '../model';
-import { IReaderResult, IUserLicense, IUser, ILicense, LicenseType } from '../api';
+import { IReaderResult, IUserLicense, ILicense, LicenseType } from '../api';
 import { LicenseReader } from './license-reader';
 import { Injectable } from '@angular/core';
 import moment from 'moment';
+import { InvalidLicense } from '../model/invalid.license';
 
 @Injectable({providedIn: 'root'})
 export class LicenseFactory {
@@ -18,19 +19,27 @@ export class LicenseFactory {
 
         let license: ILicense;
         const readerResult = this.reader.read(raw);
+
         switch (readerResult.licenseMeta.type) {
             /** unknown or broken license was found */
             case LicenseType.UNKNOWN:
                 license = this.createUnknownLicense(readerResult);
                 break;
+
             /** user license was found */
             case LicenseType.NAMED:
                 license = this.createNamedLicense(readerResult);
                 break;
+
             /** token license was found */
             case LicenseType.TOKEN:
                 license = this.createTokenLicense(readerResult);
                 break;
+
+            case LicenseType.INVALID:
+                license = this.createInvalidLicense(readerResult);
+                break;
+
             /** empty license file found */
             default:
                 license = this.createEmptyLicense();
@@ -86,6 +95,12 @@ export class LicenseFactory {
      */
     private createUnknownLicense(data: IReaderResult): UnknownLicense {
         const license = new UnknownLicense();
+        this.loadDataIntoLicense(data, license);
+        return license;
+    }
+
+    private createInvalidLicense(data: IReaderResult): UnknownLicense {
+        const license = new InvalidLicense();
         this.loadDataIntoLicense(data, license);
         return license;
     }

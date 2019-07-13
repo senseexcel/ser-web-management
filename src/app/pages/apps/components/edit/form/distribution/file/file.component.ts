@@ -64,10 +64,8 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
     private createDistributionModes(): Array<{label: string, value: string}> {
 
         return Object.keys(DistributeMode)
-            .filter( (value) => {
-                return isNaN( Number(value) );
-            })
-            .map( (name) => {
+            .filter((value) => isNaN(Number(value)))
+            .map((name) => {
                 return {
                     label: `SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.FILE.FIELD.${name.toUpperCase()}`,
                     value: name
@@ -86,6 +84,7 @@ export class DistributionFileComponent implements OnInit, OnDestroy {
         const observer = new Observable<boolean>((obs) => {
             const fileData = this.fileForm.getRawValue();
             fileData.mode  = this.fileForm.controls.mode.value;
+
             if (this.fileForm.invalid) {
                 obs.next(false);
                 return;

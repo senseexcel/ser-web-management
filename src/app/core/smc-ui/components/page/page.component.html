@@ -12,10 +12,10 @@
     </div>
 
     <div class="smc-ui--page--content-body" [ngClass]="{'no-padding': disablePadding}">
-        <mat-spinner *ngIf="loading"></mat-spinner> 
-        <div class="content-body--wrapper" *ngIf="!loading">
+        <div class="content-body--wrapper" *ngIf="!loading" ngxCustomScrollbarScrollable>
             <ng-content select="[page-content--body]"></ng-content>
         </div>
+        <ngx-customscrollbar *ngxCustomScrollbarOverflowY></ngx-customscrollbar>
     </div>
 
     <div class="smc-ui--page--content-footer">

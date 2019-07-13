@@ -27,3 +27,8 @@
 @import "./core/modal";
 
 @import "./license/modal";
+
+/** scrollbars */
+@import "~ngx-customscrollbar/scss/common";
+@import "~ngx-customscrollbar/scss/ngx-customscrollbars.theme";
+@include ngxCustomScrollbarsTheme();

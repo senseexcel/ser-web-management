@@ -194,7 +194,8 @@
         "DELETE_APP_TITLE": "Delete App",
         "DELETE_APP_MESSAGE": "Are you sure delete following item: {{APP_NAME}}",
         "DELETE_APP_TITLE_SUCCESS": "App Deleted",
-        "DELETE_APP_MESSAGE_SUCCESS": "App {{APP_NAME}} removed."
+        "DELETE_APP_MESSAGE_SUCCESS": "App {{APP_NAME}} removed.",
+        "OPEN_APP": "Open '{{APP_NAME}}' ..."
       },
       "HEADER": "Reports"
     }

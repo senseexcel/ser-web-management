@@ -1,32 +1,33 @@
 <form [formGroup]="mailForm" *ngIf="mailForm">
 
-    <!-- mail form group -->
-    <mat-checkbox formControlName="active">{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.ACTIVE' | translate}}</mat-checkbox>
+  <!-- mail form group -->
+  <mat-checkbox formControlName="active">{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.ACTIVE' | translate}}</mat-checkbox>
 
-    <mat-form-field class="form-control">
-        <input matInput formControlName="to" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.TO' | translate}}">
-    </mat-form-field>
+  <mat-form-field class="form-control">
+    <input matInput formControlName="to" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.TO' | translate}}">
+  </mat-form-field>
 
-    <mat-form-field class="form-control">
-        <input matInput formControlName="cc" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.CC' | translate}}">
-    </mat-form-field>
+  <mat-form-field class="form-control">
+    <input matInput formControlName="cc" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.CC' | translate}}">
+  </mat-form-field>
 
-    <mat-form-field class="form-control">
-        <input matInput formControlName="bcc" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.BCC' | translate}}">
-    </mat-form-field>
+  <mat-form-field class="form-control">
+    <input matInput formControlName="bcc" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.BCC' | translate}}">
+  </mat-form-field>
 
-    <mat-form-field class="form-control">
-        <input matInput formControlName="subject" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.SUBJECT' | translate}}">
-    </mat-form-field>
+  <mat-form-field class="form-control">
+    <input matInput formControlName="subject" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.SUBJECT' | translate}}">
+  </mat-form-field>
 
-    <mat-radio-group formControlName="mailType">
-        <mat-radio-button *ngFor="let type of mailTypes" [value]="type.value">
-            {{type.label | translate}}
-        </mat-radio-button>
-    </mat-radio-group>
+  <mat-radio-group formControlName="mailType">
+    <mat-radio-button *ngFor="let type of mailTypes" [value]="type.value">
+      {{type.label | translate}}
+    </mat-radio-button>
+  </mat-radio-group>
 
-    <mat-form-field class="form-control">
-        <textarea matInput formControlName="message" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.MESSAGE' | translate}}"
-            mat-autosize="true" [matAutosizeMinRows]=5 [matAutosizeMaxRows]=10></textarea>
-    </mat-form-field>
+  <mat-form-field class="form-control">
+    <textarea matInput formControlName="message" placeholder="{{'SMC_APPS.EDIT.FORM.DISTRIBUTION.TAB.EMAIL.FIELD.MESSAGE' | translate}}"
+      mat-autosize="true" [matAutosizeMinRows]=5 [matAutosizeMaxRows]=10 ngxCustomScrollbarScrollable></textarea>
+    <ngx-customscrollbar *ngxCustomScrollbarOverflowY></ngx-customscrollbar>
+  </mat-form-field>
 </form>

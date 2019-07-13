@@ -14,7 +14,7 @@ export class EmailModel implements IMailSettings {
     private emailModelPaths: string[];
     private emailModelReportName: string;
     private emailModelType: SettingsType;
-    private emailModelActive: boolean;
+    private emailModelActive = false;
 
     public constructor() {
         this.emailModelMailServer = new MailServerSettingsModel();

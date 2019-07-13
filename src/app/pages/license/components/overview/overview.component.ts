@@ -110,6 +110,7 @@ export class OverviewComponent implements OnDestroy, OnInit {
             .pipe(takeUntil(this.isDestroyed$))
             .subscribe((licenseRaw: string) => {
                 const license = this.licenseFactory.createFromRaw(licenseRaw);
+                console.log(license.licenseData);
                 this.licenseSource.license = license;
             });
     }

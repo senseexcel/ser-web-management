@@ -5,12 +5,14 @@ import { DashboardComponent } from './components/dashboard.component';
 import { DashboardRoutingModule } from './dashboard.routing.module';
 import { TranslateService } from '@ngx-translate/core';
 import i18n_en from './i18n/en.json';
+import { NgxCustomScrollbarModule } from 'ngx-customscrollbar';
 
 @NgModule({
     imports: [
         CommonModule,
         DashboardRoutingModule,
-        SmcUiModule
+        SmcUiModule,
+        NgxCustomScrollbarModule
     ],
     exports: [],
     declarations: [DashboardComponent],

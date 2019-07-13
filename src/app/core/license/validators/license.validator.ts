@@ -35,6 +35,7 @@ export class LicenseValidator {
             return false;
         }
         // to be sure we dont have add a string for example '123abc'
+        // will return false since he matched non digit chars
         return /^(?!.*?\D).*$/.test(String(count));
     }
 

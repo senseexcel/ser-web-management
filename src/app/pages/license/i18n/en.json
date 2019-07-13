@@ -31,11 +31,12 @@
         "LICENSE_BROKEN": "License is broken or could not handled in smc",
         "LICENSE_NOT_ACTIVATED": "License not activated yet",
         "TO_MANY_USERS_AT_SAME_DATE": "To many users activated for license at same date",
-        "LICENSE_NO_LIMIT": "License type expects a limit, none given"
+        "LICENSE_NO_LIMIT": "License type expects a limit, none given",
+        "INVALID_LICENSE": "The License you have been entered, seems not to be a SER License."
       },
       "WARNINGS": {
         "UNKNOWN_LICENSE": "Unknown License found and could not validated correctly by SMC",
-        "EMPTY_LICENSE": "Insert a valid license or fetch your license from server"
+        "EMPTY_LICENSE": "No License data was found! Insert a valid license or fetch your license from server"
       }
     },
 

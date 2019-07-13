@@ -8,7 +8,6 @@ import { IModalDialogData } from '../../api/modal-config.interface';
     templateUrl: 'message.component.html',
     styleUrls: ['message.component.scss']
 })
-
 export class OverlayMessageComponent {
 
     public dialogData: IModalDialogData;

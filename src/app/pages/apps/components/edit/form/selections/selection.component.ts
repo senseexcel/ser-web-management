@@ -5,11 +5,13 @@ import { FormService } from '@smc/modules/form-helper';
 import { takeUntil } from 'rxjs/operators';
 import { ISerSenseSelection } from 'ser.api';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ViewportControl } from 'ngx-customscrollbar';
 
 @Component({
     selector: 'smc-edit-form-selections',
     templateUrl: 'selection.component.html',
-    styleUrls: ['selection.component.scss']
+    styleUrls: ['selection.component.scss'],
+    viewProviders: [ViewportControl]
 })
 export class SelectionComponent implements OnInit, OnDestroy {
 

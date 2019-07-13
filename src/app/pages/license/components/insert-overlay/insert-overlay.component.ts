@@ -5,11 +5,13 @@ import { Subject } from 'rxjs';
 import { ILicenseModalData } from '../../api/license-modal.data';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { InsertOverlayControl } from '../../services/insert-overlay.control';
+import { ViewportControl } from 'ngx-customscrollbar';
 
 @Component({
     selector: 'smc-license-insert-overlay',
     styleUrls: ['insert-overlay.component.scss'],
-    templateUrl: 'insert-overlay.component.html'
+    templateUrl: 'insert-overlay.component.html',
+    viewProviders: [ViewportControl]
 })
 
 export class InsertOverlayComponent implements OnInit, OnDestroy {
@@ -33,12 +35,10 @@ export class InsertOverlayComponent implements OnInit, OnDestroy {
         const licenseData = this.data.license.toString();
         this.ctrl.content = licenseData;
         this.insertField = this.formBuilder.control(licenseData);
-        this.insertField.valueChanges.pipe(
-            debounceTime(400),
-            takeUntil(this.isDestroyed$)
-        ).subscribe((val) => {
-            this.ctrl.content = val;
-        });
+
+        this.insertField.valueChanges
+            .pipe( takeUntil(this.isDestroyed$))
+            .subscribe((val) => this.ctrl.content = val);
     }
 
     ngOnDestroy() {
