@@ -58,7 +58,7 @@
     "ifdef-loader": "2.1.1",
     "jasmine-core": "3.4.0",
     "jasmine-spec-reporter": "4.2.1",
-    "jszip": "^3.2.2",
+    "jszip": "3.2.2",
     "karma": "4.2.0",
     "karma-chrome-launcher": "2.2.0",
     "karma-coverage-istanbul-reporter": "2.0.5",
