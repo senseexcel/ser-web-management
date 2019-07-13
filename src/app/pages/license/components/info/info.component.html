@@ -7,12 +7,12 @@
             <span class="status" [ngClass]="{'not-valid': !isValid}">
                 {{'SMC_LICENSE.INFORMATIONS.LICENSE_' + (isValid ? 'VALID' : 'INVALID') | translate}}
             </span>
-            <ul class="errors" *ngIf="!isValid">
+            <ul class="errors" *ngIf="validationErrors.length > 0">
                 <li *ngFor="let error of validationErrors">
                     {{'SMC_LICENSE.VALIDATION.ERRORS.' + error | translate}}
                 </li>
             </ul>
-            <ul class="warnings" *ngIf="validationWarnings.length">
+            <ul class="warnings" *ngIf="validationWarnings.length > 0">
                 <li *ngFor="let warning of validationWarnings">
                     {{'SMC_LICENSE.VALIDATION.WARNINGS.' + warning | translate}}
                 </li>

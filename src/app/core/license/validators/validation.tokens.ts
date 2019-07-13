@@ -12,3 +12,6 @@ export const noLimitError = new ValidationToken('missing limitation for license'
 
 /** user validation tokens */
 export const toManyUsersAtSameDateError = new ValidationToken('to many users uses the licenes on the same time');
+
+/** not a license (not empty) */
+export const invalidLicenseError = new ValidationToken('License content is not a license (signatur missing)');

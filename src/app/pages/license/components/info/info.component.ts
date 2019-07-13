@@ -9,6 +9,7 @@ import {
     noLimitError
 } from '@smc/modules/license';
 import { TokenLicense } from '@smc/modules/license/model';
+import { tap } from 'rxjs/operators';
 
 @Component({
     selector: 'smc-license-info',
@@ -104,10 +105,11 @@ export class InfoComponent implements OnDestroy, OnInit {
 
         this.resolveErrorsLicense();
 
+        console.log(this.licenseSource.license.licenseType);
+
         switch (this.licenseSource.license.licenseType) {
             case LicenseType.EMPTY:
                 this.isValid = false;
-                this.validationErrors.push('NO_LICENSE_FOUND');
                 this.validationWarnings.push('EMPTY_LICENSE');
                 break;
             case LicenseType.NAMED:
@@ -117,6 +119,9 @@ export class InfoComponent implements OnDestroy, OnInit {
             case LicenseType.TOKEN:
                 this.resolveLicenseKeyValidation();
                 this.resolveErrorsTokenLicense();
+                break;
+            case LicenseType.INVALID:
+                this.validationErrors.push('INVALID_LICENSE');
                 break;
             default:
                 this.validationWarnings.push('UNKNOWN_LICENSE');

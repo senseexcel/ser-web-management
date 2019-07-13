@@ -26,15 +26,26 @@ export class LicenseReader {
      * read license data
      */
     public read(data: string): IReaderResult {
-        const lines = this.sanitizeData(data.split(/\r?\n/));
-        const raw = this.parseLicenseRaw(lines);
-        const meta = this.parseLicenseMeta(raw);
-        const result: IReaderResult = {
-            licenseKey: raw[0],
-            licenseMeta: meta,
-            licenseRaw: raw,
-            raw: lines
-        };
+        let lines: string[] = [];
+        let raw: string[] = [];
+        let meta: ILicenseMeta;
+        let result: IReaderResult;
+
+        try {
+            lines = this.sanitizeData(data.split(/\r?\n/));
+            raw   = this.parseLicenseRaw(lines);
+            meta  = this.parseLicenseMeta(raw);
+            result = { licenseKey: raw[0], licenseMeta: meta, licenseRaw: raw, raw: lines };
+        } catch (error) {
+            result = {
+                licenseKey: '',
+                licenseMeta: { count: 0, from: '', to: '', type: LicenseType.INVALID },
+                licenseRaw: lines,
+                raw: []
+            };
+
+            console.log(result.licenseMeta.type);
+        }
         return result;
     }
 
@@ -43,6 +54,7 @@ export class LicenseReader {
      * this could be TOKEN, USERS or anything else
      */
     private parseLicenseMeta(lines: string[]): ILicenseMeta {
+
         const licenseMeta: ILicenseMeta = {
             count: 0,
             from: '',
@@ -78,14 +90,22 @@ export class LicenseReader {
      */
     private parseLicenseRaw(lines: string[]): string[] {
         const result: string[] = [];
-        /** loop content array until we find signature line and split */
-        for (const [index, line] of Array.from(lines.entries())) {
-            result.push(line);
-            /** signature match */
-            if (line.match(/^([A-Z,0-9]{4}(?=-)-){4}[A-Z,0-9]{4}$/)) {
-                // remove license data from source
-                lines.splice(0, index + 1);
-                break;
+        if (lines.length !== 0) {
+            let hasSignature = false;
+            /** loop content array until we find signature line and split */
+            for (const [index, line] of Array.from(lines.entries())) {
+                result.push(line);
+                /** signature match */
+                if (line.match(/^([A-Z,0-9]{4}(?=-)-){4}[A-Z,0-9]{4}$/)) {
+                    hasSignature = true;
+                    // remove license data from source
+                    lines.splice(0, index + 1);
+                    break;
+                }
+            }
+
+            if (!hasSignature) {
+                throw new Error('no signature found');
             }
         }
         return result;
