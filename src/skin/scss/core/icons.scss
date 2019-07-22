@@ -141,6 +141,26 @@
   }
 }
 
+.ser-icon--edit {
+  &:before {
+    content: "@";
+  }
+}
+
+.ser-icon--copy {
+  &:before {
+    content: "\B6";
+  }
+}
+
+.ser-icon--menu {
+  font-size: 1rem;
+
+  &:before {
+    content: "\D4";
+  }
+}
+
 /** safari chrome */
 @-webkit-keyframes rotating {
   from {
@@ -187,5 +207,7 @@
 }
 
 .ser-icon--remove {
-    &:before { content: "E"; }
+  &:before {
+    content: "E";
+  }
 }

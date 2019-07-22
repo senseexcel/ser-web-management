@@ -1,0 +1,28 @@
+<smc-ui--page [disablePadding]="true">
+
+  <!-- page header -->
+  <div page-content--header>
+    <span>
+      <i class="ser-icon ser-icon--apps"></i>
+      {{'SMC_APPS.LIST.HEADER' | translate}}
+    </span>
+  </div>
+
+  <!-- page content -->
+  <div page-content--body>
+    <div class="report-overview--wrapper">
+      <smc-report-info *ngFor="let report of reports"
+        [report]="report"
+        (clone)="cloneReport($event)"
+        (delete)="deleteReport($event)"
+        (edit)="editReport($event)"
+    >
+    </smc-report-info>
+    </div>
+  </div>
+
+  <div page-content--footer>
+    footer
+  </div>
+
+</smc-ui--page>

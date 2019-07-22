@@ -1,13 +1,10 @@
-<ng-template #defaultButtonLabel>
-  {{label}}
-</ng-template>
-
-<button type="button" [disabled]="disabled" class="nav-item" [ngClass]="{'closeable': closeAble}" (click)="handleEvent($event); $event.stopPropagation()">
+<button type="button" [disabled]="disabled" class="nav-item" [ngClass]="{'closeable': closeAble}"
+  (click)="handleEvent($event); $event.stopPropagation()">
 
   <ng-content select="[btn-icon--left]"></ng-content>
 
-  <span class="button-label" [smcUiDefaultContent]="defaultButtonLabel">
-    <ng-content select="[btn-label]"></ng-content>
+  <span class="button-label">
+      {{label}}
   </span>
 
   <ng-content select="[btn-icon--right]"></ng-content>

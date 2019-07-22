@@ -109,9 +109,8 @@ export class AppListComponent implements OnInit, OnDestroy {
         });
 
         this.router
-            .navigate([`edit/${this.selection.selected[0].id}`], { relativeTo: this.route })
+            .navigate([`${this.selection.selected[0].id}/reports`], { relativeTo: this.route })
             .then((routeChange: boolean) => {
-                /** we hit new page */
                 if (!routeChange) {
                     this.selection.clear();
                 }

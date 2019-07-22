@@ -33,6 +33,7 @@
     "moment": "2.24.0",
     "moment-timezone": "0.5.23",
     "ngx-customscrollbar": "^2.0.1",
+    "ngx-responsivemenu": "file:../ngx-responsivemenu/src/dist/ngx-responsivemenu",
     "rxjs": "6.5.2",
     "ws": "7.1.0",
     "zone.js": "0.9.1"

@@ -1,0 +1,32 @@
+<div class="report-panel">
+
+    <div class="panel-header">
+        <span class="title">SER Report</span>
+        <ngx-responsivemenu [customOverflow]="true">
+            <smc-ui--button ngxResponsiveMenuItem (click)="editReport()" [label]="'Edit'">
+                <i btn-icon--left class="ser-icon ser-icon--edit"></i>
+            </smc-ui--button>
+
+            <smc-ui--button ngxResponsiveMenuItem (click)="cloneReport()" [label]="'Clone'">
+                <i btn-icon--left class="ser-icon ser-icon--copy"></i>
+            </smc-ui--button>
+
+            <smc-ui--button ngxResponsiveMenuItem (click)="deleteReport()" [label]="'Delete'">
+                <i btn-icon--left class="ser-icon ser-icon--trash"></i>
+            </smc-ui--button>
+
+            <button ngxResponsiveMenuToggle>
+                <i class="ser-icon ser-icon--menu"></i>
+            </button>
+        </ngx-responsivemenu>
+    </div>
+
+    <div class="panel-body">
+        <div class="sidebar" *ngIf="showSidebar" [@Slide] (@Slide.done)="animationDone($event)" >
+            <ngx-responsivemenu-overflow (beforeRemove)="onBeforeRemoveMenu($event)"></ngx-responsivemenu-overflow>
+        </div>
+    </div>
+
+    <div class="panel-footer">
+    </div>
+</div>

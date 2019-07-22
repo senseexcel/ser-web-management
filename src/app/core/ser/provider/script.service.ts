@@ -58,13 +58,26 @@ export class ScriptService {
      * @param data
      */
     public extractReports(data: ISerScriptData): ISerReport[] {
-        // check model has
         let isValidScript = data.script.hasOwnProperty('tasks');
-        isValidScript = isValidScript && Array.isArray(data.script.tasks);
-        isValidScript = isValidScript && data.script.tasks[0].hasOwnProperty('reports');
+        isValidScript     = isValidScript && Array.isArray(data.script.tasks);
+        isValidScript     = isValidScript && data.script.tasks[0].hasOwnProperty('reports');
 
         if (!isValidScript) {
             throw new Error('invalid or customized script found');
+        }
+        return data.script.tasks[0].reports;
+    }
+
+    public addReport(data: ISerScriptData, report: ISerReport) {
+        data.script.tasks[0].reports.push(report);
+        return data.script.tasks[0].reports;
+    }
+
+    public removeReport(data: ISerScriptData, report: ISerReport): ISerReport[] {
+        const reports   = data.script.tasks[0].reports;
+        const reportIdx = reports.indexOf(report);
+        if (reportIdx !== -1) {
+            data.script.tasks[0].reports.splice(reportIdx, 1);
         }
         return data.script.tasks[0].reports;
     }

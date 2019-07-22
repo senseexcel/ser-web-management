@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
-import { AppListComponent, AppEditComponent, AppsComponent, AppNewComponent  } from '../components';
+import { AppEditComponent, AppsComponent, AppNewComponent  } from '../components';
 import { EditGuard } from '../guards/edit.guard';
 import { ReportPreviewComponent } from '../components/preview/preview.component';
 import { ListComponent, EditComponent } from '@smc/pages/tasks/components';
 import { TasksComponent } from '../components/tasks/task.component';
+import { ReportOverviewRoutes } from '../pages/report-overview/report-overview.page';
+import { AppListRoutes } from '../pages/app-list/app-list.page';
 
 export const AppRoutes: Routes = [{
     path: 'apps',
@@ -13,7 +15,10 @@ export const AppRoutes: Routes = [{
     },
     children: [{
         path: '',
-        component: AppListComponent,
+        children: AppListRoutes
+    }, {
+        path: ':id/reports',
+        children: ReportOverviewRoutes
     }, {
         path: 'edit/:id',
         component: AppEditComponent,

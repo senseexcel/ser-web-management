@@ -6,7 +6,7 @@ import { FormHelperModule, MaterialModule, SerModule, SmcUiModule } from '@smc/m
 import { QrsModule } from '@smc/modules/qrs/qrs.module';
 import { AppsRoutingModule } from './apps-routing.module';
 
-import { AppEditComponent, AppListComponent, AppsComponent, AppNewComponent } from './components';
+import { AppEditComponent, AppsComponent, AppNewComponent } from './components';
 import { ConnectionComponent, SettingsComponent, TemplateComponent } from './components/edit';
 import {
   DistributionComponent,
@@ -27,6 +27,10 @@ import i18n_en from './i18n/en.json';
 import { TemplateSelectionsModule } from '@modules/template-selections/template-selections.module';
 import { TemplateInputModule } from '@modules/template-input/template-input.module';
 
+/** pages */
+import { ReportOverview } from './pages/report-overview/report-overview.page';
+import { List } from './pages/app-list/app-list.page';
+
 @NgModule({
   imports: [
     AppsServiceModule,
@@ -38,12 +42,15 @@ import { TemplateInputModule } from '@modules/template-input/template-input.modu
     SmcUiModule,
     TemplateInputModule,
     TemplateSelectionsModule,
-    DragDropModule
+    DragDropModule,
+
+    /** sub pages */
+    ReportOverview,
+    List
   ],
   exports: [MaterialModule],
   declarations: [
     AppEditComponent,
-    AppListComponent,
     AppsComponent,
     ConnectionComponent,
     SettingsComponent,
@@ -60,7 +67,6 @@ import { TemplateInputModule } from '@modules/template-input/template-input.modu
   entryComponents: [
     AppsComponent,
     AppNewComponent,
-    AppListComponent,
     AppEditComponent,
     ReportPreviewComponent,
     TasksComponent,

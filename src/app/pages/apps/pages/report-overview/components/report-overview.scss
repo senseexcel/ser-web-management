@@ -1,0 +1,40 @@
+:host {
+
+  [page-content--body] {
+    padding: .5rem;
+  }
+
+  .report-overview--wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  smc-report-info {
+    display: block;
+    flex: 0 0 calc(100% - 1rem);
+    box-sizing: border-box;
+    margin: .5rem;
+  }
+
+  /** screen size gte 1240px */
+  @media only screen and (min-width: 768px) {
+    smc-report-info {
+      flex: 0 0 calc(50% - 1rem);
+    }
+  }
+
+  /** screen size gte 1240px */
+  @media only screen and (min-width: 1240px) {
+    smc-report-info {
+      flex: 0 0 calc(100%/3 - 1rem);
+    }
+  }
+
+  /** screen size gte 1600px */
+  @media only screen and (min-width: 1600px) {
+    smc-report-info {
+      flex: 0 0 calc(25% - 1rem);
+    }
+  }
+}

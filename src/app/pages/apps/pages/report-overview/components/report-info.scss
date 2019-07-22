@@ -1,0 +1,81 @@
+:host {
+  display: block;
+  height: 25rem;
+  border: 1px solid;
+  padding: 0 1rem;
+  overflow: hidden;
+
+  // again override button style ...
+  ::ng-deep {
+    button {
+      flex-wrap: nowrap;
+      width: auto;
+      height: auto;
+      min-width: auto;
+      border-radius: 0;
+      border-width: 0;
+      border-color: transparent;
+      background: transparent;
+      margin: 0;
+      padding: 0;
+      line-height: auto;
+      text-align: left;
+      color: inherit;
+      justify-content: flex-start;
+
+      &:hover {
+        outline: none;
+        box-shadow: none !important;
+      }
+    }
+  }
+
+  .panel-header {
+    display: flex;
+    flex-direction: row;
+    overflow-x: hidden;
+    background: #595959;
+    margin: 0 -1rem;
+    padding: 0 0 0 1rem;
+    height: 3rem;
+    color: #FFF;
+
+    .title {
+      white-space: nowrap;
+      align-self: center;
+    }
+
+    ngx-responsivemenu {
+      flex: 1;
+      align-self: stretch;
+
+      ::ng-deep {
+        .buttonWrapper {
+          height: 100%;
+        }
+
+        button {
+          height: 100%;
+          padding: 0 .5rem;
+          border: 0;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .panel-body {
+    position: relative;
+  }
+
+  .sidebar {
+    width: 12.5rem;
+    position: absolute;
+    white-space: nowrap;
+    background: #FFF;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10;
+  }
+}
