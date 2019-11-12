@@ -71,7 +71,7 @@
     "protractor": "6.0.0",
     "ser.api": "3.4.2",
     "ts-node": "8.3.0",
-    "tslint": "5.18.0",
+    "tslint": "5.20.1",
     "typescript": "3.4.5"
   }
 }
