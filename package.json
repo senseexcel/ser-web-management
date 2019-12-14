@@ -52,7 +52,7 @@
     "@types/moment-timezone": "0.5.12",
     "@types/node": "12.6.8",
     "@types/qlik-engineapi": "12.67.8",
-    "@types/ws": "6.0.1",
+    "@types/ws": "6.0.4",
     "bootstrap-scss": "4.3.1",
     "codelyzer": "5.1.0",
     "core-js": "2.5.7",
