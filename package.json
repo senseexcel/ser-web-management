@@ -34,7 +34,7 @@
     "moment-timezone": "0.5.23",
     "ngx-customscrollbar": "^2.0.1",
     "rxjs": "6.5.2",
-    "ws": "7.1.0",
+    "ws": "7.4.5",
     "zone.js": "0.9.1"
   },
   "devDependencies": {
