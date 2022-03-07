@@ -48,7 +48,7 @@
     "@types/enigma.js": "2.2.1",
     "@types/jasmine": "3.3.14",
     "@types/jasminewd2": "2.0.6",
-    "@types/jsonwebtoken": "8.3.2",
+    "@types/jsonwebtoken": "8.5.8",
     "@types/moment-timezone": "0.5.12",
     "@types/node": "12.6.8",
     "@types/qlik-engineapi": "12.67.8",
