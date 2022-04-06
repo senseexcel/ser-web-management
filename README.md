@@ -1,5 +1,7 @@
 # Sense Excel Reporting Web Management
 
+## This repository is moved to another location and is now archived.
+
 Angular 8 App which could loaded as extension (mashup) into Qlik Qrs to manage ser reports.
 
 ## Install
